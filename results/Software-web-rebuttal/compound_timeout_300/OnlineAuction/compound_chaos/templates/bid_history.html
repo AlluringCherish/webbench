@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bid History</title>
+</head>
+<body>
+    <div id="bid-history-page">
+        <h1>Bid History</h1>
+
+        <select id="filter-by-auction" name="filter-by-auction">
+            <option value="">All Auctions</option>
+            {% set seen_auction_ids = [] %}
+            {% for bid in bids %}
+                {% if bid.auction_id not in seen_auction_ids %}
+                    <option value="{{ bid.auction_id }}" {% if selected_auction_id == bid.auction_id %}selected{% endif %}>{{ bid.auction_name }}</option>
+                    {% do seen_auction_ids.append(bid.auction_id) %}
+                {% endif %}
+            {% endfor %}
+        </select>
+
+        <button id="sort-by-amount">Sort by Amount</button>
+
+        <table id="bids-table" border="1">
+            <thead>
+                <tr>
+                    <th>Bid ID</th>
+                    <th>Auction Name</th>
+                    <th>Bidder</th>
+                    <th>Amount</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bid in bids %}
+                    {% if selected_auction_id == None or selected_auction_id == bid.auction_id %}
+                    <tr id="bid-{{ bid.bid_id }}">
+                        <td>{{ bid.bid_id }}</td>
+                        <td>{{ bid.auction_name }}</td>
+                        <td>{{ bid.bidder_name }}</td>
+                        <td>${{ '%.2f' | format(bid.bid_amount) }}</td>
+                        <td>{{ bid.bid_timestamp }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('dashboard') }}"><button id="back-to-dashboard">Back to Dashboard</button></a>
+    </div>
+</body>
+</html>

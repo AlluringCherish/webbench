@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class Schedule</title>
+</head>
+<body>
+    <div id="schedule-page">
+        <h1>Class Schedule</h1>
+        <form method="get" action="">
+            <input type="text" id="schedule-search" name="search_query" placeholder="Search classes by name or trainer" value="{{ search_query }}" />
+            <select id="schedule-filter" name="class_type">
+                <option value="">-- All Types --</option>
+                {% for type in class_types %}
+                <option value="{{ type }}" {% if type == request.args.get('class_type', '') %}selected{% endif %}>{{ type }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="classes-grid">
+            {% for cls in classes %}
+            <div class="class-card" id="class-card-{{ cls.class_id }}">
+                <h2>{{ cls.class_name }}</h2>
+                <p>Trainer: {{ cls.trainer_name }}</p>
+                <p>Day: {{ cls.schedule_day }}</p>
+                <p>Time: {{ cls.schedule_time }}</p>
+                <p>Type: {{ cls.class_type }}</p>
+                <p>Duration: {{ cls.duration }} minutes</p>
+                <button id="enroll-class-button-{{ cls.class_id }}">Enroll</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

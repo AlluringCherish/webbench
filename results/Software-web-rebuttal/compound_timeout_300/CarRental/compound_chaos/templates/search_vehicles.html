@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Vehicles</title>
+</head>
+<body>
+    <div id="main-container">
+        <h1>Search Vehicles</h1>
+        <div id="search-page">
+            <form method="get" action="">
+                <label for="location-filter">Pickup Location:</label>
+                <select id="location-filter" name="location">
+                    <option value="" {% if not selected_location %}selected{% endif %}>All Locations</option>
+                    {% for loc in locations %}
+                    <option value="{{ loc }}" {% if loc == selected_location %}selected{% endif %}>{{ loc }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="vehicle-type-filter">Vehicle Type:</label>
+                <select id="vehicle-type-filter" name="vehicle_type">
+                    <option value="" {% if not selected_vehicle_type %}selected{% endif %}>All Types</option>
+                    {% for vt in vehicle_types %}
+                    <option value="{{ vt }}" {% if vt == selected_vehicle_type %}selected{% endif %}>{{ vt }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="date-range-input">Rental Date Range:</label>
+                <input id="date-range-input" name="date_range" type="text" placeholder="YYYY-MM-DD to YYYY-MM-DD"
+                    value="{% if rental_date_range %}{{ rental_date_range[0] }} to {{ rental_date_range[1] }}{% endif %}">
+
+                <button type="submit">Search</button>
+            </form>
+
+            <div id="vehicles-grid">
+                {% for vehicle in available_vehicles %}
+                <div class="vehicle-card">
+                    <h3>{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.vehicle_type }})</h3>
+                    <p>Daily Rate: ${{ "%.2f"|format(vehicle.daily_rate) }}</p>
+                    <button id="view-details-button-{{ vehicle.vehicle_id }}" onclick="location.href='{{ url_for('vehicle_details', vehicle_id=vehicle.vehicle_id) }}'">View Details</button>
+                </div>
+                {% else %}
+                <p>No vehicles available for the selected criteria.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

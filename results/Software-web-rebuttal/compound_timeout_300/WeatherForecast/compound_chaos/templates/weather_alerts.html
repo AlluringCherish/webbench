@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Alerts</title>
+</head>
+<body>
+    <div id="alerts-page">
+        <form method="POST" action="{{ url_for('weather_alerts') }}">
+            <label for="severity-filter">Severity Filter:</label>
+            <select id="severity-filter" name="severity_filter" onchange="this.form.submit()">
+                {% set severities = ['All', 'Critical', 'High', 'Medium', 'Low'] %}
+                {% for severity in severities %}
+                <option value="{{ severity }}" {% if severity == severity_filter %}selected{% endif %}>{{ severity }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="location-filter-alerts">Location Filter:</label>
+            <select id="location-filter-alerts" name="location_filter" onchange="this.form.submit()">
+                <option value="" {% if location_filter is none %}selected{% endif %}>All</option>
+                {% for location in locations %}
+                <option value="{{ location.location_id }}" {% if location.location_id == location_filter %}selected{% endif %}>{{ location.location_name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <div id="alerts-list">
+            {% if alerts %}
+                <ul>
+                    {% for alert in alerts %}
+                    <li>
+                        <p><strong>Type:</strong> {{ alert.alert_type }}</p>
+                        <p><strong>Severity:</strong> {{ alert.severity }}</p>
+                        <p><strong>Description:</strong> {{ alert.description }}</p>
+                        <p><strong>Start Time:</strong> {{ alert.start_time }}</p>
+                        <p><strong>End Time:</strong> {{ alert.end_time }}</p>
+                        <form method="POST" action="{{ url_for('weather_alerts') }}" style="display:inline;">
+                            <input type="hidden" name="acknowledge_alert_id" value="{{ alert.alert_id }}" />
+                            {% if not alert.is_acknowledged %}
+                            <button id="acknowledge-alert-button-{{ alert.alert_id }}" type="submit">Acknowledge</button>
+                            {% else %}
+                            <button disabled>Acknowledged</button>
+                            {% endif %}
+                        </form>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No alerts found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

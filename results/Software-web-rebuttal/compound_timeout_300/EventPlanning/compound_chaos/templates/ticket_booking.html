@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ page_title }}</title>
+</head>
+<body>
+  <div id="ticket-booking-page">
+    <h1>Book Your Tickets</h1>
+
+    <form method="post" action="{{ url_for('book_ticket') }}">
+      <label for="select-event-dropdown">Select Event:</label>
+      <select id="select-event-dropdown" name="event_id" required>
+        {% for event in events %}
+        <option value="{{ event.event_id }}">{{ event.event_name }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="ticket-quantity-input">Quantity:</label>
+      <input id="ticket-quantity-input" type="number" name="quantity" min="1" required>
+
+      <label for="ticket-type-select">Ticket Type:</label>
+      <select id="ticket-type-select" name="ticket_type" required>
+        <option value="General">General</option>
+        <option value="VIP">VIP</option>
+        <option value="Early Bird">Early Bird</option>
+      </select>
+
+      <button id="book-now-button" type="submit">Book Now</button>
+    </form>
+
+    {% if confirmation %}
+    <div id="booking-confirmation">
+      {% if confirmation is mapping %}
+        <p>Booking successful!</p>
+        <p>Booking ID: {{ confirmation.booking_id }}</p>
+        <p>Event ID: {{ confirmation.event_id }}</p>
+        <p>Quantity: {{ confirmation.quantity }}</p>
+        <p>Ticket Type: {{ confirmation.ticket_type }}</p>
+        <p>Status: {{ confirmation.status }}</p>
+      {% else %}
+        <p>{{ confirmation }}</p>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>

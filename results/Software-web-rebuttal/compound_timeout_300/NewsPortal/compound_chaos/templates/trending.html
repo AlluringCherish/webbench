@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Trending Articles</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div id="trending-page">
+    <select id="time-period-filter" onchange="location.href='{{ url_for('trending_filter') }}?period=' + this.value;">
+        {% for period in periods %}
+        <option value="{{ period }}" {% if period == selected_period %}selected{% endif %}>{{ period }}</option>
+        {% endfor %}
+    </select>
+    <div id="trending-list">
+        {% for article in trending_articles %}
+        <div class="trending-article-item" id="article-{{ article.article_id }}">
+            <h3>{{ article.article_title }}</h3>
+            <p>Category: {{ article.category }}</p>
+            <p>Views: {{ article.view_count }}</p>
+            <button id="view-article-button-{{ article.article_id }}" onclick="location.href='{{ url_for('article_details', article_id=article.article_id) }}'">View Article</button>
+        </div>
+        {% endfor %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

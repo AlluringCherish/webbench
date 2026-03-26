@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking History</title>
+</head>
+<body>
+    <div id="bookings-page">
+        <h1>Booking History</h1>
+
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status">
+            {% for status_option in status_filter_options %}
+            <option value="{{ status_option }}">{{ status_option }}</option>
+            {% endfor %}
+        </select>
+
+        <table id="bookings-table" border="1">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Movie</th>
+                    <th>Date</th>
+                    <th>Seats</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.booking_id }}</td>
+                    <td>{{ booking.movie_title }}</td>
+                    <td>{{ booking.booking_date }}</td>
+                    <td>{% for seat in booking.seats_booked %}{{ seat }} {% endfor %}</td>
+                    <td>{{ booking.status }}</td>
+                    <td>
+                        <button id="view-booking-button-{{ booking.booking_id }}" onclick="location.href='{{ url_for('booking_details', booking_id=booking.booking_id) }}'">View Details</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

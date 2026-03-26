@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ page_title }}</title>
+</head>
+<body>
+  <div id="schedules-page">
+    <h1>Event Schedules</h1>
+
+    <form method="get" action="{{ url_for('schedules_page') }}">
+      <label for="schedule-filter-date">Filter by Date:</label>
+      <input type="date" id="schedule-filter-date" name="date">
+
+      <label for="schedule-filter-event">Filter by Event:</label>
+      <select id="schedule-filter-event" name="event_id">
+        <option value="">All Events</option>
+        {% for event in events %}
+        <option value="{{ event.event_id }}">{{ event.event_name }}</option>
+        {% endfor %}
+      </select>
+
+      <button type="submit">Apply Filters</button>
+    </form>
+
+    <div id="schedules-timeline">
+      {% for schedule in schedules %}
+      <div class="schedule-entry">
+        <h2>{{ schedule.session_title }}</h2>
+        <p>Time: {{ schedule.session_time }}</p>
+        <p>Duration: {{ schedule.duration_minutes }} minutes</p>
+        <p>Speaker: {{ schedule.speaker }}</p>
+        <p>Event ID: {{ schedule.event_id }}</p>
+        <p>Venue ID: {{ schedule.venue_id }}</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <button id="export-schedule-button">Export Schedule</button>
+  </div>
+</body>
+</html>

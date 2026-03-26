@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Forecast</title>
+</head>
+<body>
+    <div id="forecast-page">
+        <form method="POST" action="{{ url_for('weekly_forecast') }}">
+            <label for="location-filter">Select Location:</label>
+            <select id="location-filter" name="location_id" onchange="this.form.submit()">
+                {% for location in locations %}
+                    <option value="{{ location.location_id }}" {% if location.location_id == selected_location_id %}selected{% endif %}>{{ location.location_name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <table id="forecast-table" border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>High Temp (&deg;)</th>
+                    <th>Low Temp (&deg;)</th>
+                    <th>Condition</th>
+                    <th>Precipitation (%)</th>
+                    <th>Humidity (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for forecast in forecasts %}
+                <tr>
+                    <td>{{ forecast.date }}</td>
+                    <td>{{ forecast.high_temp }}</td>
+                    <td>{{ forecast.low_temp }}</td>
+                    <td>{{ forecast.condition }}</td>
+                    <td>{{ forecast.precipitation }}</td>
+                    <td>{{ forecast.humidity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div id="forecast-list">
+            {% for forecast in forecasts %}
+            <div class="forecast-card">
+                <p>Date: {{ forecast.date }}</p>
+                <p>High: {{ forecast.high_temp }}&deg;</p>
+                <p>Low: {{ forecast.low_temp }}&deg;</p>
+                <p>Condition: {{ forecast.condition }}</p>
+                <p>Precipitation: {{ forecast.precipitation }}%</p>
+                <p>Humidity: {{ forecast.humidity }}%</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard') }}"><button id="back-to-dashboard">Back to Dashboard</button></a>
+    </div>
+</body>
+</html>

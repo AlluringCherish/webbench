@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Reviews</title>
+</head>
+<body>
+    <div id="reviews-page">
+        <h1>Customer Reviews</h1>
+
+        <form method="get" action="{{ url_for('reviews') }}">
+            <label for="filter-by-rating">Filter by Rating:</label>
+            <select id="filter-by-rating" name="rating" onchange="this.form.submit()">
+                <option value="All" {% if rating_filter == 'All' %}selected{% endif %}>All</option>
+                <option value="5" {% if rating_filter == '5' %}selected{% endif %}>5</option>
+                <option value="4" {% if rating_filter == '4' %}selected{% endif %}>4</option>
+                <option value="3" {% if rating_filter == '3' %}selected{% endif %}>3</option>
+                <option value="2" {% if rating_filter == '2' %}selected{% endif %}>2</option>
+                <option value="1" {% if rating_filter == '1' %}selected{% endif %}>1</option>
+            </select>
+        </form>
+
+        <div id="reviews-list">
+            {% if reviews %}
+                <ul>
+                    {% for review in reviews %}
+                        <li>
+                            <strong>{{ review.book_title }}</strong><br />
+                            Rating: {{ review.rating }}<br />
+                            <p>{{ review.review_text }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No reviews available.</p>
+            {% endif %}
+        </div>
+
+        <button id="write-review-button" onclick="location.href='{{ url_for('write_review') }}'">Write a Review</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

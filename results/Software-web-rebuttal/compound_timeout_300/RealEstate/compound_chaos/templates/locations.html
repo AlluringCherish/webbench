@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Featured Locations</title>
+</head>
+<body>
+    <div id="locations-page">
+        <form action="{{ url_for('locations_page') }}" method="get">
+            <label for="location-sort">Sort Locations:</label>
+            <select id="location-sort" name="sort">
+                <option value="">Default</option>
+                <option value="name">Name</option>
+                <option value="region">Region</option>
+                <option value="average_price">Average Price</option>
+                <option value="property_count">Property Count</option>
+            </select>
+            <button type="submit">Sort</button>
+        </form>
+
+        <div id="locations-list">
+            {% for location in locations %}
+                <div>
+                    <h2>{{ location.location_name }}</h2>
+                    <p>Region: {{ location.region }}</p>
+                    <p>Average Price: ${{ "{0:,.2f}".format(location.average_price) }}</p>
+                    <p>Properties Available: {{ location.property_count }}</p>
+                    <p>{{ location.description }}</p>
+                    <a href="{{ url_for('property_search') }}?location={{ location.location_name }}">
+                        <button id="view-location-button-{{ location.location_id }}">View</button>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard_page') }}"><button id="back-to-dashboard">Back to Dashboard</button></a>
+    </div>
+</body>
+</html>

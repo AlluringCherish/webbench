@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ page_title }}</title>
+</head>
+<body>
+  <div id="events-page">
+    <h1>Events Catalog</h1>
+
+    <form method="post" action="{{ url_for('filter_events') }}">
+      <input type="text" id="event-search-input" name="search" placeholder="Search events...">
+      <select id="event-category-filter" name="category">
+        <option value="">All Categories</option>
+        {% set categories = events | map(attribute='category') | unique | list %}
+        {% for cat in categories %}
+        <option value="{{ cat }}">{{ cat }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Filter</button>
+    </form>
+
+    <div id="events-grid">
+      {% for event in events %}
+      <div class="event-card">
+        <h2>{{ event.event_name }}</h2>
+        <p>Category: {{ event.category }}</p>
+        <p>Date: {{ event.date }}</p>
+        <p>Time: {{ event.time }}</p>
+        <p>Location: {{ event.location }}</p>
+        <p>Description: {{ event.description }}</p>
+        <p>Venue ID: {{ event.venue_id }}</p>
+        <p>Capacity: {{ event.capacity }}</p>
+        <button id="view-event-button-{{ event.event_id }}" onclick="location.href='{{ url_for('event_details', event_id=event.event_id) }}'">View Details</button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

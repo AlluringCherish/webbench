@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pickup and Dropoff Locations</title>
+</head>
+<body>
+    <div id="main-container">
+        <h1>Pickup and Dropoff Locations</h1>
+        <div id="locations-page">
+            <form method="get" action="">
+                <label for="hours-filter">Filter by Operating Hours:</label>
+                <select id="hours-filter" name="hours_filter" onchange="this.form.submit()">
+                    <option value="" {% if not selected_hours_filter %}selected{% endif %}>All</option>
+                    {% for option in hours_filter_options %}
+                    <option value="{{ option }}" {% if option == selected_hours_filter %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="search-location-input">Search Locations:</label>
+                <input id="search-location-input" name="search_query" type="text" value="{{ search_query if search_query else '' }}" placeholder="City or Name">
+
+                <button type="submit">Search</button>
+            </form>
+            <div id="locations-list">
+                {% for location in locations %}
+                <div class="location-card">
+                    <p>City: {{ location.city }}</p>
+                    <p>Address: {{ location.address }}</p>
+                    <p>Phone: {{ location.phone }}</p>
+                    <p>Hours: {{ location.hours }}</p>
+                    <p>Available Vehicles: {{ location.available_vehicles }}</p>
+                    <button id="location-detail-button-{{ location.location_id }}" onclick="location.href='{{ url_for('location_details', location_id=location.location_id) }}'">Details</button>
+                </div>
+                {% else %}
+                <p>No locations found.</p>
+                {% endfor %}
+            </div>
+            <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </div>
+    </div>
+</body>
+</html>

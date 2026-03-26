@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Pets</title>
+</head>
+<body>
+    <div id="pet-listings-page">
+        <h1>Available Pets</h1>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+
+        <input type="text" id="search-input" name="search_query" value="{{ search_query }}" placeholder="Search pets...">
+
+        <select id="filter-species" name="selected_species">
+            {% for species in species_options %}
+            <option value="{{ species }}" {% if species == selected_species %}selected{% endif %}>{{ species }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="pet-grid">
+            {% for pet in pets %}
+            <div class="pet-card" id="pet-{{ pet.pet_id }}">
+                <h2>{{ pet.name }}</h2>
+                <img src="{{ pet.photo_url }}" alt="Photo of {{ pet.name }}">
+                <p>Species: {{ pet.species }}</p>
+                <p>Age: {{ pet.age }}</p>
+                <button onclick="location.href='{{ url_for('pet_details', pet_id=pet.pet_id) }}'">View Details</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

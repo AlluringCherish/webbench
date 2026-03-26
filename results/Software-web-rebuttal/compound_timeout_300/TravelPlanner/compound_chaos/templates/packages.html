@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Packages</title>
+</head>
+<body>
+    <div id="packages-page">
+        <h1 id="packages-title">Travel Packages</h1>
+
+        <label for="duration-filter">Filter by Duration:</label>
+        <select id="duration-filter" name="duration-filter">
+            {% for duration in durations %}
+            <option value="{{ duration }}">{{ duration }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="packages-grid">
+            {% for pkg in packages %}
+            <div class="package-card">
+                <h3>{{ pkg.package_name }}</h3>
+                <div>Destination: {{ pkg.destination }}</div>
+                <div>Duration: {{ pkg.duration_days }} days</div>
+                <div>Price: ${{ "%.2f"|format(pkg.price) }}</div>
+                <div>Included Items:
+                    <ul>
+                        {% for item in pkg.included_items %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div>Difficulty Level: {{ pkg.difficulty_level }}</div>
+                <button id="view-package-details-button-{{ pkg.package_id }}" 
+                        onclick="location.href='{{ url_for('package_details_page', pkg_id=pkg.package_id) }}'">View Details</button>
+                <button id="book-package-button-{{ pkg.package_id }}">Book Package</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

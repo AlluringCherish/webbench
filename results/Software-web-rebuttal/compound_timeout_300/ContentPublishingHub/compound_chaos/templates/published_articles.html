@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Published Articles - Content Publishing Hub</title>
+</head>
+<body>
+    <div id="published-articles-page">
+        <h1>Published Articles</h1>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        <form id="filter-form" method="GET" action="{{ url_for('published_articles') }}">
+            <label for="filter-category">Category:</label>
+            <input type="text" id="filter-category" name="category" value="{{ request.args.get('category', '') }}">
+
+            <label for="filter-sort-order">Sort Order:</label>
+            <select id="filter-sort-order" name="sort_order">
+                <option value="asc" {% if request.args.get('sort_order') == 'asc' %}selected{% endif %}>Ascending</option>
+                <option value="desc" {% if request.args.get('sort_order') == 'desc' %}selected{% endif %}>Descending</option>
+            </select>
+
+            <button type="submit" id="filter-articles">Filter</button>
+        </form>
+        <ul id="published-articles-list">
+            {% for article in articles %}
+            <li id="article-{{ article.article_id }}">
+                <a href="{{ url_for('edit_article', article_id=article.article_id) }}">{{ article.title }}</a>
+                (Published on: {{ article.published_date.strftime('%Y-%m-%d') }})
+            </li>
+            {% else %}
+            <li>No published articles found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+</head>
+<body>
+    <div id="admin-panel-page">
+        <h1>Admin Panel</h1>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+
+        <div id="pending-applications">
+            <h2>Pending Applications</h2>
+            <ul>
+            {% for app in pending_applications %}
+                <li>
+                    <p>Application ID: {{ app.application_id }}</p>
+                    <p>Pet Name: {{ app.pet_name }}</p>
+                    <p>Applicant Name: {{ app.applicant_name }}</p>
+                    <p>Date Submitted: {{ app.date_submitted }}</p>
+                    <button onclick="location.href='{{ url_for('view_application', application_id=app.application_id) }}'">View</button>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+
+        <div id="all-pets-list">
+            <h2>All Pets</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pet ID</th>
+                        <th>Name</th>
+                        <th>Species</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for pet in all_pets %}
+                    <tr>
+                        <td>{{ pet.pet_id }}</td>
+                        <td>{{ pet.name }}</td>
+                        <td>{{ pet.species }}</td>
+                        <td>{{ pet.status }}</td>
+                        <td>
+                            <button onclick="location.href='{{ url_for('edit_pet', pet_id=pet.pet_id) }}'">Edit</button>
+                            <form method="POST" action="{{ url_for('delete_pet', pet_id=pet.pet_id) }}" style="display:inline;">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

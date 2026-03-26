@@ -1,0 +1,1944 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "FrontendDeveloper",
+      "SystemArchitect",
+      "FrontendDeveloper_Fix"
+    ],
+    "num_all_targets": 3,
+    "agent_chaos_targets": [
+      "SystemArchitect"
+    ],
+    "stress_chaos_targets": [
+      "FrontendDeveloper"
+    ],
+    "io_chaos_targets": [
+      "SystemArchitect",
+      "FrontendDeveloper_Fix"
+    ]
+  },
+  "agent_chaos": {
+    "enabled": true,
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 2,
+    "log": [
+      {
+        "timestamp": 1774529574.852837,
+        "agent": "SystemArchitect",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1774529575.8544083,
+        "agent": "SystemArchitect",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      }
+    ]
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordDeletion",
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 6,
+    "method_selection": "Mode: WordDeletion (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": [
+      {
+        "timestamp": 1774529642.2199602,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 161/269 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "You are a Frontend Developer specializing in HTML and Jinja2 templating for Flask applications.\n\nYour goal is to create all HTML template files for the NewsPortal application based on the frontend section of design_spec.md.\n\nTask Details:\n- Read only the HTML Templates section of design_spec.md\n- Implement all specified templates (*.html) with exact page layouts and UI element IDs\n- Include correct page titles as specified\n- Implement navigation using url_for() with exact function names from the spec\n- Do NOT read or implement backend code or data schemas\n- Do NOT add any UI elements or pages not documented in the specification\n\nImplementation Requirements:\n1. **Template File Structure**:\n   '''html\n   <!DOCTYPE html>\n   <html lang=\"en\">\n   <head>\n       <meta charset=\"UTF-8\">\n       <title>{{ page_title }}</title>\n   </head>\n   <body>\n       <div id=\"main-container-id\">\n           <h1>{{ page_title }}</h1>\n           <!-- Page content here -->\n       </div>\n   </body>\n   </html>\n   '''\n\n2. **Element IDs**:\n   - Use all element IDs exactly as specified (case-sensitive)\n   - For dynamic elements with variable IDs (e.g., view-article-button-{article_id}), use Jinja2 syntax:\n     id=\"view-article-button-{{ article.article_id }}\"\n\n3. **Navigation Links**:\n   - Use url_for() with exact function names for all navigation buttons and links\n   - For dynamic links including parameters, use Jinja2 variable syntax in url_for calls\n\n4. **Form Elements**:\n   - For pages with forms (e.g., Write Comment), implement form tags with method and action attributes per specification\n   - Use appropriate input types and button IDs\n\nCRITICAL REQUIREMENTS:\n- Use write_text_file tool to save all required template files inside 'templates/' directory\n- Do NOT modify backend or data files\n- Do NOT include any client-side scripting unless specified\n- All element IDs and page titles must be exact matches to spec\n- Navigation must exactly match design_spec.md instructions\n\nOutput: templates/*.html",
+        "after": "are a Developer specializing HTML Jinja2\n\nYour goal all files for the design_spec.md.\n\nDetails:\nRead only the Templates design_spec.md\n- Implement with exact page\nas\n- names from the\nimplement backend code schemas\nNOT or pages documented in\n\nImplementation Requirements:\nFile Structure**:\n\nhtml>\n\n<head>\n\n<title>{{ page_title }}</title>\n\n\n<div\n<h1>{{ page_title }}</h1>\n<!-- -->\n</div>\n\n</html>\n\n\nIDs**:\n- Use element exactly (case-sensitive)\ndynamic elements with use Jinja2\n\n\n3. **Navigation\nurl_for() exact function names for navigation links\nFor syntax in\n\n4.\nFor with forms implement form method and per specification\nUse appropriate and\n\n\n- write_text_file tool to all files inside directory\n- Do NOT files\n\nIDs page titles must be to spec\nmatch\n\ntemplates/*.html"
+      },
+      {
+        "timestamp": 1774529642.2208922,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 823/1373 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement all HTML templates based on HTML Templates section of design_spec.md\n=== design_spec.md ===\n# Design Specification for NewsPortal Web Application\n\n---\n\n## 1. Flask Routes Specification\n\n| Route URL Pattern               | Function Name             | HTTP Method(s) | Rendered Template                | Context Variables (Type)                                                                                                        | POST Form Data (Type)                                 |\n|--------------------------------|---------------------------|----------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|\n| `/`                            | `root`                   | GET            | Redirects to `/dashboard`      | None                                                                                                                          | None                                                  |\n| `/dashboard`                   | `dashboard`              | GET            | `dashboard.html`                | featured_articles (List[Dict]): List of featured articles \ntrending_articles (List[Dict]): List of trending articles         | None                                                  |\n| `/catalog`                    | `article_catalog`         | GET            | `catalog.html`                  | articles (List[Dict]): List of all articles\ncategories (List[Dict]): List of all categories                             | None                                                  |\n| `/catalog/search`             | `search_results`          | GET            | `search_results.html`           | query (str): Search query string\nresults (List[Dict]): List of matched articles                                              | None                                                  |\n| `/category/<string:category_name>` | `category_articles`       | GET            | `category.html`                 | category_name (str): Name of the selected category\narticles (List[Dict]): List of articles in category                        | None                                                  |\n| `/category/<string:category_name>/sort` | `category_sort`           | POST           | Redirects back to `/category/<category_name>` | sort_by (str): 'date' or 'popularity' from form data                                                                | sort_by (str)                                         |\n| `/article/<int:article_id>`    | `article_details`         | GET, POST      | `article_details.html`          | article (Dict): Article details\nis_bookmarked (bool): Bookmark status                                                    | action (str): 'bookmark' from form data (POST only)  |\n| `/bookmarks`                   | `bookmarks`               | GET            | `bookmarks.html`                | bookmarks (List[Dict]): List of bookmarked articles                                                                           | None                                                  |\n| `/bookmarks/remove/<int:bookmark_id>` | `remove_bookmark`         | POST           | Redirects to `/bookmarks`       | None                                                                                                                          | bookmark_id (int)                                     |\n| `/comments`                   | `comments`                | GET            | `comments.html`                 | comments (List[Dict]): List of comments\narticles (List[Dict]): List of articles for filtering                                | None                                                  |\n| `/comments/write`             | `write_comment`           | GET, POST      | `write_comment.html`            | articles (List[Dict]): List of articles                                                                                       | article_id (int), commenter_name (str), comment_text (str) (POST only) |\n| `/trending`                   | `trending_articles`       | GET            | `trending.html`                 | trending_articles (List[Dict]): List of trending articles\nperiods (List[str]): Time period filter options                     | None                                                  |\n| `/trending/filter`            | `trending_filter`          | POST           | Redirects to `/trending`        | period (str): Time period from form data                                                                                    | period (str)                                         |\n\n---\n\n## 2. HTML Template Specifications\n\n### templates/dashboard.html\n- Page Title: News Portal\n- Elements:\n  - `dashboard-page` (Div): Container for the dashboard page.\n  - `featured-articles` (Div): Display of featured article recommendations.\n  - `browse-articles-button` (Button): Navigate to article catalog page.\n  - `view-bookmarks-button` (Button): Navigate to bookmarks page.\n  - `trending-articles-button` (Button): Navigate to trending articles page.\n- Context Variables:\n  - featured_articles (List[Dict]): Each dict with keys: article_id (int), title (str), author (str), date (str), excerpt (str)\n  - trending_articles (List[Dict]): Each dict with keys: article_id (int), title (str), category (str), view_count (int)\n- Navigation using `url_for()`:\n  - `browse-articles-button` -> `url_for('article_catalog')`\n  - `view-bookmarks-button` -> `url_for('bookmarks')`\n  - `trending-articles-button` -> `url_for('trending_articles')`\n\n### templates/catalog.html\n- Page Title: Article Catalog\n- Elements:\n  - `catalog-page` (Div): Container for the catalog page.\n  - `search-input` (Input): Search articles by title, author, or keywords (type=\"text\" name=\"query\" form submits GET to `/catalog/search`).\n  - `category-filter` (Dropdown): Dropdown to filter by category; value to link to `/category/<category_name>`.\n  - `articles-grid` (Div): Grid displaying article cards.\n  - `view-article-button-{article_id}` (Button): View article details.\n- Context Variables:\n  - articles (List[Dict]): Each dict with keys: article_id (int), title (str), author (str), category (str), date (str), excerpt (str)\n  - categories (List[Dict]): Each dict with keys: category_id (int), category_name (str), description (str)\n- Navigation using `url_for()`:\n  - Article buttons: `url_for('article_details', article_id=article.article_id)`\n  - Category filter options: `url_for('category_articles', category_name=category.category_name)`\n\n### templates/article_details.html\n- Page Title: Article Details\n- Elements:\n  - `article-details-page` (Div): Container for article details.\n  - `article-title` (H1): Article title display.\n  - `article-author` (Div): Display article author.\n  - `article-date` (Div): Display article publication date.\n  - `bookmark-button` (Button): Bookmark the article; form submits POST to `/article/<article_id>` with `action='bookmark'`.\n  - `article-content` (Div): Full article content.\n- Context Variables:\n  - article (Dict): article_id (int), title (str), author (str), category (str), content (str), date (str), views (int)\n  - is_bookmarked (bool): Whether the article is bookmarked\n- Navigation using `url_for()`:\n  - None specific, main navigation from other templates.\n\n### templates/bookmarks.html\n- Page Title: My Bookmarks\n- Elements:\n  - `bookmarks-page` (Div): Container for bookmarks page.\n  - `bookmarks-list` (Div): List displaying bookmarks.\n  - `remove-bookmark-button-{bookmark_id}` (Button): Remove bookmark; form POST to `/bookmarks/remove/<bookmark_id>`.\n  - `read-bookmark-button-{bookmark_id}` (Button): Read bookmarked article; link to `/article/<article_id>`.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - bookmarks (List[Dict]): Each dict with bookmark_id (int), article_id (int), article_title (str), bookmarked_date (str)\n- Navigation using `url_for()`:\n  - Remove bookmark buttons: submit POST forms to `url_for('remove_bookmark', bookmark_id=bookmark.bookmark_id)`\n  - Read bookmark buttons: `url_for('article_details', article_id=bookmark.article_id)`\n  - Back to dashboard button: `url_for('dashboard')`\n\n### templates/comments.html\n- Page Title: Article Comments\n- Elements:\n  - `comments-page` (Div): Container for comments page.\n  - `comments-list` (Div): List of comments with article title, commenter name, comment text.\n  - `write-comment-button` (Button): Navigate to write comment page.\n  - `filter-by-article` (Dropdown): Filter comments by article.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - comments (List[Dict]): comment_id (int), article_id (int), article_title (str), commenter_name (str), comment_text (str), comment_date (str)\n  - articles (List[Dict]): article_id (int), title (str)\n- Navigation using `url_for()`:\n  - Write comment button: `url_for('write_comment')`\n  - Filter dropdown options: `url_for('comments')` with query param for filtering if used\n  - Back to dashboard button: `url_for('dashboard')`\n\n### templates/write_comment.html\n- Page Title: Write a Comment\n- Elements:\n  - `write-comment-page` (Div): Container for write comment page.\n  - `select-article` (Dropdown): Select article to comment on.\n  - `commenter-name` (Input): Input for commenter name.\n  - `comment-text` (Textarea): Input for comment text.\n  - `submit-comment-button` (Button): Submit comment.\n- Context Variables:\n  - articles (List[Dict]): article_id (int), title (str)\n- Navigation using `url_for()`:\n  - Form submits POST to `url_for('write_comment')`\n\n### templates/trending.html\n- Page Title: Trending Articles\n- Elements:\n  - `trending-page` (Div): Container for trending articles.\n  - `trending-list` (Div): Ranked list of trending articles.\n  - `time-period-filter` (Dropdown): Filter by time period.\n  - `view-article-button-{article_id}` (Button): View article details.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - trending_articles (List[Dict]): article_id (int), article_title (str), category (str), view_count (int), period (str)\n  - periods (List[str]): List of time periods (\"Today\", \"This Week\", \"This Month\")\n- Navigation using `url_for()`:\n  - View article buttons: `url_for('article_details', article_id=article.article_id)`\n  - Back to dashboard button: `url_for('dashboard')`\n\n### templates/category.html\n- Page Title: Category Articles\n- Elements:\n  - `category-page` (Div): Container for category page.\n  - `category-title` (H1): Display category name.\n  - `category-articles` (Div): List of articles in category.\n  - `sort-by-date` (Button): Sort articles by date.\n  - `sort-by-popularity` (Button): Sort articles by popularity.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - category_name (str): Name of the category\n  - articles (List[Dict]): article_id (int), title (str), author (str), date (str), popularity (int or views proxy)\n- Navigation using `url_for()`:\n  - Sort buttons submit POST form to `url_for('category_sort', category_name=category_name)`\n  - Back to dashboard button: `url_for('dashboard')`\n\n### templates/search_results.html\n- Page Title: Search Results\n- Elements:\n  - `search-results-page` (Div): Container for search results.\n  - `search-query-display` (Div): Display the search query.\n  - `results-list` (Div): List of search result articles with title and excerpt.\n  - `no-results-message` (Div): Message when no results found.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - query (str): Search query\n  - results (List[Dict]): article_id (int), title (str), excerpt (str)\n- Navigation using `url_for()`:\n  - Back to dashboard button: `url_for('dashboard')`\n\n---\n\n## 3. Data File Schemas\n\n### 1. data/articles.txt\n- Fields: `article_id|title|author|category|content|date|views`\n- Content: Stores news articles with unique ID, metadata and content, date in ISO format, and number of views.\n- Examples:\n  ```\n  1|Breaking: New Technology Breakthrough|John Smith|Technology|Revolutionary advancement in quantum computing announced today|2025-01-20|5432\n  2|Sports: Championship Victory|Sarah Johnson|Sports|Team wins the national championship with a thrilling final match|2025-01-19|3210\n  3|Business: Market Trends Analysis|Michael Chen|Business|Expert analysis of current market conditions and forecasts|2025-01-18|2891\n  ```\n\n### 2. data/categories.txt\n- Fields: `category_id|category_name|description`\n- Content: Stores news categories with unique ID and description.\n- Examples:\n  ```\n  1|Technology|Latest tech news and innovations\n  2|Sports|Sports news and event coverage\n  3|Business|Business and finance news\n  ```\n\n### 3. data/bookmarks.txt\n- Fields: `bookmark_id|article_id|article_title|bookmarked_date`\n- Content: Stores user bookmarked articles with bookmark ID and date added.\n- Examples:\n  ```\n  1|1|Breaking: New Technology Breakthrough|2025-01-20\n  2|3|Business: Market Trends Analysis|2025-01-18\n  ```\n\n### 4. data/comments.txt\n- Fields: `comment_id|article_id|article_title|commenter_name|comment_text|comment_date`\n- Content: Stores comments for articles with commenter and date.\n- Examples:\n  ```\n  1|1|Breaking: New Technology Breakthrough|Alice Davis|Fascinating development!|2025-01-20\n  2|2|Sports: Championship Victory|Robert Wilson|Amazing performance by the team!|2025-01-19\n  ```\n\n### 5. data/trending.txt\n- Fields: `article_id|article_title|category|view_count|period`\n- Content: Stores trending article data by period.\n- Examples:\n  ```\n  1|Breaking: New Technology Breakthrough|Technology|5432|This Week\n  2|Sports: Championship Victory|Sports|3210|This Week\n  3|Business: Market Trends Analysis|Business|2891|This Month\n  ```\n\n",
+        "after": "based Templates\n\nSpecification NewsPortal\n\n\n\nRoutes\n\n| HTTP Method(s) | (Type) Form (Type) |\n|--------------------------------|---------------------------|----------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|\n`/` | | `/dashboard` | |\n| List of featured articles\nof | |\n| `/catalog` `article_catalog` GET | List\nall None\nGET `search_results.html` query Search query string\nresults (List[Dict]): articles |\n| GET | `category.html` | category_name (str):\narticles articles |\n| | POST | sort_by (str): 'date' or 'popularity' data |\n| `article_details` | POST (Dict): Article details\nis_bookmarked (bool): Bookmark | action (str): 'bookmark' (POST\n| | `bookmarks.html` bookmarks of bookmarked\n| `/bookmarks` None\n| | `comments.html` (List[Dict]): of comments\narticles (List[Dict]): List articles | None |\n| `write_comment` POST | article_id (str),\n| | `trending_articles` | of trending articles\nperiods period options None\nRedirects to `/trending` period period form data | period\n\n---\n\nTemplate\n\n###\nNews Portal\n- Elements:\nfor the dashboard\n(Div): Display of featured\nto\n(Button): to page.\n- to trending articles page.\n\n(List[Dict]): dict article_id (int), (str), author (str), (str),\n- (List[Dict]): Each (str), (int)\n`url_for()`:\n- `browse-articles-button` -> `url_for('article_catalog')`\n`view-bookmarks-button` -> `url_for('bookmarks')`\n- `trending-articles-button`\n\n\nTitle: Catalog\n\nfor page.\n(Input): articles or (type=\"text\" GET `/catalog/search`).\n- `category-filter` (Dropdown): Dropdown to by value to link to\n- `articles-grid` Grid displaying cards.\n(Button): details.\nVariables:\n- Each dict article_id author category (str), date (str)\ncategories keys: (int), (str), (str)\nNavigation using\nArticle `url_for('article_details',\nCategory filter options: `url_for('category_articles', category_name=category.category_name)`\n\n\n- Title:\n- Elements:\n- (Div): Container article details.\n- title\n(Div): article\n`article-date` publication\n- `bookmark-button` (Button): Bookmark form\n(Div): article content.\n-\n- (Dict): title (str), author (str), date (int)\nthe article\n- using\n- main from templates.\n\ntemplates/bookmarks.html\nMy\n\n(Div): Container bookmarks page.\n- `bookmarks-list` List\n- form `/bookmarks/remove/<bookmark_id>`.\n(Button): article; to `/article/<article_id>`.\n`back-to-dashboard` to dashboard.\n-\n- (List[Dict]): Each dict (int), article_id article_title (str), bookmarked_date\nusing `url_for()`:\nbookmark forms to `url_for('remove_bookmark', bookmark_id=bookmark.bookmark_id)`\n- `url_for('article_details', article_id=bookmark.article_id)`\nbutton: `url_for('dashboard')`\n\ntemplates/comments.html\nPage Comments\nElements:\n(Div): for page.\nwith text.\n- (Button): to\ncomments\nback to\n-\n- comments comment_id (int),\n(str)\n- Navigation using `url_for()`:\n- Write\nFilter options: with param if\nto dashboard button:\n\n### templates/write_comment.html\n\n\n- `write-comment-page` (Div): Container for comment page.\n`select-article` (Dropdown):\n- Input\n(Textarea): comment text.\n- (Button): Submit comment.\n\n(int), (str)\n- `url_for()`:\nsubmits to\n\n### templates/trending.html\nTitle: Articles\n-\narticles.\nof trending\n(Dropdown): by period.\ndetails.\n- `back-to-dashboard`\nContext\n- (List[Dict]): article_id (int), (str), view_count (int), period (str)\nList \"This \"This Month\")\n- using\n- article\ndashboard button: `url_for('dashboard')`\n\n###\nTitle: Category\n-\n- (Div): Container category page.\n- `category-title` category\nList category.\n- `sort-by-date` Sort by\n- Sort popularity.\n- back to\n-\n- Name the\n(str), popularity views\nNavigation\n- submit POST to `url_for('category_sort',\nbutton: `url_for('dashboard')`\n\n###\nSearch\n\n`search-results-page` Container for results.\n`search-query-display` the query.\nresult with title\n`no-results-message` when results\n- (Button): Navigate back to dashboard.\nContext\nquery query\n(str), excerpt\n\ndashboard button:\n\n\n\n\n\n### data/articles.txt\nFields:\nContent: Stores news format, and views.\n\n\nNew Breakthrough|John Smith|Technology|Revolutionary advancement in quantum computing\n2|Sports: Johnson|Sports|Team wins championship\nanalysis of current conditions forecasts|2025-01-18|2891\n```\n\n2.\n\n- Stores with\n\n\ntech\n2|Sports|Sports and event coverage\nand news\n\n\n### 3. data/bookmarks.txt\n`bookmark_id|article_id|article_title|bookmarked_date`\n- Content: articles\nExamples:\n\nBreakthrough|2025-01-20\n2|3|Business: Market Trends Analysis|2025-01-18\n```\n\n### data/comments.txt\n\nContent: Stores comments\n\n```\nNew Breakthrough|Alice Davis|Fascinating\nChampionship the team!|2025-01-19\n\n\n### 5.\nFields:\nContent: Stores trending article\n\n```\n1|Breaking: Technology\nChampionship Victory|Sports|3210|This Week\nAnalysis|Business|2891|This Month\n```\n\n"
+      },
+      {
+        "timestamp": 1774529687.2575314,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 64/108 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "are a Developer specializing HTML Jinja2\n\nYour goal all files for the design_spec.md.\n\nDetails:\nRead only the Templates design_spec.md\n- Implement with exact page\nas\n- names from the\nimplement backend code schemas\nNOT or pages documented in\n\nImplementation Requirements:\nFile Structure**:\n\nhtml>\n\n<head>\n\n<title>{{ page_title }}</title>\n\n\n<div\n<h1>{{ page_title }}</h1>\n<!-- -->\n</div>\n\n</html>\n\n\nIDs**:\n- Use element exactly (case-sensitive)\ndynamic elements with use Jinja2\n\n\n3. **Navigation\nurl_for() exact function names for navigation links\nFor syntax in\n\n4.\nFor with forms implement form method and per specification\nUse appropriate and\n\n\n- write_text_file tool to all files inside directory\n- Do NOT files\n\nIDs page titles must be to spec\nmatch\n\ntemplates/*.html",
+        "after": "are a specializing Jinja2\n\ngoal files for design_spec.md.\n\nDetails:\nonly Templates\n- exact\n\n- the\nimplement\nor pages documented\n\nImplementation\nStructure**:\n\n\n\n<head>\n\n<title>{{ page_title }}</title>\n\n\n<div\n\n\n</div>\n\n\n\n\n\nUse exactly\ndynamic use Jinja2\n\n\n\n\nsyntax\n\n\nand specification\n\n\n\n- write_text_file tool all files inside directory\nNOT\n\npage be to\n\n\n"
+      },
+      {
+        "timestamp": 1774529687.2592402,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 823/1373 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement all HTML templates based on HTML Templates section of design_spec.md\n=== design_spec.md ===\n# Design Specification for NewsPortal Web Application\n\n---\n\n## 1. Flask Routes Specification\n\n| Route URL Pattern               | Function Name             | HTTP Method(s) | Rendered Template                | Context Variables (Type)                                                                                                        | POST Form Data (Type)                                 |\n|--------------------------------|---------------------------|----------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|\n| `/`                            | `root`                   | GET            | Redirects to `/dashboard`      | None                                                                                                                          | None                                                  |\n| `/dashboard`                   | `dashboard`              | GET            | `dashboard.html`                | featured_articles (List[Dict]): List of featured articles \ntrending_articles (List[Dict]): List of trending articles         | None                                                  |\n| `/catalog`                    | `article_catalog`         | GET            | `catalog.html`                  | articles (List[Dict]): List of all articles\ncategories (List[Dict]): List of all categories                             | None                                                  |\n| `/catalog/search`             | `search_results`          | GET            | `search_results.html`           | query (str): Search query string\nresults (List[Dict]): List of matched articles                                              | None                                                  |\n| `/category/<string:category_name>` | `category_articles`       | GET            | `category.html`                 | category_name (str): Name of the selected category\narticles (List[Dict]): List of articles in category                        | None                                                  |\n| `/category/<string:category_name>/sort` | `category_sort`           | POST           | Redirects back to `/category/<category_name>` | sort_by (str): 'date' or 'popularity' from form data                                                                | sort_by (str)                                         |\n| `/article/<int:article_id>`    | `article_details`         | GET, POST      | `article_details.html`          | article (Dict): Article details\nis_bookmarked (bool): Bookmark status                                                    | action (str): 'bookmark' from form data (POST only)  |\n| `/bookmarks`                   | `bookmarks`               | GET            | `bookmarks.html`                | bookmarks (List[Dict]): List of bookmarked articles                                                                           | None                                                  |\n| `/bookmarks/remove/<int:bookmark_id>` | `remove_bookmark`         | POST           | Redirects to `/bookmarks`       | None                                                                                                                          | bookmark_id (int)                                     |\n| `/comments`                   | `comments`                | GET            | `comments.html`                 | comments (List[Dict]): List of comments\narticles (List[Dict]): List of articles for filtering                                | None                                                  |\n| `/comments/write`             | `write_comment`           | GET, POST      | `write_comment.html`            | articles (List[Dict]): List of articles                                                                                       | article_id (int), commenter_name (str), comment_text (str) (POST only) |\n| `/trending`                   | `trending_articles`       | GET            | `trending.html`                 | trending_articles (List[Dict]): List of trending articles\nperiods (List[str]): Time period filter options                     | None                                                  |\n| `/trending/filter`            | `trending_filter`          | POST           | Redirects to `/trending`        | period (str): Time period from form data                                                                                    | period (str)                                         |\n\n---\n\n## 2. HTML Template Specifications\n\n### templates/dashboard.html\n- Page Title: News Portal\n- Elements:\n  - `dashboard-page` (Div): Container for the dashboard page.\n  - `featured-articles` (Div): Display of featured article recommendations.\n  - `browse-articles-button` (Button): Navigate to article catalog page.\n  - `view-bookmarks-button` (Button): Navigate to bookmarks page.\n  - `trending-articles-button` (Button): Navigate to trending articles page.\n- Context Variables:\n  - featured_articles (List[Dict]): Each dict with keys: article_id (int), title (str), author (str), date (str), excerpt (str)\n  - trending_articles (List[Dict]): Each dict with keys: article_id (int), title (str), category (str), view_count (int)\n- Navigation using `url_for()`:\n  - `browse-articles-button` -> `url_for('article_catalog')`\n  - `view-bookmarks-button` -> `url_for('bookmarks')`\n  - `trending-articles-button` -> `url_for('trending_articles')`\n\n### templates/catalog.html\n- Page Title: Article Catalog\n- Elements:\n  - `catalog-page` (Div): Container for the catalog page.\n  - `search-input` (Input): Search articles by title, author, or keywords (type=\"text\" name=\"query\" form submits GET to `/catalog/search`).\n  - `category-filter` (Dropdown): Dropdown to filter by category; value to link to `/category/<category_name>`.\n  - `articles-grid` (Div): Grid displaying article cards.\n  - `view-article-button-{article_id}` (Button): View article details.\n- Context Variables:\n  - articles (List[Dict]): Each dict with keys: article_id (int), title (str), author (str), category (str), date (str), excerpt (str)\n  - categories (List[Dict]): Each dict with keys: category_id (int), category_name (str), description (str)\n- Navigation using `url_for()`:\n  - Article buttons: `url_for('article_details', article_id=article.article_id)`\n  - Category filter options: `url_for('category_articles', category_name=category.category_name)`\n\n### templates/article_details.html\n- Page Title: Article Details\n- Elements:\n  - `article-details-page` (Div): Container for article details.\n  - `article-title` (H1): Article title display.\n  - `article-author` (Div): Display article author.\n  - `article-date` (Div): Display article publication date.\n  - `bookmark-button` (Button): Bookmark the article; form submits POST to `/article/<article_id>` with `action='bookmark'`.\n  - `article-content` (Div): Full article content.\n- Context Variables:\n  - article (Dict): article_id (int), title (str), author (str), category (str), content (str), date (str), views (int)\n  - is_bookmarked (bool): Whether the article is bookmarked\n- Navigation using `url_for()`:\n  - None specific, main navigation from other templates.\n\n### templates/bookmarks.html\n- Page Title: My Bookmarks\n- Elements:\n  - `bookmarks-page` (Div): Container for bookmarks page.\n  - `bookmarks-list` (Div): List displaying bookmarks.\n  - `remove-bookmark-button-{bookmark_id}` (Button): Remove bookmark; form POST to `/bookmarks/remove/<bookmark_id>`.\n  - `read-bookmark-button-{bookmark_id}` (Button): Read bookmarked article; link to `/article/<article_id>`.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - bookmarks (List[Dict]): Each dict with bookmark_id (int), article_id (int), article_title (str), bookmarked_date (str)\n- Navigation using `url_for()`:\n  - Remove bookmark buttons: submit POST forms to `url_for('remove_bookmark', bookmark_id=bookmark.bookmark_id)`\n  - Read bookmark buttons: `url_for('article_details', article_id=bookmark.article_id)`\n  - Back to dashboard button: `url_for('dashboard')`\n\n### templates/comments.html\n- Page Title: Article Comments\n- Elements:\n  - `comments-page` (Div): Container for comments page.\n  - `comments-list` (Div): List of comments with article title, commenter name, comment text.\n  - `write-comment-button` (Button): Navigate to write comment page.\n  - `filter-by-article` (Dropdown): Filter comments by article.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - comments (List[Dict]): comment_id (int), article_id (int), article_title (str), commenter_name (str), comment_text (str), comment_date (str)\n  - articles (List[Dict]): article_id (int), title (str)\n- Navigation using `url_for()`:\n  - Write comment button: `url_for('write_comment')`\n  - Filter dropdown options: `url_for('comments')` with query param for filtering if used\n  - Back to dashboard button: `url_for('dashboard')`\n\n### templates/write_comment.html\n- Page Title: Write a Comment\n- Elements:\n  - `write-comment-page` (Div): Container for write comment page.\n  - `select-article` (Dropdown): Select article to comment on.\n  - `commenter-name` (Input): Input for commenter name.\n  - `comment-text` (Textarea): Input for comment text.\n  - `submit-comment-button` (Button): Submit comment.\n- Context Variables:\n  - articles (List[Dict]): article_id (int), title (str)\n- Navigation using `url_for()`:\n  - Form submits POST to `url_for('write_comment')`\n\n### templates/trending.html\n- Page Title: Trending Articles\n- Elements:\n  - `trending-page` (Div): Container for trending articles.\n  - `trending-list` (Div): Ranked list of trending articles.\n  - `time-period-filter` (Dropdown): Filter by time period.\n  - `view-article-button-{article_id}` (Button): View article details.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - trending_articles (List[Dict]): article_id (int), article_title (str), category (str), view_count (int), period (str)\n  - periods (List[str]): List of time periods (\"Today\", \"This Week\", \"This Month\")\n- Navigation using `url_for()`:\n  - View article buttons: `url_for('article_details', article_id=article.article_id)`\n  - Back to dashboard button: `url_for('dashboard')`\n\n### templates/category.html\n- Page Title: Category Articles\n- Elements:\n  - `category-page` (Div): Container for category page.\n  - `category-title` (H1): Display category name.\n  - `category-articles` (Div): List of articles in category.\n  - `sort-by-date` (Button): Sort articles by date.\n  - `sort-by-popularity` (Button): Sort articles by popularity.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - category_name (str): Name of the category\n  - articles (List[Dict]): article_id (int), title (str), author (str), date (str), popularity (int or views proxy)\n- Navigation using `url_for()`:\n  - Sort buttons submit POST form to `url_for('category_sort', category_name=category_name)`\n  - Back to dashboard button: `url_for('dashboard')`\n\n### templates/search_results.html\n- Page Title: Search Results\n- Elements:\n  - `search-results-page` (Div): Container for search results.\n  - `search-query-display` (Div): Display the search query.\n  - `results-list` (Div): List of search result articles with title and excerpt.\n  - `no-results-message` (Div): Message when no results found.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - query (str): Search query\n  - results (List[Dict]): article_id (int), title (str), excerpt (str)\n- Navigation using `url_for()`:\n  - Back to dashboard button: `url_for('dashboard')`\n\n---\n\n## 3. Data File Schemas\n\n### 1. data/articles.txt\n- Fields: `article_id|title|author|category|content|date|views`\n- Content: Stores news articles with unique ID, metadata and content, date in ISO format, and number of views.\n- Examples:\n  ```\n  1|Breaking: New Technology Breakthrough|John Smith|Technology|Revolutionary advancement in quantum computing announced today|2025-01-20|5432\n  2|Sports: Championship Victory|Sarah Johnson|Sports|Team wins the national championship with a thrilling final match|2025-01-19|3210\n  3|Business: Market Trends Analysis|Michael Chen|Business|Expert analysis of current market conditions and forecasts|2025-01-18|2891\n  ```\n\n### 2. data/categories.txt\n- Fields: `category_id|category_name|description`\n- Content: Stores news categories with unique ID and description.\n- Examples:\n  ```\n  1|Technology|Latest tech news and innovations\n  2|Sports|Sports news and event coverage\n  3|Business|Business and finance news\n  ```\n\n### 3. data/bookmarks.txt\n- Fields: `bookmark_id|article_id|article_title|bookmarked_date`\n- Content: Stores user bookmarked articles with bookmark ID and date added.\n- Examples:\n  ```\n  1|1|Breaking: New Technology Breakthrough|2025-01-20\n  2|3|Business: Market Trends Analysis|2025-01-18\n  ```\n\n### 4. data/comments.txt\n- Fields: `comment_id|article_id|article_title|commenter_name|comment_text|comment_date`\n- Content: Stores comments for articles with commenter and date.\n- Examples:\n  ```\n  1|1|Breaking: New Technology Breakthrough|Alice Davis|Fascinating development!|2025-01-20\n  2|2|Sports: Championship Victory|Robert Wilson|Amazing performance by the team!|2025-01-19\n  ```\n\n### 5. data/trending.txt\n- Fields: `article_id|article_title|category|view_count|period`\n- Content: Stores trending article data by period.\n- Examples:\n  ```\n  1|Breaking: New Technology Breakthrough|Technology|5432|This Week\n  2|Sports: Championship Victory|Sports|3210|This Week\n  3|Business: Market Trends Analysis|Business|2891|This Month\n  ```\n\n",
+        "after": "all HTML on section\n=== ===\nDesign Specification for\n\n\n\n1. Routes Specification\n\nURL Name | HTTP Method(s) Variables Data |\n\n`root` | | Redirects to `/dashboard` None\n| GET | (List[Dict]): List\ntrending_articles (List[Dict]): of |\n| `article_catalog` | | (List[Dict]): of all\ncategories all | |\n`search_results` | GET | query Search\nresults | |\n| `/category/<string:category_name>` `category_articles` `category.html` | Name of\narticles of | |\n`category_sort` Redirects sort_by 'date' from form data | |\n| GET,\nBookmark status action |\n`bookmarks` | bookmarks bookmarked articles | |\n| `/bookmarks/remove/<int:bookmark_id>` | POST to None |\n| `comments` | | `comments.html`\nfor |\n| (List[Dict]): List | article_id (int), comment_text\n| | | `trending.html` trending_articles List of\nperiods (List[str]): |\n| `trending_filter` | POST period Time form period |\n\n\n\n\n\n\nNews\n- Elements:\n(Div): for the dashboard page.\n- `featured-articles` (Div): of article recommendations.\n`browse-articles-button`\n-\n- `trending-articles-button` (Button): Navigate to trending\n- Variables:\narticle_id (int), title author date excerpt (str)\ndict keys: article_id title (str), category (str), (int)\n- using `url_for()`:\n- `url_for('article_catalog')`\n- -> `url_for('bookmarks')`\n- `url_for('trending_articles')`\n\n### templates/catalog.html\n- Page Title:\nElements:\n- `catalog-page` (Div): Container catalog\n`search-input` (Input): title, or name=\"query\" form `/catalog/search`).\nto filter by category; to to\n- (Div): cards.\n- `view-article-button-{article_id}` (Button): article\n-\narticles Each with (int), (str), (str), excerpt\n(List[Dict]): (str), description\nNavigation using\nbuttons:\n`url_for('category_articles', category_name=category.category_name)`\n\n###\n- Article\n- Elements:\n-\n`article-title` (H1): Article\n(Div): author.\n`article-date` date.\nBookmark the article; with `action='bookmark'`.\n(Div):\n- Context\n(Dict): article_id date (str),\nis_bookmarked (bool): Whether is\n-\n- None main other\n\ntemplates/bookmarks.html\n-\n\n\nbookmarks.\nRemove form to\n(Button): article; link to `/article/<article_id>`.\n`back-to-dashboard` Navigate back\n- Variables:\n(List[Dict]): dict bookmark_id (int), article_title\n`url_for()`:\nRemove buttons: POST to bookmark_id=bookmark.bookmark_id)`\nRead `url_for('article_details',\n- Back dashboard button:\n\n\n\n\n- (Div): for page.\n`comments-list` (Div): List of comments comment\n- `write-comment-button`\n- `filter-by-article` (Dropdown): Filter\nback to\n- Context Variables:\ncomments comment_id article_title (str), (str)\n- title (str)\n\nWrite comment button:\nFilter options: used\n- Back to button: `url_for('dashboard')`\n\n\n- Title:\n\n- `write-comment-page` (Div): Container for comment page.\n`select-article` Select to comment on.\n- (Input):\n- `comment-text` (Textarea): for\ncomment.\nContext\narticles article_id (int), title\n\nsubmits POST to\n\n\n\nElements:\n(Div): for trending articles.\n- (Div): Ranked list trending\n(Dropdown): Filter\n`view-article-button-{article_id}` View article\n`back-to-dashboard` Navigate dashboard.\n\n- trending_articles (List[Dict]): (int), (str), (int),\nList periods \"This\n- Navigation\narticle buttons: article_id=article.article_id)`\n- Back dashboard\n\n\n- Page Category\n\n- `category-page`\n- name.\n- `category-articles` (Div): of in category.\nSort by\n(Button):\n- back\nVariables:\n- (str): of category\n- (List[Dict]): title (str), author (str), date (str), views proxy)\nNavigation\n- submit form category_name=category_name)`\n-\n\n### templates/search_results.html\n-\n-\n(Div): Container results.\n`search-query-display` Display\n- List with and excerpt.\n- when no results\n`back-to-dashboard` (Button): dashboard.\n- Context Variables:\nquery Search\n(int), title (str)\n- Navigation `url_for()`:\nBack button: `url_for('dashboard')`\n\n\n\nFile\n\n### 1.\n-\n- Content: news with unique and content, in ISO\n\n\n1|Breaking: New Technology Breakthrough|John Smith|Technology|Revolutionary advancement\n2|Sports: Championship Victory|Sarah the national championship match|2025-01-19|3210\nof conditions\n\n\n###\n\ncategories\n-\n```\n\n2|Sports|Sports news coverage\n3|Business|Business finance news\n\n\n###\n-\nuser ID\n\n```\nNew Technology\n2|3|Business: Market Trends\n```\n\n4.\nFields: `comment_id|article_id|article_title|commenter_name|comment_text|comment_date`\nStores comments for articles with commenter date.\nExamples:\n\nTechnology Davis|Fascinating\n2|2|Sports: by\n```\n\n### 5.\n- Fields:\n- Content: Stores\n-\n\n1|Breaking: Breakthrough|Technology|5432|This\n2|Sports: Championship Victory|Sports|3210|This\n3|Business: Market\n\n\n"
+      },
+      {
+        "timestamp": 1774529724.5806787,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 26/44 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "are a specializing Jinja2\n\ngoal files for design_spec.md.\n\nDetails:\nonly Templates\n- exact\n\n- the\nimplement\nor pages documented\n\nImplementation\nStructure**:\n\n\n\n<head>\n\n<title>{{ page_title }}</title>\n\n\n<div\n\n\n</div>\n\n\n\n\n\nUse exactly\ndynamic use Jinja2\n\n\n\n\nsyntax\n\n\nand specification\n\n\n\n- write_text_file tool all files inside directory\nNOT\n\npage be to\n\n\n",
+        "after": "a\n\nfiles design_spec.md.\n\nDetails:\nTemplates\n\n\n\n\nor documented\n\n\n\n\n\n\n<head>\n\n\n\n\n\n\n\n\n\n\n\n\n\nUse\ndynamic Jinja2\n\n\n\n\n\n\n\nspecification\n\n\n\nwrite_text_file tool files inside directory\n\n\npage\n\n\n"
+      },
+      {
+        "timestamp": 1774529724.583075,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 823/1373 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement all HTML templates based on HTML Templates section of design_spec.md\n=== design_spec.md ===\n# Design Specification for NewsPortal Web Application\n\n---\n\n## 1. Flask Routes Specification\n\n| Route URL Pattern               | Function Name             | HTTP Method(s) | Rendered Template                | Context Variables (Type)                                                                                                        | POST Form Data (Type)                                 |\n|--------------------------------|---------------------------|----------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|\n| `/`                            | `root`                   | GET            | Redirects to `/dashboard`      | None                                                                                                                          | None                                                  |\n| `/dashboard`                   | `dashboard`              | GET            | `dashboard.html`                | featured_articles (List[Dict]): List of featured articles \ntrending_articles (List[Dict]): List of trending articles         | None                                                  |\n| `/catalog`                    | `article_catalog`         | GET            | `catalog.html`                  | articles (List[Dict]): List of all articles\ncategories (List[Dict]): List of all categories                             | None                                                  |\n| `/catalog/search`             | `search_results`          | GET            | `search_results.html`           | query (str): Search query string\nresults (List[Dict]): List of matched articles                                              | None                                                  |\n| `/category/<string:category_name>` | `category_articles`       | GET            | `category.html`                 | category_name (str): Name of the selected category\narticles (List[Dict]): List of articles in category                        | None                                                  |\n| `/category/<string:category_name>/sort` | `category_sort`           | POST           | Redirects back to `/category/<category_name>` | sort_by (str): 'date' or 'popularity' from form data                                                                | sort_by (str)                                         |\n| `/article/<int:article_id>`    | `article_details`         | GET, POST      | `article_details.html`          | article (Dict): Article details\nis_bookmarked (bool): Bookmark status                                                    | action (str): 'bookmark' from form data (POST only)  |\n| `/bookmarks`                   | `bookmarks`               | GET            | `bookmarks.html`                | bookmarks (List[Dict]): List of bookmarked articles                                                                           | None                                                  |\n| `/bookmarks/remove/<int:bookmark_id>` | `remove_bookmark`         | POST           | Redirects to `/bookmarks`       | None                                                                                                                          | bookmark_id (int)                                     |\n| `/comments`                   | `comments`                | GET            | `comments.html`                 | comments (List[Dict]): List of comments\narticles (List[Dict]): List of articles for filtering                                | None                                                  |\n| `/comments/write`             | `write_comment`           | GET, POST      | `write_comment.html`            | articles (List[Dict]): List of articles                                                                                       | article_id (int), commenter_name (str), comment_text (str) (POST only) |\n| `/trending`                   | `trending_articles`       | GET            | `trending.html`                 | trending_articles (List[Dict]): List of trending articles\nperiods (List[str]): Time period filter options                     | None                                                  |\n| `/trending/filter`            | `trending_filter`          | POST           | Redirects to `/trending`        | period (str): Time period from form data                                                                                    | period (str)                                         |\n\n---\n\n## 2. HTML Template Specifications\n\n### templates/dashboard.html\n- Page Title: News Portal\n- Elements:\n  - `dashboard-page` (Div): Container for the dashboard page.\n  - `featured-articles` (Div): Display of featured article recommendations.\n  - `browse-articles-button` (Button): Navigate to article catalog page.\n  - `view-bookmarks-button` (Button): Navigate to bookmarks page.\n  - `trending-articles-button` (Button): Navigate to trending articles page.\n- Context Variables:\n  - featured_articles (List[Dict]): Each dict with keys: article_id (int), title (str), author (str), date (str), excerpt (str)\n  - trending_articles (List[Dict]): Each dict with keys: article_id (int), title (str), category (str), view_count (int)\n- Navigation using `url_for()`:\n  - `browse-articles-button` -> `url_for('article_catalog')`\n  - `view-bookmarks-button` -> `url_for('bookmarks')`\n  - `trending-articles-button` -> `url_for('trending_articles')`\n\n### templates/catalog.html\n- Page Title: Article Catalog\n- Elements:\n  - `catalog-page` (Div): Container for the catalog page.\n  - `search-input` (Input): Search articles by title, author, or keywords (type=\"text\" name=\"query\" form submits GET to `/catalog/search`).\n  - `category-filter` (Dropdown): Dropdown to filter by category; value to link to `/category/<category_name>`.\n  - `articles-grid` (Div): Grid displaying article cards.\n  - `view-article-button-{article_id}` (Button): View article details.\n- Context Variables:\n  - articles (List[Dict]): Each dict with keys: article_id (int), title (str), author (str), category (str), date (str), excerpt (str)\n  - categories (List[Dict]): Each dict with keys: category_id (int), category_name (str), description (str)\n- Navigation using `url_for()`:\n  - Article buttons: `url_for('article_details', article_id=article.article_id)`\n  - Category filter options: `url_for('category_articles', category_name=category.category_name)`\n\n### templates/article_details.html\n- Page Title: Article Details\n- Elements:\n  - `article-details-page` (Div): Container for article details.\n  - `article-title` (H1): Article title display.\n  - `article-author` (Div): Display article author.\n  - `article-date` (Div): Display article publication date.\n  - `bookmark-button` (Button): Bookmark the article; form submits POST to `/article/<article_id>` with `action='bookmark'`.\n  - `article-content` (Div): Full article content.\n- Context Variables:\n  - article (Dict): article_id (int), title (str), author (str), category (str), content (str), date (str), views (int)\n  - is_bookmarked (bool): Whether the article is bookmarked\n- Navigation using `url_for()`:\n  - None specific, main navigation from other templates.\n\n### templates/bookmarks.html\n- Page Title: My Bookmarks\n- Elements:\n  - `bookmarks-page` (Div): Container for bookmarks page.\n  - `bookmarks-list` (Div): List displaying bookmarks.\n  - `remove-bookmark-button-{bookmark_id}` (Button): Remove bookmark; form POST to `/bookmarks/remove/<bookmark_id>`.\n  - `read-bookmark-button-{bookmark_id}` (Button): Read bookmarked article; link to `/article/<article_id>`.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - bookmarks (List[Dict]): Each dict with bookmark_id (int), article_id (int), article_title (str), bookmarked_date (str)\n- Navigation using `url_for()`:\n  - Remove bookmark buttons: submit POST forms to `url_for('remove_bookmark', bookmark_id=bookmark.bookmark_id)`\n  - Read bookmark buttons: `url_for('article_details', article_id=bookmark.article_id)`\n  - Back to dashboard button: `url_for('dashboard')`\n\n### templates/comments.html\n- Page Title: Article Comments\n- Elements:\n  - `comments-page` (Div): Container for comments page.\n  - `comments-list` (Div): List of comments with article title, commenter name, comment text.\n  - `write-comment-button` (Button): Navigate to write comment page.\n  - `filter-by-article` (Dropdown): Filter comments by article.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - comments (List[Dict]): comment_id (int), article_id (int), article_title (str), commenter_name (str), comment_text (str), comment_date (str)\n  - articles (List[Dict]): article_id (int), title (str)\n- Navigation using `url_for()`:\n  - Write comment button: `url_for('write_comment')`\n  - Filter dropdown options: `url_for('comments')` with query param for filtering if used\n  - Back to dashboard button: `url_for('dashboard')`\n\n### templates/write_comment.html\n- Page Title: Write a Comment\n- Elements:\n  - `write-comment-page` (Div): Container for write comment page.\n  - `select-article` (Dropdown): Select article to comment on.\n  - `commenter-name` (Input): Input for commenter name.\n  - `comment-text` (Textarea): Input for comment text.\n  - `submit-comment-button` (Button): Submit comment.\n- Context Variables:\n  - articles (List[Dict]): article_id (int), title (str)\n- Navigation using `url_for()`:\n  - Form submits POST to `url_for('write_comment')`\n\n### templates/trending.html\n- Page Title: Trending Articles\n- Elements:\n  - `trending-page` (Div): Container for trending articles.\n  - `trending-list` (Div): Ranked list of trending articles.\n  - `time-period-filter` (Dropdown): Filter by time period.\n  - `view-article-button-{article_id}` (Button): View article details.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - trending_articles (List[Dict]): article_id (int), article_title (str), category (str), view_count (int), period (str)\n  - periods (List[str]): List of time periods (\"Today\", \"This Week\", \"This Month\")\n- Navigation using `url_for()`:\n  - View article buttons: `url_for('article_details', article_id=article.article_id)`\n  - Back to dashboard button: `url_for('dashboard')`\n\n### templates/category.html\n- Page Title: Category Articles\n- Elements:\n  - `category-page` (Div): Container for category page.\n  - `category-title` (H1): Display category name.\n  - `category-articles` (Div): List of articles in category.\n  - `sort-by-date` (Button): Sort articles by date.\n  - `sort-by-popularity` (Button): Sort articles by popularity.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - category_name (str): Name of the category\n  - articles (List[Dict]): article_id (int), title (str), author (str), date (str), popularity (int or views proxy)\n- Navigation using `url_for()`:\n  - Sort buttons submit POST form to `url_for('category_sort', category_name=category_name)`\n  - Back to dashboard button: `url_for('dashboard')`\n\n### templates/search_results.html\n- Page Title: Search Results\n- Elements:\n  - `search-results-page` (Div): Container for search results.\n  - `search-query-display` (Div): Display the search query.\n  - `results-list` (Div): List of search result articles with title and excerpt.\n  - `no-results-message` (Div): Message when no results found.\n  - `back-to-dashboard` (Button): Navigate back to dashboard.\n- Context Variables:\n  - query (str): Search query\n  - results (List[Dict]): article_id (int), title (str), excerpt (str)\n- Navigation using `url_for()`:\n  - Back to dashboard button: `url_for('dashboard')`\n\n---\n\n## 3. Data File Schemas\n\n### 1. data/articles.txt\n- Fields: `article_id|title|author|category|content|date|views`\n- Content: Stores news articles with unique ID, metadata and content, date in ISO format, and number of views.\n- Examples:\n  ```\n  1|Breaking: New Technology Breakthrough|John Smith|Technology|Revolutionary advancement in quantum computing announced today|2025-01-20|5432\n  2|Sports: Championship Victory|Sarah Johnson|Sports|Team wins the national championship with a thrilling final match|2025-01-19|3210\n  3|Business: Market Trends Analysis|Michael Chen|Business|Expert analysis of current market conditions and forecasts|2025-01-18|2891\n  ```\n\n### 2. data/categories.txt\n- Fields: `category_id|category_name|description`\n- Content: Stores news categories with unique ID and description.\n- Examples:\n  ```\n  1|Technology|Latest tech news and innovations\n  2|Sports|Sports news and event coverage\n  3|Business|Business and finance news\n  ```\n\n### 3. data/bookmarks.txt\n- Fields: `bookmark_id|article_id|article_title|bookmarked_date`\n- Content: Stores user bookmarked articles with bookmark ID and date added.\n- Examples:\n  ```\n  1|1|Breaking: New Technology Breakthrough|2025-01-20\n  2|3|Business: Market Trends Analysis|2025-01-18\n  ```\n\n### 4. data/comments.txt\n- Fields: `comment_id|article_id|article_title|commenter_name|comment_text|comment_date`\n- Content: Stores comments for articles with commenter and date.\n- Examples:\n  ```\n  1|1|Breaking: New Technology Breakthrough|Alice Davis|Fascinating development!|2025-01-20\n  2|2|Sports: Championship Victory|Robert Wilson|Amazing performance by the team!|2025-01-19\n  ```\n\n### 5. data/trending.txt\n- Fields: `article_id|article_title|category|view_count|period`\n- Content: Stores trending article data by period.\n- Examples:\n  ```\n  1|Breaking: New Technology Breakthrough|Technology|5432|This Week\n  2|Sports: Championship Victory|Sports|3210|This Week\n  3|Business: Market Trends Analysis|Business|2891|This Month\n  ```\n\n",
+        "after": "Implement all based of\ndesign_spec.md ===\nfor\n\n\n\n## Specification\n\nURL | HTTP Template Context | |\n|--------------------------------|---------------------------|----------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|\n`/` Redirects `/dashboard` None\n| | GET | | featured_articles featured\ntrending_articles (List[Dict]): of trending articles None\n`/catalog` | GET | |\ncategories (List[Dict]): | |\n`/catalog/search` `search_results` GET | | query (str): string\nresults List | None |\n| `category_articles` | | `category.html` | of the selected\narticles List of articles in |\n| | `category_sort` Redirects to `/category/<category_name>` 'date' data | sort_by |\n| POST (Dict): Article\nstatus 'bookmark' from data (POST\n`/bookmarks` bookmarks List of articles |\n| Redirects to `/bookmarks` | bookmark_id |\n| `comments.html` (List[Dict]): List\narticles for |\nGET, | `write_comment.html` (List[Dict]): of articles | (int),\n`/trending` | GET (List[Dict]): trending articles\nperiods (List[str]): filter\n| | | from form period\n\n\n\n## HTML Specifications\n\n\n- Page Title:\n- Elements:\nthe\n(Div): of article recommendations.\nto article catalog\n- (Button): to bookmarks\n(Button): to trending articles\nContext\nEach with keys: title author (str),\ntrending_articles title view_count (int)\nusing `url_for()`:\n- `browse-articles-button` `url_for('article_catalog')`\n`view-bookmarks-button` ->\n`trending-articles-button` ->\n\n###\nTitle: Article\n-\n(Div): for\nby title, author, keywords name=\"query\"\n- (Dropdown): filter category; to to `/category/<category_name>`.\n- `articles-grid` (Div): Grid displaying\n- (Button): details.\n-\narticles (List[Dict]): date\n(List[Dict]): Each with (str)\nNavigation\n-\nCategory filter options: `url_for('category_articles',\n\n### templates/article_details.html\nTitle: Article\nElements:\narticle details.\n`article-title` Article display.\n- `article-author` Display article\n- `article-date` Display publication\n- the form `/article/<article_id>` with\n- article content.\n- Context\ntitle author (str), content (int)\nWhether the\n`url_for()`:\n\n\n###\nPage\n\n- `bookmarks-page` (Div):\n(Div): bookmarks.\n`remove-bookmark-button-{bookmark_id}` (Button): bookmark; form POST\n- `read-bookmark-button-{bookmark_id}` (Button): bookmarked link to\nback\n\n(List[Dict]): Each dict with article_title\n- Navigation `url_for()`:\n- submit POST `url_for('remove_bookmark', bookmark_id=bookmark.bookmark_id)`\nRead buttons: article_id=bookmark.article_id)`\nto dashboard\n\ntemplates/comments.html\n- Title:\nElements:\ncomments page.\n(Div): with article commenter name, text.\n(Button): Navigate to\n- (Dropdown): comments by article.\n(Button): to\nVariables:\n- (List[Dict]): article_title (str), (str),\n(List[Dict]): (int),\n- Navigation\nWrite comment `url_for('write_comment')`\nFilter `url_for('comments')` query for filtering if used\n-\n\n\nTitle: Write a Comment\n-\n(Div):\n- Select on.\n- `commenter-name` (Input): commenter name.\n- (Textarea): for\n`submit-comment-button` Submit comment.\n\narticles title\n- using `url_for()`:\n- to `url_for('write_comment')`\n\n###\nPage Trending\n\n- Container trending\n`trending-list` (Div): trending\nFilter by\n-\n- back to\n-\n(List[Dict]): article_id (int), category\n- time periods (\"Today\", \"This Week\", \"This\nNavigation\n- article\n- Back dashboard button:\n\n\n- Page Articles\n-\n- Container for\n- name.\n- in category.\n`sort-by-date` (Button): articles\n`sort-by-popularity` (Button): Sort by popularity.\n`back-to-dashboard` (Button):\n- Context Variables:\n- Name of the\n(List[Dict]): article_id title author popularity or views proxy)\nusing\nPOST `url_for('category_sort',\ndashboard button: `url_for('dashboard')`\n\n\nTitle: Search Results\nElements:\nfor results.\n- `search-query-display`\n`results-list` (Div): List articles with and excerpt.\n- Message no\nto\n- Context Variables:\n- query (str):\n- results (List[Dict]): article_id (int),\n- using\nBack dashboard button: `url_for('dashboard')`\n\n\n\n## 3. Data Schemas\n\n1.\n\n- Content: news unique of\n\n\n1|Breaking: New Technology advancement quantum announced today|2025-01-20|5432\n2|Sports: the with final\nChen|Business|Expert of current market conditions and\n```\n\n### 2.\nFields: `category_id|category_name|description`\n- Stores news with\nExamples:\n\n\nnews coverage\nnews\n\n\n### data/bookmarks.txt\n\n- user with bookmark and date\n- Examples:\n```\n\nTrends\n```\n\ndata/comments.txt\n`comment_id|article_id|article_title|commenter_name|comment_text|comment_date`\nStores comments for\n-\n\nDavis|Fascinating development!|2025-01-20\nVictory|Robert team!|2025-01-19\n\n\n### 5. data/trending.txt\n- Fields:\nStores\n\n```\nNew Technology Week\n2|Sports:\nMonth\n\n\n"
+      }
+    ]
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "WordShuffle",
+    "targets_selected": 2,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordShuffle (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 2,
+      "FP": 3,
+      "FN": 0,
+      "TN": 1
+    },
+    "precision": 0.4,
+    "recall": 1.0,
+    "f1_score": 0.5714285714285715,
+    "total_agents": 6,
+    "error_agents": 2,
+    "normal_agents": 4,
+    "actually_injected_agents": [
+      "FrontendDeveloper",
+      "SystemArchitect"
+    ],
+    "target_agents": [
+      "FrontendDeveloper",
+      "SystemArchitect",
+      "FrontendDeveloper_Fix"
+    ],
+    "not_injected_targets": [
+      "FrontendDeveloper_Fix"
+    ],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 0,
+        "failover_count": 1,
+        "category": "TP"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 6,
+        "failover_count": 1,
+        "category": "TP"
+      },
+      {
+        "agent_name": "Tester",
+        "original_name": "Tester",
+        "is_error_agent": false,
+        "recovery_attempted": true,
+        "reflection_count": 12,
+        "failover_count": 1,
+        "category": "FP"
+      },
+      {
+        "agent_name": "BackendDeveloper_Fix",
+        "original_name": "BackendDeveloper_Fix",
+        "is_error_agent": false,
+        "recovery_attempted": true,
+        "reflection_count": 6,
+        "failover_count": 1,
+        "category": "FP"
+      },
+      {
+        "agent_name": "FrontendDeveloper_Fix",
+        "original_name": "FrontendDeveloper_Fix",
+        "is_error_agent": false,
+        "recovery_attempted": true,
+        "reflection_count": 6,
+        "failover_count": 1,
+        "category": "FP"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 2               FN = 0   
+Actual: Normal Agent    FP = 3               TN = 1   
+
+Agent Distribution:
+  Total Agents: 6
+  Error Agents (Actually Injected): 2
+  Normal Agents: 4
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 3 agents
+    - Actually Injected: 2 agents
+    - Targets NOT injected: ['FrontendDeveloper_Fix']
+      (Possible reasons: agent never executed, no output artifacts)
+
+Performance Metrics:
+  Precision: 0.4000 (TP / (TP + FP))
+  Recall:    1.0000 (TP / (TP + FN))
+  F1-Score:  0.5714
+
+Interpretation:
+  - TP (2): Error agents with successful recovery attempt
+  - FP (3): Normal agents with unnecessary recovery
+  - FN (0): Error agents without recovery (system failure)
+  - TN (1): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+Stress Chaos Injections (6 total):
+
+  [1] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 161/269 words deleted (60%)
+
+      Before (full content):
+         You are a Frontend Developer specializing in HTML and Jinja2 templating for Flask applications.
+         
+         Your goal is to create all HTML template files for the NewsPortal application based on the frontend section of design_spec.md.
+         
+         Task Details:
+         - Read only the HTML Templates section of design_spec.md
+         - Implement all specified templates (*.html) with exact page layouts and UI element IDs
+         - Include correct page titles as specified
+         - Implement navigation using url_for() with exact function names from the spec
+         - Do NOT read or implement backend code or data schemas
+         - Do NOT add any UI elements or pages not documented in the specification
+         
+         Implementation Requirements:
+         1. **Template File Structure**:
+            '''html
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>{{ page_title }}</title>
+            </head>
+            <body>
+                <div id="main-container-id">
+                    <h1>{{ page_title }}</h1>
+                    <!-- Page content here -->
+                </div>
+            </body>
+            </html>
+            '''
+         
+         2. **Element IDs**:
+            - Use all element IDs exactly as specified (case-sensitive)
+            - For dynamic elements with variable IDs (e.g., view-article-button-{article_id}), use Jinja2 syntax:
+              id="view-article-button-{{ article.article_id }}"
+         
+         3. **Navigation Links**:
+            - Use url_for() with exact function names for all navigation buttons and links
+            - For dynamic links including parameters, use Jinja2 variable syntax in url_for calls
+         
+         4. **Form Elements**:
+            - For pages with forms (e.g., Write Comment), implement form tags with method and action attributes per specification
+            - Use appropriate input types and button IDs
+         
+         CRITICAL REQUIREMENTS:
+         - Use write_text_file tool to save all required template files inside 'templates/' directory
+         - Do NOT modify backend or data files
+         - Do NOT include any client-side scripting unless specified
+         - All element IDs and page titles must be exact matches to spec
+         - Navigation must exactly match design_spec.md instructions
+         
+         Output: templates/*.html
+
+      After (full content):
+         are a Developer specializing HTML Jinja2
+         
+         Your goal all files for the design_spec.md.
+         
+         Details:
+         Read only the Templates design_spec.md
+         - Implement with exact page
+         as
+         - names from the
+         implement backend code schemas
+         NOT or pages documented in
+         
+         Implementation Requirements:
+         File Structure**:
+         
+         html>
+         
+         <head>
+         
+         <title>{{ page_title }}</title>
+         
+         
+         <div
+         <h1>{{ page_title }}</h1>
+         <!-- -->
+         </div>
+         
+         </html>
+         
+         
+         IDs**:
+         - Use element exactly (case-sensitive)
+         dynamic elements with use Jinja2
+         
+         
+         3. **Navigation
+         url_for() exact function names for navigation links
+         For syntax in
+         
+         4.
+         For with forms implement form method and per specification
+         Use appropriate and
+         
+         
+         - write_text_file tool to all files inside directory
+         - Do NOT files
+         
+         IDs page titles must be to spec
+         match
+         
+         templates/*.html
+
+  [2] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 823/1373 words deleted (60%)
+
+      Before (full content):
+         Implement all HTML templates based on HTML Templates section of design_spec.md
+         === design_spec.md ===
+         # Design Specification for NewsPortal Web Application
+         
+         ---
+         
+         ## 1. Flask Routes Specification
+         
+         | Route URL Pattern               | Function Name             | HTTP Method(s) | Rendered Template                | Context Variables (Type)                                                                                                        | POST Form Data (Type)                                 |
+         |--------------------------------|---------------------------|----------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|
+         | `/`                            | `root`                   | GET            | Redirects to `/dashboard`      | None                                                                                                                          | None                                                  |
+         | `/dashboard`                   | `dashboard`              | GET            | `dashboard.html`                | featured_articles (List[Dict]): List of featured articles 
+         trending_articles (List[Dict]): List of trending articles         | None                                                  |
+         | `/catalog`                    | `article_catalog`         | GET            | `catalog.html`                  | articles (List[Dict]): List of all articles
+         categories (List[Dict]): List of all categories                             | None                                                  |
+         | `/catalog/search`             | `search_results`          | GET            | `search_results.html`           | query (str): Search query string
+         results (List[Dict]): List of matched articles                                              | None                                                  |
+         | `/category/<string:category_name>` | `category_articles`       | GET            | `category.html`                 | category_name (str): Name of the selected category
+         articles (List[Dict]): List of articles in category                        | None                                                  |
+         | `/category/<string:category_name>/sort` | `category_sort`           | POST           | Redirects back to `/category/<category_name>` | sort_by (str): 'date' or 'popularity' from form data                                                                | sort_by (str)                                         |
+         | `/article/<int:article_id>`    | `article_details`         | GET, POST      | `article_details.html`          | article (Dict): Article details
+         is_bookmarked (bool): Bookmark status                                                    | action (str): 'bookmark' from form data (POST only)  |
+         | `/bookmarks`                   | `bookmarks`               | GET            | `bookmarks.html`                | bookmarks (List[Dict]): List of bookmarked articles                                                                           | None                                                  |
+         | `/bookmarks/remove/<int:bookmark_id>` | `remove_bookmark`         | POST           | Redirects to `/bookmarks`       | None                                                                                                                          | bookmark_id (int)                                     |
+         | `/comments`                   | `comments`                | GET            | `comments.html`                 | comments (List[Dict]): List of comments
+         articles (List[Dict]): List of articles for filtering                                | None                                                  |
+         | `/comments/write`             | `write_comment`           | GET, POST      | `write_comment.html`            | articles (List[Dict]): List of articles                                                                                       | article_id (int), commenter_name (str), comment_text (str) (POST only) |
+         | `/trending`                   | `trending_articles`       | GET            | `trending.html`                 | trending_articles (List[Dict]): List of trending articles
+         periods (List[str]): Time period filter options                     | None                                                  |
+         | `/trending/filter`            | `trending_filter`          | POST           | Redirects to `/trending`        | period (str): Time period from form data                                                                                    | period (str)                                         |
+         
+         ---
+         
+         ## 2. HTML Template Specifications
+         
+         ### templates/dashboard.html
+         - Page Title: News Portal
+         - Elements:
+           - `dashboard-page` (Div): Container for the dashboard page.
+           - `featured-articles` (Div): Display of featured article recommendations.
+           - `browse-articles-button` (Button): Navigate to article catalog page.
+           - `view-bookmarks-button` (Button): Navigate to bookmarks page.
+           - `trending-articles-button` (Button): Navigate to trending articles page.
+         - Context Variables:
+           - featured_articles (List[Dict]): Each dict with keys: article_id (int), title (str), author (str), date (str), excerpt (str)
+           - trending_articles (List[Dict]): Each dict with keys: article_id (int), title (str), category (str), view_count (int)
+         - Navigation using `url_for()`:
+           - `browse-articles-button` -> `url_for('article_catalog')`
+           - `view-bookmarks-button` -> `url_for('bookmarks')`
+           - `trending-articles-button` -> `url_for('trending_articles')`
+         
+         ### templates/catalog.html
+         - Page Title: Article Catalog
+         - Elements:
+           - `catalog-page` (Div): Container for the catalog page.
+           - `search-input` (Input): Search articles by title, author, or keywords (type="text" name="query" form submits GET to `/catalog/search`).
+           - `category-filter` (Dropdown): Dropdown to filter by category; value to link to `/category/<category_name>`.
+           - `articles-grid` (Div): Grid displaying article cards.
+           - `view-article-button-{article_id}` (Button): View article details.
+         - Context Variables:
+           - articles (List[Dict]): Each dict with keys: article_id (int), title (str), author (str), category (str), date (str), excerpt (str)
+           - categories (List[Dict]): Each dict with keys: category_id (int), category_name (str), description (str)
+         - Navigation using `url_for()`:
+           - Article buttons: `url_for('article_details', article_id=article.article_id)`
+           - Category filter options: `url_for('category_articles', category_name=category.category_name)`
+         
+         ### templates/article_details.html
+         - Page Title: Article Details
+         - Elements:
+           - `article-details-page` (Div): Container for article details.
+           - `article-title` (H1): Article title display.
+           - `article-author` (Div): Display article author.
+           - `article-date` (Div): Display article publication date.
+           - `bookmark-button` (Button): Bookmark the article; form submits POST to `/article/<article_id>` with `action='bookmark'`.
+           - `article-content` (Div): Full article content.
+         - Context Variables:
+           - article (Dict): article_id (int), title (str), author (str), category (str), content (str), date (str), views (int)
+           - is_bookmarked (bool): Whether the article is bookmarked
+         - Navigation using `url_for()`:
+           - None specific, main navigation from other templates.
+         
+         ### templates/bookmarks.html
+         - Page Title: My Bookmarks
+         - Elements:
+           - `bookmarks-page` (Div): Container for bookmarks page.
+           - `bookmarks-list` (Div): List displaying bookmarks.
+           - `remove-bookmark-button-{bookmark_id}` (Button): Remove bookmark; form POST to `/bookmarks/remove/<bookmark_id>`.
+           - `read-bookmark-button-{bookmark_id}` (Button): Read bookmarked article; link to `/article/<article_id>`.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - bookmarks (List[Dict]): Each dict with bookmark_id (int), article_id (int), article_title (str), bookmarked_date (str)
+         - Navigation using `url_for()`:
+           - Remove bookmark buttons: submit POST forms to `url_for('remove_bookmark', bookmark_id=bookmark.bookmark_id)`
+           - Read bookmark buttons: `url_for('article_details', article_id=bookmark.article_id)`
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ### templates/comments.html
+         - Page Title: Article Comments
+         - Elements:
+           - `comments-page` (Div): Container for comments page.
+           - `comments-list` (Div): List of comments with article title, commenter name, comment text.
+           - `write-comment-button` (Button): Navigate to write comment page.
+           - `filter-by-article` (Dropdown): Filter comments by article.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - comments (List[Dict]): comment_id (int), article_id (int), article_title (str), commenter_name (str), comment_text (str), comment_date (str)
+           - articles (List[Dict]): article_id (int), title (str)
+         - Navigation using `url_for()`:
+           - Write comment button: `url_for('write_comment')`
+           - Filter dropdown options: `url_for('comments')` with query param for filtering if used
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ### templates/write_comment.html
+         - Page Title: Write a Comment
+         - Elements:
+           - `write-comment-page` (Div): Container for write comment page.
+           - `select-article` (Dropdown): Select article to comment on.
+           - `commenter-name` (Input): Input for commenter name.
+           - `comment-text` (Textarea): Input for comment text.
+           - `submit-comment-button` (Button): Submit comment.
+         - Context Variables:
+           - articles (List[Dict]): article_id (int), title (str)
+         - Navigation using `url_for()`:
+           - Form submits POST to `url_for('write_comment')`
+         
+         ### templates/trending.html
+         - Page Title: Trending Articles
+         - Elements:
+           - `trending-page` (Div): Container for trending articles.
+           - `trending-list` (Div): Ranked list of trending articles.
+           - `time-period-filter` (Dropdown): Filter by time period.
+           - `view-article-button-{article_id}` (Button): View article details.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - trending_articles (List[Dict]): article_id (int), article_title (str), category (str), view_count (int), period (str)
+           - periods (List[str]): List of time periods ("Today", "This Week", "This Month")
+         - Navigation using `url_for()`:
+           - View article buttons: `url_for('article_details', article_id=article.article_id)`
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ### templates/category.html
+         - Page Title: Category Articles
+         - Elements:
+           - `category-page` (Div): Container for category page.
+           - `category-title` (H1): Display category name.
+           - `category-articles` (Div): List of articles in category.
+           - `sort-by-date` (Button): Sort articles by date.
+           - `sort-by-popularity` (Button): Sort articles by popularity.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - category_name (str): Name of the category
+           - articles (List[Dict]): article_id (int), title (str), author (str), date (str), popularity (int or views proxy)
+         - Navigation using `url_for()`:
+           - Sort buttons submit POST form to `url_for('category_sort', category_name=category_name)`
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ### templates/search_results.html
+         - Page Title: Search Results
+         - Elements:
+           - `search-results-page` (Div): Container for search results.
+           - `search-query-display` (Div): Display the search query.
+           - `results-list` (Div): List of search result articles with title and excerpt.
+           - `no-results-message` (Div): Message when no results found.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - query (str): Search query
+           - results (List[Dict]): article_id (int), title (str), excerpt (str)
+         - Navigation using `url_for()`:
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ---
+         
+         ## 3. Data File Schemas
+         
+         ### 1. data/articles.txt
+         - Fields: `article_id|title|author|category|content|date|views`
+         - Content: Stores news articles with unique ID, metadata and content, date in ISO format, and number of views.
+         - Examples:
+           ```
+           1|Breaking: New Technology Breakthrough|John Smith|Technology|Revolutionary advancement in quantum computing announced today|2025-01-20|5432
+           2|Sports: Championship Victory|Sarah Johnson|Sports|Team wins the national championship with a thrilling final match|2025-01-19|3210
+           3|Business: Market Trends Analysis|Michael Chen|Business|Expert analysis of current market conditions and forecasts|2025-01-18|2891
+           ```
+         
+         ### 2. data/categories.txt
+         - Fields: `category_id|category_name|description`
+         - Content: Stores news categories with unique ID and description.
+         - Examples:
+           ```
+           1|Technology|Latest tech news and innovations
+           2|Sports|Sports news and event coverage
+           3|Business|Business and finance news
+           ```
+         
+         ### 3. data/bookmarks.txt
+         - Fields: `bookmark_id|article_id|article_title|bookmarked_date`
+         - Content: Stores user bookmarked articles with bookmark ID and date added.
+         - Examples:
+           ```
+           1|1|Breaking: New Technology Breakthrough|2025-01-20
+           2|3|Business: Market Trends Analysis|2025-01-18
+           ```
+         
+         ### 4. data/comments.txt
+         - Fields: `comment_id|article_id|article_title|commenter_name|comment_text|comment_date`
+         - Content: Stores comments for articles with commenter and date.
+         - Examples:
+           ```
+           1|1|Breaking: New Technology Breakthrough|Alice Davis|Fascinating development!|2025-01-20
+           2|2|Sports: Championship Victory|Robert Wilson|Amazing performance by the team!|2025-01-19
+           ```
+         
+         ### 5. data/trending.txt
+         - Fields: `article_id|article_title|category|view_count|period`
+         - Content: Stores trending article data by period.
+         - Examples:
+           ```
+           1|Breaking: New Technology Breakthrough|Technology|5432|This Week
+           2|Sports: Championship Victory|Sports|3210|This Week
+           3|Business: Market Trends Analysis|Business|2891|This Month
+           ```
+         
+         
+
+      After (full content):
+         based Templates
+         
+         Specification NewsPortal
+         
+         
+         
+         Routes
+         
+         | HTTP Method(s) | (Type) Form (Type) |
+         |--------------------------------|---------------------------|----------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|
+         `/` | | `/dashboard` | |
+         | List of featured articles
+         of | |
+         | `/catalog` `article_catalog` GET | List
+         all None
+         GET `search_results.html` query Search query string
+         results (List[Dict]): articles |
+         | GET | `category.html` | category_name (str):
+         articles articles |
+         | | POST | sort_by (str): 'date' or 'popularity' data |
+         | `article_details` | POST (Dict): Article details
+         is_bookmarked (bool): Bookmark | action (str): 'bookmark' (POST
+         | | `bookmarks.html` bookmarks of bookmarked
+         | `/bookmarks` None
+         | | `comments.html` (List[Dict]): of comments
+         articles (List[Dict]): List articles | None |
+         | `write_comment` POST | article_id (str),
+         | | `trending_articles` | of trending articles
+         periods period options None
+         Redirects to `/trending` period period form data | period
+         
+         ---
+         
+         Template
+         
+         ###
+         News Portal
+         - Elements:
+         for the dashboard
+         (Div): Display of featured
+         to
+         (Button): to page.
+         - to trending articles page.
+         
+         (List[Dict]): dict article_id (int), (str), author (str), (str),
+         - (List[Dict]): Each (str), (int)
+         `url_for()`:
+         - `browse-articles-button` -> `url_for('article_catalog')`
+         `view-bookmarks-button` -> `url_for('bookmarks')`
+         - `trending-articles-button`
+         
+         
+         Title: Catalog
+         
+         for page.
+         (Input): articles or (type="text" GET `/catalog/search`).
+         - `category-filter` (Dropdown): Dropdown to by value to link to
+         - `articles-grid` Grid displaying cards.
+         (Button): details.
+         Variables:
+         - Each dict article_id author category (str), date (str)
+         categories keys: (int), (str), (str)
+         Navigation using
+         Article `url_for('article_details',
+         Category filter options: `url_for('category_articles', category_name=category.category_name)`
+         
+         
+         - Title:
+         - Elements:
+         - (Div): Container article details.
+         - title
+         (Div): article
+         `article-date` publication
+         - `bookmark-button` (Button): Bookmark form
+         (Div): article content.
+         -
+         - (Dict): title (str), author (str), date (int)
+         the article
+         - using
+         - main from templates.
+         
+         templates/bookmarks.html
+         My
+         
+         (Div): Container bookmarks page.
+         - `bookmarks-list` List
+         - form `/bookmarks/remove/<bookmark_id>`.
+         (Button): article; to `/article/<article_id>`.
+         `back-to-dashboard` to dashboard.
+         -
+         - (List[Dict]): Each dict (int), article_id article_title (str), bookmarked_date
+         using `url_for()`:
+         bookmark forms to `url_for('remove_bookmark', bookmark_id=bookmark.bookmark_id)`
+         - `url_for('article_details', article_id=bookmark.article_id)`
+         button: `url_for('dashboard')`
+         
+         templates/comments.html
+         Page Comments
+         Elements:
+         (Div): for page.
+         with text.
+         - (Button): to
+         comments
+         back to
+         -
+         - comments comment_id (int),
+         (str)
+         - Navigation using `url_for()`:
+         - Write
+         Filter options: with param if
+         to dashboard button:
+         
+         ### templates/write_comment.html
+         
+         
+         - `write-comment-page` (Div): Container for comment page.
+         `select-article` (Dropdown):
+         - Input
+         (Textarea): comment text.
+         - (Button): Submit comment.
+         
+         (int), (str)
+         - `url_for()`:
+         submits to
+         
+         ### templates/trending.html
+         Title: Articles
+         -
+         articles.
+         of trending
+         (Dropdown): by period.
+         details.
+         - `back-to-dashboard`
+         Context
+         - (List[Dict]): article_id (int), (str), view_count (int), period (str)
+         List "This "This Month")
+         - using
+         - article
+         dashboard button: `url_for('dashboard')`
+         
+         ###
+         Title: Category
+         -
+         - (Div): Container category page.
+         - `category-title` category
+         List category.
+         - `sort-by-date` Sort by
+         - Sort popularity.
+         - back to
+         -
+         - Name the
+         (str), popularity views
+         Navigation
+         - submit POST to `url_for('category_sort',
+         button: `url_for('dashboard')`
+         
+         ###
+         Search
+         
+         `search-results-page` Container for results.
+         `search-query-display` the query.
+         result with title
+         `no-results-message` when results
+         - (Button): Navigate back to dashboard.
+         Context
+         query query
+         (str), excerpt
+         
+         dashboard button:
+         
+         
+         
+         
+         
+         ### data/articles.txt
+         Fields:
+         Content: Stores news format, and views.
+         
+         
+         New Breakthrough|John Smith|Technology|Revolutionary advancement in quantum computing
+         2|Sports: Johnson|Sports|Team wins championship
+         analysis of current conditions forecasts|2025-01-18|2891
+         ```
+         
+         2.
+         
+         - Stores with
+         
+         
+         tech
+         2|Sports|Sports and event coverage
+         and news
+         
+         
+         ### 3. data/bookmarks.txt
+         `bookmark_id|article_id|article_title|bookmarked_date`
+         - Content: articles
+         Examples:
+         
+         Breakthrough|2025-01-20
+         2|3|Business: Market Trends Analysis|2025-01-18
+         ```
+         
+         ### data/comments.txt
+         
+         Content: Stores comments
+         
+         ```
+         New Breakthrough|Alice Davis|Fascinating
+         Championship the team!|2025-01-19
+         
+         
+         ### 5.
+         Fields:
+         Content: Stores trending article
+         
+         ```
+         1|Breaking: Technology
+         Championship Victory|Sports|3210|This Week
+         Analysis|Business|2891|This Month
+         ```
+         
+         
+
+  [3] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 64/108 words deleted (60%)
+
+      Before (full content):
+         are a Developer specializing HTML Jinja2
+         
+         Your goal all files for the design_spec.md.
+         
+         Details:
+         Read only the Templates design_spec.md
+         - Implement with exact page
+         as
+         - names from the
+         implement backend code schemas
+         NOT or pages documented in
+         
+         Implementation Requirements:
+         File Structure**:
+         
+         html>
+         
+         <head>
+         
+         <title>{{ page_title }}</title>
+         
+         
+         <div
+         <h1>{{ page_title }}</h1>
+         <!-- -->
+         </div>
+         
+         </html>
+         
+         
+         IDs**:
+         - Use element exactly (case-sensitive)
+         dynamic elements with use Jinja2
+         
+         
+         3. **Navigation
+         url_for() exact function names for navigation links
+         For syntax in
+         
+         4.
+         For with forms implement form method and per specification
+         Use appropriate and
+         
+         
+         - write_text_file tool to all files inside directory
+         - Do NOT files
+         
+         IDs page titles must be to spec
+         match
+         
+         templates/*.html
+
+      After (full content):
+         are a specializing Jinja2
+         
+         goal files for design_spec.md.
+         
+         Details:
+         only Templates
+         - exact
+         
+         - the
+         implement
+         or pages documented
+         
+         Implementation
+         Structure**:
+         
+         
+         
+         <head>
+         
+         <title>{{ page_title }}</title>
+         
+         
+         <div
+         
+         
+         </div>
+         
+         
+         
+         
+         
+         Use exactly
+         dynamic use Jinja2
+         
+         
+         
+         
+         syntax
+         
+         
+         and specification
+         
+         
+         
+         - write_text_file tool all files inside directory
+         NOT
+         
+         page be to
+         
+         
+         
+
+  [4] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 823/1373 words deleted (60%)
+
+      Before (full content):
+         Implement all HTML templates based on HTML Templates section of design_spec.md
+         === design_spec.md ===
+         # Design Specification for NewsPortal Web Application
+         
+         ---
+         
+         ## 1. Flask Routes Specification
+         
+         | Route URL Pattern               | Function Name             | HTTP Method(s) | Rendered Template                | Context Variables (Type)                                                                                                        | POST Form Data (Type)                                 |
+         |--------------------------------|---------------------------|----------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|
+         | `/`                            | `root`                   | GET            | Redirects to `/dashboard`      | None                                                                                                                          | None                                                  |
+         | `/dashboard`                   | `dashboard`              | GET            | `dashboard.html`                | featured_articles (List[Dict]): List of featured articles 
+         trending_articles (List[Dict]): List of trending articles         | None                                                  |
+         | `/catalog`                    | `article_catalog`         | GET            | `catalog.html`                  | articles (List[Dict]): List of all articles
+         categories (List[Dict]): List of all categories                             | None                                                  |
+         | `/catalog/search`             | `search_results`          | GET            | `search_results.html`           | query (str): Search query string
+         results (List[Dict]): List of matched articles                                              | None                                                  |
+         | `/category/<string:category_name>` | `category_articles`       | GET            | `category.html`                 | category_name (str): Name of the selected category
+         articles (List[Dict]): List of articles in category                        | None                                                  |
+         | `/category/<string:category_name>/sort` | `category_sort`           | POST           | Redirects back to `/category/<category_name>` | sort_by (str): 'date' or 'popularity' from form data                                                                | sort_by (str)                                         |
+         | `/article/<int:article_id>`    | `article_details`         | GET, POST      | `article_details.html`          | article (Dict): Article details
+         is_bookmarked (bool): Bookmark status                                                    | action (str): 'bookmark' from form data (POST only)  |
+         | `/bookmarks`                   | `bookmarks`               | GET            | `bookmarks.html`                | bookmarks (List[Dict]): List of bookmarked articles                                                                           | None                                                  |
+         | `/bookmarks/remove/<int:bookmark_id>` | `remove_bookmark`         | POST           | Redirects to `/bookmarks`       | None                                                                                                                          | bookmark_id (int)                                     |
+         | `/comments`                   | `comments`                | GET            | `comments.html`                 | comments (List[Dict]): List of comments
+         articles (List[Dict]): List of articles for filtering                                | None                                                  |
+         | `/comments/write`             | `write_comment`           | GET, POST      | `write_comment.html`            | articles (List[Dict]): List of articles                                                                                       | article_id (int), commenter_name (str), comment_text (str) (POST only) |
+         | `/trending`                   | `trending_articles`       | GET            | `trending.html`                 | trending_articles (List[Dict]): List of trending articles
+         periods (List[str]): Time period filter options                     | None                                                  |
+         | `/trending/filter`            | `trending_filter`          | POST           | Redirects to `/trending`        | period (str): Time period from form data                                                                                    | period (str)                                         |
+         
+         ---
+         
+         ## 2. HTML Template Specifications
+         
+         ### templates/dashboard.html
+         - Page Title: News Portal
+         - Elements:
+           - `dashboard-page` (Div): Container for the dashboard page.
+           - `featured-articles` (Div): Display of featured article recommendations.
+           - `browse-articles-button` (Button): Navigate to article catalog page.
+           - `view-bookmarks-button` (Button): Navigate to bookmarks page.
+           - `trending-articles-button` (Button): Navigate to trending articles page.
+         - Context Variables:
+           - featured_articles (List[Dict]): Each dict with keys: article_id (int), title (str), author (str), date (str), excerpt (str)
+           - trending_articles (List[Dict]): Each dict with keys: article_id (int), title (str), category (str), view_count (int)
+         - Navigation using `url_for()`:
+           - `browse-articles-button` -> `url_for('article_catalog')`
+           - `view-bookmarks-button` -> `url_for('bookmarks')`
+           - `trending-articles-button` -> `url_for('trending_articles')`
+         
+         ### templates/catalog.html
+         - Page Title: Article Catalog
+         - Elements:
+           - `catalog-page` (Div): Container for the catalog page.
+           - `search-input` (Input): Search articles by title, author, or keywords (type="text" name="query" form submits GET to `/catalog/search`).
+           - `category-filter` (Dropdown): Dropdown to filter by category; value to link to `/category/<category_name>`.
+           - `articles-grid` (Div): Grid displaying article cards.
+           - `view-article-button-{article_id}` (Button): View article details.
+         - Context Variables:
+           - articles (List[Dict]): Each dict with keys: article_id (int), title (str), author (str), category (str), date (str), excerpt (str)
+           - categories (List[Dict]): Each dict with keys: category_id (int), category_name (str), description (str)
+         - Navigation using `url_for()`:
+           - Article buttons: `url_for('article_details', article_id=article.article_id)`
+           - Category filter options: `url_for('category_articles', category_name=category.category_name)`
+         
+         ### templates/article_details.html
+         - Page Title: Article Details
+         - Elements:
+           - `article-details-page` (Div): Container for article details.
+           - `article-title` (H1): Article title display.
+           - `article-author` (Div): Display article author.
+           - `article-date` (Div): Display article publication date.
+           - `bookmark-button` (Button): Bookmark the article; form submits POST to `/article/<article_id>` with `action='bookmark'`.
+           - `article-content` (Div): Full article content.
+         - Context Variables:
+           - article (Dict): article_id (int), title (str), author (str), category (str), content (str), date (str), views (int)
+           - is_bookmarked (bool): Whether the article is bookmarked
+         - Navigation using `url_for()`:
+           - None specific, main navigation from other templates.
+         
+         ### templates/bookmarks.html
+         - Page Title: My Bookmarks
+         - Elements:
+           - `bookmarks-page` (Div): Container for bookmarks page.
+           - `bookmarks-list` (Div): List displaying bookmarks.
+           - `remove-bookmark-button-{bookmark_id}` (Button): Remove bookmark; form POST to `/bookmarks/remove/<bookmark_id>`.
+           - `read-bookmark-button-{bookmark_id}` (Button): Read bookmarked article; link to `/article/<article_id>`.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - bookmarks (List[Dict]): Each dict with bookmark_id (int), article_id (int), article_title (str), bookmarked_date (str)
+         - Navigation using `url_for()`:
+           - Remove bookmark buttons: submit POST forms to `url_for('remove_bookmark', bookmark_id=bookmark.bookmark_id)`
+           - Read bookmark buttons: `url_for('article_details', article_id=bookmark.article_id)`
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ### templates/comments.html
+         - Page Title: Article Comments
+         - Elements:
+           - `comments-page` (Div): Container for comments page.
+           - `comments-list` (Div): List of comments with article title, commenter name, comment text.
+           - `write-comment-button` (Button): Navigate to write comment page.
+           - `filter-by-article` (Dropdown): Filter comments by article.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - comments (List[Dict]): comment_id (int), article_id (int), article_title (str), commenter_name (str), comment_text (str), comment_date (str)
+           - articles (List[Dict]): article_id (int), title (str)
+         - Navigation using `url_for()`:
+           - Write comment button: `url_for('write_comment')`
+           - Filter dropdown options: `url_for('comments')` with query param for filtering if used
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ### templates/write_comment.html
+         - Page Title: Write a Comment
+         - Elements:
+           - `write-comment-page` (Div): Container for write comment page.
+           - `select-article` (Dropdown): Select article to comment on.
+           - `commenter-name` (Input): Input for commenter name.
+           - `comment-text` (Textarea): Input for comment text.
+           - `submit-comment-button` (Button): Submit comment.
+         - Context Variables:
+           - articles (List[Dict]): article_id (int), title (str)
+         - Navigation using `url_for()`:
+           - Form submits POST to `url_for('write_comment')`
+         
+         ### templates/trending.html
+         - Page Title: Trending Articles
+         - Elements:
+           - `trending-page` (Div): Container for trending articles.
+           - `trending-list` (Div): Ranked list of trending articles.
+           - `time-period-filter` (Dropdown): Filter by time period.
+           - `view-article-button-{article_id}` (Button): View article details.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - trending_articles (List[Dict]): article_id (int), article_title (str), category (str), view_count (int), period (str)
+           - periods (List[str]): List of time periods ("Today", "This Week", "This Month")
+         - Navigation using `url_for()`:
+           - View article buttons: `url_for('article_details', article_id=article.article_id)`
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ### templates/category.html
+         - Page Title: Category Articles
+         - Elements:
+           - `category-page` (Div): Container for category page.
+           - `category-title` (H1): Display category name.
+           - `category-articles` (Div): List of articles in category.
+           - `sort-by-date` (Button): Sort articles by date.
+           - `sort-by-popularity` (Button): Sort articles by popularity.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - category_name (str): Name of the category
+           - articles (List[Dict]): article_id (int), title (str), author (str), date (str), popularity (int or views proxy)
+         - Navigation using `url_for()`:
+           - Sort buttons submit POST form to `url_for('category_sort', category_name=category_name)`
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ### templates/search_results.html
+         - Page Title: Search Results
+         - Elements:
+           - `search-results-page` (Div): Container for search results.
+           - `search-query-display` (Div): Display the search query.
+           - `results-list` (Div): List of search result articles with title and excerpt.
+           - `no-results-message` (Div): Message when no results found.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - query (str): Search query
+           - results (List[Dict]): article_id (int), title (str), excerpt (str)
+         - Navigation using `url_for()`:
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ---
+         
+         ## 3. Data File Schemas
+         
+         ### 1. data/articles.txt
+         - Fields: `article_id|title|author|category|content|date|views`
+         - Content: Stores news articles with unique ID, metadata and content, date in ISO format, and number of views.
+         - Examples:
+           ```
+           1|Breaking: New Technology Breakthrough|John Smith|Technology|Revolutionary advancement in quantum computing announced today|2025-01-20|5432
+           2|Sports: Championship Victory|Sarah Johnson|Sports|Team wins the national championship with a thrilling final match|2025-01-19|3210
+           3|Business: Market Trends Analysis|Michael Chen|Business|Expert analysis of current market conditions and forecasts|2025-01-18|2891
+           ```
+         
+         ### 2. data/categories.txt
+         - Fields: `category_id|category_name|description`
+         - Content: Stores news categories with unique ID and description.
+         - Examples:
+           ```
+           1|Technology|Latest tech news and innovations
+           2|Sports|Sports news and event coverage
+           3|Business|Business and finance news
+           ```
+         
+         ### 3. data/bookmarks.txt
+         - Fields: `bookmark_id|article_id|article_title|bookmarked_date`
+         - Content: Stores user bookmarked articles with bookmark ID and date added.
+         - Examples:
+           ```
+           1|1|Breaking: New Technology Breakthrough|2025-01-20
+           2|3|Business: Market Trends Analysis|2025-01-18
+           ```
+         
+         ### 4. data/comments.txt
+         - Fields: `comment_id|article_id|article_title|commenter_name|comment_text|comment_date`
+         - Content: Stores comments for articles with commenter and date.
+         - Examples:
+           ```
+           1|1|Breaking: New Technology Breakthrough|Alice Davis|Fascinating development!|2025-01-20
+           2|2|Sports: Championship Victory|Robert Wilson|Amazing performance by the team!|2025-01-19
+           ```
+         
+         ### 5. data/trending.txt
+         - Fields: `article_id|article_title|category|view_count|period`
+         - Content: Stores trending article data by period.
+         - Examples:
+           ```
+           1|Breaking: New Technology Breakthrough|Technology|5432|This Week
+           2|Sports: Championship Victory|Sports|3210|This Week
+           3|Business: Market Trends Analysis|Business|2891|This Month
+           ```
+         
+         
+
+      After (full content):
+         all HTML on section
+         === ===
+         Design Specification for
+         
+         
+         
+         1. Routes Specification
+         
+         URL Name | HTTP Method(s) Variables Data |
+         
+         `root` | | Redirects to `/dashboard` None
+         | GET | (List[Dict]): List
+         trending_articles (List[Dict]): of |
+         | `article_catalog` | | (List[Dict]): of all
+         categories all | |
+         `search_results` | GET | query Search
+         results | |
+         | `/category/<string:category_name>` `category_articles` `category.html` | Name of
+         articles of | |
+         `category_sort` Redirects sort_by 'date' from form data | |
+         | GET,
+         Bookmark status action |
+         `bookmarks` | bookmarks bookmarked articles | |
+         | `/bookmarks/remove/<int:bookmark_id>` | POST to None |
+         | `comments` | | `comments.html`
+         for |
+         | (List[Dict]): List | article_id (int), comment_text
+         | | | `trending.html` trending_articles List of
+         periods (List[str]): |
+         | `trending_filter` | POST period Time form period |
+         
+         
+         
+         
+         
+         
+         News
+         - Elements:
+         (Div): for the dashboard page.
+         - `featured-articles` (Div): of article recommendations.
+         `browse-articles-button`
+         -
+         - `trending-articles-button` (Button): Navigate to trending
+         - Variables:
+         article_id (int), title author date excerpt (str)
+         dict keys: article_id title (str), category (str), (int)
+         - using `url_for()`:
+         - `url_for('article_catalog')`
+         - -> `url_for('bookmarks')`
+         - `url_for('trending_articles')`
+         
+         ### templates/catalog.html
+         - Page Title:
+         Elements:
+         - `catalog-page` (Div): Container catalog
+         `search-input` (Input): title, or name="query" form `/catalog/search`).
+         to filter by category; to to
+         - (Div): cards.
+         - `view-article-button-{article_id}` (Button): article
+         -
+         articles Each with (int), (str), (str), excerpt
+         (List[Dict]): (str), description
+         Navigation using
+         buttons:
+         `url_for('category_articles', category_name=category.category_name)`
+         
+         ###
+         - Article
+         - Elements:
+         -
+         `article-title` (H1): Article
+         (Div): author.
+         `article-date` date.
+         Bookmark the article; with `action='bookmark'`.
+         (Div):
+         - Context
+         (Dict): article_id date (str),
+         is_bookmarked (bool): Whether is
+         -
+         - None main other
+         
+         templates/bookmarks.html
+         -
+         
+         
+         bookmarks.
+         Remove form to
+         (Button): article; link to `/article/<article_id>`.
+         `back-to-dashboard` Navigate back
+         - Variables:
+         (List[Dict]): dict bookmark_id (int), article_title
+         `url_for()`:
+         Remove buttons: POST to bookmark_id=bookmark.bookmark_id)`
+         Read `url_for('article_details',
+         - Back dashboard button:
+         
+         
+         
+         
+         - (Div): for page.
+         `comments-list` (Div): List of comments comment
+         - `write-comment-button`
+         - `filter-by-article` (Dropdown): Filter
+         back to
+         - Context Variables:
+         comments comment_id article_title (str), (str)
+         - title (str)
+         
+         Write comment button:
+         Filter options: used
+         - Back to button: `url_for('dashboard')`
+         
+         
+         - Title:
+         
+         - `write-comment-page` (Div): Container for comment page.
+         `select-article` Select to comment on.
+         - (Input):
+         - `comment-text` (Textarea): for
+         comment.
+         Context
+         articles article_id (int), title
+         
+         submits POST to
+         
+         
+         
+         Elements:
+         (Div): for trending articles.
+         - (Div): Ranked list trending
+         (Dropdown): Filter
+         `view-article-button-{article_id}` View article
+         `back-to-dashboard` Navigate dashboard.
+         
+         - trending_articles (List[Dict]): (int), (str), (int),
+         List periods "This
+         - Navigation
+         article buttons: article_id=article.article_id)`
+         - Back dashboard
+         
+         
+         - Page Category
+         
+         - `category-page`
+         - name.
+         - `category-articles` (Div): of in category.
+         Sort by
+         (Button):
+         - back
+         Variables:
+         - (str): of category
+         - (List[Dict]): title (str), author (str), date (str), views proxy)
+         Navigation
+         - submit form category_name=category_name)`
+         -
+         
+         ### templates/search_results.html
+         -
+         -
+         (Div): Container results.
+         `search-query-display` Display
+         - List with and excerpt.
+         - when no results
+         `back-to-dashboard` (Button): dashboard.
+         - Context Variables:
+         query Search
+         (int), title (str)
+         - Navigation `url_for()`:
+         Back button: `url_for('dashboard')`
+         
+         
+         
+         File
+         
+         ### 1.
+         -
+         - Content: news with unique and content, in ISO
+         
+         
+         1|Breaking: New Technology Breakthrough|John Smith|Technology|Revolutionary advancement
+         2|Sports: Championship Victory|Sarah the national championship match|2025-01-19|3210
+         of conditions
+         
+         
+         ###
+         
+         categories
+         -
+         ```
+         
+         2|Sports|Sports news coverage
+         3|Business|Business finance news
+         
+         
+         ###
+         -
+         user ID
+         
+         ```
+         New Technology
+         2|3|Business: Market Trends
+         ```
+         
+         4.
+         Fields: `comment_id|article_id|article_title|commenter_name|comment_text|comment_date`
+         Stores comments for articles with commenter date.
+         Examples:
+         
+         Technology Davis|Fascinating
+         2|2|Sports: by
+         ```
+         
+         ### 5.
+         - Fields:
+         - Content: Stores
+         -
+         
+         1|Breaking: Breakthrough|Technology|5432|This
+         2|Sports: Championship Victory|Sports|3210|This
+         3|Business: Market
+         
+         
+         
+
+  [5] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 26/44 words deleted (60%)
+
+      Before (full content):
+         are a specializing Jinja2
+         
+         goal files for design_spec.md.
+         
+         Details:
+         only Templates
+         - exact
+         
+         - the
+         implement
+         or pages documented
+         
+         Implementation
+         Structure**:
+         
+         
+         
+         <head>
+         
+         <title>{{ page_title }}</title>
+         
+         
+         <div
+         
+         
+         </div>
+         
+         
+         
+         
+         
+         Use exactly
+         dynamic use Jinja2
+         
+         
+         
+         
+         syntax
+         
+         
+         and specification
+         
+         
+         
+         - write_text_file tool all files inside directory
+         NOT
+         
+         page be to
+         
+         
+         
+
+      After (full content):
+         a
+         
+         files design_spec.md.
+         
+         Details:
+         Templates
+         
+         
+         
+         
+         or documented
+         
+         
+         
+         
+         
+         
+         <head>
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         Use
+         dynamic Jinja2
+         
+         
+         
+         
+         
+         
+         
+         specification
+         
+         
+         
+         write_text_file tool files inside directory
+         
+         
+         page
+         
+         
+         
+
+  [6] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 823/1373 words deleted (60%)
+
+      Before (full content):
+         Implement all HTML templates based on HTML Templates section of design_spec.md
+         === design_spec.md ===
+         # Design Specification for NewsPortal Web Application
+         
+         ---
+         
+         ## 1. Flask Routes Specification
+         
+         | Route URL Pattern               | Function Name             | HTTP Method(s) | Rendered Template                | Context Variables (Type)                                                                                                        | POST Form Data (Type)                                 |
+         |--------------------------------|---------------------------|----------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|
+         | `/`                            | `root`                   | GET            | Redirects to `/dashboard`      | None                                                                                                                          | None                                                  |
+         | `/dashboard`                   | `dashboard`              | GET            | `dashboard.html`                | featured_articles (List[Dict]): List of featured articles 
+         trending_articles (List[Dict]): List of trending articles         | None                                                  |
+         | `/catalog`                    | `article_catalog`         | GET            | `catalog.html`                  | articles (List[Dict]): List of all articles
+         categories (List[Dict]): List of all categories                             | None                                                  |
+         | `/catalog/search`             | `search_results`          | GET            | `search_results.html`           | query (str): Search query string
+         results (List[Dict]): List of matched articles                                              | None                                                  |
+         | `/category/<string:category_name>` | `category_articles`       | GET            | `category.html`                 | category_name (str): Name of the selected category
+         articles (List[Dict]): List of articles in category                        | None                                                  |
+         | `/category/<string:category_name>/sort` | `category_sort`           | POST           | Redirects back to `/category/<category_name>` | sort_by (str): 'date' or 'popularity' from form data                                                                | sort_by (str)                                         |
+         | `/article/<int:article_id>`    | `article_details`         | GET, POST      | `article_details.html`          | article (Dict): Article details
+         is_bookmarked (bool): Bookmark status                                                    | action (str): 'bookmark' from form data (POST only)  |
+         | `/bookmarks`                   | `bookmarks`               | GET            | `bookmarks.html`                | bookmarks (List[Dict]): List of bookmarked articles                                                                           | None                                                  |
+         | `/bookmarks/remove/<int:bookmark_id>` | `remove_bookmark`         | POST           | Redirects to `/bookmarks`       | None                                                                                                                          | bookmark_id (int)                                     |
+         | `/comments`                   | `comments`                | GET            | `comments.html`                 | comments (List[Dict]): List of comments
+         articles (List[Dict]): List of articles for filtering                                | None                                                  |
+         | `/comments/write`             | `write_comment`           | GET, POST      | `write_comment.html`            | articles (List[Dict]): List of articles                                                                                       | article_id (int), commenter_name (str), comment_text (str) (POST only) |
+         | `/trending`                   | `trending_articles`       | GET            | `trending.html`                 | trending_articles (List[Dict]): List of trending articles
+         periods (List[str]): Time period filter options                     | None                                                  |
+         | `/trending/filter`            | `trending_filter`          | POST           | Redirects to `/trending`        | period (str): Time period from form data                                                                                    | period (str)                                         |
+         
+         ---
+         
+         ## 2. HTML Template Specifications
+         
+         ### templates/dashboard.html
+         - Page Title: News Portal
+         - Elements:
+           - `dashboard-page` (Div): Container for the dashboard page.
+           - `featured-articles` (Div): Display of featured article recommendations.
+           - `browse-articles-button` (Button): Navigate to article catalog page.
+           - `view-bookmarks-button` (Button): Navigate to bookmarks page.
+           - `trending-articles-button` (Button): Navigate to trending articles page.
+         - Context Variables:
+           - featured_articles (List[Dict]): Each dict with keys: article_id (int), title (str), author (str), date (str), excerpt (str)
+           - trending_articles (List[Dict]): Each dict with keys: article_id (int), title (str), category (str), view_count (int)
+         - Navigation using `url_for()`:
+           - `browse-articles-button` -> `url_for('article_catalog')`
+           - `view-bookmarks-button` -> `url_for('bookmarks')`
+           - `trending-articles-button` -> `url_for('trending_articles')`
+         
+         ### templates/catalog.html
+         - Page Title: Article Catalog
+         - Elements:
+           - `catalog-page` (Div): Container for the catalog page.
+           - `search-input` (Input): Search articles by title, author, or keywords (type="text" name="query" form submits GET to `/catalog/search`).
+           - `category-filter` (Dropdown): Dropdown to filter by category; value to link to `/category/<category_name>`.
+           - `articles-grid` (Div): Grid displaying article cards.
+           - `view-article-button-{article_id}` (Button): View article details.
+         - Context Variables:
+           - articles (List[Dict]): Each dict with keys: article_id (int), title (str), author (str), category (str), date (str), excerpt (str)
+           - categories (List[Dict]): Each dict with keys: category_id (int), category_name (str), description (str)
+         - Navigation using `url_for()`:
+           - Article buttons: `url_for('article_details', article_id=article.article_id)`
+           - Category filter options: `url_for('category_articles', category_name=category.category_name)`
+         
+         ### templates/article_details.html
+         - Page Title: Article Details
+         - Elements:
+           - `article-details-page` (Div): Container for article details.
+           - `article-title` (H1): Article title display.
+           - `article-author` (Div): Display article author.
+           - `article-date` (Div): Display article publication date.
+           - `bookmark-button` (Button): Bookmark the article; form submits POST to `/article/<article_id>` with `action='bookmark'`.
+           - `article-content` (Div): Full article content.
+         - Context Variables:
+           - article (Dict): article_id (int), title (str), author (str), category (str), content (str), date (str), views (int)
+           - is_bookmarked (bool): Whether the article is bookmarked
+         - Navigation using `url_for()`:
+           - None specific, main navigation from other templates.
+         
+         ### templates/bookmarks.html
+         - Page Title: My Bookmarks
+         - Elements:
+           - `bookmarks-page` (Div): Container for bookmarks page.
+           - `bookmarks-list` (Div): List displaying bookmarks.
+           - `remove-bookmark-button-{bookmark_id}` (Button): Remove bookmark; form POST to `/bookmarks/remove/<bookmark_id>`.
+           - `read-bookmark-button-{bookmark_id}` (Button): Read bookmarked article; link to `/article/<article_id>`.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - bookmarks (List[Dict]): Each dict with bookmark_id (int), article_id (int), article_title (str), bookmarked_date (str)
+         - Navigation using `url_for()`:
+           - Remove bookmark buttons: submit POST forms to `url_for('remove_bookmark', bookmark_id=bookmark.bookmark_id)`
+           - Read bookmark buttons: `url_for('article_details', article_id=bookmark.article_id)`
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ### templates/comments.html
+         - Page Title: Article Comments
+         - Elements:
+           - `comments-page` (Div): Container for comments page.
+           - `comments-list` (Div): List of comments with article title, commenter name, comment text.
+           - `write-comment-button` (Button): Navigate to write comment page.
+           - `filter-by-article` (Dropdown): Filter comments by article.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - comments (List[Dict]): comment_id (int), article_id (int), article_title (str), commenter_name (str), comment_text (str), comment_date (str)
+           - articles (List[Dict]): article_id (int), title (str)
+         - Navigation using `url_for()`:
+           - Write comment button: `url_for('write_comment')`
+           - Filter dropdown options: `url_for('comments')` with query param for filtering if used
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ### templates/write_comment.html
+         - Page Title: Write a Comment
+         - Elements:
+           - `write-comment-page` (Div): Container for write comment page.
+           - `select-article` (Dropdown): Select article to comment on.
+           - `commenter-name` (Input): Input for commenter name.
+           - `comment-text` (Textarea): Input for comment text.
+           - `submit-comment-button` (Button): Submit comment.
+         - Context Variables:
+           - articles (List[Dict]): article_id (int), title (str)
+         - Navigation using `url_for()`:
+           - Form submits POST to `url_for('write_comment')`
+         
+         ### templates/trending.html
+         - Page Title: Trending Articles
+         - Elements:
+           - `trending-page` (Div): Container for trending articles.
+           - `trending-list` (Div): Ranked list of trending articles.
+           - `time-period-filter` (Dropdown): Filter by time period.
+           - `view-article-button-{article_id}` (Button): View article details.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - trending_articles (List[Dict]): article_id (int), article_title (str), category (str), view_count (int), period (str)
+           - periods (List[str]): List of time periods ("Today", "This Week", "This Month")
+         - Navigation using `url_for()`:
+           - View article buttons: `url_for('article_details', article_id=article.article_id)`
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ### templates/category.html
+         - Page Title: Category Articles
+         - Elements:
+           - `category-page` (Div): Container for category page.
+           - `category-title` (H1): Display category name.
+           - `category-articles` (Div): List of articles in category.
+           - `sort-by-date` (Button): Sort articles by date.
+           - `sort-by-popularity` (Button): Sort articles by popularity.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - category_name (str): Name of the category
+           - articles (List[Dict]): article_id (int), title (str), author (str), date (str), popularity (int or views proxy)
+         - Navigation using `url_for()`:
+           - Sort buttons submit POST form to `url_for('category_sort', category_name=category_name)`
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ### templates/search_results.html
+         - Page Title: Search Results
+         - Elements:
+           - `search-results-page` (Div): Container for search results.
+           - `search-query-display` (Div): Display the search query.
+           - `results-list` (Div): List of search result articles with title and excerpt.
+           - `no-results-message` (Div): Message when no results found.
+           - `back-to-dashboard` (Button): Navigate back to dashboard.
+         - Context Variables:
+           - query (str): Search query
+           - results (List[Dict]): article_id (int), title (str), excerpt (str)
+         - Navigation using `url_for()`:
+           - Back to dashboard button: `url_for('dashboard')`
+         
+         ---
+         
+         ## 3. Data File Schemas
+         
+         ### 1. data/articles.txt
+         - Fields: `article_id|title|author|category|content|date|views`
+         - Content: Stores news articles with unique ID, metadata and content, date in ISO format, and number of views.
+         - Examples:
+           ```
+           1|Breaking: New Technology Breakthrough|John Smith|Technology|Revolutionary advancement in quantum computing announced today|2025-01-20|5432
+           2|Sports: Championship Victory|Sarah Johnson|Sports|Team wins the national championship with a thrilling final match|2025-01-19|3210
+           3|Business: Market Trends Analysis|Michael Chen|Business|Expert analysis of current market conditions and forecasts|2025-01-18|2891
+           ```
+         
+         ### 2. data/categories.txt
+         - Fields: `category_id|category_name|description`
+         - Content: Stores news categories with unique ID and description.
+         - Examples:
+           ```
+           1|Technology|Latest tech news and innovations
+           2|Sports|Sports news and event coverage
+           3|Business|Business and finance news
+           ```
+         
+         ### 3. data/bookmarks.txt
+         - Fields: `bookmark_id|article_id|article_title|bookmarked_date`
+         - Content: Stores user bookmarked articles with bookmark ID and date added.
+         - Examples:
+           ```
+           1|1|Breaking: New Technology Breakthrough|2025-01-20
+           2|3|Business: Market Trends Analysis|2025-01-18
+           ```
+         
+         ### 4. data/comments.txt
+         - Fields: `comment_id|article_id|article_title|commenter_name|comment_text|comment_date`
+         - Content: Stores comments for articles with commenter and date.
+         - Examples:
+           ```
+           1|1|Breaking: New Technology Breakthrough|Alice Davis|Fascinating development!|2025-01-20
+           2|2|Sports: Championship Victory|Robert Wilson|Amazing performance by the team!|2025-01-19
+           ```
+         
+         ### 5. data/trending.txt
+         - Fields: `article_id|article_title|category|view_count|period`
+         - Content: Stores trending article data by period.
+         - Examples:
+           ```
+           1|Breaking: New Technology Breakthrough|Technology|5432|This Week
+           2|Sports: Championship Victory|Sports|3210|This Week
+           3|Business: Market Trends Analysis|Business|2891|This Month
+           ```
+         
+         
+
+      After (full content):
+         Implement all based of
+         design_spec.md ===
+         for
+         
+         
+         
+         ## Specification
+         
+         URL | HTTP Template Context | |
+         |--------------------------------|---------------------------|----------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|
+         `/` Redirects `/dashboard` None
+         | | GET | | featured_articles featured
+         trending_articles (List[Dict]): of trending articles None
+         `/catalog` | GET | |
+         categories (List[Dict]): | |
+         `/catalog/search` `search_results` GET | | query (str): string
+         results List | None |
+         | `category_articles` | | `category.html` | of the selected
+         articles List of articles in |
+         | | `category_sort` Redirects to `/category/<category_name>` 'date' data | sort_by |
+         | POST (Dict): Article
+         status 'bookmark' from data (POST
+         `/bookmarks` bookmarks List of articles |
+         | Redirects to `/bookmarks` | bookmark_id |
+         | `comments.html` (List[Dict]): List
+         articles for |
+         GET, | `write_comment.html` (List[Dict]): of articles | (int),
+         `/trending` | GET (List[Dict]): trending articles
+         periods (List[str]): filter
+         | | | from form period
+         
+         
+         
+         ## HTML Specifications
+         
+         
+         - Page Title:
+         - Elements:
+         the
+         (Div): of article recommendations.
+         to article catalog
+         - (Button): to bookmarks
+         (Button): to trending articles
+         Context
+         Each with keys: title author (str),
+         trending_articles title view_count (int)
+         using `url_for()`:
+         - `browse-articles-button` `url_for('article_catalog')`
+         `view-bookmarks-button` ->
+         `trending-articles-button` ->
+         
+         ###
+         Title: Article
+         -
+         (Div): for
+         by title, author, keywords name="query"
+         - (Dropdown): filter category; to to `/category/<category_name>`.
+         - `articles-grid` (Div): Grid displaying
+         - (Button): details.
+         -
+         articles (List[Dict]): date
+         (List[Dict]): Each with (str)
+         Navigation
+         -
+         Category filter options: `url_for('category_articles',
+         
+         ### templates/article_details.html
+         Title: Article
+         Elements:
+         article details.
+         `article-title` Article display.
+         - `article-author` Display article
+         - `article-date` Display publication
+         - the form `/article/<article_id>` with
+         - article content.
+         - Context
+         title author (str), content (int)
+         Whether the
+         `url_for()`:
+         
+         
+         ###
+         Page
+         
+         - `bookmarks-page` (Div):
+         (Div): bookmarks.
+         `remove-bookmark-button-{bookmark_id}` (Button): bookmark; form POST
+         - `read-bookmark-button-{bookmark_id}` (Button): bookmarked link to
+         back
+         
+         (List[Dict]): Each dict with article_title
+         - Navigation `url_for()`:
+         - submit POST `url_for('remove_bookmark', bookmark_id=bookmark.bookmark_id)`
+         Read buttons: article_id=bookmark.article_id)`
+         to dashboard
+         
+         templates/comments.html
+         - Title:
+         Elements:
+         comments page.
+         (Div): with article commenter name, text.
+         (Button): Navigate to
+         - (Dropdown): comments by article.
+         (Button): to
+         Variables:
+         - (List[Dict]): article_title (str), (str),
+         (List[Dict]): (int),
+         - Navigation
+         Write comment `url_for('write_comment')`
+         Filter `url_for('comments')` query for filtering if used
+         -
+         
+         
+         Title: Write a Comment
+         -
+         (Div):
+         - Select on.
+         - `commenter-name` (Input): commenter name.
+         - (Textarea): for
+         `submit-comment-button` Submit comment.
+         
+         articles title
+         - using `url_for()`:
+         - to `url_for('write_comment')`
+         
+         ###
+         Page Trending
+         
+         - Container trending
+         `trending-list` (Div): trending
+         Filter by
+         -
+         - back to
+         -
+         (List[Dict]): article_id (int), category
+         - time periods ("Today", "This Week", "This
+         Navigation
+         - article
+         - Back dashboard button:
+         
+         
+         - Page Articles
+         -
+         - Container for
+         - name.
+         - in category.
+         `sort-by-date` (Button): articles
+         `sort-by-popularity` (Button): Sort by popularity.
+         `back-to-dashboard` (Button):
+         - Context Variables:
+         - Name of the
+         (List[Dict]): article_id title author popularity or views proxy)
+         using
+         POST `url_for('category_sort',
+         dashboard button: `url_for('dashboard')`
+         
+         
+         Title: Search Results
+         Elements:
+         for results.
+         - `search-query-display`
+         `results-list` (Div): List articles with and excerpt.
+         - Message no
+         to
+         - Context Variables:
+         - query (str):
+         - results (List[Dict]): article_id (int),
+         - using
+         Back dashboard button: `url_for('dashboard')`
+         
+         
+         
+         ## 3. Data Schemas
+         
+         1.
+         
+         - Content: news unique of
+         
+         
+         1|Breaking: New Technology advancement quantum announced today|2025-01-20|5432
+         2|Sports: the with final
+         Chen|Business|Expert of current market conditions and
+         ```
+         
+         ### 2.
+         Fields: `category_id|category_name|description`
+         - Stores news with
+         Examples:
+         
+         
+         news coverage
+         news
+         
+         
+         ### data/bookmarks.txt
+         
+         - user with bookmark and date
+         - Examples:
+         ```
+         
+         Trends
+         ```
+         
+         data/comments.txt
+         `comment_id|article_id|article_title|commenter_name|comment_text|comment_date`
+         Stores comments for
+         -
+         
+         Davis|Fascinating development!|2025-01-20
+         Victory|Robert team!|2025-01-19
+         
+         
+         ### 5. data/trending.txt
+         - Fields:
+         Stores
+         
+         ```
+         New Technology Week
+         2|Sports:
+         Month
+         
+         
+         
+
+================================================================================
+

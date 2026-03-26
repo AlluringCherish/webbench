@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Active Orders</title>
+</head>
+<body>
+    <div id="active-orders-page">
+        <h1>Active Orders</h1>
+
+        <label for="status-filter">Filter Status:</label>
+        <select id="status-filter" name="status">
+            <option value="">All</option>
+            <option value="Preparing">Preparing</option>
+            <option value="On the Way">On the Way</option>
+            <option value="Delivered">Delivered</option>
+        </select>
+
+        <div id="orders-list">
+            {% for order in active_orders %}
+                <div class="order-card">
+                    <p>Order ID: {{ order.order_id }}</p>
+                    <p>Restaurant: {{ order.restaurant_name }}</p>
+                    <p>Status: {{ order.status }}</p>
+                    <p>ETA: {{ order.eta if order.eta is defined else '' }}</p>
+                    <button id="track-order-button-{{ order.order_id }}" onclick="window.location.href='{{ url_for('order_tracking', order_id=order.order_id) }}'">Track Order</button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>
