@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Auctions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+<div id="trending-page">
+    <h1>Trending Auctions</h1>
+    <label for="time-range-filter">Time Range:</label>
+    <select id="time-range-filter" name="time-range-filter">
+        {% for range in valid_ranges %}
+            <option value="{{ range }}" {% if time_range == range %}selected{% endif %}>{{ range }}</option>
+        {% endfor %}
+    </select>
+    <div id="trending-list">
+        {% if trending_list %}
+            {% for trend in trending_list %}
+                <div class="trending-auction-card" id="winner-card-{{ trend.auction_id }}">
+                    <span class="trending-rank">#{{ trend.trending_rank }}</span>
+                    <h3>{{ trend.item_name }}</h3>
+                    <p>Current Bid: ${{ '%.2f'|format(trend.current_bid) }}</p>
+                    <p>Bid Count: {{ trend.bid_count }}</p>
+                    <button id="view-auction-button-{{ trend.auction_id }}">View Details</button>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No trending auctions found for selected time range.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-dashboard">Back to Dashboard</button>
+</div>
+</body>
+</html>

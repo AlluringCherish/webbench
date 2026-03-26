@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Status</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+<div id="status-page">
+    <h1>Auction Status</h1>
+    <label for="status-filter">Filter by Status:</label>
+    <select id="status-filter" name="status-filter">
+        {% for status in valid_statuses %}
+            <option value="{{ status }}" {% if status_filter == status %}selected{% endif %}>{{ status }}</option>
+        {% endfor %}
+    </select>
+    <button id="refresh-status-button">Refresh Status</button>
+    <table id="status-table" border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Auction Name</th>
+                <th>Status</th>
+                <th>Time Remaining</th>
+                <th>Current Bid</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if auctions %}
+                {% for auction in auctions %}
+                    <tr>
+                        <td>{{ auction.item_name }}</td>
+                        <td>{{ auction.status }}</td>
+                        <td>{{ auction.time_remaining }}</td>
+                        <td>${{ '%.2f'|format(auction.current_bid) }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">No auctions found.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard">Back to Dashboard</button>
+</div>
+</body>
+</html>

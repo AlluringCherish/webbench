@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bestsellers</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="bestsellers-page">
+    <h1>Bestsellers</h1>
+    <form method="get" action="{{ url_for('bestsellers') }}">
+        <label for="time-period-filter">Filter by Time Period:</label>
+        <select id="time-period-filter" name="period" onchange="this.form.submit()">
+            {% for period in time_periods %}
+            <option value="{{ period }}" {% if period == selected_period %}selected{% endif %}>{{ period }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <div id="bestsellers-list">
+        {% if bestsellers %}
+        <ol>
+            {% for bestseller in bestsellers %}
+            <li>
+                <span class="rank">{{ bestseller.rank }}.</span>
+                <span class="title">{{ bestseller.title }}</span> by
+                <span class="author">{{ bestseller.author }}</span>
+                <span class="sales-count">({{ bestseller.sales_count }} sold)</span>
+                <form action="{{ url_for('book_details', book_id=bestseller.book_id) }}" method="get" style="display:inline;">
+                    <button type="submit" id="view-book-button-{{ bestseller.book_id }}">View Details</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ol>
+        {% else %}
+        <p>No bestsellers available for this period.</p>
+        {% endif %}
+    </div>
+    <form action="{{ url_for('back_to_dashboard') }}" method="post">
+        <button type="submit" id="back-to-dashboard">Back to Dashboard</button>
+    </form>
+</div>
+</body>
+</html>

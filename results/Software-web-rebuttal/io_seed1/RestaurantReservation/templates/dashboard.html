@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurant Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="dashboard-page">
+    <h1 id="welcome-message">Welcome, {{ username }}!</h1>
+    <section id="featured-dishes">
+        <h2>Featured Dishes</h2>
+        <div id="featured-dishes-grid" style="display:flex; gap:20px;">
+            {% for dish in featured_dishes %}
+            <div class="dish-card" style="border:1px solid #ccc; padding:10px; width:200px;">
+                <h3>{{ dish.name }}</h3>
+                <p><strong>Price:</strong> ${{ "%.2f"|format(dish.price) }}</p>
+                <p>{{ dish.description }}</p>
+                <form action="{{ url_for('dish_details', dish_id=dish.dish_id) }}" method="get">
+                    <button type="submit" id="view-dish-button-{{ dish.dish_id }}">View Details</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    <section id="upcoming-reservations" style="margin-top:30px;">
+        <h2>Upcoming Reservations</h2>
+        {% if upcoming_reservations %}
+        <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Party Size</th>
+                    <th>Special Requests</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in upcoming_reservations %}
+                <tr>
+                    <td>{{ res.date }}</td>
+                    <td>{{ res.time }}</td>
+                    <td>{{ res.party_size }}</td>
+                    <td>{{ res.special_requests if res.special_requests else '-' }}</td>
+                    <td>{{ res.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No upcoming reservations.</p>
+        {% endif %}
+    </section>
+    <section id="navigation-buttons" style="margin-top:30px;">
+        <form action="{{ url_for('make_reservation') }}" method="get" style="display:inline;">
+            <button type="submit" id="make-reservation-button">Make Reservation</button>
+        </form>
+        <form action="{{ url_for('menu') }}" method="get" style="display:inline;">
+            <button type="submit" id="view-menu-button">View Menu</button>
+        </form>
+        <form action="{{ url_for('back_to_dashboard') }}" method="get" style="display:inline;">
+            <button type="submit" id="back-to-dashboard">Refresh Dashboard</button>
+        </form>
+        <form action="{{ url_for('my_reservations') }}" method="get" style="display:inline;">
+            <button type="submit" id="my-reservations-button">My Reservations</button>
+        </form>
+        <form action="{{ url_for('my_reviews') }}" method="get" style="display:inline;">
+            <button type="submit" id="my-reviews-button">My Reviews</button>
+        </form>
+        <form action="{{ url_for('waitlist') }}" method="get" style="display:inline;">
+            <button type="submit" id="waitlist-button">Waitlist</button>
+        </form>
+        <form action="{{ url_for('profile') }}" method="get" style="display:inline;">
+            <button type="submit" id="profile-button">My Profile</button>
+        </form>
+    </section>
+</div>
+</body>
+</html>

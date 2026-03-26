@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="cart-page">
+    <h1>Shopping Cart</h1>
+    {% if cart_items %}
+    <form method="post" action="{{ url_for('cart') }}">
+        <table id="cart-items-table" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Restaurant</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.item_name }}</td>
+                    <td>{{ item.restaurant_name }}</td>
+                    <td>
+                        <input type="number" id="update-quantity-{{ item.item_id }}" name="update-quantity-{{ item.item_id }}" value="{{ item.quantity }}" min="1" required>
+                    </td>
+                    <td>${{ "%.2f"|format(item.price) }}</td>
+                    <td>${{ "%.2f"|format(item.subtotal) }}</td>
+                    <td>
+                        <button type="submit" name="remove-item-button-{{ item.item_id }}" id="remove-item-button-{{ item.item_id }}">Remove</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div id="total-amount">
+            <strong>Total Amount: ${{ "%.2f"|format(total_amount) }}</strong>
+        </div>
+        <button type="submit" id="update-cart-button">Update Cart</button>
+        <button type="button" id="proceed-checkout-button" onclick="location.href='{{ url_for('checkout') }}'">Proceed to Checkout</button>
+    </form>
+    {% else %}
+        <p>Your cart is empty.</p>
+        <button onclick="location.href='{{ url_for('restaurants') }}'">Browse Restaurants</button>
+    {% endif %}
+    <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

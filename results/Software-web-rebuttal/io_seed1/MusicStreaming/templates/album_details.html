@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Album Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="album-details-page">
+    <h1 id="album-title">{{ album.title }}</h1>
+    <div id="album-artist">
+        Artist: <a href="{{ url_for('artist_profile', artist_id=artist.artist_id) }}">{{ artist.name }}</a>
+    </div>
+    <div id="album-year">
+        Release Year: {{ album.release_year }}
+    </div>
+    <div id="album-songs-list">
+        <h2>Songs</h2>
+        {% if album_songs %}
+            <ul>
+                {% for song in album_songs %}
+                    <li>
+                        <a href="{{ url_for('song_details', song_id=song.song_id) }}">{{ song.title }}</a>
+                        by {{ song.artist_name }}
+                        ({{ (song.duration // 60) }}:{{ '%02d' % (song.duration % 60) }})
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No songs found in this album.</p>
+        {% endif %}
+    </div>
+    <form method="post" action="{{ url_for('add_album_to_playlist', album_id=album.album_id) }}">
+        <label for="playlist_id">Add all songs to playlist:</label>
+        <select name="playlist_id" id="playlist_id" required>
+            {% for playlist in playlists %}
+                <option value="{{ playlist.playlist_id }}">{{ playlist.title }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" id="add-album-to-playlist-button">Add to Playlist</button>
+    </form>
+    <nav>
+        <button onclick="location.href='{{ url_for('albums') }}'">Back to Albums</button>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Active Orders</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="active-orders-page">
+    <h1>Active Orders</h1>
+    <form method="get" action="{{ url_for('active_orders') }}">
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status" onchange="this.form.submit()">
+            {% for status in statuses %}
+                <option value="{{ status }}" {% if selected_status == status %}selected{% endif %}>{{ status }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <div id="orders-list">
+        {% if orders %}
+            <ul>
+                {% for order in orders %}
+                    <li>
+                        <strong>Order ID:</strong> {{ order.order_id }} |
+                        <strong>Restaurant:</strong> {{ order.restaurant_name }} |
+                        <strong>Status:</strong> {{ order.status }} |
+                        <button id="track-order-button-{{ order.order_id }}" onclick="location.href='{{ url_for('track_order', order_id=order.order_id) }}'">Track Order</button>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No active orders found.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

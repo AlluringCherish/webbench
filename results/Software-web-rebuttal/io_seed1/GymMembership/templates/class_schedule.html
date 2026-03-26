@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class Schedule</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="schedule-page">
+    <h1>Class Schedule</h1>
+    <form method="get" action="{{ url_for('class_schedule') }}">
+        <input id="schedule-search" name="search" type="text" placeholder="Search classes or trainers" value="{{ search_query }}">
+        <select id="schedule-filter" name="filter" onchange="this.form.submit()">
+            <option value="" {% if not filter_type %}selected{% endif %}>All Types</option>
+            <option value="Yoga" {% if filter_type == 'yoga' %}selected{% endif %}>Yoga</option>
+            <option value="CrossFit" {% if filter_type == 'crossfit' %}selected{% endif %}>CrossFit</option>
+            <option value="Pilates" {% if filter_type == 'pilates' %}selected{% endif %}>Pilates</option>
+            <option value="Boxing" {% if filter_type == 'boxing' %}selected{% endif %}>Boxing</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+    <div id="classes-grid">
+        {% for cls in classes %}
+        <div class="class-card">
+            <h3>{{ cls.class_name }}</h3>
+            <p><strong>Trainer:</strong> {{ cls.trainer_name }}</p>
+            <p><strong>Type:</strong> {{ cls.class_type }}</p>
+            <p><strong>Day:</strong> {{ cls.schedule_day }}</p>
+            <p><strong>Time:</strong> {{ cls.schedule_time }}</p>
+            <p><strong>Duration:</strong> {{ cls.duration }} minutes</p>
+            <p><strong>Capacity:</strong> {{ cls.capacity }}</p>
+            <button id="enroll-class-button-{{ cls.class_id }}" onclick="alert('Enrollment feature not implemented yet.')">Enroll in Class</button>
+        </div>
+        {% else %}
+        <p>No classes found.</p>
+        {% endfor %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

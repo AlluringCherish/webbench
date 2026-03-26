@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Artifact Catalog</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="artifact-catalog-page">
+        <h1>Artifact Catalog</h1>
+        <form method="post" action="{{ url_for('artifact_catalog') }}">
+            <input type="text" id="search-artifact" name="search-artifact" placeholder="Search by name or ID" value="{{ search_query }}">
+            <button type="submit" id="apply-artifact-filter">Apply Filter</button>
+        </form>
+        <table id="artifact-table" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Period</th>
+                    <th>Origin</th>
+                    <th>Exhibition</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for artifact in artifacts %}
+                <tr>
+                    <td>{{ artifact.artifact_id }}</td>
+                    <td>{{ artifact.artifact_name }}</td>
+                    <td>{{ artifact.period }}</td>
+                    <td>{{ artifact.origin }}</td>
+                    <td>{{ artifact.exhibition_title }}</td>
+                    <td>
+                        <!-- Actions can be extended, for now just show details link -->
+                        <a href="{{ url_for('exhibition_details', exhibition_id=artifact.exhibition_id) }}">View Exhibition</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">No artifacts found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

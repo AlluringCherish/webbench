@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log Workout</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="log-workout-page">
+    <h1>Log Workout</h1>
+    {% if error %}
+    <div class="error-message" style="color:red;">{{ error }}</div>
+    {% endif %}
+    <form method="post" action="{{ url_for('log_workout') }}">
+        <label for="member_name">Your Name:</label><br>
+        <input type="text" id="member_name" name="member_name" value="{{ form_data.member_name if form_data else '' }}" required><br><br>
+        <label for="workout-type">Workout Type:</label><br>
+        <select id="workout-type" name="workout_type" required>
+            <option value="">-- Select Workout Type --</option>
+            {% for wt in workout_types %}
+            <option value="{{ wt }}" {% if form_data and form_data.workout_type == wt %}selected{% endif %}>{{ wt }}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="workout-duration">Duration (minutes):</label><br>
+        <input type="number" id="workout-duration" name="workout_duration" min="1" value="{{ form_data.workout_duration if form_data else '' }}" required><br><br>
+        <label for="calories-burned">Calories Burned:</label><br>
+        <input type="number" id="calories-burned" name="calories_burned" min="0" value="{{ form_data.calories_burned if form_data else '' }}" required><br><br>
+        <label for="workout-notes">Notes:</label><br>
+        <textarea id="workout-notes" name="workout_notes" rows="4" cols="50">{{ form_data.workout_notes if form_data else '' }}</textarea><br><br>
+        <button id="submit-workout-button" type="submit">Submit Workout Record</button>
+    </form>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

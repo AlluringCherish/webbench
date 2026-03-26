@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Catalog</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+<div id="catalog-page">
+    <h1>Auction Catalog</h1>
+    <div class="catalog-filters">
+        <input type="text" id="search-input" placeholder="Search auctions..." value="{{ search_query }}">
+        <select id="category-filter">
+            <option value="All" {% if selected_category|lower == 'all' or not selected_category %}selected{% endif %}>All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category.category_name }}" {% if selected_category|lower == category.category_name|lower %}selected{% endif %}>{{ category.category_name }}</option>
+            {% endfor %}
+            <option value="Art" {% if selected_category|lower == 'art' %}selected{% endif %}>Art</option>
+            <option value="Other" {% if selected_category|lower == 'other' %}selected{% endif %}>Other</option>
+        </select>
+    </div>
+    <div id="auctions-grid">
+        {% if auctions %}
+            {% for auction in auctions %}
+                <div class="auction-card" id="auction-card-{{ auction.auction_id }}">
+                    <img src="{{ url_for('static', filename='images/' + auction.image_url) }}" alt="{{ auction.item_name }}">
+                    <h3>{{ auction.item_name }}</h3>
+                    <p>Current Bid: ${{ '%.2f'|format(auction.current_bid) }}</p>
+                    <p>Time Remaining: {{ auction.time_remaining }}</p>
+                    <button id="view-auction-button-{{ auction.auction_id }}">View Details</button>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No auctions found.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-dashboard">Back to Dashboard</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Personal Training</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="booking-page">
+    <h1>Book Personal Training</h1>
+    {% if error %}
+    <div class="error-message" style="color:red;">{{ error }}</div>
+    {% endif %}
+    <form method="post" action="{{ url_for('pt_booking') }}">
+        <label for="member_name">Your Name:</label><br>
+        <input type="text" id="member_name" name="member_name" value="{{ form_data.member_name if form_data else '' }}" required><br><br>
+        <label for="select-trainer">Select Trainer:</label><br>
+        <select id="select-trainer" name="select_trainer" required>
+            <option value="">-- Select Trainer --</option>
+            {% for trainer in trainers %}
+            <option value="{{ trainer.trainer_id }}" {% if selected_trainer == trainer.trainer_id or (form_data and form_data.select_trainer == trainer.trainer_id) %}selected{% endif %}>{{ trainer.name }} ({{ trainer.specialty }})</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="session-date">Session Date:</label><br>
+        <input type="date" id="session-date" name="session_date" value="{{ form_data.session_date if form_data else '' }}" required><br><br>
+        <label for="session-time">Session Time:</label><br>
+        <select id="session-time" name="session_time" required>
+            <option value="">-- Select Time Slot --</option>
+            {% for time in time_slots %}
+            <option value="{{ time }}" {% if form_data and form_data.session_time == time %}selected{% endif %}>{{ time }}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="session-duration">Session Duration (minutes):</label><br>
+        <select id="session-duration" name="session_duration" required>
+            <option value="">-- Select Duration --</option>
+            <option value="30" {% if form_data and form_data.session_duration == '30' %}selected{% endif %}>30</option>
+            <option value="60" {% if form_data and form_data.session_duration == '60' %}selected{% endif %}>60</option>
+            <option value="90" {% if form_data and form_data.session_duration == '90' %}selected{% endif %}>90</option>
+        </select><br><br>
+        <button id="confirm-booking-button" type="submit">Confirm Booking</button>
+    </form>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

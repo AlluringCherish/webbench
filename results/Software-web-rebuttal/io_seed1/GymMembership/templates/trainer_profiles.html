@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trainer Profiles</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="trainers-page">
+    <h1>Trainer Profiles</h1>
+    <form method="get" action="{{ url_for('trainer_profiles') }}">
+        <input id="trainer-search" name="search" type="text" placeholder="Search trainers by name or specialty" value="{{ search_query }}">
+        <select id="specialty-filter" name="filter" onchange="this.form.submit()">
+            <option value="" {% if not filter_specialty %}selected{% endif %}>All Specialties</option>
+            <option value="Strength" {% if filter_specialty == 'strength' %}selected{% endif %}>Strength</option>
+            <option value="Cardio" {% if filter_specialty == 'cardio' %}selected{% endif %}>Cardio</option>
+            <option value="Flexibility" {% if filter_specialty == 'flexibility' %}selected{% endif %}>Flexibility</option>
+            <option value="Weight Loss" {% if filter_specialty == 'weight loss' %}selected{% endif %}>Weight Loss</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+    <div id="trainers-grid">
+        {% for trainer in trainers %}
+        <div class="trainer-card">
+            <h3>{{ trainer.name }}</h3>
+            <p><strong>Specialty:</strong> {{ trainer.specialty }}</p>
+            <p><strong>Certifications:</strong> {{ trainer.certifications }}</p>
+            <button id="view-trainer-button-{{ trainer.trainer_id }}" onclick="location.href='{{ url_for('trainer_detail', trainer_id=trainer.trainer_id) }}'">View Profile</button>
+        </div>
+        {% else %}
+        <p>No trainers found.</p>
+        {% endfor %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

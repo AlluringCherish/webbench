@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Song Catalog</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="catalog-page">
+    <h1>Song Catalog</h1>
+    <form method="get" action="{{ url_for('song_catalog') }}">
+        <input type="text" id="search-input" name="search" placeholder="Search by title, artist, or album" value="{{ search_query }}">
+        <select id="genre-filter" name="genre">
+            <option value="">All Genres</option>
+            {% for genre in genres %}
+                <option value="{{ genre }}" {% if genre == selected_genre %}selected{% endif %}>{{ genre }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Search</button>
+    </form>
+    <div id="songs-grid">
+        {% if songs %}
+            <ul>
+                {% for song in songs %}
+                    <li>
+                        <div class="song-card">
+                            <div class="song-info">
+                                <a href="{{ url_for('song_details', song_id=song.song_id) }}"><strong>{{ song.title }}</strong></a><br>
+                                Artist: <a href="{{ url_for('artist_profile', artist_id=song.artist_id) }}">{{ song.artist_name }}</a><br>
+                                Album: <a href="{{ url_for('album_details', album_id=song.album_id) }}">{{ song.album_title }}</a><br>
+                                Duration: {{ (song.duration // 60) }}:{{ '%02d' % (song.duration % 60) }}
+                            </div>
+                            <form method="post" action="{{ url_for('add_song_to_playlist', playlist_id='1', song_id=song.song_id) }}">
+                                <!-- Since no authentication, default playlist_id '1' is used for adding songs -->
+                                <button type="submit" id="add-to-playlist-button-{{ song.song_id }}">Add to Playlist</button>
+                            </form>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No songs found.</p>
+        {% endif %}
+    </div>
+    <nav>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </nav>
+</div>
+</body>
+</html>

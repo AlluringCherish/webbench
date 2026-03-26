@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pet Adoption Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Pet Adoption Dashboard</h1>
+        {% if user %}
+            <p>Welcome, {{ user.username }}!</p>
+        {% else %}
+            <p>Welcome, Guest! Please <a href="{{ url_for('login') }}">log in</a> to access more features.</p>
+        {% endif %}
+        <section id="featured-pets">
+            <h2>Featured Pets</h2>
+            {% if featured_pets %}
+                <div class="pet-cards">
+                    {% for pet in featured_pets %}
+                        <div class="pet-card">
+                            <h3>{{ pet.name }}</h3>
+                            <p><strong>Species:</strong> {{ pet.species }}</p>
+                            <p><strong>Age:</strong> {{ pet.age }}</p>
+                            <p><strong>Status:</strong> {{ pet.status }}</p>
+                            <a href="{{ url_for('pet_details', pet_id=pet.pet_id) }}">View Details</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No featured pets available at the moment.</p>
+            {% endif %}
+        </section>
+        <section id="recent-activities">
+            <h2>Recent Activities</h2>
+            {% if user %}
+                {% if recent_applications %}
+                    <ul>
+                        {% for app in recent_applications %}
+                            <li>
+                                Application for <strong>{{ app.pet_id }}</strong> submitted on {{ app.date_submitted }} - Status: {{ app.status }}
+                                <a href="{{ url_for('pet_details', pet_id=app.pet_id) }}">View Pet</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No recent activities.</p>
+                {% endif %}
+            {% else %}
+                <p>Please log in to see your recent activities.</p>
+            {% endif %}
+        </section>
+        <div class="navigation-buttons">
+            <button id="browse-pets-button" onclick="location.href='{{ url_for('pet_listings') }}'">Browse Pets</button>
+            <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Refresh Dashboard</button>
+            {% if user %}
+                <button onclick="location.href='{{ url_for('favorites') }}'">My Favorites</button>
+                <button onclick="location.href='{{ url_for('my_applications') }}'">My Applications</button>
+                <button onclick="location.href='{{ url_for('messages') }}'">Messages</button>
+                <button onclick="location.href='{{ url_for('user_profile') }}'">My Profile</button>
+                {% if user.username == 'admin_user' %}
+                    <button onclick="location.href='{{ url_for('add_pet') }}'">Add New Pet</button>
+                    <button onclick="location.href='{{ url_for('admin_panel') }}'">Admin Panel</button>
+                {% endif %}
+                <button onclick="location.href='{{ url_for('logout') }}'">Logout</button>
+            {% else %}
+                <button onclick="location.href='{{ url_for('login') }}'">Login</button>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

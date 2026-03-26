@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - ContentPublishingHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="dashboard-page" class="page-container">
+        <header>
+            <h1>ContentPublishingHub Dashboard</h1>
+            <p id="welcome-message">Welcome, {{ username }}!</p>
+        </header>
+        <section id="quick-stats" class="stats-section">
+            <h2>Quick Stats</h2>
+            <ul>
+                <li>Total Articles: {{ quick_stats.total_articles }}</li>
+                <li>Published Articles: {{ quick_stats.published_articles }}</li>
+                <li>Draft Articles: {{ quick_stats.draft_articles }}</li>
+                <li>Total Views: {{ quick_stats.total_views }}</li>
+            </ul>
+        </section>
+        <section class="actions-section">
+            <a href="{{ url_for('create_article') }}" id="create-article-button" class="button">Create Article</a>
+        </section>
+        <section id="recent-activity" class="activity-feed">
+            <h2>Recent Activity</h2>
+            {% if recent_activity %}
+                <ul>
+                    {% for activity in recent_activity %}
+                        <li>
+                            {% if activity.type == 'comment' %}
+                                <strong>Comment</strong> by {{ activity.user }} on Article ID {{ activity.article_id }} (Version {{ activity.version_id }}):<br>
+                                <em>{{ activity.text }}</em><br>
+                                <small>{{ activity.timestamp }}</small>
+                            {% elif activity.type == 'approval' %}
+                                <strong>Approval</strong> by {{ activity.user }} on Article ID {{ activity.article_id }} (Version {{ activity.version_id }}):<br>
+                                Status: {{ activity.status }}<br>
+                                Comments: <em>{{ activity.comments }}</em><br>
+                                <small>{{ activity.timestamp }}</small>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No recent activity.</p>
+            {% endif %}
+        </section>
+    </div>
+</body>
+</html>

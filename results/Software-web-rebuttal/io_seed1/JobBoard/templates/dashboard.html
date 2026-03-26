@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Board Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Job Board Dashboard</h1>
+        <div id="featured-jobs">
+            <h2>Featured Jobs</h2>
+            <div id="featured-jobs-list">
+                {% if featured_jobs %}
+                    <ul>
+                        {% for job in featured_jobs %}
+                            <li>
+                                <strong>{{ job.title }}</strong> at {{ job.company_name or 'Unknown' }} - {{ job.location }}<br>
+                                Salary: ${{ job.salary_min }} - ${{ job.salary_max }}<br>
+                                <button id="view-job-button-{{ job.job_id }}" class="view-job-button" data-job-id="{{ job.job_id }}">View Details</button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No featured jobs available.</p>
+                {% endif %}
+            </div>
+        </div>
+        <div id="dashboard-navigation">
+            <button id="browse-jobs-button">Browse Jobs</button>
+            <button id="my-applications-button">My Applications</button>
+            <button id="companies-button">Companies Directory</button>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script>
+        document.getElementById('browse-jobs-button').addEventListener('click', function() {
+            window.location.href = "{{ url_for('job_listings') }}";
+        });
+        document.getElementById('my-applications-button').addEventListener('click', function() {
+            window.location.href = "{{ url_for('application_tracking') }}";
+        });
+        document.getElementById('companies-button').addEventListener('click', function() {
+            window.location.href = "{{ url_for('companies_directory') }}";
+        });
+        // Add event listeners for featured job view buttons
+        document.querySelectorAll('.view-job-button').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const jobId = this.getAttribute('data-job-id');
+                window.location.href = "{{ url_for('job_details', job_id='') }}" + jobId;
+            });
+        });
+    </script>
+</body>
+</html>

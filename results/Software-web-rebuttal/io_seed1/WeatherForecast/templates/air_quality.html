@@ -1,0 +1,60 @@
+'''
+Air Quality Page Template for WeatherForecast Web Application.
+Displays air quality index and pollution details for selected location.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Air Quality Index</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+    <div id="air-quality-page">
+        <h1>Air Quality Index</h1>
+        <form method="post" action="{{ url_for('air_quality') }}">
+            <label for="location-aqi-filter">Select Location:</label>
+            <select id="location-aqi-filter" name="location-aqi-filter" onchange="this.form.submit()">
+                <option value="">-- Select Location --</option>
+                {% for loc in locations %}
+                    <option value="{{ loc.location_id }}" {% if loc.location_id == selected_location_id %}selected{% endif %}>{{ loc.location_name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        {% if aqi %}
+            <div id="aqi-display">
+                <strong>AQI Index:</strong> {{ aqi.aqi_index }}
+            </div>
+            <div id="aqi-description">
+                <strong>Description:</strong> {{ aqi_description }}
+            </div>
+            <table id="pollution-details" border="1" cellpadding="5" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Pollutant</th>
+                        <th>Value (µg/m³)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>PM2.5</td><td>{{ aqi.pm25 }}</td></tr>
+                    <tr><td>PM10</td><td>{{ aqi.pm10 }}</td></tr>
+                    <tr><td>NO2</td><td>{{ aqi.no2 }}</td></tr>
+                    <tr><td>O3</td><td>{{ aqi.o3 }}</td></tr>
+                </tbody>
+            </table>
+            <div id="health-recommendation">
+                <strong>Health Recommendation:</strong> {{ health_recommendation }}
+            </div>
+            <div id="last-updated">
+                Last Updated: {{ aqi.last_updated }}
+            </div>
+        {% else %}
+            <p>No air quality data available for selected location.</p>
+        {% endif %}
+        <form method="post" action="{{ url_for('back_to_dashboard') }}">
+            <button type="submit">Back to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

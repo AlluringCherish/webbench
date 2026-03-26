@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="showtime-page">
+        <h1>Select Showtime</h1>
+        <form method="get" action="{{ url_for('showtime_selection') }}">
+            <label for="movie-filter">Movie:</label>
+            <select id="movie-filter" name="movie">
+                {% for movie_id in movie_options %}
+                    <option value="{{ movie_id }}" {% if movie_id == movie_filter %}selected{% endif %}>
+                        {% if movie_id == 'All' %}
+                            All
+                        {% else %}
+                            {{ movie_titles[movie_id] }}
+                        {% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+            <label for="theater-filter">Theater:</label>
+            <select id="theater-filter" name="theater">
+                {% for theater_id in theater_options %}
+                    <option value="{{ theater_id }}" {% if theater_id == theater_filter %}selected{% endif %}>
+                        {% if theater_id == 'All' %}
+                            All
+                        {% else %}
+                            {{ theater_names[theater_id] }}
+                        {% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+            <label for="date-filter">Date:</label>
+            <input type="date" id="date-filter" name="date" value="{{ date_filter }}">
+            <button type="submit">Filter</button>
+        </form>
+        <div id="showtimes-list">
+            {% if showtimes %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Movie</th>
+                            <th>Theater</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Price</th>
+                            <th>Available Seats</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for showtime in showtimes %}
+                            <tr>
+                                <td>{{ showtime.movie_title }}</td>
+                                <td>{{ showtime.theater_name }}</td>
+                                <td>{{ showtime.showtime_date }}</td>
+                                <td>{{ showtime.showtime_time }}</td>
+                                <td>${{ "%.2f"|format(showtime.price) }}</td>
+                                <td>{{ showtime.available_seats }}</td>
+                                <td>
+                                    <button id="select-showtime-button-{{ showtime.showtime_id }}" onclick="location.href='{{ url_for('seat_selection', showtime_id=showtime.showtime_id) }}'">Select</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No showtimes available for the selected filters.</p>
+            {% endif %}
+        </div>
+        <nav>
+            <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </nav>
+    </div>
+</body>
+</html>

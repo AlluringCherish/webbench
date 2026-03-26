@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="bookings-page">
+        <h1>Booking History</h1>
+        <form method="get" action="{{ url_for('booking_history') }}">
+            <label for="status-filter">Filter by Status:</label>
+            <select id="status-filter" name="status" onchange="this.form.submit()">
+                {% for status_option in status_options %}
+                    <option value="{{ status_option }}" {% if status_option == status_filter %}selected{% endif %}>{{ status_option }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <table id="bookings-table" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Movie</th>
+                    <th>Date</th>
+                    <th>Seats</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if bookings %}
+                    {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.booking_id }}</td>
+                            <td>{{ booking.movie_title }}</td>
+                            <td>{{ booking.booking_date }}</td>
+                            <td>{{ booking.seats_booked | join(', ') }}</td>
+                            <td>{{ booking.status }}</td>
+                            <td>
+                                <button id="view-booking-button-{{ booking.booking_id }}" onclick="alert('Booking Details:\\nBooking ID: {{ booking.booking_id }}\\nMovie: {{ booking.movie_title }}\\nDate: {{ booking.booking_date }}\\nSeats: {{ booking.seats_booked | join(', ') }}\\nStatus: {{ booking.status }}')">View Details</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6">No bookings found.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <nav>
+            <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </nav>
+    </div>
+</body>
+</html>

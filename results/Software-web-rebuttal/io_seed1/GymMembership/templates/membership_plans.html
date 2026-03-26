@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Membership Plans</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="membership-page">
+    <h1>Membership Plans</h1>
+    <form method="get" action="{{ url_for('membership_plans') }}">
+        <label for="plan-filter">Filter by Membership Type:</label>
+        <select id="plan-filter" name="filter" onchange="this.form.submit()">
+            <option value="" {% if not filter_type %}selected{% endif %}>All</option>
+            <option value="Basic" {% if filter_type == 'basic' %}selected{% endif %}>Basic</option>
+            <option value="Premium" {% if filter_type == 'premium' %}selected{% endif %}>Premium</option>
+            <option value="Elite" {% if filter_type == 'elite' %}selected{% endif %}>Elite</option>
+        </select>
+    </form>
+    <div id="plans-grid">
+        {% for plan in memberships %}
+        <div class="plan-card">
+            <h3>{{ plan.plan_name }}</h3>
+            <p>Price: ${{ plan.price }} / {{ plan.billing_cycle }}</p>
+            <p>Features: {{ plan.features }}</p>
+            <button id="view-details-button-{{ plan.membership_id }}" onclick="location.href='{{ url_for('plan_details', plan_id=plan.membership_id) }}'">View Details</button>
+        </div>
+        {% else %}
+        <p>No membership plans found.</p>
+        {% endfor %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

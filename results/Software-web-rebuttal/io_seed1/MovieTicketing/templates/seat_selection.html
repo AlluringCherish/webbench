@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+    <div id="seat-selection-page">
+        <h1>Select Seats for {{ showtime.showtime_date }} at {{ showtime.showtime_time }}</h1>
+        <form method="post" action="{{ url_for('seat_selection', showtime_id=showtime.showtime_id) }}">
+            <div id="seat-map">
+                {% for row, seats in seat_map.items()|sort %}
+                    <div class="seat-row" id="row-{{ row }}">
+                        <span class="row-label">{{ row }}</span>
+                        {% for seat in seats %}
+                            {% set seat_label = seat.row + seat.column %}
+                            <button type="button"
+                                    id="seat-{{ seat_label }}"
+                                    class="seat-button {% if seat.status != 'Available' %}booked{% else %}available{% endif %}"
+                                    {% if seat.status == 'Available' %}
+                                        onclick="toggleSeatSelection(this)"
+                                        data-seat-label="{{ seat_label }}"
+                                    {% else %}
+                                        disabled
+                                    {% endif %}>
+                                {{ seat_label }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div id="selected-seats-display">
+                <h3>Selected Seats:</h3>
+                <div id="selected-seats-list"></div>
+            </div>
+            <input type="hidden" name="selected_seats" id="selected_seats_input" value="">
+            <button type="submit" id="proceed-booking-button">Proceed to Booking</button>
+        </form>
+        <nav>
+            <button onclick="location.href='{{ url_for('showtime_selection') }}'">Back to Showtimes</button>
+            <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </nav>
+    </div>
+    <script>
+        // JavaScript to handle seat selection UI and form submission
+        const selectedSeats = new Set();
+        function toggleSeatSelection(button) {
+            const seatLabel = button.getAttribute('data-seat-label');
+            if (selectedSeats.has(seatLabel)) {
+                selectedSeats.delete(seatLabel);
+                button.classList.remove('selected');
+            } else {
+                selectedSeats.add(seatLabel);
+                button.classList.add('selected');
+            }
+            updateSelectedSeatsDisplay();
+        }
+        function updateSelectedSeatsDisplay() {
+            const displayDiv = document.getElementById('selected-seats-list');
+            displayDiv.textContent = Array.from(selectedSeats).join(', ') || 'None';
+            document.getElementById('selected_seats_input').value = Array.from(selectedSeats).join(',');
+        }
+        // Initialize display on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateSelectedSeatsDisplay();
+        });
+    </script>
+</body>
+</html>

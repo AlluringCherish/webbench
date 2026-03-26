@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function updateQuantity(cartId) {
+            const form = document.getElementById('update-form-' + cartId);
+            form.submit();
+        }
+        function removeItem(cartId) {
+            const form = document.getElementById('remove-form-' + cartId);
+            form.submit();
+        }
+    </script>
+</head>
+<body>
+<div id="cart-page">
+    <h1>Shopping Cart</h1>
+    {% if cart_items %}
+    <table id="cart-items-table" border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.title }}</td>
+                <td>
+                    <form id="update-form-{{ item.cart_id }}" action="{{ url_for('update_cart_quantity', cart_id=item.cart_id) }}" method="post" style="display:inline;">
+                        <input type="number" id="update-quantity-{{ item.cart_id }}" name="quantity" value="{{ item.quantity }}" min="1" onchange="updateQuantity('{{ item.cart_id }}')">
+                    </form>
+                </td>
+                <td>${{ "%.2f"|format(item.price) }}</td>
+                <td>${{ "%.2f"|format(item.subtotal) }}</td>
+                <td>
+                    <form id="remove-form-{{ item.cart_id }}" action="{{ url_for('remove_cart_item', cart_id=item.cart_id) }}" method="post" style="display:inline;">
+                        <button type="button" id="remove-item-button-{{ item.cart_id }}" onclick="removeItem('{{ item.cart_id }}')">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div id="total-amount">
+        <strong>Total Amount:</strong> ${{ "%.2f"|format(total_amount) }}
+    </div>
+    <form action="{{ url_for('checkout') }}" method="get">
+        <button type="submit" id="proceed-checkout-button">Proceed to Checkout</button>
+    </form>
+    {% else %}
+    <p>Your cart is empty.</p>
+    {% endif %}
+    <form action="{{ url_for('back_to_dashboard') }}" method="post">
+        <button type="submit">Back to Dashboard</button>
+    </form>
+</div>
+</body>
+</html>

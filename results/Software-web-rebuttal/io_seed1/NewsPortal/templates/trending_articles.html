@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Articles</title>
+</head>
+<body>
+<div id="trending-page">
+    <h1>Trending Articles</h1>
+    <form method="get" action="{{ url_for('trending_articles') }}">
+        <label for="time-period-filter">Filter by Time Period:</label>
+        <select id="time-period-filter" name="period" onchange="this.form.submit()">
+            <option value="" {% if not selected_period %}selected{% endif %}>All</option>
+            <option value="Today" {% if selected_period == 'Today' %}selected{% endif %}>Today</option>
+            <option value="This Week" {% if selected_period == 'This Week' %}selected{% endif %}>This Week</option>
+            <option value="This Month" {% if selected_period == 'This Month' %}selected{% endif %}>This Month</option>
+        </select>
+    </form>
+    <div id="trending-list">
+        {% if trending_articles %}
+            <ol>
+                {% for article in trending_articles %}
+                    <li>
+                        <div>Rank {{ loop.index }}: <a href="{{ url_for('article_details', article_id=article.article_id) }}">{{ article.article_title }}</a></div>
+                        <div>Category: {{ article.category }} | Views: {{ article.view_count }}</div>
+                        <button id="view-article-button-{{ article.article_id }}" onclick="location.href='{{ url_for('article_details', article_id=article.article_id) }}'">View Article</button>
+                    </li>
+                {% endfor %}
+            </ol>
+        {% else %}
+            <p>No trending articles found.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

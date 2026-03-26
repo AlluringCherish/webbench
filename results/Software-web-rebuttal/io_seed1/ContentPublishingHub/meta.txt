@@ -1,0 +1,172 @@
+Task:
+# ContentPublishingHub Web Application Specification
+
+## Objective
+Build a comprehensive content management system with version control, content scheduling, and analytics. The system supports collaborative content creation with version history tracking, editorial comments, and content analytics. Testing should start from the Dashboard page.
+
+## Language
+Python (Flask framework recommended)
+
+## Page Design
+
+### 1. Dashboard Page (`dashboard.html`)
+**Route:** `/dashboard`
+**Purpose:** Main landing page showing content overview and navigation
+**Elements:**
+- Page container (id: `dashboard-page`)
+- Welcome message with username (id: `welcome-message`)
+- Quick stats section (id: `quick-stats`)
+- Create Article button (id: `create-article-button`)
+- Recent activity feed (id: `recent-activity`)
+
+### 2. Create Article Page (`create_article.html`)
+**Route:** `/article/create`
+**Purpose:** Editor for creating new articles
+**Elements:**
+- Page container (id: `create-article-page`)
+- Article title input (id: `article-title`)
+- Content editor textarea (id: `article-content`)
+- Save as Draft button (id: `save-draft-button`)
+- Cancel button (id: `cancel-button`)
+
+### 3. Edit Article Page (`edit_article.html`)
+**Route:** `/article/<article_id>/edit`
+**Purpose:** Edit existing article with version tracking
+**Elements:**
+- Page container (id: `edit-article-page`)
+- Article title input (id: `edit-article-title`)
+- Content editor textarea (id: `edit-article-content`)
+- Save New Version button (id: `save-version-button`)
+- Cancel button (id: `cancel-edit`)
+
+### 4. Article Version History Page (`version_history.html`)
+**Route:** `/article/<article_id>/versions`
+**Purpose:** View all versions and restore previous versions
+**Elements:**
+- Page container (id: `version-history-page`)
+- Versions list (id: `versions-list`)
+- Version comparison section (id: `version-comparison`)
+- Restore button (id: `restore-version-1`)
+- Back to Edit button (id: `back-to-edit-history`)
+
+### 5. My Articles Page (`my_articles.html`)
+**Route:** `/articles/mine`
+**Purpose:** List user's articles with filters
+**Elements:**
+- Page container (id: `my-articles-page`)
+- Filter by status dropdown (id: `filter-article-status`)
+- Articles table (id: `articles-table`)
+- Create New Article button (id: `create-new-article`)
+- Back to Dashboard button (id: `back-to-dashboard`)
+
+### 6. Published Articles Page (`published_articles.html`)
+**Route:** `/articles/published`
+**Purpose:** Public-facing content library
+**Elements:**
+- Page container (id: `published-articles-page`)
+- Filter by category dropdown (id: `filter-published-category`)
+- Articles grid (id: `published-articles-grid`)
+- Sort by dropdown (id: `sort-published`)
+- Back to Dashboard button (id: `back-to-dashboard-published`)
+
+### 7. Content Calendar Page (`content_calendar.html`)
+**Route:** `/calendar`
+**Purpose:** Scheduled publications timeline view
+**Elements:**
+- Page container (id: `calendar-page`)
+- Calendar view selector (id: `calendar-view`)
+- Calendar grid (id: `calendar-grid`)
+- Schedule button (id: `schedule-button`)
+- Back to Dashboard button (id: `back-to-dashboard-calendar`)
+
+### 8. Article Analytics Page (`article_analytics.html`)
+**Route:** `/article/<article_id>/analytics`
+**Purpose:** View engagement metrics for published article
+**Elements:**
+- Page container (id: `analytics-page`)
+- Analytics overview (id: `analytics-overview`)
+- Total views (id: `analytics-total-views`)
+- Unique visitors (id: `analytics-unique-visitors`)
+- Back to Article button (id: `back-to-article-analytics`)
+
+## Data Storage
+
+The 'ContentPublishingHub' application will store data locally in text files organized in the directory 'data'. The following data formats and examples are defined:
+
+### 1. users.txt
+Format: `username|email|fullname|created_date`
+Example:
+```
+john|john@example.com|John Doe|2024-01-15
+alice|alice@example.com|Alice Smith|2024-01-16
+bob|bob@example.com|Bob Johnson|2024-01-17
+admin|admin@example.com|Admin User|2024-01-10
+```
+
+### 2. articles.txt
+Format: `article_id|title|author|category|status|tags|featured_image|meta_description|created_date|publish_date`
+Example:
+```
+1|Introduction to Flask|john|tutorial|published|python,flask,web|/img/flask.jpg|Learn Flask basics|2024-01-20|2024-01-22 10:00:00
+2|Company Quarterly Update|alice|announcement|approved|company,news||Q1 results|2024-01-23|2024-01-25 09:00:00
+3|New Product Launch|john|press_release|draft|product,launch|/img/product.jpg|Exciting new release|2024-01-24|
+```
+status: draft, pending_review, under_review, approved, published, rejected, archived
+category: news, blog, tutorial, announcement, press_release
+
+### 3. article_versions.txt
+Format: `version_id|article_id|version_number|content|author|created_date|change_summary`
+Example:
+```
+1|1|1|Flask is a micro web framework...|john|2024-01-20 14:30:00|Initial draft
+2|1|2|Flask is a lightweight web framework...|john|2024-01-21 09:15:00|Improved introduction
+3|2|1|We are pleased to announce...|alice|2024-01-23 11:00:00|Initial version
+```
+
+### 4. approvals.txt
+Format: `approval_id|article_id|version_id|approver|status|comments|timestamp`
+Example:
+```
+1|1|2|alice|approved|Looks good, well written|2024-01-21 10:30:00
+2|1|2|bob|approved|Ready for publication|2024-01-21 15:00:00
+3|3|1|alice|rejected|Needs more details in section 2|2024-01-24 14:00:00
+```
+status: approved, rejected, revision_requested
+
+### 5. workflow_stages.txt
+Format: `stage_id|category|stage_name|stage_order|is_required`
+Example:
+```
+1|tutorial|Editor Review|1|yes
+2|tutorial|Publisher Approval|2|yes
+3|news|Editor Review|1|yes
+4|announcement|Editor Review|1|yes
+5|announcement|Publisher Approval|2|yes
+```
+
+### 6. comments.txt
+Format: `comment_id|article_id|version_id|user|comment_text|timestamp`
+Example:
+```
+1|1|1|alice|Great start! Consider adding more examples.|2024-01-20 16:00:00
+2|1|2|bob|The flow is much better now.|2024-01-21 11:00:00
+3|3|1|alice|Section 2 needs expansion - add metrics.|2024-01-24 13:45:00
+```
+
+### 7. analytics.txt
+Format: `analytics_id|article_id|date|views|unique_visitors|avg_time_seconds|shares`
+Example:
+```
+1|1|2024-01-22|150|120|245|12
+2|1|2024-01-23|230|180|210|18
+3|1|2024-01-24|180|140|220|15
+4|2|2024-01-25|95|75|180|8
+```
+
+
+Config:
+model: gpt-4.1-mini
+temperature: 0.0
+max_tokens: 16384
+iteration: 2
+language: python

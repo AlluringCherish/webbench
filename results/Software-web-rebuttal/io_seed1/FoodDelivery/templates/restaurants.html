@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse Restaurants</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="restaurants-page">
+    <h1>Browse Restaurants</h1>
+    <form method="get" action="{{ url_for('restaurants') }}">
+        <input type="text" id="search-input" name="search" placeholder="Search by name or cuisine" value="{{ search_query }}">
+        <select id="cuisine-filter" name="cuisine">
+            <option value="All" {% if selected_cuisine == 'All' or selected_cuisine == '' %}selected{% endif %}>All Cuisines</option>
+            {% for cuisine in cuisines %}
+                <option value="{{ cuisine }}" {% if selected_cuisine == cuisine %}selected{% endif %}>{{ cuisine }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Search</button>
+    </form>
+    <div id="restaurants-grid">
+        {% if restaurants %}
+            <ul>
+                {% for restaurant in restaurants %}
+                    <li>
+                        <div class="restaurant-card">
+                            <!-- Placeholder for logo image if available -->
+                            <div class="restaurant-logo">
+                                <img src="{{ url_for('static', filename='images/restaurants/' + restaurant.restaurant_id + '.png') }}" alt="{{ restaurant.name }} Logo" onerror="this.style.display='none'">
+                            </div>
+                            <div class="restaurant-info">
+                                <h3>{{ restaurant.name }}</h3>
+                                <p>Cuisine: {{ restaurant.cuisine }}</p>
+                                <p>Rating: {{ restaurant.rating }}</p>
+                                <p>Delivery Time: {{ restaurant.delivery_time }} mins</p>
+                                <button id="view-restaurant-button-{{ restaurant.restaurant_id }}" onclick="location.href='{{ url_for('menu', restaurant_id=restaurant.restaurant_id) }}'">View Menu</button>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No restaurants found.</p>
+        {% endif %}
+    </div>
+    <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

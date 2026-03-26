@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+<div id="auction-details-page">
+    <h1 id="auction-title">{{ auction.item_name }}</h1>
+    <div id="auction-description">
+        <p>{{ auction.description }}</p>
+    </div>
+    <div id="current-bid">
+        <strong>Current Highest Bid:</strong> ${{ '%.2f'|format(auction.current_bid) }}
+    </div>
+    <div id="time-remaining">
+        <strong>Time Remaining:</strong> {{ auction.time_remaining }}
+    </div>
+    <button id="place-bid-button" onclick="window.location.href='{{ url_for('place_bid', auction_id=auction.auction_id) }}'">Place Bid</button>
+    <div id="bid-history">
+        <h2>Bid History</h2>
+        {% if bid_history %}
+            <ul>
+                {% for bid in bid_history %}
+                    <li>{{ bid.bidder_name }} bid ${{ '%.2f'|format(bid.bid_amount) }} on {{ bid.bid_timestamp }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No bids placed yet.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-dashboard">Back to Dashboard</button>
+</div>
+</body>
+</html>

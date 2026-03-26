@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exhibitions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="exhibitions-page">
+        <h1>Exhibitions</h1>
+        <form method="post" action="{{ url_for('exhibitions') }}">
+            <label for="filter-exhibition-type">Filter by Exhibition Type:</label>
+            <select id="filter-exhibition-type" name="filter-exhibition-type">
+                <option value="All" {% if filter_type == 'All' or filter_type == '' %}selected{% endif %}>All</option>
+                <option value="Permanent" {% if filter_type == 'Permanent' %}selected{% endif %}>Permanent</option>
+                <option value="Temporary" {% if filter_type == 'Temporary' %}selected{% endif %}>Temporary</option>
+                <option value="Virtual" {% if filter_type == 'Virtual' %}selected{% endif %}>Virtual</option>
+            </select>
+            <button type="submit" id="apply-exhibition-filter">Apply Filter</button>
+        </form>
+        <table id="exhibition-list" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Dates</th>
+                    <th>Gallery</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exhibition in exhibitions %}
+                <tr>
+                    <td>{{ exhibition.title }}</td>
+                    <td>{{ exhibition.exhibition_type }}</td>
+                    <td>{{ exhibition.start_date }} to {{ exhibition.end_date }}</td>
+                    <td>{{ exhibition.gallery_name }}</td>
+                    <td>{{ exhibition.status }}</td>
+                    <td>
+                        <form method="get" action="{{ url_for('exhibition_details', exhibition_id=exhibition.exhibition_id) }}" style="display:inline;">
+                            <button type="submit" id="view-exhibition-button-{{ exhibition.exhibition_id }}">View Details</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">No exhibitions found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

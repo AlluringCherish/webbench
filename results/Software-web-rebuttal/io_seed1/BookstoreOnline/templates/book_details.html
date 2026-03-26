@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="book-details-page">
+    <h1 id="book-title">{{ book.title }}</h1>
+    <div id="book-author"><strong>Author:</strong> {{ book.author }}</div>
+    <div id="book-price"><strong>Price:</strong> ${{ "%.2f"|format(book.price) }}</div>
+    <div id="book-description"><strong>Description:</strong> {{ book.description }}</div>
+    <form action="{{ url_for('add_to_cart', book_id=book.book_id) }}" method="post">
+        <button type="submit" id="add-to-cart-button">Add to Cart</button>
+    </form>
+    <section id="book-reviews">
+        <h2>Customer Reviews</h2>
+        {% if reviews %}
+            <ul>
+                {% for review in reviews %}
+                <li>
+                    <strong>{{ review.customer_name }}</strong> ({{ review.review_date }}) - Rating: {{ review.rating }} / 5<br>
+                    {{ review.review_text }}
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No reviews yet.</p>
+        {% endif %}
+    </section>
+    <form action="{{ url_for('back_to_dashboard') }}" method="post" style="display:inline;">
+        <button type="submit">Back to Dashboard</button>
+    </form>
+    <form action="{{ url_for('catalog') }}" method="get" style="display:inline;">
+        <button type="submit">Back to Catalog</button>
+    </form>
+</div>
+</body>
+</html>

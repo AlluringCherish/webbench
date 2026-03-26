@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gym Membership Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="dashboard-page">
+    <div id="member-welcome">
+        <h2>{{ member_status }}</h2>
+    </div>
+    <div id="featured-classes">
+        <h3>Featured Classes</h3>
+        <div class="classes-list">
+            {% for cls in featured_classes %}
+            <div class="class-card">
+                <h4>{{ cls.class_name }}</h4>
+                <p><strong>Day:</strong> {{ cls.schedule_day }}</p>
+                <p><strong>Time:</strong> {{ cls.schedule_time }}</p>
+                <p><strong>Duration:</strong> {{ cls.duration }} minutes</p>
+                <p><strong>Trainer:</strong>
+                    {% set trainer = None %}
+                    {% for t in trainers %}
+                        {% if t.trainer_id == cls.trainer_id %}
+                            {% set trainer = t %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ trainer.name if trainer else 'Unknown' }}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div id="navigation-buttons">
+        <button id="browse-membership-button" onclick="location.href='{{ url_for('membership_plans') }}'">Browse Membership Plans</button>
+        <button id="view-schedule-button" onclick="location.href='{{ url_for('class_schedule') }}'">View Class Schedule</button>
+        <button id="book-trainer-button" onclick="location.href='{{ url_for('pt_booking') }}'">Book Personal Training</button>
+        <button id="workout-records-button" onclick="location.href='{{ url_for('workout_records') }}'">My Workout Records</button>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Genre Exploration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="genres-page">
+    <h1>Genre Exploration</h1>
+    <div id="genres-list">
+        <h2>Available Genres</h2>
+        <ul>
+            {% for genre in genres %}
+                <li>{{ genre.genre_name }}: {{ genre.description }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <form method="get" action="{{ url_for('genres') }}">
+        <label for="select-genre">Select Genre:</label>
+        <select id="select-genre" name="genre">
+            <option value="">--Select--</option>
+            {% for name in genre_names %}
+                <option value="{{ name }}" {% if name == selected_genre %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Explore</button>
+    </form>
+    {% if selected_genre %}
+        <div id="genre-songs">
+            <h2>Songs in {{ selected_genre }}</h2>
+            {% if genre_songs %}
+                <ul>
+                    {% for song in genre_songs %}
+                        <li>
+                            <a href="{{ url_for('song_details', song_id=song.song_id) }}">{{ song.title }}</a>
+                            by <a href="{{ url_for('artist_profile', artist_id=song.artist_id) }}">{{ song.artist_name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No songs found for this genre.</p>
+            {% endif %}
+        </div>
+        <div id="genre-artists">
+            <h2>Artists in {{ selected_genre }}</h2>
+            {% if genre_artists %}
+                <ul>
+                    {% for artist in genre_artists %}
+                        <li><a href="{{ url_for('artist_profile', artist_id=artist.artist_id) }}">{{ artist.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No artists found for this genre.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

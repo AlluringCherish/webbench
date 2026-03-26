@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Albums</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="albums-page">
+    <h1>Albums</h1>
+    <form method="get" action="{{ url_for('albums') }}">
+        <input type="text" id="search-albums" name="search" placeholder="Search albums by title or artist" value="{{ search_query }}">
+        <select id="sort-albums" name="sort">
+            <option value="By Title" {% if sort_option == 'By Title' %}selected{% endif %}>By Title</option>
+            <option value="By Artist" {% if sort_option == 'By Artist' %}selected{% endif %}>By Artist</option>
+            <option value="By Year" {% if sort_option == 'By Year' %}selected{% endif %}>By Year</option>
+        </select>
+        <button type="submit">Search/Sort</button>
+    </form>
+    <div id="albums-grid">
+        {% if albums %}
+            <ul>
+                {% for album in albums %}
+                    <li>
+                        <div class="album-card">
+                            <div class="album-info">
+                                <strong>{{ album.title }}</strong><br>
+                                Artist: <a href="{{ url_for('artist_profile', artist_id=album.artist_id) }}">{{ album.artist_name }}</a><br>
+                                Year: {{ album.release_year }}
+                            </div>
+                            <button id="view-album-button-{{ album.album_id }}" onclick="location.href='{{ url_for('album_details', album_id=album.album_id) }}'">View</button>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No albums found.</p>
+        {% endif %}
+    </div>
+    <nav>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </nav>
+</div>
+</body>
+</html>

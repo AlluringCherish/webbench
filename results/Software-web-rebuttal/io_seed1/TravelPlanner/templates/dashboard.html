@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Planner Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Travel Planner Dashboard</h1>
+        <section id="featured-destinations">
+            <h2>Featured Destinations</h2>
+            <div>
+                {% if featured_destinations %}
+                    <ul>
+                        {% for dest in featured_destinations %}
+                            <li>
+                                <strong>{{ dest.name }}</strong> - {{ dest.country }}
+                                <form action="{{ url_for('destination_details', dest_id=dest.dest_id) }}" method="get" style="display:inline;">
+                                    <button type="submit" id="view-destination-button-{{ dest.dest_id }}">View Details</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No featured destinations available.</p>
+                {% endif %}
+            </div>
+        </section>
+        <section id="upcoming-trips">
+            <h2>Upcoming Trips</h2>
+            <div>
+                {% if upcoming_trips %}
+                    <ul>
+                        {% for trip in upcoming_trips %}
+                            <li>
+                                <strong>{{ trip.trip_name }}</strong> - {{ trip.destination }} ({{ trip.start_date }} to {{ trip.end_date }})
+                                <form action="{{ url_for('trip_management') }}" method="get" style="display:inline;">
+                                    <button type="submit" id="view-trip-details-button-{{ trip.trip_id }}">View Trip</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No upcoming trips planned.</p>
+                {% endif %}
+            </div>
+        </section>
+        <nav>
+            <button id="browse-destinations-button" onclick="location.href='{{ url_for('destinations') }}'">Browse Destinations</button>
+            <button id="plan-itinerary-button" onclick="location.href='{{ url_for('itinerary_planning') }}'">Plan Itinerary</button>
+            <button onclick="location.href='{{ url_for('accommodations') }}'">Search Accommodations</button>
+            <button onclick="location.href='{{ url_for('transportation') }}'">Book Flights</button>
+            <button onclick="location.href='{{ url_for('travel_packages') }}'">Travel Packages</button>
+            <button onclick="location.href='{{ url_for('trip_management') }}'">My Trips</button>
+            <button onclick="location.href='{{ url_for('travel_recommendations') }}'">Travel Recommendations</button>
+        </nav>
+    </div>
+</body>
+</html>

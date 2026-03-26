@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1 id="welcome-message">Welcome, {{ username }}!</h1>
+        <h2>Featured Books</h2>
+        <div id="featured-books-grid" style="display: flex; flex-wrap: wrap; gap: 1rem;">
+            {% for book in featured_books %}
+            <div class="book-card" style="border: 1px solid #ccc; padding: 1rem; width: 180px;">
+                <div class="book-title" style="font-weight: bold;">{{ book.title }}</div>
+                <div class="book-author" style="font-style: italic;">by {{ book.author }}</div>
+                <div class="book-status" style="margin-top: 0.5rem;">Status: {{ book.status }}</div>
+                <div class="book-rating">Avg. Rating: {{ book.avg_rating }}</div>
+                <form action="{{ url_for('book_details', book_id=book.book_id) }}" method="get" style="margin-top: 0.5rem;">
+                    <button type="submit" id="view-book-button-{{ book.book_id }}">View Details</button>
+                </form>
+            </div>
+            {% else %}
+            <p>No featured books available.</p>
+            {% endfor %}
+        </div>
+        <div style="margin-top: 2rem;">
+            <form action="{{ url_for('book_catalog') }}" method="get" style="display: inline;">
+                <button type="submit" id="browse-books-button">Browse Books</button>
+            </form>
+            <form action="{{ url_for('my_borrowings') }}" method="get" style="display: inline; margin-left: 1rem;">
+                <button type="submit" id="my-borrows-button">My Borrowings</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

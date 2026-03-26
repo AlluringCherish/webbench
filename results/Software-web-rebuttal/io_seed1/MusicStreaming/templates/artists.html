@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Artist Profiles</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="artists-page">
+    <h1>Artist Profiles</h1>
+    {% if artist %}
+        <!-- Single artist profile view -->
+        <h2>{{ artist.name }}</h2>
+        <p>Genre: {{ artist.genre }}</p>
+        <p>Country: {{ artist.country }}</p>
+        <p>Formation Year: {{ artist.formation_year }}</p>
+        <h3>Songs</h3>
+        {% if artist_songs %}
+            <ul>
+                {% for song in artist_songs %}
+                    <li><a href="{{ url_for('song_details', song_id=song.song_id) }}">{{ song.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No songs found for this artist.</p>
+        {% endif %}
+        <h3>Albums</h3>
+        {% if artist_albums %}
+            <ul>
+                {% for album in artist_albums %}
+                    <li><a href="{{ url_for('album_details', album_id=album.album_id) }}">{{ album.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No albums found for this artist.</p>
+        {% endif %}
+        <nav>
+            <button onclick="location.href='{{ url_for('artists') }}'">Back to Artists List</button>
+            <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </nav>
+    {% else %}
+        <!-- Artists list view -->
+        <form method="get" action="{{ url_for('artists') }}">
+            <input type="text" id="search-artists" name="search" placeholder="Search artists by name" value="{{ search_query }}">
+            <select id="artists-sort" name="sort">
+                <option value="By Name" {% if sort_option == 'By Name' %}selected{% endif %}>By Name</option>
+                <option value="By Genre" {% if sort_option == 'By Genre' %}selected{% endif %}>By Genre</option>
+            </select>
+            <button type="submit">Search/Sort</button>
+        </form>
+        <div id="artists-grid">
+            {% if artists %}
+                <ul>
+                    {% for artist in artists %}
+                        <li>
+                            <div class="artist-card">
+                                <div class="artist-info">
+                                    <strong>{{ artist.name }}</strong><br>
+                                    Genre: {{ artist.genre }}
+                                </div>
+                                <button id="view-artist-button-{{ artist.artist_id }}" onclick="location.href='{{ url_for('artist_profile', artist_id=artist.artist_id) }}'">View</button>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No artists found.</p>
+            {% endif %}
+        </div>
+        <nav>
+            <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </nav>
+    {% endif %}
+</div>
+</body>
+</html>

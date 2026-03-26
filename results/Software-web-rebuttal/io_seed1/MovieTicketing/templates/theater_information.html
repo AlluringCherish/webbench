@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="theater-page">
+        <h1>Theater Information</h1>
+        <form method="get" action="{{ url_for('theater_information') }}">
+            <label for="theater-location-filter">Filter by Location:</label>
+            <select id="theater-location-filter" name="location" onchange="this.form.submit()">
+                {% for location in locations %}
+                    <option value="{{ location }}" {% if location == location_filter %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <div id="theaters-list">
+            {% if theaters %}
+                <ul>
+                    {% for theater in theaters %}
+                        <li>
+                            <strong>{{ theater.theater_name }}</strong><br>
+                            Location: {{ theater.location }}, {{ theater.city }}<br>
+                            Screens: {{ theater.screens }}<br>
+                            <div id="facilities-display">
+                                Facilities: {{ theater.facilities | join(', ') }}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No theaters found for the selected location.</p>
+            {% endif %}
+        </div>
+        <nav>
+            <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </nav>
+    </div>
+</body>
+</html>

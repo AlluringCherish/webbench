@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Playlist Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="playlist-details-page">
+    <h1 id="playlist-title">{{ playlist.title }}</h1>
+    <div id="playlist-description">{{ playlist.description }}</div>
+    <table id="songs-in-playlist" border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Duration</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if songs_in_playlist %}
+                {% for song in songs_in_playlist %}
+                    <tr>
+                        <td><a href="{{ url_for('song_details', song_id=song.song_id) }}">{{ song.title }}</a></td>
+                        <td>{{ song.artist_name }}</td>
+                        <td>{{ (song.duration // 60) }}:{{ '%02d' % (song.duration % 60) }}</td>
+                        <td>
+                            <form method="post" action="{{ url_for('remove_song_from_playlist', playlist_id=playlist.playlist_id, song_id=song.song_id) }}">
+                                <button type="submit" id="remove-song-button-{{ song.song_id }}">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="4">No songs in this playlist.</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <form method="post" action="{{ url_for('delete_playlist', playlist_id=playlist.playlist_id) }}" onsubmit="return confirm('Are you sure you want to delete this playlist?');">
+        <button type="submit" id="delete-playlist-button">Delete Playlist</button>
+    </form>
+    <nav>
+        <button onclick="location.href='{{ url_for('playlists') }}'">Back to Playlists</button>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </nav>
+</div>
+</body>
+</html>

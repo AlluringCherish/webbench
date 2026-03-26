@@ -1,0 +1,58 @@
+'''
+Weather Alerts Page Template for WeatherForecast Web Application.
+Displays active weather alerts with filters and acknowledge buttons.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Alerts</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+    <div id="alerts-page">
+        <h1>Weather Alerts</h1>
+        <form method="post" action="{{ url_for('weather_alerts') }}">
+            <label for="severity-filter">Filter by Severity:</label>
+            <select id="severity-filter" name="severity-filter" onchange="this.form.submit()">
+                <option value="All" {% if severity_filter == 'All' %}selected{% endif %}>All</option>
+                <option value="Critical" {% if severity_filter == 'Critical' %}selected{% endif %}>Critical</option>
+                <option value="High" {% if severity_filter == 'High' %}selected{% endif %}>High</option>
+                <option value="Medium" {% if severity_filter == 'Medium' %}selected{% endif %}>Medium</option>
+                <option value="Low" {% if severity_filter == 'Low' %}selected{% endif %}>Low</option>
+            </select>
+            <label for="location-filter-alerts">Filter by Location:</label>
+            <select id="location-filter-alerts" name="location-filter-alerts" onchange="this.form.submit()">
+                <option value="All" {% if location_filter == 'All' %}selected{% endif %}>All</option>
+                {% for loc in locations %}
+                    <option value="{{ loc.location_id }}" {% if location_filter|int == loc.location_id %}selected{% endif %}>{{ loc.location_name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        {% if alerts %}
+            <div id="alerts-list">
+                {% for alert in alerts %}
+                    <div class="alert-item">
+                        <strong>Severity:</strong> {{ alert.severity }}<br>
+                        <strong>Location:</strong> {{ alert.location_name }}<br>
+                        <strong>Type:</strong> {{ alert.alert_type }}<br>
+                        <strong>Description:</strong> {{ alert.description }}<br>
+                        <strong>Start Time:</strong> {{ alert.start_time }}<br>
+                        <strong>End Time:</strong> {{ alert.end_time }}<br>
+                        <form method="post" action="{{ url_for('acknowledge_alert', alert_id=alert.alert_id) }}">
+                            <button id="acknowledge-alert-button-{{ alert.alert_id }}" type="submit">Acknowledge Alert</button>
+                        </form>
+                    </div>
+                    <hr>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No active weather alerts.</p>
+        {% endif %}
+        <form method="post" action="{{ url_for('back_to_dashboard') }}">
+            <button type="submit">Back to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

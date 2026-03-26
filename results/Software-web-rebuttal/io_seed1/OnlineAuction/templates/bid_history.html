@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bid History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+<div id="bid-history-page">
+    <h1>Bid History</h1>
+    <label for="filter-by-auction">Filter by Auction:</label>
+    <select id="filter-by-auction" name="filter-by-auction">
+        <option value="">All Auctions</option>
+        {% for auction_id, auction_name in auction_options %}
+            <option value="{{ auction_id }}" {% if selected_auction == auction_id %}selected{% endif %}>{{ auction_name }}</option>
+        {% endfor %}
+    </select>
+    <button id="sort-by-amount" data-sorted="{{ 'true' if sort_by_amount else 'false' }}">
+        {% if sort_by_amount %}
+            Sort by Amount (Desc)
+        {% else %}
+            Sort by Amount
+        {% endif %}
+    </button>
+    <table id="bids-table" border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Bid ID</th>
+                <th>Auction Name</th>
+                <th>Bidder</th>
+                <th>Amount</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if bid_history %}
+                {% for bid in bid_history %}
+                    <tr>
+                        <td>{{ bid.history_id }}</td>
+                        <td>{{ bid.auction_name }}</td>
+                        <td>{{ bid.bidder_name }}</td>
+                        <td>${{ '%.2f'|format(bid.bid_amount) }}</td>
+                        <td>{{ bid.bid_timestamp }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5">No bids found.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard">Back to Dashboard</button>
+</div>
+</body>
+</html>

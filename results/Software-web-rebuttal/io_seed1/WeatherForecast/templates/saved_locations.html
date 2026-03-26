@@ -1,0 +1,59 @@
+'''
+Saved Locations Page Template for WeatherForecast Web Application.
+Displays all saved locations with current temperature and weather condition.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Saved Locations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+    <div id="saved-locations-page">
+        <h1>Saved Locations</h1>
+        {% if saved_locations %}
+            <table id="locations-table" border="1" cellpadding="5" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Location Name</th>
+                        <th>Temperature (°{{ temperature_unit[0] }})</th>
+                        <th>Condition</th>
+                        <th>Default</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sl in saved_locations %}
+                    <tr>
+                        <td>{{ sl.location_name }}</td>
+                        <td>
+                            {% if sl.temperature is not none %}
+                                {{ sl.temperature }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>{{ sl.condition if sl.condition else 'N/A' }}</td>
+                        <td>{% if sl.is_default %}Yes{% else %}No{% endif %}</td>
+                        <td>
+                            <button id="view-location-weather-{{ sl.location_id }}" data-location-id="{{ sl.location_id }}" type="button">View Weather</button>
+                            <form method="post" action="{{ url_for('remove_location', saved_id=sl.saved_id) }}" style="display:inline;">
+                                <button id="remove-location-button-{{ sl.saved_id }}" data-saved-id="{{ sl.saved_id }}" type="submit">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No saved locations.</p>
+        {% endif %}
+        <button id="add-new-location-button" type="button">Add New Location</button>
+        <form method="post" action="{{ url_for('back_to_dashboard') }}">
+            <button type="submit">Back to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>
