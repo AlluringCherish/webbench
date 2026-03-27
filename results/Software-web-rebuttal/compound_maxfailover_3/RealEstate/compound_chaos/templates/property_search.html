@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Search</title>
+</head>
+<body>
+    <div id="search-page">
+        <label for="location-input">Location:</label>
+        <input type="text" id="location-input" name="location" list="location-list" value="{{ selected_filters.location }}" />
+        <datalist id="location-list">
+            {% for location in locations %}
+                <option value="{{ location }}"></option>
+            {% endfor %}
+        </datalist>
+
+        <label for="price-range-min">Price Min:</label>
+        <input type="number" id="price-range-min" name="price_min" value="{{ selected_filters.price_min if selected_filters.price_min is not none else '' }}" />
+
+        <label for="price-range-max">Price Max:</label>
+        <input type="number" id="price-range-max" name="price_max" value="{{ selected_filters.price_max if selected_filters.price_max is not none else '' }}" />
+
+        <label for="property-type-filter">Property Type:</label>
+        <select id="property-type-filter" name="property_type">
+            <option value="" {% if not selected_filters.property_type %}selected{% endif %}></option>
+            <option value="House" {% if selected_filters.property_type == 'House' %}selected{% endif %}>House</option>
+            <option value="Apartment" {% if selected_filters.property_type == 'Apartment' %}selected{% endif %}>Apartment</option>
+            <option value="Condo" {% if selected_filters.property_type == 'Condo' %}selected{% endif %}>Condo</option>
+            <option value="Land" {% if selected_filters.property_type == 'Land' %}selected{% endif %}>Land</option>
+        </select>
+
+        <div id="properties-grid">
+            {% for property in properties %}
+                <div id="property-{{ property.property_id }}">
+                    <span>{{ property.address }} - ${{ property.price }}</span>
+                    <button id="view-property-button-{{ property.property_id }}" onclick="window.location.href='{{ url_for('property_details', property_id=property.property_id) }}'">View</button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

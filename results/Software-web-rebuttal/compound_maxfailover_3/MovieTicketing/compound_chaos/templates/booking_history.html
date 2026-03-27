@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking History</title>
+</head>
+<body>
+    <div id="bookings-page">
+        <h1>Booking History</h1>
+        <form method="get" action="">
+            <label for="status-filter">Filter by Status:</label>
+            <select id="status-filter" name="selected_status" onchange="this.form.submit()">
+                {% for status in status_filter_options %}
+                <option value="{{ status }}" {% if selected_status == status %}selected{% endif %}>{{ status }}</option>
+                {% endfor %}
+            </select>
+            <noscript><button type="submit">Filter</button></noscript>
+        </form>
+        <table id="bookings-table" border="1">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Movie Title</th>
+                    <th>Booking Date</th>
+                    <th>Seats</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.booking_id }}</td>
+                    <td>{{ booking.movie_title }}</td>
+                    <td>{{ booking.booking_date }}</td>
+                    <td>{{ booking.seats | join(', ') }}</td>
+                    <td>{{ booking.status }}</td>
+                    <td>
+                        <form method="get" action="{{ url_for('view_booking_details', booking_id=booking.booking_id) }}" style="display:inline;">
+                            <button type="submit" id="view-booking-button-{{ booking.booking_id }}">View Details</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

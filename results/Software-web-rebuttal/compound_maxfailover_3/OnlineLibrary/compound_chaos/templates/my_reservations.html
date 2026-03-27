@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>My Reservations</h1>
+    {% if reservations %}
+    <table border="1" id="reservations-table">
+        <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Reservation Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.book_title }}</td>
+                <td>{{ reservation.reservation_date }}</td>
+                <td>{{ reservation.status }}</td>
+                <td>
+                    {% if reservation.status == 'Active' %}
+                    <form action="{{ url_for('cancel_reservation', reservation_id=reservation.reservation_id) }}" method="POST" style="display:inline;">
+                        <button type="submit" id="cancel-reservation-button-{{ reservation.reservation_id }}">Cancel</button>
+                    </form>
+                    {% else %}
+                    <button disabled>Cancel</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div id="no-reservations-message">You have no reservations yet.</div>
+    {% endif %}
+    <button onclick="window.location.href='{{ url_for('dashboard') }}'" id="back-to-dashboard">Back to Dashboard</button>
+</body>
+</html>

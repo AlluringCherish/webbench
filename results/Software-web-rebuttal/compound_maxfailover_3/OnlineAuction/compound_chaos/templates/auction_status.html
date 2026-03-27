@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Status</title>
+</head>
+<body>
+    <div id="status-page">
+        <h1>Auction Status</h1>
+        <select id="status-filter">
+            <option value="">All Statuses</option>
+            {% set statuses = auctions | map(attribute='status') | unique %}
+            {% for status in statuses %}
+                <option value="{{ status }}">{{ status }}</option>
+            {% endfor %}
+        </select>
+        <table id="status-table" border="1">
+            <thead>
+                <tr>
+                    <th>Auction Name</th>
+                    <th>Status</th>
+                    <th>Time Remaining</th>
+                    <th>Current Bid</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for auction in auctions %}
+                <tr>
+                    <td>{{ auction.item_name }}</td>
+                    <td>{{ auction.status }}</td>
+                    <td>{{ auction.time_remaining }}</td>
+                    <td>${{ "%.2f"|format(auction.current_bid) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="refresh-status-button">Refresh Status</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

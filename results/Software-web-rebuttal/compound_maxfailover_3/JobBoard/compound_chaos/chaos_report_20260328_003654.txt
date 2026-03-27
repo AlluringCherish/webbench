@@ -1,0 +1,2923 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "Tester",
+      "BackendDeveloper",
+      "SystemArchitect"
+    ],
+    "num_all_targets": 3,
+    "agent_chaos_targets": [
+      "SystemArchitect"
+    ],
+    "stress_chaos_targets": [
+      "BackendDeveloper"
+    ],
+    "io_chaos_targets": [
+      "SystemArchitect",
+      "Tester"
+    ],
+    "tool_chaos_targets": []
+  },
+  "agent_chaos": {
+    "enabled": true,
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 2,
+    "log": [
+      {
+        "timestamp": 1774625055.8838768,
+        "agent": "SystemArchitect",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1774625056.8852105,
+        "agent": "SystemArchitect",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      }
+    ]
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordDeletion",
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 6,
+    "method_selection": "Mode: WordDeletion (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": [
+      {
+        "timestamp": 1774625131.9663782,
+        "agent": "BackendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 234/391 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "You are a Backend Developer specializing in Flask web applications.\n\nYour goal is to implement complete Flask backend components with all routes, data handling, and business logic based on the provided design specifications.\n\nTask Details:\n- Read design_spec.md Sections 1 (Flask Routes) and 3 (Data Schemas) ONLY from CONTEXT\n- Implement complete app.py with all Flask routes specified in Section 1\n- Load and save data using the exact field orders and pipe-delimited formats defined in Section 3 for all relevant text files in data/\n- Implement root '/' route to redirect to dashboard page as specified\n- DO NOT read or modify any frontend templates or Section 2 content\n- DO NOT assume any fields or routes beyond those in Sections 1 and 3\n\nImplementation Requirements:\n1. **Flask Application Setup**:\n   ```python\n   from flask import Flask, render_template, redirect, url_for, request\n   app = Flask(__name__)\n   app.config['SECRET_KEY'] = 'dev-secret-key'\n   ```\n\n2. **Routing and Views**:\n   - Implement all routes exactly as defined in Section 1\n   - Use function names and route paths exactly as specified\n   - Use render_template() with templates named per Section 1\n   - Pass context variables with exact names and data types specified\n   - For POST requests, handle form data correctly using request.form\n\n3. **Data Handling**:\n   - Read data files from data/ directory with exact pipe-delimited formats\n   - Parse data lines into dictionaries matching specified field orders in Section 3\n   - Handle file I/O robustly with error checking\n   - Save any updated data respecting the same format and encoding\n   - No assumptions about file headers; start parsing from first line\n\n4. **Root Route**:\n   - Implement '/' to redirect to dashboard page using:\n     `return redirect(url_for('dashboard'))`\n\n5. **Code Style and Best Practices**:\n   - Use url_for() for route references\n   - Include `if __name__ == '__main__':` block for standalone runs\n   - Gracefully handle missing or empty data cases\n   - Adhere strictly to the specification without extraneous functionality\n\nCRITICAL REQUIREMENTS:\n- Use write_text_file tool to save app.py\n- Ensure function names, route paths, and context variables match design_spec.md exactly\n- Data file parsing and saving must match Section 3 field order and format precisely\n- Do NOT read or use Section 2 (frontend templates) contents in implementation\n- Do NOT add unapproved features or routes beyond design_spec.md Sections 1 and 3\n- Do NOT provide code snippets only in messages; always save full files via write_text_file\n\nOutput: app.py",
+        "after": "You are a Backend Developer\n\nYour goal is complete Flask components with business logic based on provided design specifications.\n\n\ndesign_spec.md Sections 1 Routes) 3 (Data\n- Implement app.py with\n- Load and using and pipe-delimited formats Section 3 relevant text files data/\nImplement to redirect as\nread any frontend or Section content\n- DO fields or routes in Sections\n\nImplementation Requirements:\nSetup**:\n\nfrom Flask, url_for,\n\napp.config['SECRET_KEY'] = 'dev-secret-key'\n\n\n**Routing\nImplement routes exactly 1\n- names paths exactly\nrender_template() Section 1\nvariables\nFor handle form data using\n\n**Data\nRead data files exact pipe-delimited\n- lines into dictionaries field\n- Handle I/O error\n- any updated respecting the\nstart from first\n\n\nImplement '/' to page\n\n\n5. Best Practices**:\n- route\n`if __name__ ==\n- Gracefully handle or data cases\nAdhere strictly without functionality\n\nREQUIREMENTS:\nUse app.py\nand context match\nmust match field\nread or use (frontend templates)\n- add unapproved or routes beyond and 3\nNOT always write_text_file\n\napp.py"
+      },
+      {
+        "timestamp": 1774625131.9678571,
+        "agent": "BackendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 1020/1700 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement app.py backend routes and data handling from design_spec.md Sections 1 and 3\n=== design_spec.md ===\n# Design Specification for JobBoard Web Application\n\n---\n\n## 1. Flask Routes Specification\n\n| Route Path               | Function Name              | HTTP Methods | Template Rendered       | Context Variables and Types                                                | Form Fields (POST)                                         |\n|--------------------------|----------------------------|--------------|-------------------------|---------------------------------------------------------------------------|------------------------------------------------------------|\n| /                        | redirect_to_dashboard       | GET          | Redirect to /dashboard  | None                                                                      | None                                                       |\n| /dashboard               | dashboard                  | GET          | dashboard.html          | featured_jobs: List[Dict] (job data), new_opportunities: List[Dict] (job data)\n                                                                                         | None                                                       |\n| /jobs                    | job_listings               | GET          | job_listings.html       | jobs: List[Dict], categories: List[Dict], locations: List[str], filters: Dict[str,str]\n                                       | None                                                       |\n| /jobs/<int:job_id>       | job_details                | GET          | job_details.html        | job: Dict, company: Dict                                                 | None                                                       |\n| /apply/<int:job_id>      | application_form           | GET, POST    | application_form.html   | job: Dict, errors: Dict[str,str] (only for GET with errors or POST failure) | applicant_name (str), applicant_email (str), resume_file (file), cover_letter (str) |\n| /applications            | applications_tracking      | GET          | applications.html       | applications: List[Dict], filter_status: str                             | None                                                       |\n| /application/<int:app_id>| application_details        | GET          | application_details.html | application: Dict, job: Dict, resume: Dict                                | None                                                       |\n| /companies               | companies_directory        | GET          | companies.html          | companies: List[Dict], search_query: str                                | None                                                       |\n| /companies/<int:company_id> | company_profile          | GET          | company_profile.html    | company: Dict, jobs: List[Dict]                                         | None                                                       |\n| /resumes                 | resume_management          | GET, POST    | resumes.html            | resumes: List[Dict], errors: Dict[str,str] (optional)                    | resume_file (file, optional)                              |\n| /resumes/delete/<int:resume_id> | delete_resume         | POST         | redirects to /resumes   | None                                                                      | None                                                       |\n| /search                  | search_results             | GET          | search_results.html     | query: str, job_results: List[Dict], company_results: List[Dict]          | None                                                       |\n\n\n### Details per route:\n\n#### Root '/'\n- Redirects to `/dashboard` route.\n\n#### /dashboard\n- Function: `dashboard`\n- Method: GET\n- Template: `dashboard.html`\n- Context:\n  - `featured_jobs`: List of dictionaries representing featured job postings. Each dictionary includes job_id, title, company_name, location, salary_min, salary_max.\n  - `new_opportunities`: List of dictionaries representing latest job opportunities similarly structured.\n\n#### /jobs\n- Function: `job_listings`\n- Method: GET\n- Template: `job_listings.html`\n- Context:\n  - `jobs`: List of job dictionaries for display.\n  - `categories`: List of category dictionaries with category_id and category_name.\n  - `locations`: List of strings representing location filters.\n  - `filters`: Dictionary containing keys 'search', 'category', 'location' representing current filter values.\n\n#### /jobs/<int:job_id>\n- Function: `job_details`\n- Method: GET\n- Template: `job_details.html`\n- Context:\n  - `job`: Dictionary with full job details.\n  - `company`: Dictionary containing company details.\n\n#### /apply/<int:job_id>\n- Function: `application_form`\n- Methods: GET, POST\n- Template: `application_form.html`\n- Context:\n  - `job`: Job dict for the job being applied to.\n  - `errors`: For GET or POST failures, dictionary mapping field name to error message.\n- POST Form Fields:\n  - `applicant_name`: string\n  - `applicant_email`: string\n  - `resume_file`: file upload\n  - `cover_letter`: string\n\n#### /applications\n- Function: `applications_tracking`\n- Method: GET\n- Template: `applications.html`\n- Context:\n  - `applications`: List of applications with job title, company name, status, and date applied.\n  - `filter_status`: string indicating current status filter.\n\n#### /application/<int:app_id>\n- Function: `application_details`\n- Method: GET\n- Template: `application_details.html`\n- Context:\n  - `application`: Application dict\n  - `job`: Related job dict\n  - `resume`: Resume dict associated with application\n\n#### /companies\n- Function: `companies_directory`\n- Method: GET\n- Template: `companies.html`\n- Context:\n  - `companies`: List of company dictionaries.\n  - `search_query`: String search filter.\n\n#### /companies/<int:company_id>\n- Function: `company_profile`\n- Method: GET\n- Template: `company_profile.html`\n- Context:\n  - `company`: Company dictionary\n  - `jobs`: List of job dicts from the company\n\n#### /resumes\n- Function: `resume_management`\n- Methods: GET, POST\n- Template: `resumes.html`\n- Context:\n  - `resumes`: List of resume dicts.\n  - `errors`: Dict of errors from resume upload if any.\n- POST Form Fields:\n  - `resume_file`: file upload\n\n#### /resumes/delete/<int:resume_id>\n- Function: `delete_resume`\n- Method: POST\n- Redirects to `/resumes`\n- No template\n- No context\n\n#### /search\n- Function: `search_results`\n- Method: GET\n- Template: `search_results.html`\n- Context:\n  - `query`: Search string\n  - `job_results`: List of job dicts matching the query\n  - `company_results`: List of company dicts matching the query\n\n\n---\n\n## 2. HTML Template Specifications\n\n### dashboard.html\n- Page Title: Job Board Dashboard (for `<title>` and `<h1>`)\n- Elements:\n  - `dashboard-page`: Div - container for full dashboard page\n  - `featured-jobs`: Div - displays featured jobs (multiple job summary cards)\n  - `browse-jobs-button`: Button - navigates to job listings page\n  - `my-applications-button`: Button - navigates to applications tracking page\n  - `companies-button`: Button - navigates to companies directory page\n- Context Variables:\n  - `featured_jobs`: List[Dict] (job_id, title, company_name, location, salary_min, salary_max)\n  - `new_opportunities`: List[Dict] similar structure\n- Navigation:\n  - `browse-jobs-button` -> url_for('job_listings')\n  - `my-applications-button` -> url_for('applications_tracking')\n  - `companies-button` -> url_for('companies_directory')\n\n### job_listings.html\n- Page Title: Job Listings\n- Elements:\n  - `listings-page`: Div - main container\n  - `search-input`: Input - search jobs text field\n  - `category-filter`: Dropdown - category filter\n  - `location-filter`: Dropdown - location filter\n  - `jobs-grid`: Div - grid containing job cards\n  - `view-job-button-{{ job.job_id }}`: Button - button on each job card for details\n- Context Variables:\n  - `jobs`: List[Dict] with job data\n  - `categories`: List[Dict] with category_id, category_name\n  - `locations`: List[str]\n  - `filters`: Dict[str,str] keys: 'search', 'category', 'location'\n- Navigation:\n  - `view-job-button-{{ job.job_id }}` -> url_for('job_details', job_id=job.job_id)\n\n### job_details.html\n- Page Title: Job Details\n- Elements:\n  - `job-details-page`: Div - container\n  - `job-title`: H1 - job title text\n  - `company-name`: Div - company name\n  - `job-description`: Div - job description and requirements\n  - `salary-range`: Div - salary range\n  - `apply-now-button`: Button - navigates to application form\n- Context Variables:\n  - `job`: Dict with job fields\n  - `company`: Dict with company info\n- Navigation:\n  - `apply-now-button` -> url_for('application_form', job_id=job.job_id)\n\n### application_form.html\n- Page Title: Submit Application\n- Elements:\n  - `application-form-page`: Div - container\n  - `applicant-name`: Input - text input for applicant name\n  - `applicant-email`: Input - text input for applicant email\n  - `resume-upload`: File Input - resume upload field\n  - `cover-letter`: Textarea - input for cover letter\n  - `submit-application-button`: Button - submit\n- Context Variables:\n  - `job`: Dict with job data\n  - `errors`: Dict[str,str] error messages keyed by field\n- Navigation:\n  - Form POSTs to url_for('application_form', job_id=job.job_id)\n\n### applications.html\n- Page Title: My Applications\n- Elements:\n  - `tracking-page`: Div - container\n  - `applications-table`: Table - lists applications with columns job title, company, status, date applied\n  - `status-filter`: Dropdown - filter applications by status\n  - `view-application-button-{{ app.application_id }}`: Button to view details\n  - `back-to-dashboard`: Button - navigates to dashboard\n- Context Variables:\n  - `applications`: List[Dict]\n  - `filter_status`: str\n- Navigation:\n  - `view-application-button-{{ app.application_id }}` -> url_for('application_details', app_id=app.application_id)\n  - `back-to-dashboard` -> url_for('dashboard')\n\n### companies.html\n- Page Title: Company Directory\n- Elements:\n  - `companies-page`: Div - main container\n  - `companies-list`: Div - list of company cards\n  - `search-company-input`: Input - search field\n  - `view-company-button-{{ company.company_id }}`: Button - view company profile\n  - `back-to-dashboard`: Button - navigates to dashboard\n- Context Variables:\n  - `companies`: List[Dict]\n  - `search_query`: str\n- Navigation:\n  - `view-company-button-{{ company.company_id }}` -> url_for('company_profile', company_id=company.company_id)\n  - `back-to-dashboard` -> url_for('dashboard')\n\n### company_profile.html\n- Page Title: Company Profile\n- Elements:\n  - `company-profile-page`: Div - container\n  - `company-info`: Div - shows company name, industry, location, description\n  - `company-jobs`: Div - container for company's jobs\n  - `jobs-list`: Div - list of jobs with titles and status indicators\n  - `view-job-button-{{ job.job_id }}`: Button on each job to view details\n  - `back-to-companies`: Button - navigates back to companies directory\n- Context Variables:\n  - `company`: Dict\n  - `jobs`: List[Dict]\n- Navigation:\n  - `view-job-button-{{ job.job_id }}` -> url_for('job_details', job_id=job.job_id)\n  - `back-to-companies` -> url_for('companies_directory')\n\n### resumes.html\n- Page Title: My Resumes\n- Elements:\n  - `resume-page`: Div - container\n  - `resumes-list`: Div - list of uploaded resumes\n  - `upload-resume-button`: Button - triggers file input\n  - `resume-file-input`: File Input (hidden) - upload field\n  - `delete-resume-button-{{ resume.resume_id }}`: Button to delete resume\n  - `back-to-dashboard`: Button - navigates to dashboard\n- Context Variables:\n  - `resumes`: List[Dict]\n  - `errors`: Dict[str,str] (optional)\n- Navigation:\n  - `delete-resume-button-{{ resume.resume_id }}` -> form POST to url_for('delete_resume', resume_id=resume.resume_id)\n  - `back-to-dashboard` -> url_for('dashboard')\n\n### search_results.html\n- Page Title: Search Results\n- Elements:\n  - `search-results-page`: Div - container\n  - `search-query-display`: Div - shows entered search query\n  - `results-tabs`: Div - tab control to switch between job and company results\n  - `job-results`: Div - listing of job search results\n  - `company-results`: Div - listing of company search results\n  - `no-results-message`: Div - visible if no results found\n- Context Variables:\n  - `query`: str\n  - `job_results`: List[Dict]\n  - `company_results`: List[Dict]\n- Navigation:\n  - Each job and company entry includes buttons linking to their respective details pages using url_for('job_details', job_id=...) and url_for('company_profile', company_id=...)\n\n---\n\n## 3. Data File Schemas\n\n### jobs.txt\n- File Path: data/jobs.txt\n- Fields:\n  1. job_id (int)\n  2. title (str)\n  3. company_id (int)\n  4. location (str)\n  5. salary_min (int)\n  6. salary_max (int)\n  7. category (str)\n  8. description (str)\n  9. posted_date (YYYY-MM-DD str)\n- Description: Stores all job postings.\n- Examples:\n  ```\n  1|Senior Python Developer|1|Remote|80000|120000|Technology|Experienced Python developer for web applications|2025-01-15\n  2|Data Analyst|2|New York, NY|60000|85000|Finance|Analyze financial data and create reports|2025-01-16\n  3|Healthcare Administrator|3|Los Angeles, CA|50000|70000|Healthcare|Manage hospital operations and patient records|2025-01-14\n  ```\n\n### companies.txt\n- File Path: data/companies.txt\n- Fields:\n  1. company_id (int)\n  2. company_name (str)\n  3. industry (str)\n  4. location (str)\n  5. employee_count (int)\n  6. description (str)\n- Description: Stores company profiles.\n- Examples:\n  ```\n  1|TechCorp|Technology|San Francisco, CA|500|Leading software solutions provider\n  2|FinanceHub|Finance|New York, NY|300|Innovative financial services company\n  3|MediCare|Healthcare|Los Angeles, CA|200|Premier healthcare management organization\n  ```\n\n### categories.txt\n- File Path: data/categories.txt\n- Fields:\n  1. category_id (int)\n  2. category_name (str)\n  3. description (str)\n- Description: Stores categories for jobs.\n- Examples:\n  ```\n  1|Technology|Software, IT, and tech-related positions\n  2|Finance|Banking, accounting, and finance positions\n  3|Healthcare|Medical and healthcare industry positions\n  ```\n\n### applications.txt\n- File Path: data/applications.txt\n- Fields:\n  1. application_id (int)\n  2. job_id (int)\n  3. applicant_name (str)\n  4. applicant_email (str)\n  5. status (str) (e.g. Applied, Under Review, Interview, Rejected)\n  6. applied_date (YYYY-MM-DD str)\n  7. resume_id (int)\n- Description: Stores job applications submitted by users.\n- Examples:\n  ```\n  1|1|John Doe|john@email.com|Under Review|2025-01-17|1\n  2|2|Jane Smith|jane@email.com|Applied|2025-01-16|2\n  3|3|Robert Johnson|robert@email.com|Interview|2025-01-15|3\n  ```\n\n### resumes.txt\n- File Path: data/resumes.txt\n- Fields:\n  1. resume_id (int)\n  2. applicant_name (str)\n  3. applicant_email (str)\n  4. filename (str)\n  5. upload_date (YYYY-MM-DD str)\n  6. summary (str)\n- Description: Stores uploaded resumes metadata.\n- Examples:\n  ```\n  1|John Doe|john@email.com|john_resume.pdf|2025-01-17|Senior developer with 8 years experience\n  2|Jane Smith|jane@email.com|jane_resume.pdf|2025-01-16|Data analyst with financial background\n  3|Robert Johnson|robert@email.com|robert_resume.pdf|2025-01-15|Healthcare administrator with 5 years experience\n  ```\n\n### job_categories.txt\n- File Path: data/job_categories.txt\n- Fields:\n  1. mapping_id (int)\n  2. job_id (int)\n  3. category_id (int)\n- Description: Maps jobs to categories.\n- Examples:\n  ```\n  1|1|1\n  2|2|2\n  3|3|3\n  ```\n\n---\n\nEnd of Design Specification\n\n",
+        "after": "routes and design_spec.md Sections 3\ndesign_spec.md\nDesign Web\n\n\n\n## 1. Routes Specification\n\nRoute Path Name Methods Context Types (POST)\n\n| / redirect_to_dashboard | /dashboard | None | |\n| | dashboard | | List[Dict]\nNone |\n| /jobs jobs: List[Dict], List[str], filters:\nNone |\n/jobs/<int:job_id> | | | Dict, Dict None |\n| /apply/<int:job_id> | application_form GET, | application_form.html | Dict, GET POST failure) applicant_name (str), resume_file |\n/applications\n| GET application_details.html job: Dict None\n| GET | companies.html List[Dict], str | None |\n/companies/<int:company_id> | company_profile | company: jobs: List[Dict]\n/resumes | POST errors: Dict[str,str] (file, |\nPOST | to | None | |\n| search_results | | | query: job_results: None |\n\n\n### per route:\n\n\n- Redirects\n\n\n- Function:\n- Method: GET\n\nContext:\n- dictionaries includes job_id, title, location, salary_min, salary_max.\nList of dictionaries job similarly\n\n####\n\n\nTemplate:\n\n- for\n`categories`: List category and\nList filters.\n- `filters`: 'category', 'location' current filter\n\n/jobs/<int:job_id>\nFunction:\nMethod:\n- Template: `job_details.html`\n\n- Dictionary full\nDictionary company\n\n\n- Function:\nGET, POST\nTemplate:\n\nfor the being applied\n`errors`: For GET POST to error\nPOST Fields:\n`applicant_name`:\n-\nupload\n`cover_letter`:\n\n\n- `applications_tracking`\n- Method:\n\n\nof company name, status,\ncurrent filter.\n\n/application/<int:app_id>\nFunction:\nMethod:\n`application_details.html`\nContext:\n`application`:\n- `job`:\nwith application\n\n#### /companies\n`companies_directory`\nMethod:\n- `companies.html`\n\n`companies`: company dictionaries.\nsearch\n\n####\n`company_profile`\n- Method: GET\n`company_profile.html`\n-\n- `company`:\n- of job dicts company\n\n/resumes\n`resume_management`\n- Methods: GET,\n- Template: `resumes.html`\n\n- `resumes`: resume\nany.\n- POST Form\n- `resume_file`:\n\n/resumes/delete/<int:resume_id>\n\n- Method:\nRedirects to `/resumes`\ntemplate\n\n\n\n\n- GET\n\n-\n- Search string\n`job_results`: of dicts matching\n`company_results`: matching the query\n\n\n---\n\n\n\ndashboard.html\nJob Dashboard and `<h1>`)\n- Elements:\n`dashboard-page`: - for page\nDiv - displays job\n`browse-jobs-button`: Button - job page\n- `my-applications-button`: applications tracking page\n- navigates\nVariables:\n- `featured_jobs`: List[Dict] (job_id, location, salary_min, salary_max)\nsimilar structure\n-\n-> url_for('job_listings')\n- ->\n\n\n### job_listings.html\n- Job Listings\nElements:\n-\n- Input - search text field\n- `category-filter`: - filter\n- filter\n`jobs-grid`: Div - grid job\n- button job card for\nContext\ndata\n- List[Dict] category_id, category_name\n\n- 'search',\n\n- `view-job-button-{{ job.job_id }}`\n\n\n\n- Elements:\n`job-details-page`: Div container\njob text\ncompany name\n`job-description`: Div and\n- Div - salary\nnavigates application\n- Context\nDict with fields\n`company`: company\n\n- `apply-now-button`\n\n###\n-\n\n`application-form-page`: Div\n\nInput - applicant email\n- `resume-upload`: File resume upload\n`cover-letter`: Textarea cover\n- `submit-application-button`: -\nContext Variables:\n- Dict\nerror messages by\n-\nPOSTs\n\n###\nMy Applications\n\n-\nlists applications with title, company, status,\n`status-filter`: Dropdown applications status\n- view details\n- Button navigates to\n\nList[Dict]\n- str\nNavigation:\napp_id=app.application_id)\n`back-to-dashboard` url_for('dashboard')\n\n\nPage Title:\n-\n- main\n- company\nInput -\nview\n`back-to-dashboard`: Button - navigates\n\nList[Dict]\n\nNavigation:\n-> company_id=company.company_id)\n->\n\n\nProfile\n\n-\n`company-info`: shows company industry,\n- container for jobs\n- list of jobs\n- `view-job-button-{{ job.job_id }}`: Button on each view\n- -\n-\n- `company`:\n`jobs`: List[Dict]\nNavigation:\n\n- url_for('companies_directory')\n\nresumes.html\nPage Title:\nElements:\n\n- `resumes-list`: Div of resumes\n- - triggers input\nInput\n- Button to\n`back-to-dashboard`: to\n- Context Variables:\n- `resumes`: List[Dict]\n- `errors`: (optional)\n\n-> form to url_for('delete_resume',\n-\n\n###\nTitle: Search Results\n- Elements:\n-\nDiv shows search\n- tab control between results\n- job search\n- company search results\nDiv - if\nContext\n- `query`:\n- `job_results`: List[Dict]\nList[Dict]\nNavigation:\nEach job company buttons linking to their details pages using job_id=...)\n\n---\n\n\n\n\nPath:\n-\n1. job_id\ntitle\n\n4. location (str)\n\nsalary_max\n\n(str)\n9. posted_date str)\nall postings.\n-\n```\n1|Senior Python\n2|Data York, NY|60000|85000|Finance|Analyze data\nAdministrator|3|Los CA|50000|70000|Healthcare|Manage hospital operations records|2025-01-14\n```\n\ncompanies.txt\nFile\n\ncompany_id\n\n3. (str)\n\nemployee_count\n6.\n- Stores profiles.\n-\n```\n1|TechCorp|Technology|San Francisco, software\n2|FinanceHub|Finance|New NY|300|Innovative company\n3|MediCare|Healthcare|Los\n\n\n\n\n-\ncategory_id (int)\n\n\nDescription: for\n- Examples:\n```\n1|Technology|Software, and positions\n2|Finance|Banking, positions\n3|Healthcare|Medical\n\n\napplications.txt\n-\n\napplication_id\n(int)\napplicant_name (str)\n(str)\n5. status (str) Interview,\n(YYYY-MM-DD\n(int)\nDescription: Stores job by\n- Examples:\n```\n1|1|John Doe|john@email.com|Under Review|2025-01-17|1\nSmith|jane@email.com|Applied|2025-01-16|2\nJohnson|robert@email.com|Interview|2025-01-15|3\n\n\n\nFile\n-\n1. resume_id\n\n3. applicant_email (str)\nfilename\n5.\n\nuploaded metadata.\n\n\n1|John Doe|john@email.com|john_resume.pdf|2025-01-17|Senior with 8 years\n2|Jane financial\n5 years\n\n\njob_categories.txt\n- File data/job_categories.txt\n\n\n2. (int)\n3. category_id\n- Description: categories.\nExamples:\n\n\n\n\n\n\n\n\nEnd\n\n"
+      },
+      {
+        "timestamp": 1774625178.3953424,
+        "agent": "BackendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 94/157 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "You are a Backend Developer\n\nYour goal is complete Flask components with business logic based on provided design specifications.\n\n\ndesign_spec.md Sections 1 Routes) 3 (Data\n- Implement app.py with\n- Load and using and pipe-delimited formats Section 3 relevant text files data/\nImplement to redirect as\nread any frontend or Section content\n- DO fields or routes in Sections\n\nImplementation Requirements:\nSetup**:\n\nfrom Flask, url_for,\n\napp.config['SECRET_KEY'] = 'dev-secret-key'\n\n\n**Routing\nImplement routes exactly 1\n- names paths exactly\nrender_template() Section 1\nvariables\nFor handle form data using\n\n**Data\nRead data files exact pipe-delimited\n- lines into dictionaries field\n- Handle I/O error\n- any updated respecting the\nstart from first\n\n\nImplement '/' to page\n\n\n5. Best Practices**:\n- route\n`if __name__ ==\n- Gracefully handle or data cases\nAdhere strictly without functionality\n\nREQUIREMENTS:\nUse app.py\nand context match\nmust match field\nread or use (frontend templates)\n- add unapproved or routes beyond and 3\nNOT always write_text_file\n\napp.py",
+        "after": "You Developer\n\nwith provided\n\n\n1 Routes) (Data\napp.py with\n- and pipe-delimited 3\nto redirect\nfrontend or content\nfields in\n\nImplementation Requirements:\nSetup**:\n\nFlask,\n\napp.config['SECRET_KEY']\n\n\n\nImplement routes 1\n\nSection 1\nvariables\nFor handle form using\n\n\n\nlines into dictionaries field\nHandle error\n- any respecting\nfrom\n\n\n'/' page\n\n\nBest\n-\n\nor data cases\nAdhere functionality\n\n\nUse app.py\nand match\nfield\nread or\nor routes\n\n\n"
+      },
+      {
+        "timestamp": 1774625178.3964329,
+        "agent": "BackendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 1020/1700 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement app.py backend routes and data handling from design_spec.md Sections 1 and 3\n=== design_spec.md ===\n# Design Specification for JobBoard Web Application\n\n---\n\n## 1. Flask Routes Specification\n\n| Route Path               | Function Name              | HTTP Methods | Template Rendered       | Context Variables and Types                                                | Form Fields (POST)                                         |\n|--------------------------|----------------------------|--------------|-------------------------|---------------------------------------------------------------------------|------------------------------------------------------------|\n| /                        | redirect_to_dashboard       | GET          | Redirect to /dashboard  | None                                                                      | None                                                       |\n| /dashboard               | dashboard                  | GET          | dashboard.html          | featured_jobs: List[Dict] (job data), new_opportunities: List[Dict] (job data)\n                                                                                         | None                                                       |\n| /jobs                    | job_listings               | GET          | job_listings.html       | jobs: List[Dict], categories: List[Dict], locations: List[str], filters: Dict[str,str]\n                                       | None                                                       |\n| /jobs/<int:job_id>       | job_details                | GET          | job_details.html        | job: Dict, company: Dict                                                 | None                                                       |\n| /apply/<int:job_id>      | application_form           | GET, POST    | application_form.html   | job: Dict, errors: Dict[str,str] (only for GET with errors or POST failure) | applicant_name (str), applicant_email (str), resume_file (file), cover_letter (str) |\n| /applications            | applications_tracking      | GET          | applications.html       | applications: List[Dict], filter_status: str                             | None                                                       |\n| /application/<int:app_id>| application_details        | GET          | application_details.html | application: Dict, job: Dict, resume: Dict                                | None                                                       |\n| /companies               | companies_directory        | GET          | companies.html          | companies: List[Dict], search_query: str                                | None                                                       |\n| /companies/<int:company_id> | company_profile          | GET          | company_profile.html    | company: Dict, jobs: List[Dict]                                         | None                                                       |\n| /resumes                 | resume_management          | GET, POST    | resumes.html            | resumes: List[Dict], errors: Dict[str,str] (optional)                    | resume_file (file, optional)                              |\n| /resumes/delete/<int:resume_id> | delete_resume         | POST         | redirects to /resumes   | None                                                                      | None                                                       |\n| /search                  | search_results             | GET          | search_results.html     | query: str, job_results: List[Dict], company_results: List[Dict]          | None                                                       |\n\n\n### Details per route:\n\n#### Root '/'\n- Redirects to `/dashboard` route.\n\n#### /dashboard\n- Function: `dashboard`\n- Method: GET\n- Template: `dashboard.html`\n- Context:\n  - `featured_jobs`: List of dictionaries representing featured job postings. Each dictionary includes job_id, title, company_name, location, salary_min, salary_max.\n  - `new_opportunities`: List of dictionaries representing latest job opportunities similarly structured.\n\n#### /jobs\n- Function: `job_listings`\n- Method: GET\n- Template: `job_listings.html`\n- Context:\n  - `jobs`: List of job dictionaries for display.\n  - `categories`: List of category dictionaries with category_id and category_name.\n  - `locations`: List of strings representing location filters.\n  - `filters`: Dictionary containing keys 'search', 'category', 'location' representing current filter values.\n\n#### /jobs/<int:job_id>\n- Function: `job_details`\n- Method: GET\n- Template: `job_details.html`\n- Context:\n  - `job`: Dictionary with full job details.\n  - `company`: Dictionary containing company details.\n\n#### /apply/<int:job_id>\n- Function: `application_form`\n- Methods: GET, POST\n- Template: `application_form.html`\n- Context:\n  - `job`: Job dict for the job being applied to.\n  - `errors`: For GET or POST failures, dictionary mapping field name to error message.\n- POST Form Fields:\n  - `applicant_name`: string\n  - `applicant_email`: string\n  - `resume_file`: file upload\n  - `cover_letter`: string\n\n#### /applications\n- Function: `applications_tracking`\n- Method: GET\n- Template: `applications.html`\n- Context:\n  - `applications`: List of applications with job title, company name, status, and date applied.\n  - `filter_status`: string indicating current status filter.\n\n#### /application/<int:app_id>\n- Function: `application_details`\n- Method: GET\n- Template: `application_details.html`\n- Context:\n  - `application`: Application dict\n  - `job`: Related job dict\n  - `resume`: Resume dict associated with application\n\n#### /companies\n- Function: `companies_directory`\n- Method: GET\n- Template: `companies.html`\n- Context:\n  - `companies`: List of company dictionaries.\n  - `search_query`: String search filter.\n\n#### /companies/<int:company_id>\n- Function: `company_profile`\n- Method: GET\n- Template: `company_profile.html`\n- Context:\n  - `company`: Company dictionary\n  - `jobs`: List of job dicts from the company\n\n#### /resumes\n- Function: `resume_management`\n- Methods: GET, POST\n- Template: `resumes.html`\n- Context:\n  - `resumes`: List of resume dicts.\n  - `errors`: Dict of errors from resume upload if any.\n- POST Form Fields:\n  - `resume_file`: file upload\n\n#### /resumes/delete/<int:resume_id>\n- Function: `delete_resume`\n- Method: POST\n- Redirects to `/resumes`\n- No template\n- No context\n\n#### /search\n- Function: `search_results`\n- Method: GET\n- Template: `search_results.html`\n- Context:\n  - `query`: Search string\n  - `job_results`: List of job dicts matching the query\n  - `company_results`: List of company dicts matching the query\n\n\n---\n\n## 2. HTML Template Specifications\n\n### dashboard.html\n- Page Title: Job Board Dashboard (for `<title>` and `<h1>`)\n- Elements:\n  - `dashboard-page`: Div - container for full dashboard page\n  - `featured-jobs`: Div - displays featured jobs (multiple job summary cards)\n  - `browse-jobs-button`: Button - navigates to job listings page\n  - `my-applications-button`: Button - navigates to applications tracking page\n  - `companies-button`: Button - navigates to companies directory page\n- Context Variables:\n  - `featured_jobs`: List[Dict] (job_id, title, company_name, location, salary_min, salary_max)\n  - `new_opportunities`: List[Dict] similar structure\n- Navigation:\n  - `browse-jobs-button` -> url_for('job_listings')\n  - `my-applications-button` -> url_for('applications_tracking')\n  - `companies-button` -> url_for('companies_directory')\n\n### job_listings.html\n- Page Title: Job Listings\n- Elements:\n  - `listings-page`: Div - main container\n  - `search-input`: Input - search jobs text field\n  - `category-filter`: Dropdown - category filter\n  - `location-filter`: Dropdown - location filter\n  - `jobs-grid`: Div - grid containing job cards\n  - `view-job-button-{{ job.job_id }}`: Button - button on each job card for details\n- Context Variables:\n  - `jobs`: List[Dict] with job data\n  - `categories`: List[Dict] with category_id, category_name\n  - `locations`: List[str]\n  - `filters`: Dict[str,str] keys: 'search', 'category', 'location'\n- Navigation:\n  - `view-job-button-{{ job.job_id }}` -> url_for('job_details', job_id=job.job_id)\n\n### job_details.html\n- Page Title: Job Details\n- Elements:\n  - `job-details-page`: Div - container\n  - `job-title`: H1 - job title text\n  - `company-name`: Div - company name\n  - `job-description`: Div - job description and requirements\n  - `salary-range`: Div - salary range\n  - `apply-now-button`: Button - navigates to application form\n- Context Variables:\n  - `job`: Dict with job fields\n  - `company`: Dict with company info\n- Navigation:\n  - `apply-now-button` -> url_for('application_form', job_id=job.job_id)\n\n### application_form.html\n- Page Title: Submit Application\n- Elements:\n  - `application-form-page`: Div - container\n  - `applicant-name`: Input - text input for applicant name\n  - `applicant-email`: Input - text input for applicant email\n  - `resume-upload`: File Input - resume upload field\n  - `cover-letter`: Textarea - input for cover letter\n  - `submit-application-button`: Button - submit\n- Context Variables:\n  - `job`: Dict with job data\n  - `errors`: Dict[str,str] error messages keyed by field\n- Navigation:\n  - Form POSTs to url_for('application_form', job_id=job.job_id)\n\n### applications.html\n- Page Title: My Applications\n- Elements:\n  - `tracking-page`: Div - container\n  - `applications-table`: Table - lists applications with columns job title, company, status, date applied\n  - `status-filter`: Dropdown - filter applications by status\n  - `view-application-button-{{ app.application_id }}`: Button to view details\n  - `back-to-dashboard`: Button - navigates to dashboard\n- Context Variables:\n  - `applications`: List[Dict]\n  - `filter_status`: str\n- Navigation:\n  - `view-application-button-{{ app.application_id }}` -> url_for('application_details', app_id=app.application_id)\n  - `back-to-dashboard` -> url_for('dashboard')\n\n### companies.html\n- Page Title: Company Directory\n- Elements:\n  - `companies-page`: Div - main container\n  - `companies-list`: Div - list of company cards\n  - `search-company-input`: Input - search field\n  - `view-company-button-{{ company.company_id }}`: Button - view company profile\n  - `back-to-dashboard`: Button - navigates to dashboard\n- Context Variables:\n  - `companies`: List[Dict]\n  - `search_query`: str\n- Navigation:\n  - `view-company-button-{{ company.company_id }}` -> url_for('company_profile', company_id=company.company_id)\n  - `back-to-dashboard` -> url_for('dashboard')\n\n### company_profile.html\n- Page Title: Company Profile\n- Elements:\n  - `company-profile-page`: Div - container\n  - `company-info`: Div - shows company name, industry, location, description\n  - `company-jobs`: Div - container for company's jobs\n  - `jobs-list`: Div - list of jobs with titles and status indicators\n  - `view-job-button-{{ job.job_id }}`: Button on each job to view details\n  - `back-to-companies`: Button - navigates back to companies directory\n- Context Variables:\n  - `company`: Dict\n  - `jobs`: List[Dict]\n- Navigation:\n  - `view-job-button-{{ job.job_id }}` -> url_for('job_details', job_id=job.job_id)\n  - `back-to-companies` -> url_for('companies_directory')\n\n### resumes.html\n- Page Title: My Resumes\n- Elements:\n  - `resume-page`: Div - container\n  - `resumes-list`: Div - list of uploaded resumes\n  - `upload-resume-button`: Button - triggers file input\n  - `resume-file-input`: File Input (hidden) - upload field\n  - `delete-resume-button-{{ resume.resume_id }}`: Button to delete resume\n  - `back-to-dashboard`: Button - navigates to dashboard\n- Context Variables:\n  - `resumes`: List[Dict]\n  - `errors`: Dict[str,str] (optional)\n- Navigation:\n  - `delete-resume-button-{{ resume.resume_id }}` -> form POST to url_for('delete_resume', resume_id=resume.resume_id)\n  - `back-to-dashboard` -> url_for('dashboard')\n\n### search_results.html\n- Page Title: Search Results\n- Elements:\n  - `search-results-page`: Div - container\n  - `search-query-display`: Div - shows entered search query\n  - `results-tabs`: Div - tab control to switch between job and company results\n  - `job-results`: Div - listing of job search results\n  - `company-results`: Div - listing of company search results\n  - `no-results-message`: Div - visible if no results found\n- Context Variables:\n  - `query`: str\n  - `job_results`: List[Dict]\n  - `company_results`: List[Dict]\n- Navigation:\n  - Each job and company entry includes buttons linking to their respective details pages using url_for('job_details', job_id=...) and url_for('company_profile', company_id=...)\n\n---\n\n## 3. Data File Schemas\n\n### jobs.txt\n- File Path: data/jobs.txt\n- Fields:\n  1. job_id (int)\n  2. title (str)\n  3. company_id (int)\n  4. location (str)\n  5. salary_min (int)\n  6. salary_max (int)\n  7. category (str)\n  8. description (str)\n  9. posted_date (YYYY-MM-DD str)\n- Description: Stores all job postings.\n- Examples:\n  ```\n  1|Senior Python Developer|1|Remote|80000|120000|Technology|Experienced Python developer for web applications|2025-01-15\n  2|Data Analyst|2|New York, NY|60000|85000|Finance|Analyze financial data and create reports|2025-01-16\n  3|Healthcare Administrator|3|Los Angeles, CA|50000|70000|Healthcare|Manage hospital operations and patient records|2025-01-14\n  ```\n\n### companies.txt\n- File Path: data/companies.txt\n- Fields:\n  1. company_id (int)\n  2. company_name (str)\n  3. industry (str)\n  4. location (str)\n  5. employee_count (int)\n  6. description (str)\n- Description: Stores company profiles.\n- Examples:\n  ```\n  1|TechCorp|Technology|San Francisco, CA|500|Leading software solutions provider\n  2|FinanceHub|Finance|New York, NY|300|Innovative financial services company\n  3|MediCare|Healthcare|Los Angeles, CA|200|Premier healthcare management organization\n  ```\n\n### categories.txt\n- File Path: data/categories.txt\n- Fields:\n  1. category_id (int)\n  2. category_name (str)\n  3. description (str)\n- Description: Stores categories for jobs.\n- Examples:\n  ```\n  1|Technology|Software, IT, and tech-related positions\n  2|Finance|Banking, accounting, and finance positions\n  3|Healthcare|Medical and healthcare industry positions\n  ```\n\n### applications.txt\n- File Path: data/applications.txt\n- Fields:\n  1. application_id (int)\n  2. job_id (int)\n  3. applicant_name (str)\n  4. applicant_email (str)\n  5. status (str) (e.g. Applied, Under Review, Interview, Rejected)\n  6. applied_date (YYYY-MM-DD str)\n  7. resume_id (int)\n- Description: Stores job applications submitted by users.\n- Examples:\n  ```\n  1|1|John Doe|john@email.com|Under Review|2025-01-17|1\n  2|2|Jane Smith|jane@email.com|Applied|2025-01-16|2\n  3|3|Robert Johnson|robert@email.com|Interview|2025-01-15|3\n  ```\n\n### resumes.txt\n- File Path: data/resumes.txt\n- Fields:\n  1. resume_id (int)\n  2. applicant_name (str)\n  3. applicant_email (str)\n  4. filename (str)\n  5. upload_date (YYYY-MM-DD str)\n  6. summary (str)\n- Description: Stores uploaded resumes metadata.\n- Examples:\n  ```\n  1|John Doe|john@email.com|john_resume.pdf|2025-01-17|Senior developer with 8 years experience\n  2|Jane Smith|jane@email.com|jane_resume.pdf|2025-01-16|Data analyst with financial background\n  3|Robert Johnson|robert@email.com|robert_resume.pdf|2025-01-15|Healthcare administrator with 5 years experience\n  ```\n\n### job_categories.txt\n- File Path: data/job_categories.txt\n- Fields:\n  1. mapping_id (int)\n  2. job_id (int)\n  3. category_id (int)\n- Description: Maps jobs to categories.\n- Examples:\n  ```\n  1|1|1\n  2|2|2\n  3|3|3\n  ```\n\n---\n\nEnd of Design Specification\n\n",
+        "after": "Implement app.py backend and data handling from and 3\n===\n\n\n\n\nSpecification\n\nFunction Name | HTTP | Context (POST) |\n|--------------------------|----------------------------|--------------|-------------------------|---------------------------------------------------------------------------|------------------------------------------------------------|\n| | | Redirect | |\n/dashboard dashboard.html featured_jobs: List[Dict]\n| None |\n| GET job_listings.html | List[Dict], Dict[str,str]\n\n| GET | Dict, |\n| /apply/<int:job_id> | application_form errors: Dict[str,str] for with failure) (str), applicant_email (file), cover_letter\n/applications | applications.html | applications: str\napplication_details GET application_details.html Dict, Dict\n| companies_directory GET companies.html | search_query: str | None\n| | Dict, jobs: None |\nList[Dict], (optional) (file,\n/resumes/delete/<int:resume_id> | | redirects to /resumes None\n| | | str, company_results: List[Dict] |\n\n\n### Details\n\n####\n- `/dashboard` route.\n\n####\n-\n-\n\n\n`featured_jobs`: of location, salary_max.\n- of representing latest job opportunities similarly\n\n#### /jobs\n\n\nTemplate:\n\n- List job display.\nof with category_id and category_name.\n- `locations`: List\n- `filters`: representing current values.\n\n/jobs/<int:job_id>\nFunction: `job_details`\n\n-\n\nDictionary job\n- containing\n\n/apply/<int:job_id>\n- Function: `application_form`\nMethods:\n- Template:\n- Context:\nJob for the applied to.\n`errors`: failures, dictionary mapping field to\nForm\n`applicant_name`:\nstring\n\n- string\n\n/applications\n- `applications_tracking`\n\n\n\nof applications company status, date\n-\n\n\n\n- Method: GET\n- Template:\n-\ndict\n`job`: dict\nassociated with\n\n/companies\n`companies_directory`\n- GET\n\n- Context:\n- List\n- `search_query`:\n\n/companies/<int:company_id>\n- Function:\n-\nTemplate:\n\nCompany\n- job\n\n\n- Function:\n- POST\n- Template: `resumes.html`\n\nof resume\n`errors`: upload any.\n-\n- `resume_file`: file\n\n\n- `delete_resume`\nMethod:\n- Redirects\n- No template\n- context\n\n/search\n-\n- GET\n\n\n`query`: Search\nof job matching the\nof company the\n\n\n\n\n## 2.\n\n\nPage Title: and `<h1>`)\n-\nfull dashboard\nDiv (multiple\n- - to\n- Button - navigates to tracking page\n- navigates\nContext\n- salary_max)\n`new_opportunities`: similar\n-\n- `browse-jobs-button` -> url_for('job_listings')\n\n- ->\n\n###\n\n\nmain\n`search-input`: Input - jobs text field\nDropdown\n- `location-filter`: Dropdown location\n`jobs-grid`: - grid\nButton on job for details\n- Context\n`jobs`: job data\n- `categories`: category_id,\n`locations`:\n`filters`: Dict[str,str] keys: 'category',\n\nurl_for('job_details', job_id=job.job_id)\n\n###\nDetails\nElements:\n- `job-details-page`:\n- `job-title`: H1 title\n- `company-name`: Div company\n- `job-description`: and requirements\nsalary range\n`apply-now-button`: application\nContext\n`job`:\n- info\n\n- url_for('application_form',\n\n\n- Page\n-\n`application-form-page`: Div -\n- text applicant\n- input\n- `resume-upload`: File Input resume upload field\n- input for letter\n- - submit\nContext Variables:\nDict with data\n`errors`: Dict[str,str] error messages field\n-\nPOSTs\n\n###\n- Title: My\n-\n`tracking-page`: Div -\n- `applications-table`: - lists applications with columns company, status,\n- filter by\nto\n- navigates to\nContext Variables:\n`applications`: List[Dict]\n`filter_status`: str\n-\n- `view-application-button-{{ app.application_id }}` -> url_for('application_details', app_id=app.application_id)\n-\n\ncompanies.html\nPage Directory\n-\n\n- list of company\n- - search\n- `view-company-button-{{ company.company_id }}`: Button -\n- Button to dashboard\nVariables:\n-\n\n\n- `view-company-button-{{ company.company_id }}` -> company_id=company.company_id)\n-> url_for('dashboard')\n\n\n- Title: Profile\nElements:\n- `company-profile-page`:\nshows name, industry,\n`company-jobs`: container for jobs\n- Div with status\n- Button each job view\n`back-to-companies`: navigates companies\nContext Variables:\n-\n- List[Dict]\n\n- job_id=job.job_id)\n-\n\n###\nPage My\n\n- -\n- `resumes-list`: of\n- `upload-resume-button`: - file input\n- File Input (hidden) upload\n`delete-resume-button-{{ resume.resume_id }}`: to delete\n`back-to-dashboard`:\n-\n- `resumes`: List[Dict]\n\n- Navigation:\n`delete-resume-button-{{ resume.resume_id }}` to url_for('delete_resume', resume_id=resume.resume_id)\n`back-to-dashboard` ->\n\n###\n- Search\nElements:\n`search-results-page`: container\nsearch query\n- - control to between job and company\nlisting job\n`company-results`: Div - search\n- Div - results\nContext\nstr\n- `job_results`: List[Dict]\n\n-\nEach job entry respective and\n\n\n\n## Data Schemas\n\njobs.txt\nFile Path: data/jobs.txt\n-\n1.\ntitle\n3. company_id\n\n5.\n6. (int)\ncategory\n\n(YYYY-MM-DD\n\n- Examples:\n```\nPython Developer|1|Remote|80000|120000|Technology|Experienced Python developer for\nreports|2025-01-16\nCA|50000|70000|Healthcare|Manage operations patient\n\n\n\n- File\n\n1.\n(str)\n\n\n(int)\n6. (str)\nDescription: Stores\n-\n```\nFrancisco, CA|500|Leading\n2|FinanceHub|Finance|New York,\n3|MediCare|Healthcare|Los CA|200|Premier healthcare\n```\n\ncategories.txt\n- Path:\n\n\n\ndescription\n- Description: Stores for jobs.\n\n\ntech-related\naccounting,\nand\n\n\n###\nFile\n- Fields:\n1. (int)\n\n3. applicant_name\n\n5. (str) Interview, Rejected)\n\nresume_id (int)\n- submitted by\n\n```\n1|1|John\n\nJohnson|robert@email.com|Interview|2025-01-15|3\n\n\n### resumes.txt\nFile data/resumes.txt\n\n1. resume_id (int)\n2. (str)\napplicant_email (str)\n4. (str)\n5. (YYYY-MM-DD str)\nsummary (str)\n- uploaded metadata.\nExamples:\n\nwith 8\nSmith|jane@email.com|jane_resume.pdf|2025-01-16|Data with background\n3|Robert administrator 5 experience\n```\n\n###\n- File\n-\n(int)\n\n\n- Description: categories.\n- Examples:\n\n1|1|1\n2|2|2\n3|3|3\n\n\n\n\nof Specification\n\n"
+      },
+      {
+        "timestamp": 1774625227.8574584,
+        "agent": "BackendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 37/63 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "You Developer\n\nwith provided\n\n\n1 Routes) (Data\napp.py with\n- and pipe-delimited 3\nto redirect\nfrontend or content\nfields in\n\nImplementation Requirements:\nSetup**:\n\nFlask,\n\napp.config['SECRET_KEY']\n\n\n\nImplement routes 1\n\nSection 1\nvariables\nFor handle form using\n\n\n\nlines into dictionaries field\nHandle error\n- any respecting\nfrom\n\n\n'/' page\n\n\nBest\n-\n\nor data cases\nAdhere functionality\n\n\nUse app.py\nand match\nfield\nread or\nor routes\n\n\n",
+        "after": "\n\nwith\n\n\nRoutes)\napp.py\n3\nto\nfrontend or content\nin\n\n\n\n\nFlask,\n\n\n\n\n\nroutes\n\n1\nvariables\nhandle\n\n\n\n\nHandle\n- any respecting\n\n\n\npage\n\n\n\n-\n\nor\nAdhere\n\n\nUse\nmatch\nfield\n\nor\n\n\n"
+      },
+      {
+        "timestamp": 1774625227.8588786,
+        "agent": "BackendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 1020/1700 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement app.py backend routes and data handling from design_spec.md Sections 1 and 3\n=== design_spec.md ===\n# Design Specification for JobBoard Web Application\n\n---\n\n## 1. Flask Routes Specification\n\n| Route Path               | Function Name              | HTTP Methods | Template Rendered       | Context Variables and Types                                                | Form Fields (POST)                                         |\n|--------------------------|----------------------------|--------------|-------------------------|---------------------------------------------------------------------------|------------------------------------------------------------|\n| /                        | redirect_to_dashboard       | GET          | Redirect to /dashboard  | None                                                                      | None                                                       |\n| /dashboard               | dashboard                  | GET          | dashboard.html          | featured_jobs: List[Dict] (job data), new_opportunities: List[Dict] (job data)\n                                                                                         | None                                                       |\n| /jobs                    | job_listings               | GET          | job_listings.html       | jobs: List[Dict], categories: List[Dict], locations: List[str], filters: Dict[str,str]\n                                       | None                                                       |\n| /jobs/<int:job_id>       | job_details                | GET          | job_details.html        | job: Dict, company: Dict                                                 | None                                                       |\n| /apply/<int:job_id>      | application_form           | GET, POST    | application_form.html   | job: Dict, errors: Dict[str,str] (only for GET with errors or POST failure) | applicant_name (str), applicant_email (str), resume_file (file), cover_letter (str) |\n| /applications            | applications_tracking      | GET          | applications.html       | applications: List[Dict], filter_status: str                             | None                                                       |\n| /application/<int:app_id>| application_details        | GET          | application_details.html | application: Dict, job: Dict, resume: Dict                                | None                                                       |\n| /companies               | companies_directory        | GET          | companies.html          | companies: List[Dict], search_query: str                                | None                                                       |\n| /companies/<int:company_id> | company_profile          | GET          | company_profile.html    | company: Dict, jobs: List[Dict]                                         | None                                                       |\n| /resumes                 | resume_management          | GET, POST    | resumes.html            | resumes: List[Dict], errors: Dict[str,str] (optional)                    | resume_file (file, optional)                              |\n| /resumes/delete/<int:resume_id> | delete_resume         | POST         | redirects to /resumes   | None                                                                      | None                                                       |\n| /search                  | search_results             | GET          | search_results.html     | query: str, job_results: List[Dict], company_results: List[Dict]          | None                                                       |\n\n\n### Details per route:\n\n#### Root '/'\n- Redirects to `/dashboard` route.\n\n#### /dashboard\n- Function: `dashboard`\n- Method: GET\n- Template: `dashboard.html`\n- Context:\n  - `featured_jobs`: List of dictionaries representing featured job postings. Each dictionary includes job_id, title, company_name, location, salary_min, salary_max.\n  - `new_opportunities`: List of dictionaries representing latest job opportunities similarly structured.\n\n#### /jobs\n- Function: `job_listings`\n- Method: GET\n- Template: `job_listings.html`\n- Context:\n  - `jobs`: List of job dictionaries for display.\n  - `categories`: List of category dictionaries with category_id and category_name.\n  - `locations`: List of strings representing location filters.\n  - `filters`: Dictionary containing keys 'search', 'category', 'location' representing current filter values.\n\n#### /jobs/<int:job_id>\n- Function: `job_details`\n- Method: GET\n- Template: `job_details.html`\n- Context:\n  - `job`: Dictionary with full job details.\n  - `company`: Dictionary containing company details.\n\n#### /apply/<int:job_id>\n- Function: `application_form`\n- Methods: GET, POST\n- Template: `application_form.html`\n- Context:\n  - `job`: Job dict for the job being applied to.\n  - `errors`: For GET or POST failures, dictionary mapping field name to error message.\n- POST Form Fields:\n  - `applicant_name`: string\n  - `applicant_email`: string\n  - `resume_file`: file upload\n  - `cover_letter`: string\n\n#### /applications\n- Function: `applications_tracking`\n- Method: GET\n- Template: `applications.html`\n- Context:\n  - `applications`: List of applications with job title, company name, status, and date applied.\n  - `filter_status`: string indicating current status filter.\n\n#### /application/<int:app_id>\n- Function: `application_details`\n- Method: GET\n- Template: `application_details.html`\n- Context:\n  - `application`: Application dict\n  - `job`: Related job dict\n  - `resume`: Resume dict associated with application\n\n#### /companies\n- Function: `companies_directory`\n- Method: GET\n- Template: `companies.html`\n- Context:\n  - `companies`: List of company dictionaries.\n  - `search_query`: String search filter.\n\n#### /companies/<int:company_id>\n- Function: `company_profile`\n- Method: GET\n- Template: `company_profile.html`\n- Context:\n  - `company`: Company dictionary\n  - `jobs`: List of job dicts from the company\n\n#### /resumes\n- Function: `resume_management`\n- Methods: GET, POST\n- Template: `resumes.html`\n- Context:\n  - `resumes`: List of resume dicts.\n  - `errors`: Dict of errors from resume upload if any.\n- POST Form Fields:\n  - `resume_file`: file upload\n\n#### /resumes/delete/<int:resume_id>\n- Function: `delete_resume`\n- Method: POST\n- Redirects to `/resumes`\n- No template\n- No context\n\n#### /search\n- Function: `search_results`\n- Method: GET\n- Template: `search_results.html`\n- Context:\n  - `query`: Search string\n  - `job_results`: List of job dicts matching the query\n  - `company_results`: List of company dicts matching the query\n\n\n---\n\n## 2. HTML Template Specifications\n\n### dashboard.html\n- Page Title: Job Board Dashboard (for `<title>` and `<h1>`)\n- Elements:\n  - `dashboard-page`: Div - container for full dashboard page\n  - `featured-jobs`: Div - displays featured jobs (multiple job summary cards)\n  - `browse-jobs-button`: Button - navigates to job listings page\n  - `my-applications-button`: Button - navigates to applications tracking page\n  - `companies-button`: Button - navigates to companies directory page\n- Context Variables:\n  - `featured_jobs`: List[Dict] (job_id, title, company_name, location, salary_min, salary_max)\n  - `new_opportunities`: List[Dict] similar structure\n- Navigation:\n  - `browse-jobs-button` -> url_for('job_listings')\n  - `my-applications-button` -> url_for('applications_tracking')\n  - `companies-button` -> url_for('companies_directory')\n\n### job_listings.html\n- Page Title: Job Listings\n- Elements:\n  - `listings-page`: Div - main container\n  - `search-input`: Input - search jobs text field\n  - `category-filter`: Dropdown - category filter\n  - `location-filter`: Dropdown - location filter\n  - `jobs-grid`: Div - grid containing job cards\n  - `view-job-button-{{ job.job_id }}`: Button - button on each job card for details\n- Context Variables:\n  - `jobs`: List[Dict] with job data\n  - `categories`: List[Dict] with category_id, category_name\n  - `locations`: List[str]\n  - `filters`: Dict[str,str] keys: 'search', 'category', 'location'\n- Navigation:\n  - `view-job-button-{{ job.job_id }}` -> url_for('job_details', job_id=job.job_id)\n\n### job_details.html\n- Page Title: Job Details\n- Elements:\n  - `job-details-page`: Div - container\n  - `job-title`: H1 - job title text\n  - `company-name`: Div - company name\n  - `job-description`: Div - job description and requirements\n  - `salary-range`: Div - salary range\n  - `apply-now-button`: Button - navigates to application form\n- Context Variables:\n  - `job`: Dict with job fields\n  - `company`: Dict with company info\n- Navigation:\n  - `apply-now-button` -> url_for('application_form', job_id=job.job_id)\n\n### application_form.html\n- Page Title: Submit Application\n- Elements:\n  - `application-form-page`: Div - container\n  - `applicant-name`: Input - text input for applicant name\n  - `applicant-email`: Input - text input for applicant email\n  - `resume-upload`: File Input - resume upload field\n  - `cover-letter`: Textarea - input for cover letter\n  - `submit-application-button`: Button - submit\n- Context Variables:\n  - `job`: Dict with job data\n  - `errors`: Dict[str,str] error messages keyed by field\n- Navigation:\n  - Form POSTs to url_for('application_form', job_id=job.job_id)\n\n### applications.html\n- Page Title: My Applications\n- Elements:\n  - `tracking-page`: Div - container\n  - `applications-table`: Table - lists applications with columns job title, company, status, date applied\n  - `status-filter`: Dropdown - filter applications by status\n  - `view-application-button-{{ app.application_id }}`: Button to view details\n  - `back-to-dashboard`: Button - navigates to dashboard\n- Context Variables:\n  - `applications`: List[Dict]\n  - `filter_status`: str\n- Navigation:\n  - `view-application-button-{{ app.application_id }}` -> url_for('application_details', app_id=app.application_id)\n  - `back-to-dashboard` -> url_for('dashboard')\n\n### companies.html\n- Page Title: Company Directory\n- Elements:\n  - `companies-page`: Div - main container\n  - `companies-list`: Div - list of company cards\n  - `search-company-input`: Input - search field\n  - `view-company-button-{{ company.company_id }}`: Button - view company profile\n  - `back-to-dashboard`: Button - navigates to dashboard\n- Context Variables:\n  - `companies`: List[Dict]\n  - `search_query`: str\n- Navigation:\n  - `view-company-button-{{ company.company_id }}` -> url_for('company_profile', company_id=company.company_id)\n  - `back-to-dashboard` -> url_for('dashboard')\n\n### company_profile.html\n- Page Title: Company Profile\n- Elements:\n  - `company-profile-page`: Div - container\n  - `company-info`: Div - shows company name, industry, location, description\n  - `company-jobs`: Div - container for company's jobs\n  - `jobs-list`: Div - list of jobs with titles and status indicators\n  - `view-job-button-{{ job.job_id }}`: Button on each job to view details\n  - `back-to-companies`: Button - navigates back to companies directory\n- Context Variables:\n  - `company`: Dict\n  - `jobs`: List[Dict]\n- Navigation:\n  - `view-job-button-{{ job.job_id }}` -> url_for('job_details', job_id=job.job_id)\n  - `back-to-companies` -> url_for('companies_directory')\n\n### resumes.html\n- Page Title: My Resumes\n- Elements:\n  - `resume-page`: Div - container\n  - `resumes-list`: Div - list of uploaded resumes\n  - `upload-resume-button`: Button - triggers file input\n  - `resume-file-input`: File Input (hidden) - upload field\n  - `delete-resume-button-{{ resume.resume_id }}`: Button to delete resume\n  - `back-to-dashboard`: Button - navigates to dashboard\n- Context Variables:\n  - `resumes`: List[Dict]\n  - `errors`: Dict[str,str] (optional)\n- Navigation:\n  - `delete-resume-button-{{ resume.resume_id }}` -> form POST to url_for('delete_resume', resume_id=resume.resume_id)\n  - `back-to-dashboard` -> url_for('dashboard')\n\n### search_results.html\n- Page Title: Search Results\n- Elements:\n  - `search-results-page`: Div - container\n  - `search-query-display`: Div - shows entered search query\n  - `results-tabs`: Div - tab control to switch between job and company results\n  - `job-results`: Div - listing of job search results\n  - `company-results`: Div - listing of company search results\n  - `no-results-message`: Div - visible if no results found\n- Context Variables:\n  - `query`: str\n  - `job_results`: List[Dict]\n  - `company_results`: List[Dict]\n- Navigation:\n  - Each job and company entry includes buttons linking to their respective details pages using url_for('job_details', job_id=...) and url_for('company_profile', company_id=...)\n\n---\n\n## 3. Data File Schemas\n\n### jobs.txt\n- File Path: data/jobs.txt\n- Fields:\n  1. job_id (int)\n  2. title (str)\n  3. company_id (int)\n  4. location (str)\n  5. salary_min (int)\n  6. salary_max (int)\n  7. category (str)\n  8. description (str)\n  9. posted_date (YYYY-MM-DD str)\n- Description: Stores all job postings.\n- Examples:\n  ```\n  1|Senior Python Developer|1|Remote|80000|120000|Technology|Experienced Python developer for web applications|2025-01-15\n  2|Data Analyst|2|New York, NY|60000|85000|Finance|Analyze financial data and create reports|2025-01-16\n  3|Healthcare Administrator|3|Los Angeles, CA|50000|70000|Healthcare|Manage hospital operations and patient records|2025-01-14\n  ```\n\n### companies.txt\n- File Path: data/companies.txt\n- Fields:\n  1. company_id (int)\n  2. company_name (str)\n  3. industry (str)\n  4. location (str)\n  5. employee_count (int)\n  6. description (str)\n- Description: Stores company profiles.\n- Examples:\n  ```\n  1|TechCorp|Technology|San Francisco, CA|500|Leading software solutions provider\n  2|FinanceHub|Finance|New York, NY|300|Innovative financial services company\n  3|MediCare|Healthcare|Los Angeles, CA|200|Premier healthcare management organization\n  ```\n\n### categories.txt\n- File Path: data/categories.txt\n- Fields:\n  1. category_id (int)\n  2. category_name (str)\n  3. description (str)\n- Description: Stores categories for jobs.\n- Examples:\n  ```\n  1|Technology|Software, IT, and tech-related positions\n  2|Finance|Banking, accounting, and finance positions\n  3|Healthcare|Medical and healthcare industry positions\n  ```\n\n### applications.txt\n- File Path: data/applications.txt\n- Fields:\n  1. application_id (int)\n  2. job_id (int)\n  3. applicant_name (str)\n  4. applicant_email (str)\n  5. status (str) (e.g. Applied, Under Review, Interview, Rejected)\n  6. applied_date (YYYY-MM-DD str)\n  7. resume_id (int)\n- Description: Stores job applications submitted by users.\n- Examples:\n  ```\n  1|1|John Doe|john@email.com|Under Review|2025-01-17|1\n  2|2|Jane Smith|jane@email.com|Applied|2025-01-16|2\n  3|3|Robert Johnson|robert@email.com|Interview|2025-01-15|3\n  ```\n\n### resumes.txt\n- File Path: data/resumes.txt\n- Fields:\n  1. resume_id (int)\n  2. applicant_name (str)\n  3. applicant_email (str)\n  4. filename (str)\n  5. upload_date (YYYY-MM-DD str)\n  6. summary (str)\n- Description: Stores uploaded resumes metadata.\n- Examples:\n  ```\n  1|John Doe|john@email.com|john_resume.pdf|2025-01-17|Senior developer with 8 years experience\n  2|Jane Smith|jane@email.com|jane_resume.pdf|2025-01-16|Data analyst with financial background\n  3|Robert Johnson|robert@email.com|robert_resume.pdf|2025-01-15|Healthcare administrator with 5 years experience\n  ```\n\n### job_categories.txt\n- File Path: data/job_categories.txt\n- Fields:\n  1. mapping_id (int)\n  2. job_id (int)\n  3. category_id (int)\n- Description: Maps jobs to categories.\n- Examples:\n  ```\n  1|1|1\n  2|2|2\n  3|3|3\n  ```\n\n---\n\nEnd of Design Specification\n\n",
+        "after": "app.py and data handling design_spec.md 1\n===\nDesign Web Application\n\n\n\n1. Flask Routes\n\nRoute | Function Name | HTTP Template Variables Types | Fields\n|--------------------------|----------------------------|--------------|-------------------------|---------------------------------------------------------------------------|------------------------------------------------------------|\n| Redirect /dashboard | None\ndashboard | | List[Dict] new_opportunities:\nNone\n| /jobs job_listings | | List[Dict], categories: locations:\nNone\n| job_details job_details.html | job:\n/apply/<int:job_id> | Dict[str,str] errors | applicant_name (file), cover_letter\n/applications |\n| | | Dict, resume:\n| | companies.html | companies: search_query: str None\n/companies/<int:company_id> | | Dict, jobs: |\n| | | | resumes: errors: Dict[str,str] |\n| /resumes/delete/<int:resume_id> | delete_resume redirects /resumes | None\n| | query: str, List[Dict], company_results: List[Dict]\n\n\n###\n\n\nRedirects `/dashboard` route.\n\n/dashboard\n-\nMethod: GET\n-\n\n- `featured_jobs`: of dictionaries Each company_name, salary_min,\n- `new_opportunities`: representing latest job opportunities structured.\n\n\n-\n\n`job_listings.html`\nContext:\n- of dictionaries display.\n`categories`: of with category_id\nList strings location filters.\n`filters`: containing 'search', 'location' values.\n\n/jobs/<int:job_id>\n- Function: `job_details`\nGET\nTemplate: `job_details.html`\n-\njob details.\n- `company`: containing\n\n\nFunction: `application_form`\n\n- `application_form.html`\n-\n- job\n- `errors`: dictionary field to message.\n- POST Form Fields:\n-\n-\nfile\nstring\n\n\nFunction:\nMethod: GET\n-\n\nname, applied.\nstring indicating status\n\n#### /application/<int:app_id>\nFunction:\nGET\n\n- Context:\n`application`: Application dict\n- Related job dict\n- associated application\n\n\n-\nMethod:\n`companies.html`\n- Context:\nList company\n- String search filter.\n\n/companies/<int:company_id>\nFunction:\n\n- `company_profile.html`\nContext:\n`company`:\nfrom\n\n/resumes\nFunction: `resume_management`\nMethods: GET,\nTemplate: `resumes.html`\n-\n`resumes`: of resume\n- `errors`: errors resume if any.\nPOST\n`resume_file`: file\n\n#### /resumes/delete/<int:resume_id>\nFunction:\n- Method:\n-\n- No\n\n\n#### /search\nFunction:\n\n\nContext:\n`query`: Search string\n`job_results`: List dicts\nof company dicts the\n\n\n\n\nHTML\n\n###\nPage and\n\nDiv container page\n`featured-jobs`: Div featured job cards)\n- `browse-jobs-button`: Button - navigates job\n`my-applications-button`: -\n`companies-button`: companies directory\n\n`featured_jobs`: salary_min, salary_max)\n- `new_opportunities`:\n-\n`browse-jobs-button` url_for('job_listings')\n- url_for('applications_tracking')\n- url_for('companies_directory')\n\njob_listings.html\nTitle: Job\n-\n- main\n- `search-input`: Input search\nDropdown category\n`location-filter`: Dropdown filter\n- `jobs-grid`: Div grid containing job\ndetails\n- Context\n`jobs`: List[Dict] with job\n- `categories`: List[Dict] category_id, category_name\n-\n'category', 'location'\n\n- `view-job-button-{{ job.job_id }}` -> job_id=job.job_id)\n\n\nPage Title:\n\n- `job-details-page`: Div -\n- job title\nDiv - company name\n- job description and\nDiv salary\nButton navigates\n\n- Dict fields\n`company`: info\nNavigation:\n`apply-now-button` ->\n\n### application_form.html\nApplication\n\n`application-form-page`: Div container\n- `applicant-name`: - applicant\n- applicant email\n- upload field\nTextarea input for letter\n`submit-application-button`:\nContext\n- Dict with\n- keyed by field\n\nForm to\n\napplications.html\n\n-\nDiv\n- `applications-table`: Table applications with status, applied\n`status-filter`: Dropdown - by\n- view details\n`back-to-dashboard`: Button navigates dashboard\nContext Variables:\n\n\n-\n- `view-application-button-{{ app.application_id }}` app_id=app.application_id)\n- `back-to-dashboard` url_for('dashboard')\n\n\nPage\n\n- Div\nDiv of company cards\nsearch field\n`view-company-button-{{ company.company_id }}`: view profile\n- `back-to-dashboard`: to\n\n-\n- `search_query`: str\nNavigation:\n- `view-company-button-{{ company.company_id }}` company_id=company.company_id)\n- url_for('dashboard')\n\ncompany_profile.html\n-\n- Elements:\n- `company-profile-page`: -\n- shows company industry,\n-\n`jobs-list`: list with and\non job to view\n- `back-to-companies`:\nVariables:\n`company`:\n- List[Dict]\n\n- -> job_id=job.job_id)\n`back-to-companies`\n\n\n-\n\n`resume-page`: Div\nDiv list uploaded\n`upload-resume-button`: - triggers file\n- `resume-file-input`: Input (hidden)\n\n`back-to-dashboard`: - to\nContext\n\n`errors`:\n-\n`delete-resume-button-{{ resume.resume_id }}` form resume_id=resume.resume_id)\n`back-to-dashboard` url_for('dashboard')\n\n\n- Page\n-\n`search-results-page`: Div - container\nDiv search\nDiv control and\nDiv - listing of job\n- listing company search\n- `no-results-message`: Div visible if no found\nContext Variables:\n- str\n- List[Dict]\n\nNavigation:\nEach entry includes buttons to details job_id=...)\n\n---\n\n\n\njobs.txt\n\n-\n1.\ntitle\ncompany_id (int)\n\n(int)\n\n\ndescription (str)\n9. (YYYY-MM-DD\nStores all postings.\nExamples:\n```\nPython Python developer applications|2025-01-15\nAnalyst|2|New York, create\nAdministrator|3|Los Angeles, CA|50000|70000|Healthcare|Manage patient records|2025-01-14\n```\n\n###\nPath:\nFields:\n1.\n(str)\nindustry\nlocation\n5. (int)\n\n\n\n\nsolutions provider\nfinancial services\n3|MediCare|Healthcare|Los Angeles, management\n\n\n\nFile data/categories.txt\n\n1.\n2. category_name\n(str)\n- Description: Stores for jobs.\n\n\n1|Technology|Software, IT, and\n2|Finance|Banking, accounting,\nhealthcare positions\n```\n\n###\nFile Path: data/applications.txt\n\n\n2.\n\n4.\nUnder Review, Interview,\n6. applied_date str)\n\nDescription: Stores submitted\nExamples:\n\n1|1|John\n\nJohnson|robert@email.com|Interview|2025-01-15|3\n\n\nresumes.txt\nFile Path: data/resumes.txt\n\n1.\napplicant_name\n\n4. filename (str)\nupload_date str)\n6. summary (str)\n- Description: resumes metadata.\n- Examples:\n\ndeveloper with 8 years\nwith\nwith years\n```\n\n### job_categories.txt\n- Path:\nFields:\nmapping_id\n(int)\n3. category_id (int)\n- Description: jobs to\nExamples:\n\n\n2|2|2\n3|3|3\n\n\n\n\nSpecification\n\n"
+      }
+    ]
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "WordShuffle",
+    "targets_selected": 2,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordShuffle (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": []
+  },
+  "tool_chaos": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (NoResponse, WordShuffle, WordDeletion, WordReplacement)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 2,
+      "FP": 1,
+      "FN": 0,
+      "TN": 2
+    },
+    "precision": 0.6666666666666666,
+    "recall": 1.0,
+    "f1_score": 0.8,
+    "total_agents": 5,
+    "error_agents": 2,
+    "normal_agents": 3,
+    "actually_injected_agents": [
+      "BackendDeveloper",
+      "SystemArchitect"
+    ],
+    "target_agents": [
+      "Tester",
+      "BackendDeveloper",
+      "SystemArchitect"
+    ],
+    "not_injected_targets": [
+      "Tester"
+    ],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 0,
+        "failover_count": 1,
+        "category": "TP"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 3,
+        "failover_count": 1,
+        "category": "TP"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "Developer",
+        "original_name": "Developer",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "Tester",
+        "original_name": "Tester",
+        "is_error_agent": false,
+        "recovery_attempted": true,
+        "reflection_count": 12,
+        "failover_count": 3,
+        "category": "FP"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 2               FN = 0   
+Actual: Normal Agent    FP = 1               TN = 2   
+
+Agent Distribution:
+  Total Agents: 5
+  Error Agents (Actually Injected): 2
+  Normal Agents: 3
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 3 agents
+    - Actually Injected: 2 agents
+    - Targets NOT injected: ['Tester']
+      (Possible reasons: agent never executed, no output artifacts)
+
+Performance Metrics:
+  Precision: 0.6667 (TP / (TP + FP))
+  Recall:    1.0000 (TP / (TP + FN))
+  F1-Score:  0.8000
+
+Interpretation:
+  - TP (2): Error agents with successful recovery attempt
+  - FP (1): Normal agents with unnecessary recovery
+  - FN (0): Error agents without recovery (system failure)
+  - TN (2): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+Stress Chaos Injections (6 total):
+
+  [1] Agent: BackendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 234/391 words deleted (60%)
+
+      Before (full content):
+         You are a Backend Developer specializing in Flask web applications.
+         
+         Your goal is to implement complete Flask backend components with all routes, data handling, and business logic based on the provided design specifications.
+         
+         Task Details:
+         - Read design_spec.md Sections 1 (Flask Routes) and 3 (Data Schemas) ONLY from CONTEXT
+         - Implement complete app.py with all Flask routes specified in Section 1
+         - Load and save data using the exact field orders and pipe-delimited formats defined in Section 3 for all relevant text files in data/
+         - Implement root '/' route to redirect to dashboard page as specified
+         - DO NOT read or modify any frontend templates or Section 2 content
+         - DO NOT assume any fields or routes beyond those in Sections 1 and 3
+         
+         Implementation Requirements:
+         1. **Flask Application Setup**:
+            ```python
+            from flask import Flask, render_template, redirect, url_for, request
+            app = Flask(__name__)
+            app.config['SECRET_KEY'] = 'dev-secret-key'
+            ```
+         
+         2. **Routing and Views**:
+            - Implement all routes exactly as defined in Section 1
+            - Use function names and route paths exactly as specified
+            - Use render_template() with templates named per Section 1
+            - Pass context variables with exact names and data types specified
+            - For POST requests, handle form data correctly using request.form
+         
+         3. **Data Handling**:
+            - Read data files from data/ directory with exact pipe-delimited formats
+            - Parse data lines into dictionaries matching specified field orders in Section 3
+            - Handle file I/O robustly with error checking
+            - Save any updated data respecting the same format and encoding
+            - No assumptions about file headers; start parsing from first line
+         
+         4. **Root Route**:
+            - Implement '/' to redirect to dashboard page using:
+              `return redirect(url_for('dashboard'))`
+         
+         5. **Code Style and Best Practices**:
+            - Use url_for() for route references
+            - Include `if __name__ == '__main__':` block for standalone runs
+            - Gracefully handle missing or empty data cases
+            - Adhere strictly to the specification without extraneous functionality
+         
+         CRITICAL REQUIREMENTS:
+         - Use write_text_file tool to save app.py
+         - Ensure function names, route paths, and context variables match design_spec.md exactly
+         - Data file parsing and saving must match Section 3 field order and format precisely
+         - Do NOT read or use Section 2 (frontend templates) contents in implementation
+         - Do NOT add unapproved features or routes beyond design_spec.md Sections 1 and 3
+         - Do NOT provide code snippets only in messages; always save full files via write_text_file
+         
+         Output: app.py
+
+      After (full content):
+         You are a Backend Developer
+         
+         Your goal is complete Flask components with business logic based on provided design specifications.
+         
+         
+         design_spec.md Sections 1 Routes) 3 (Data
+         - Implement app.py with
+         - Load and using and pipe-delimited formats Section 3 relevant text files data/
+         Implement to redirect as
+         read any frontend or Section content
+         - DO fields or routes in Sections
+         
+         Implementation Requirements:
+         Setup**:
+         
+         from Flask, url_for,
+         
+         app.config['SECRET_KEY'] = 'dev-secret-key'
+         
+         
+         **Routing
+         Implement routes exactly 1
+         - names paths exactly
+         render_template() Section 1
+         variables
+         For handle form data using
+         
+         **Data
+         Read data files exact pipe-delimited
+         - lines into dictionaries field
+         - Handle I/O error
+         - any updated respecting the
+         start from first
+         
+         
+         Implement '/' to page
+         
+         
+         5. Best Practices**:
+         - route
+         `if __name__ ==
+         - Gracefully handle or data cases
+         Adhere strictly without functionality
+         
+         REQUIREMENTS:
+         Use app.py
+         and context match
+         must match field
+         read or use (frontend templates)
+         - add unapproved or routes beyond and 3
+         NOT always write_text_file
+         
+         app.py
+
+  [2] Agent: BackendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 1020/1700 words deleted (60%)
+
+      Before (full content):
+         Implement app.py backend routes and data handling from design_spec.md Sections 1 and 3
+         === design_spec.md ===
+         # Design Specification for JobBoard Web Application
+         
+         ---
+         
+         ## 1. Flask Routes Specification
+         
+         | Route Path               | Function Name              | HTTP Methods | Template Rendered       | Context Variables and Types                                                | Form Fields (POST)                                         |
+         |--------------------------|----------------------------|--------------|-------------------------|---------------------------------------------------------------------------|------------------------------------------------------------|
+         | /                        | redirect_to_dashboard       | GET          | Redirect to /dashboard  | None                                                                      | None                                                       |
+         | /dashboard               | dashboard                  | GET          | dashboard.html          | featured_jobs: List[Dict] (job data), new_opportunities: List[Dict] (job data)
+                                                                                                  | None                                                       |
+         | /jobs                    | job_listings               | GET          | job_listings.html       | jobs: List[Dict], categories: List[Dict], locations: List[str], filters: Dict[str,str]
+                                                | None                                                       |
+         | /jobs/<int:job_id>       | job_details                | GET          | job_details.html        | job: Dict, company: Dict                                                 | None                                                       |
+         | /apply/<int:job_id>      | application_form           | GET, POST    | application_form.html   | job: Dict, errors: Dict[str,str] (only for GET with errors or POST failure) | applicant_name (str), applicant_email (str), resume_file (file), cover_letter (str) |
+         | /applications            | applications_tracking      | GET          | applications.html       | applications: List[Dict], filter_status: str                             | None                                                       |
+         | /application/<int:app_id>| application_details        | GET          | application_details.html | application: Dict, job: Dict, resume: Dict                                | None                                                       |
+         | /companies               | companies_directory        | GET          | companies.html          | companies: List[Dict], search_query: str                                | None                                                       |
+         | /companies/<int:company_id> | company_profile          | GET          | company_profile.html    | company: Dict, jobs: List[Dict]                                         | None                                                       |
+         | /resumes                 | resume_management          | GET, POST    | resumes.html            | resumes: List[Dict], errors: Dict[str,str] (optional)                    | resume_file (file, optional)                              |
+         | /resumes/delete/<int:resume_id> | delete_resume         | POST         | redirects to /resumes   | None                                                                      | None                                                       |
+         | /search                  | search_results             | GET          | search_results.html     | query: str, job_results: List[Dict], company_results: List[Dict]          | None                                                       |
+         
+         
+         ### Details per route:
+         
+         #### Root '/'
+         - Redirects to `/dashboard` route.
+         
+         #### /dashboard
+         - Function: `dashboard`
+         - Method: GET
+         - Template: `dashboard.html`
+         - Context:
+           - `featured_jobs`: List of dictionaries representing featured job postings. Each dictionary includes job_id, title, company_name, location, salary_min, salary_max.
+           - `new_opportunities`: List of dictionaries representing latest job opportunities similarly structured.
+         
+         #### /jobs
+         - Function: `job_listings`
+         - Method: GET
+         - Template: `job_listings.html`
+         - Context:
+           - `jobs`: List of job dictionaries for display.
+           - `categories`: List of category dictionaries with category_id and category_name.
+           - `locations`: List of strings representing location filters.
+           - `filters`: Dictionary containing keys 'search', 'category', 'location' representing current filter values.
+         
+         #### /jobs/<int:job_id>
+         - Function: `job_details`
+         - Method: GET
+         - Template: `job_details.html`
+         - Context:
+           - `job`: Dictionary with full job details.
+           - `company`: Dictionary containing company details.
+         
+         #### /apply/<int:job_id>
+         - Function: `application_form`
+         - Methods: GET, POST
+         - Template: `application_form.html`
+         - Context:
+           - `job`: Job dict for the job being applied to.
+           - `errors`: For GET or POST failures, dictionary mapping field name to error message.
+         - POST Form Fields:
+           - `applicant_name`: string
+           - `applicant_email`: string
+           - `resume_file`: file upload
+           - `cover_letter`: string
+         
+         #### /applications
+         - Function: `applications_tracking`
+         - Method: GET
+         - Template: `applications.html`
+         - Context:
+           - `applications`: List of applications with job title, company name, status, and date applied.
+           - `filter_status`: string indicating current status filter.
+         
+         #### /application/<int:app_id>
+         - Function: `application_details`
+         - Method: GET
+         - Template: `application_details.html`
+         - Context:
+           - `application`: Application dict
+           - `job`: Related job dict
+           - `resume`: Resume dict associated with application
+         
+         #### /companies
+         - Function: `companies_directory`
+         - Method: GET
+         - Template: `companies.html`
+         - Context:
+           - `companies`: List of company dictionaries.
+           - `search_query`: String search filter.
+         
+         #### /companies/<int:company_id>
+         - Function: `company_profile`
+         - Method: GET
+         - Template: `company_profile.html`
+         - Context:
+           - `company`: Company dictionary
+           - `jobs`: List of job dicts from the company
+         
+         #### /resumes
+         - Function: `resume_management`
+         - Methods: GET, POST
+         - Template: `resumes.html`
+         - Context:
+           - `resumes`: List of resume dicts.
+           - `errors`: Dict of errors from resume upload if any.
+         - POST Form Fields:
+           - `resume_file`: file upload
+         
+         #### /resumes/delete/<int:resume_id>
+         - Function: `delete_resume`
+         - Method: POST
+         - Redirects to `/resumes`
+         - No template
+         - No context
+         
+         #### /search
+         - Function: `search_results`
+         - Method: GET
+         - Template: `search_results.html`
+         - Context:
+           - `query`: Search string
+           - `job_results`: List of job dicts matching the query
+           - `company_results`: List of company dicts matching the query
+         
+         
+         ---
+         
+         ## 2. HTML Template Specifications
+         
+         ### dashboard.html
+         - Page Title: Job Board Dashboard (for `<title>` and `<h1>`)
+         - Elements:
+           - `dashboard-page`: Div - container for full dashboard page
+           - `featured-jobs`: Div - displays featured jobs (multiple job summary cards)
+           - `browse-jobs-button`: Button - navigates to job listings page
+           - `my-applications-button`: Button - navigates to applications tracking page
+           - `companies-button`: Button - navigates to companies directory page
+         - Context Variables:
+           - `featured_jobs`: List[Dict] (job_id, title, company_name, location, salary_min, salary_max)
+           - `new_opportunities`: List[Dict] similar structure
+         - Navigation:
+           - `browse-jobs-button` -> url_for('job_listings')
+           - `my-applications-button` -> url_for('applications_tracking')
+           - `companies-button` -> url_for('companies_directory')
+         
+         ### job_listings.html
+         - Page Title: Job Listings
+         - Elements:
+           - `listings-page`: Div - main container
+           - `search-input`: Input - search jobs text field
+           - `category-filter`: Dropdown - category filter
+           - `location-filter`: Dropdown - location filter
+           - `jobs-grid`: Div - grid containing job cards
+           - `view-job-button-{{ job.job_id }}`: Button - button on each job card for details
+         - Context Variables:
+           - `jobs`: List[Dict] with job data
+           - `categories`: List[Dict] with category_id, category_name
+           - `locations`: List[str]
+           - `filters`: Dict[str,str] keys: 'search', 'category', 'location'
+         - Navigation:
+           - `view-job-button-{{ job.job_id }}` -> url_for('job_details', job_id=job.job_id)
+         
+         ### job_details.html
+         - Page Title: Job Details
+         - Elements:
+           - `job-details-page`: Div - container
+           - `job-title`: H1 - job title text
+           - `company-name`: Div - company name
+           - `job-description`: Div - job description and requirements
+           - `salary-range`: Div - salary range
+           - `apply-now-button`: Button - navigates to application form
+         - Context Variables:
+           - `job`: Dict with job fields
+           - `company`: Dict with company info
+         - Navigation:
+           - `apply-now-button` -> url_for('application_form', job_id=job.job_id)
+         
+         ### application_form.html
+         - Page Title: Submit Application
+         - Elements:
+           - `application-form-page`: Div - container
+           - `applicant-name`: Input - text input for applicant name
+           - `applicant-email`: Input - text input for applicant email
+           - `resume-upload`: File Input - resume upload field
+           - `cover-letter`: Textarea - input for cover letter
+           - `submit-application-button`: Button - submit
+         - Context Variables:
+           - `job`: Dict with job data
+           - `errors`: Dict[str,str] error messages keyed by field
+         - Navigation:
+           - Form POSTs to url_for('application_form', job_id=job.job_id)
+         
+         ### applications.html
+         - Page Title: My Applications
+         - Elements:
+           - `tracking-page`: Div - container
+           - `applications-table`: Table - lists applications with columns job title, company, status, date applied
+           - `status-filter`: Dropdown - filter applications by status
+           - `view-application-button-{{ app.application_id }}`: Button to view details
+           - `back-to-dashboard`: Button - navigates to dashboard
+         - Context Variables:
+           - `applications`: List[Dict]
+           - `filter_status`: str
+         - Navigation:
+           - `view-application-button-{{ app.application_id }}` -> url_for('application_details', app_id=app.application_id)
+           - `back-to-dashboard` -> url_for('dashboard')
+         
+         ### companies.html
+         - Page Title: Company Directory
+         - Elements:
+           - `companies-page`: Div - main container
+           - `companies-list`: Div - list of company cards
+           - `search-company-input`: Input - search field
+           - `view-company-button-{{ company.company_id }}`: Button - view company profile
+           - `back-to-dashboard`: Button - navigates to dashboard
+         - Context Variables:
+           - `companies`: List[Dict]
+           - `search_query`: str
+         - Navigation:
+           - `view-company-button-{{ company.company_id }}` -> url_for('company_profile', company_id=company.company_id)
+           - `back-to-dashboard` -> url_for('dashboard')
+         
+         ### company_profile.html
+         - Page Title: Company Profile
+         - Elements:
+           - `company-profile-page`: Div - container
+           - `company-info`: Div - shows company name, industry, location, description
+           - `company-jobs`: Div - container for company's jobs
+           - `jobs-list`: Div - list of jobs with titles and status indicators
+           - `view-job-button-{{ job.job_id }}`: Button on each job to view details
+           - `back-to-companies`: Button - navigates back to companies directory
+         - Context Variables:
+           - `company`: Dict
+           - `jobs`: List[Dict]
+         - Navigation:
+           - `view-job-button-{{ job.job_id }}` -> url_for('job_details', job_id=job.job_id)
+           - `back-to-companies` -> url_for('companies_directory')
+         
+         ### resumes.html
+         - Page Title: My Resumes
+         - Elements:
+           - `resume-page`: Div - container
+           - `resumes-list`: Div - list of uploaded resumes
+           - `upload-resume-button`: Button - triggers file input
+           - `resume-file-input`: File Input (hidden) - upload field
+           - `delete-resume-button-{{ resume.resume_id }}`: Button to delete resume
+           - `back-to-dashboard`: Button - navigates to dashboard
+         - Context Variables:
+           - `resumes`: List[Dict]
+           - `errors`: Dict[str,str] (optional)
+         - Navigation:
+           - `delete-resume-button-{{ resume.resume_id }}` -> form POST to url_for('delete_resume', resume_id=resume.resume_id)
+           - `back-to-dashboard` -> url_for('dashboard')
+         
+         ### search_results.html
+         - Page Title: Search Results
+         - Elements:
+           - `search-results-page`: Div - container
+           - `search-query-display`: Div - shows entered search query
+           - `results-tabs`: Div - tab control to switch between job and company results
+           - `job-results`: Div - listing of job search results
+           - `company-results`: Div - listing of company search results
+           - `no-results-message`: Div - visible if no results found
+         - Context Variables:
+           - `query`: str
+           - `job_results`: List[Dict]
+           - `company_results`: List[Dict]
+         - Navigation:
+           - Each job and company entry includes buttons linking to their respective details pages using url_for('job_details', job_id=...) and url_for('company_profile', company_id=...)
+         
+         ---
+         
+         ## 3. Data File Schemas
+         
+         ### jobs.txt
+         - File Path: data/jobs.txt
+         - Fields:
+           1. job_id (int)
+           2. title (str)
+           3. company_id (int)
+           4. location (str)
+           5. salary_min (int)
+           6. salary_max (int)
+           7. category (str)
+           8. description (str)
+           9. posted_date (YYYY-MM-DD str)
+         - Description: Stores all job postings.
+         - Examples:
+           ```
+           1|Senior Python Developer|1|Remote|80000|120000|Technology|Experienced Python developer for web applications|2025-01-15
+           2|Data Analyst|2|New York, NY|60000|85000|Finance|Analyze financial data and create reports|2025-01-16
+           3|Healthcare Administrator|3|Los Angeles, CA|50000|70000|Healthcare|Manage hospital operations and patient records|2025-01-14
+           ```
+         
+         ### companies.txt
+         - File Path: data/companies.txt
+         - Fields:
+           1. company_id (int)
+           2. company_name (str)
+           3. industry (str)
+           4. location (str)
+           5. employee_count (int)
+           6. description (str)
+         - Description: Stores company profiles.
+         - Examples:
+           ```
+           1|TechCorp|Technology|San Francisco, CA|500|Leading software solutions provider
+           2|FinanceHub|Finance|New York, NY|300|Innovative financial services company
+           3|MediCare|Healthcare|Los Angeles, CA|200|Premier healthcare management organization
+           ```
+         
+         ### categories.txt
+         - File Path: data/categories.txt
+         - Fields:
+           1. category_id (int)
+           2. category_name (str)
+           3. description (str)
+         - Description: Stores categories for jobs.
+         - Examples:
+           ```
+           1|Technology|Software, IT, and tech-related positions
+           2|Finance|Banking, accounting, and finance positions
+           3|Healthcare|Medical and healthcare industry positions
+           ```
+         
+         ### applications.txt
+         - File Path: data/applications.txt
+         - Fields:
+           1. application_id (int)
+           2. job_id (int)
+           3. applicant_name (str)
+           4. applicant_email (str)
+           5. status (str) (e.g. Applied, Under Review, Interview, Rejected)
+           6. applied_date (YYYY-MM-DD str)
+           7. resume_id (int)
+         - Description: Stores job applications submitted by users.
+         - Examples:
+           ```
+           1|1|John Doe|john@email.com|Under Review|2025-01-17|1
+           2|2|Jane Smith|jane@email.com|Applied|2025-01-16|2
+           3|3|Robert Johnson|robert@email.com|Interview|2025-01-15|3
+           ```
+         
+         ### resumes.txt
+         - File Path: data/resumes.txt
+         - Fields:
+           1. resume_id (int)
+           2. applicant_name (str)
+           3. applicant_email (str)
+           4. filename (str)
+           5. upload_date (YYYY-MM-DD str)
+           6. summary (str)
+         - Description: Stores uploaded resumes metadata.
+         - Examples:
+           ```
+           1|John Doe|john@email.com|john_resume.pdf|2025-01-17|Senior developer with 8 years experience
+           2|Jane Smith|jane@email.com|jane_resume.pdf|2025-01-16|Data analyst with financial background
+           3|Robert Johnson|robert@email.com|robert_resume.pdf|2025-01-15|Healthcare administrator with 5 years experience
+           ```
+         
+         ### job_categories.txt
+         - File Path: data/job_categories.txt
+         - Fields:
+           1. mapping_id (int)
+           2. job_id (int)
+           3. category_id (int)
+         - Description: Maps jobs to categories.
+         - Examples:
+           ```
+           1|1|1
+           2|2|2
+           3|3|3
+           ```
+         
+         ---
+         
+         End of Design Specification
+         
+         
+
+      After (full content):
+         routes and design_spec.md Sections 3
+         design_spec.md
+         Design Web
+         
+         
+         
+         ## 1. Routes Specification
+         
+         Route Path Name Methods Context Types (POST)
+         
+         | / redirect_to_dashboard | /dashboard | None | |
+         | | dashboard | | List[Dict]
+         None |
+         | /jobs jobs: List[Dict], List[str], filters:
+         None |
+         /jobs/<int:job_id> | | | Dict, Dict None |
+         | /apply/<int:job_id> | application_form GET, | application_form.html | Dict, GET POST failure) applicant_name (str), resume_file |
+         /applications
+         | GET application_details.html job: Dict None
+         | GET | companies.html List[Dict], str | None |
+         /companies/<int:company_id> | company_profile | company: jobs: List[Dict]
+         /resumes | POST errors: Dict[str,str] (file, |
+         POST | to | None | |
+         | search_results | | | query: job_results: None |
+         
+         
+         ### per route:
+         
+         
+         - Redirects
+         
+         
+         - Function:
+         - Method: GET
+         
+         Context:
+         - dictionaries includes job_id, title, location, salary_min, salary_max.
+         List of dictionaries job similarly
+         
+         ####
+         
+         
+         Template:
+         
+         - for
+         `categories`: List category and
+         List filters.
+         - `filters`: 'category', 'location' current filter
+         
+         /jobs/<int:job_id>
+         Function:
+         Method:
+         - Template: `job_details.html`
+         
+         - Dictionary full
+         Dictionary company
+         
+         
+         - Function:
+         GET, POST
+         Template:
+         
+         for the being applied
+         `errors`: For GET POST to error
+         POST Fields:
+         `applicant_name`:
+         -
+         upload
+         `cover_letter`:
+         
+         
+         - `applications_tracking`
+         - Method:
+         
+         
+         of company name, status,
+         current filter.
+         
+         /application/<int:app_id>
+         Function:
+         Method:
+         `application_details.html`
+         Context:
+         `application`:
+         - `job`:
+         with application
+         
+         #### /companies
+         `companies_directory`
+         Method:
+         - `companies.html`
+         
+         `companies`: company dictionaries.
+         search
+         
+         ####
+         `company_profile`
+         - Method: GET
+         `company_profile.html`
+         -
+         - `company`:
+         - of job dicts company
+         
+         /resumes
+         `resume_management`
+         - Methods: GET,
+         - Template: `resumes.html`
+         
+         - `resumes`: resume
+         any.
+         - POST Form
+         - `resume_file`:
+         
+         /resumes/delete/<int:resume_id>
+         
+         - Method:
+         Redirects to `/resumes`
+         template
+         
+         
+         
+         
+         - GET
+         
+         -
+         - Search string
+         `job_results`: of dicts matching
+         `company_results`: matching the query
+         
+         
+         ---
+         
+         
+         
+         dashboard.html
+         Job Dashboard and `<h1>`)
+         - Elements:
+         `dashboard-page`: - for page
+         Div - displays job
+         `browse-jobs-button`: Button - job page
+         - `my-applications-button`: applications tracking page
+         - navigates
+         Variables:
+         - `featured_jobs`: List[Dict] (job_id, location, salary_min, salary_max)
+         similar structure
+         -
+         -> url_for('job_listings')
+         - ->
+         
+         
+         ### job_listings.html
+         - Job Listings
+         Elements:
+         -
+         - Input - search text field
+         - `category-filter`: - filter
+         - filter
+         `jobs-grid`: Div - grid job
+         - button job card for
+         Context
+         data
+         - List[Dict] category_id, category_name
+         
+         - 'search',
+         
+         - `view-job-button-{{ job.job_id }}`
+         
+         
+         
+         - Elements:
+         `job-details-page`: Div container
+         job text
+         company name
+         `job-description`: Div and
+         - Div - salary
+         navigates application
+         - Context
+         Dict with fields
+         `company`: company
+         
+         - `apply-now-button`
+         
+         ###
+         -
+         
+         `application-form-page`: Div
+         
+         Input - applicant email
+         - `resume-upload`: File resume upload
+         `cover-letter`: Textarea cover
+         - `submit-application-button`: -
+         Context Variables:
+         - Dict
+         error messages by
+         -
+         POSTs
+         
+         ###
+         My Applications
+         
+         -
+         lists applications with title, company, status,
+         `status-filter`: Dropdown applications status
+         - view details
+         - Button navigates to
+         
+         List[Dict]
+         - str
+         Navigation:
+         app_id=app.application_id)
+         `back-to-dashboard` url_for('dashboard')
+         
+         
+         Page Title:
+         -
+         - main
+         - company
+         Input -
+         view
+         `back-to-dashboard`: Button - navigates
+         
+         List[Dict]
+         
+         Navigation:
+         -> company_id=company.company_id)
+         ->
+         
+         
+         Profile
+         
+         -
+         `company-info`: shows company industry,
+         - container for jobs
+         - list of jobs
+         - `view-job-button-{{ job.job_id }}`: Button on each view
+         - -
+         -
+         - `company`:
+         `jobs`: List[Dict]
+         Navigation:
+         
+         - url_for('companies_directory')
+         
+         resumes.html
+         Page Title:
+         Elements:
+         
+         - `resumes-list`: Div of resumes
+         - - triggers input
+         Input
+         - Button to
+         `back-to-dashboard`: to
+         - Context Variables:
+         - `resumes`: List[Dict]
+         - `errors`: (optional)
+         
+         -> form to url_for('delete_resume',
+         -
+         
+         ###
+         Title: Search Results
+         - Elements:
+         -
+         Div shows search
+         - tab control between results
+         - job search
+         - company search results
+         Div - if
+         Context
+         - `query`:
+         - `job_results`: List[Dict]
+         List[Dict]
+         Navigation:
+         Each job company buttons linking to their details pages using job_id=...)
+         
+         ---
+         
+         
+         
+         
+         Path:
+         -
+         1. job_id
+         title
+         
+         4. location (str)
+         
+         salary_max
+         
+         (str)
+         9. posted_date str)
+         all postings.
+         -
+         ```
+         1|Senior Python
+         2|Data York, NY|60000|85000|Finance|Analyze data
+         Administrator|3|Los CA|50000|70000|Healthcare|Manage hospital operations records|2025-01-14
+         ```
+         
+         companies.txt
+         File
+         
+         company_id
+         
+         3. (str)
+         
+         employee_count
+         6.
+         - Stores profiles.
+         -
+         ```
+         1|TechCorp|Technology|San Francisco, software
+         2|FinanceHub|Finance|New NY|300|Innovative company
+         3|MediCare|Healthcare|Los
+         
+         
+         
+         
+         -
+         category_id (int)
+         
+         
+         Description: for
+         - Examples:
+         ```
+         1|Technology|Software, and positions
+         2|Finance|Banking, positions
+         3|Healthcare|Medical
+         
+         
+         applications.txt
+         -
+         
+         application_id
+         (int)
+         applicant_name (str)
+         (str)
+         5. status (str) Interview,
+         (YYYY-MM-DD
+         (int)
+         Description: Stores job by
+         - Examples:
+         ```
+         1|1|John Doe|john@email.com|Under Review|2025-01-17|1
+         Smith|jane@email.com|Applied|2025-01-16|2
+         Johnson|robert@email.com|Interview|2025-01-15|3
+         
+         
+         
+         File
+         -
+         1. resume_id
+         
+         3. applicant_email (str)
+         filename
+         5.
+         
+         uploaded metadata.
+         
+         
+         1|John Doe|john@email.com|john_resume.pdf|2025-01-17|Senior with 8 years
+         2|Jane financial
+         5 years
+         
+         
+         job_categories.txt
+         - File data/job_categories.txt
+         
+         
+         2. (int)
+         3. category_id
+         - Description: categories.
+         Examples:
+         
+         
+         
+         
+         
+         
+         
+         
+         End
+         
+         
+
+  [3] Agent: BackendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 94/157 words deleted (60%)
+
+      Before (full content):
+         You are a Backend Developer
+         
+         Your goal is complete Flask components with business logic based on provided design specifications.
+         
+         
+         design_spec.md Sections 1 Routes) 3 (Data
+         - Implement app.py with
+         - Load and using and pipe-delimited formats Section 3 relevant text files data/
+         Implement to redirect as
+         read any frontend or Section content
+         - DO fields or routes in Sections
+         
+         Implementation Requirements:
+         Setup**:
+         
+         from Flask, url_for,
+         
+         app.config['SECRET_KEY'] = 'dev-secret-key'
+         
+         
+         **Routing
+         Implement routes exactly 1
+         - names paths exactly
+         render_template() Section 1
+         variables
+         For handle form data using
+         
+         **Data
+         Read data files exact pipe-delimited
+         - lines into dictionaries field
+         - Handle I/O error
+         - any updated respecting the
+         start from first
+         
+         
+         Implement '/' to page
+         
+         
+         5. Best Practices**:
+         - route
+         `if __name__ ==
+         - Gracefully handle or data cases
+         Adhere strictly without functionality
+         
+         REQUIREMENTS:
+         Use app.py
+         and context match
+         must match field
+         read or use (frontend templates)
+         - add unapproved or routes beyond and 3
+         NOT always write_text_file
+         
+         app.py
+
+      After (full content):
+         You Developer
+         
+         with provided
+         
+         
+         1 Routes) (Data
+         app.py with
+         - and pipe-delimited 3
+         to redirect
+         frontend or content
+         fields in
+         
+         Implementation Requirements:
+         Setup**:
+         
+         Flask,
+         
+         app.config['SECRET_KEY']
+         
+         
+         
+         Implement routes 1
+         
+         Section 1
+         variables
+         For handle form using
+         
+         
+         
+         lines into dictionaries field
+         Handle error
+         - any respecting
+         from
+         
+         
+         '/' page
+         
+         
+         Best
+         -
+         
+         or data cases
+         Adhere functionality
+         
+         
+         Use app.py
+         and match
+         field
+         read or
+         or routes
+         
+         
+         
+
+  [4] Agent: BackendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 1020/1700 words deleted (60%)
+
+      Before (full content):
+         Implement app.py backend routes and data handling from design_spec.md Sections 1 and 3
+         === design_spec.md ===
+         # Design Specification for JobBoard Web Application
+         
+         ---
+         
+         ## 1. Flask Routes Specification
+         
+         | Route Path               | Function Name              | HTTP Methods | Template Rendered       | Context Variables and Types                                                | Form Fields (POST)                                         |
+         |--------------------------|----------------------------|--------------|-------------------------|---------------------------------------------------------------------------|------------------------------------------------------------|
+         | /                        | redirect_to_dashboard       | GET          | Redirect to /dashboard  | None                                                                      | None                                                       |
+         | /dashboard               | dashboard                  | GET          | dashboard.html          | featured_jobs: List[Dict] (job data), new_opportunities: List[Dict] (job data)
+                                                                                                  | None                                                       |
+         | /jobs                    | job_listings               | GET          | job_listings.html       | jobs: List[Dict], categories: List[Dict], locations: List[str], filters: Dict[str,str]
+                                                | None                                                       |
+         | /jobs/<int:job_id>       | job_details                | GET          | job_details.html        | job: Dict, company: Dict                                                 | None                                                       |
+         | /apply/<int:job_id>      | application_form           | GET, POST    | application_form.html   | job: Dict, errors: Dict[str,str] (only for GET with errors or POST failure) | applicant_name (str), applicant_email (str), resume_file (file), cover_letter (str) |
+         | /applications            | applications_tracking      | GET          | applications.html       | applications: List[Dict], filter_status: str                             | None                                                       |
+         | /application/<int:app_id>| application_details        | GET          | application_details.html | application: Dict, job: Dict, resume: Dict                                | None                                                       |
+         | /companies               | companies_directory        | GET          | companies.html          | companies: List[Dict], search_query: str                                | None                                                       |
+         | /companies/<int:company_id> | company_profile          | GET          | company_profile.html    | company: Dict, jobs: List[Dict]                                         | None                                                       |
+         | /resumes                 | resume_management          | GET, POST    | resumes.html            | resumes: List[Dict], errors: Dict[str,str] (optional)                    | resume_file (file, optional)                              |
+         | /resumes/delete/<int:resume_id> | delete_resume         | POST         | redirects to /resumes   | None                                                                      | None                                                       |
+         | /search                  | search_results             | GET          | search_results.html     | query: str, job_results: List[Dict], company_results: List[Dict]          | None                                                       |
+         
+         
+         ### Details per route:
+         
+         #### Root '/'
+         - Redirects to `/dashboard` route.
+         
+         #### /dashboard
+         - Function: `dashboard`
+         - Method: GET
+         - Template: `dashboard.html`
+         - Context:
+           - `featured_jobs`: List of dictionaries representing featured job postings. Each dictionary includes job_id, title, company_name, location, salary_min, salary_max.
+           - `new_opportunities`: List of dictionaries representing latest job opportunities similarly structured.
+         
+         #### /jobs
+         - Function: `job_listings`
+         - Method: GET
+         - Template: `job_listings.html`
+         - Context:
+           - `jobs`: List of job dictionaries for display.
+           - `categories`: List of category dictionaries with category_id and category_name.
+           - `locations`: List of strings representing location filters.
+           - `filters`: Dictionary containing keys 'search', 'category', 'location' representing current filter values.
+         
+         #### /jobs/<int:job_id>
+         - Function: `job_details`
+         - Method: GET
+         - Template: `job_details.html`
+         - Context:
+           - `job`: Dictionary with full job details.
+           - `company`: Dictionary containing company details.
+         
+         #### /apply/<int:job_id>
+         - Function: `application_form`
+         - Methods: GET, POST
+         - Template: `application_form.html`
+         - Context:
+           - `job`: Job dict for the job being applied to.
+           - `errors`: For GET or POST failures, dictionary mapping field name to error message.
+         - POST Form Fields:
+           - `applicant_name`: string
+           - `applicant_email`: string
+           - `resume_file`: file upload
+           - `cover_letter`: string
+         
+         #### /applications
+         - Function: `applications_tracking`
+         - Method: GET
+         - Template: `applications.html`
+         - Context:
+           - `applications`: List of applications with job title, company name, status, and date applied.
+           - `filter_status`: string indicating current status filter.
+         
+         #### /application/<int:app_id>
+         - Function: `application_details`
+         - Method: GET
+         - Template: `application_details.html`
+         - Context:
+           - `application`: Application dict
+           - `job`: Related job dict
+           - `resume`: Resume dict associated with application
+         
+         #### /companies
+         - Function: `companies_directory`
+         - Method: GET
+         - Template: `companies.html`
+         - Context:
+           - `companies`: List of company dictionaries.
+           - `search_query`: String search filter.
+         
+         #### /companies/<int:company_id>
+         - Function: `company_profile`
+         - Method: GET
+         - Template: `company_profile.html`
+         - Context:
+           - `company`: Company dictionary
+           - `jobs`: List of job dicts from the company
+         
+         #### /resumes
+         - Function: `resume_management`
+         - Methods: GET, POST
+         - Template: `resumes.html`
+         - Context:
+           - `resumes`: List of resume dicts.
+           - `errors`: Dict of errors from resume upload if any.
+         - POST Form Fields:
+           - `resume_file`: file upload
+         
+         #### /resumes/delete/<int:resume_id>
+         - Function: `delete_resume`
+         - Method: POST
+         - Redirects to `/resumes`
+         - No template
+         - No context
+         
+         #### /search
+         - Function: `search_results`
+         - Method: GET
+         - Template: `search_results.html`
+         - Context:
+           - `query`: Search string
+           - `job_results`: List of job dicts matching the query
+           - `company_results`: List of company dicts matching the query
+         
+         
+         ---
+         
+         ## 2. HTML Template Specifications
+         
+         ### dashboard.html
+         - Page Title: Job Board Dashboard (for `<title>` and `<h1>`)
+         - Elements:
+           - `dashboard-page`: Div - container for full dashboard page
+           - `featured-jobs`: Div - displays featured jobs (multiple job summary cards)
+           - `browse-jobs-button`: Button - navigates to job listings page
+           - `my-applications-button`: Button - navigates to applications tracking page
+           - `companies-button`: Button - navigates to companies directory page
+         - Context Variables:
+           - `featured_jobs`: List[Dict] (job_id, title, company_name, location, salary_min, salary_max)
+           - `new_opportunities`: List[Dict] similar structure
+         - Navigation:
+           - `browse-jobs-button` -> url_for('job_listings')
+           - `my-applications-button` -> url_for('applications_tracking')
+           - `companies-button` -> url_for('companies_directory')
+         
+         ### job_listings.html
+         - Page Title: Job Listings
+         - Elements:
+           - `listings-page`: Div - main container
+           - `search-input`: Input - search jobs text field
+           - `category-filter`: Dropdown - category filter
+           - `location-filter`: Dropdown - location filter
+           - `jobs-grid`: Div - grid containing job cards
+           - `view-job-button-{{ job.job_id }}`: Button - button on each job card for details
+         - Context Variables:
+           - `jobs`: List[Dict] with job data
+           - `categories`: List[Dict] with category_id, category_name
+           - `locations`: List[str]
+           - `filters`: Dict[str,str] keys: 'search', 'category', 'location'
+         - Navigation:
+           - `view-job-button-{{ job.job_id }}` -> url_for('job_details', job_id=job.job_id)
+         
+         ### job_details.html
+         - Page Title: Job Details
+         - Elements:
+           - `job-details-page`: Div - container
+           - `job-title`: H1 - job title text
+           - `company-name`: Div - company name
+           - `job-description`: Div - job description and requirements
+           - `salary-range`: Div - salary range
+           - `apply-now-button`: Button - navigates to application form
+         - Context Variables:
+           - `job`: Dict with job fields
+           - `company`: Dict with company info
+         - Navigation:
+           - `apply-now-button` -> url_for('application_form', job_id=job.job_id)
+         
+         ### application_form.html
+         - Page Title: Submit Application
+         - Elements:
+           - `application-form-page`: Div - container
+           - `applicant-name`: Input - text input for applicant name
+           - `applicant-email`: Input - text input for applicant email
+           - `resume-upload`: File Input - resume upload field
+           - `cover-letter`: Textarea - input for cover letter
+           - `submit-application-button`: Button - submit
+         - Context Variables:
+           - `job`: Dict with job data
+           - `errors`: Dict[str,str] error messages keyed by field
+         - Navigation:
+           - Form POSTs to url_for('application_form', job_id=job.job_id)
+         
+         ### applications.html
+         - Page Title: My Applications
+         - Elements:
+           - `tracking-page`: Div - container
+           - `applications-table`: Table - lists applications with columns job title, company, status, date applied
+           - `status-filter`: Dropdown - filter applications by status
+           - `view-application-button-{{ app.application_id }}`: Button to view details
+           - `back-to-dashboard`: Button - navigates to dashboard
+         - Context Variables:
+           - `applications`: List[Dict]
+           - `filter_status`: str
+         - Navigation:
+           - `view-application-button-{{ app.application_id }}` -> url_for('application_details', app_id=app.application_id)
+           - `back-to-dashboard` -> url_for('dashboard')
+         
+         ### companies.html
+         - Page Title: Company Directory
+         - Elements:
+           - `companies-page`: Div - main container
+           - `companies-list`: Div - list of company cards
+           - `search-company-input`: Input - search field
+           - `view-company-button-{{ company.company_id }}`: Button - view company profile
+           - `back-to-dashboard`: Button - navigates to dashboard
+         - Context Variables:
+           - `companies`: List[Dict]
+           - `search_query`: str
+         - Navigation:
+           - `view-company-button-{{ company.company_id }}` -> url_for('company_profile', company_id=company.company_id)
+           - `back-to-dashboard` -> url_for('dashboard')
+         
+         ### company_profile.html
+         - Page Title: Company Profile
+         - Elements:
+           - `company-profile-page`: Div - container
+           - `company-info`: Div - shows company name, industry, location, description
+           - `company-jobs`: Div - container for company's jobs
+           - `jobs-list`: Div - list of jobs with titles and status indicators
+           - `view-job-button-{{ job.job_id }}`: Button on each job to view details
+           - `back-to-companies`: Button - navigates back to companies directory
+         - Context Variables:
+           - `company`: Dict
+           - `jobs`: List[Dict]
+         - Navigation:
+           - `view-job-button-{{ job.job_id }}` -> url_for('job_details', job_id=job.job_id)
+           - `back-to-companies` -> url_for('companies_directory')
+         
+         ### resumes.html
+         - Page Title: My Resumes
+         - Elements:
+           - `resume-page`: Div - container
+           - `resumes-list`: Div - list of uploaded resumes
+           - `upload-resume-button`: Button - triggers file input
+           - `resume-file-input`: File Input (hidden) - upload field
+           - `delete-resume-button-{{ resume.resume_id }}`: Button to delete resume
+           - `back-to-dashboard`: Button - navigates to dashboard
+         - Context Variables:
+           - `resumes`: List[Dict]
+           - `errors`: Dict[str,str] (optional)
+         - Navigation:
+           - `delete-resume-button-{{ resume.resume_id }}` -> form POST to url_for('delete_resume', resume_id=resume.resume_id)
+           - `back-to-dashboard` -> url_for('dashboard')
+         
+         ### search_results.html
+         - Page Title: Search Results
+         - Elements:
+           - `search-results-page`: Div - container
+           - `search-query-display`: Div - shows entered search query
+           - `results-tabs`: Div - tab control to switch between job and company results
+           - `job-results`: Div - listing of job search results
+           - `company-results`: Div - listing of company search results
+           - `no-results-message`: Div - visible if no results found
+         - Context Variables:
+           - `query`: str
+           - `job_results`: List[Dict]
+           - `company_results`: List[Dict]
+         - Navigation:
+           - Each job and company entry includes buttons linking to their respective details pages using url_for('job_details', job_id=...) and url_for('company_profile', company_id=...)
+         
+         ---
+         
+         ## 3. Data File Schemas
+         
+         ### jobs.txt
+         - File Path: data/jobs.txt
+         - Fields:
+           1. job_id (int)
+           2. title (str)
+           3. company_id (int)
+           4. location (str)
+           5. salary_min (int)
+           6. salary_max (int)
+           7. category (str)
+           8. description (str)
+           9. posted_date (YYYY-MM-DD str)
+         - Description: Stores all job postings.
+         - Examples:
+           ```
+           1|Senior Python Developer|1|Remote|80000|120000|Technology|Experienced Python developer for web applications|2025-01-15
+           2|Data Analyst|2|New York, NY|60000|85000|Finance|Analyze financial data and create reports|2025-01-16
+           3|Healthcare Administrator|3|Los Angeles, CA|50000|70000|Healthcare|Manage hospital operations and patient records|2025-01-14
+           ```
+         
+         ### companies.txt
+         - File Path: data/companies.txt
+         - Fields:
+           1. company_id (int)
+           2. company_name (str)
+           3. industry (str)
+           4. location (str)
+           5. employee_count (int)
+           6. description (str)
+         - Description: Stores company profiles.
+         - Examples:
+           ```
+           1|TechCorp|Technology|San Francisco, CA|500|Leading software solutions provider
+           2|FinanceHub|Finance|New York, NY|300|Innovative financial services company
+           3|MediCare|Healthcare|Los Angeles, CA|200|Premier healthcare management organization
+           ```
+         
+         ### categories.txt
+         - File Path: data/categories.txt
+         - Fields:
+           1. category_id (int)
+           2. category_name (str)
+           3. description (str)
+         - Description: Stores categories for jobs.
+         - Examples:
+           ```
+           1|Technology|Software, IT, and tech-related positions
+           2|Finance|Banking, accounting, and finance positions
+           3|Healthcare|Medical and healthcare industry positions
+           ```
+         
+         ### applications.txt
+         - File Path: data/applications.txt
+         - Fields:
+           1. application_id (int)
+           2. job_id (int)
+           3. applicant_name (str)
+           4. applicant_email (str)
+           5. status (str) (e.g. Applied, Under Review, Interview, Rejected)
+           6. applied_date (YYYY-MM-DD str)
+           7. resume_id (int)
+         - Description: Stores job applications submitted by users.
+         - Examples:
+           ```
+           1|1|John Doe|john@email.com|Under Review|2025-01-17|1
+           2|2|Jane Smith|jane@email.com|Applied|2025-01-16|2
+           3|3|Robert Johnson|robert@email.com|Interview|2025-01-15|3
+           ```
+         
+         ### resumes.txt
+         - File Path: data/resumes.txt
+         - Fields:
+           1. resume_id (int)
+           2. applicant_name (str)
+           3. applicant_email (str)
+           4. filename (str)
+           5. upload_date (YYYY-MM-DD str)
+           6. summary (str)
+         - Description: Stores uploaded resumes metadata.
+         - Examples:
+           ```
+           1|John Doe|john@email.com|john_resume.pdf|2025-01-17|Senior developer with 8 years experience
+           2|Jane Smith|jane@email.com|jane_resume.pdf|2025-01-16|Data analyst with financial background
+           3|Robert Johnson|robert@email.com|robert_resume.pdf|2025-01-15|Healthcare administrator with 5 years experience
+           ```
+         
+         ### job_categories.txt
+         - File Path: data/job_categories.txt
+         - Fields:
+           1. mapping_id (int)
+           2. job_id (int)
+           3. category_id (int)
+         - Description: Maps jobs to categories.
+         - Examples:
+           ```
+           1|1|1
+           2|2|2
+           3|3|3
+           ```
+         
+         ---
+         
+         End of Design Specification
+         
+         
+
+      After (full content):
+         Implement app.py backend and data handling from and 3
+         ===
+         
+         
+         
+         
+         Specification
+         
+         Function Name | HTTP | Context (POST) |
+         |--------------------------|----------------------------|--------------|-------------------------|---------------------------------------------------------------------------|------------------------------------------------------------|
+         | | | Redirect | |
+         /dashboard dashboard.html featured_jobs: List[Dict]
+         | None |
+         | GET job_listings.html | List[Dict], Dict[str,str]
+         
+         | GET | Dict, |
+         | /apply/<int:job_id> | application_form errors: Dict[str,str] for with failure) (str), applicant_email (file), cover_letter
+         /applications | applications.html | applications: str
+         application_details GET application_details.html Dict, Dict
+         | companies_directory GET companies.html | search_query: str | None
+         | | Dict, jobs: None |
+         List[Dict], (optional) (file,
+         /resumes/delete/<int:resume_id> | | redirects to /resumes None
+         | | | str, company_results: List[Dict] |
+         
+         
+         ### Details
+         
+         ####
+         - `/dashboard` route.
+         
+         ####
+         -
+         -
+         
+         
+         `featured_jobs`: of location, salary_max.
+         - of representing latest job opportunities similarly
+         
+         #### /jobs
+         
+         
+         Template:
+         
+         - List job display.
+         of with category_id and category_name.
+         - `locations`: List
+         - `filters`: representing current values.
+         
+         /jobs/<int:job_id>
+         Function: `job_details`
+         
+         -
+         
+         Dictionary job
+         - containing
+         
+         /apply/<int:job_id>
+         - Function: `application_form`
+         Methods:
+         - Template:
+         - Context:
+         Job for the applied to.
+         `errors`: failures, dictionary mapping field to
+         Form
+         `applicant_name`:
+         string
+         
+         - string
+         
+         /applications
+         - `applications_tracking`
+         
+         
+         
+         of applications company status, date
+         -
+         
+         
+         
+         - Method: GET
+         - Template:
+         -
+         dict
+         `job`: dict
+         associated with
+         
+         /companies
+         `companies_directory`
+         - GET
+         
+         - Context:
+         - List
+         - `search_query`:
+         
+         /companies/<int:company_id>
+         - Function:
+         -
+         Template:
+         
+         Company
+         - job
+         
+         
+         - Function:
+         - POST
+         - Template: `resumes.html`
+         
+         of resume
+         `errors`: upload any.
+         -
+         - `resume_file`: file
+         
+         
+         - `delete_resume`
+         Method:
+         - Redirects
+         - No template
+         - context
+         
+         /search
+         -
+         - GET
+         
+         
+         `query`: Search
+         of job matching the
+         of company the
+         
+         
+         
+         
+         ## 2.
+         
+         
+         Page Title: and `<h1>`)
+         -
+         full dashboard
+         Div (multiple
+         - - to
+         - Button - navigates to tracking page
+         - navigates
+         Context
+         - salary_max)
+         `new_opportunities`: similar
+         -
+         - `browse-jobs-button` -> url_for('job_listings')
+         
+         - ->
+         
+         ###
+         
+         
+         main
+         `search-input`: Input - jobs text field
+         Dropdown
+         - `location-filter`: Dropdown location
+         `jobs-grid`: - grid
+         Button on job for details
+         - Context
+         `jobs`: job data
+         - `categories`: category_id,
+         `locations`:
+         `filters`: Dict[str,str] keys: 'category',
+         
+         url_for('job_details', job_id=job.job_id)
+         
+         ###
+         Details
+         Elements:
+         - `job-details-page`:
+         - `job-title`: H1 title
+         - `company-name`: Div company
+         - `job-description`: and requirements
+         salary range
+         `apply-now-button`: application
+         Context
+         `job`:
+         - info
+         
+         - url_for('application_form',
+         
+         
+         - Page
+         -
+         `application-form-page`: Div -
+         - text applicant
+         - input
+         - `resume-upload`: File Input resume upload field
+         - input for letter
+         - - submit
+         Context Variables:
+         Dict with data
+         `errors`: Dict[str,str] error messages field
+         -
+         POSTs
+         
+         ###
+         - Title: My
+         -
+         `tracking-page`: Div -
+         - `applications-table`: - lists applications with columns company, status,
+         - filter by
+         to
+         - navigates to
+         Context Variables:
+         `applications`: List[Dict]
+         `filter_status`: str
+         -
+         - `view-application-button-{{ app.application_id }}` -> url_for('application_details', app_id=app.application_id)
+         -
+         
+         companies.html
+         Page Directory
+         -
+         
+         - list of company
+         - - search
+         - `view-company-button-{{ company.company_id }}`: Button -
+         - Button to dashboard
+         Variables:
+         -
+         
+         
+         - `view-company-button-{{ company.company_id }}` -> company_id=company.company_id)
+         -> url_for('dashboard')
+         
+         
+         - Title: Profile
+         Elements:
+         - `company-profile-page`:
+         shows name, industry,
+         `company-jobs`: container for jobs
+         - Div with status
+         - Button each job view
+         `back-to-companies`: navigates companies
+         Context Variables:
+         -
+         - List[Dict]
+         
+         - job_id=job.job_id)
+         -
+         
+         ###
+         Page My
+         
+         - -
+         - `resumes-list`: of
+         - `upload-resume-button`: - file input
+         - File Input (hidden) upload
+         `delete-resume-button-{{ resume.resume_id }}`: to delete
+         `back-to-dashboard`:
+         -
+         - `resumes`: List[Dict]
+         
+         - Navigation:
+         `delete-resume-button-{{ resume.resume_id }}` to url_for('delete_resume', resume_id=resume.resume_id)
+         `back-to-dashboard` ->
+         
+         ###
+         - Search
+         Elements:
+         `search-results-page`: container
+         search query
+         - - control to between job and company
+         listing job
+         `company-results`: Div - search
+         - Div - results
+         Context
+         str
+         - `job_results`: List[Dict]
+         
+         -
+         Each job entry respective and
+         
+         
+         
+         ## Data Schemas
+         
+         jobs.txt
+         File Path: data/jobs.txt
+         -
+         1.
+         title
+         3. company_id
+         
+         5.
+         6. (int)
+         category
+         
+         (YYYY-MM-DD
+         
+         - Examples:
+         ```
+         Python Developer|1|Remote|80000|120000|Technology|Experienced Python developer for
+         reports|2025-01-16
+         CA|50000|70000|Healthcare|Manage operations patient
+         
+         
+         
+         - File
+         
+         1.
+         (str)
+         
+         
+         (int)
+         6. (str)
+         Description: Stores
+         -
+         ```
+         Francisco, CA|500|Leading
+         2|FinanceHub|Finance|New York,
+         3|MediCare|Healthcare|Los CA|200|Premier healthcare
+         ```
+         
+         categories.txt
+         - Path:
+         
+         
+         
+         description
+         - Description: Stores for jobs.
+         
+         
+         tech-related
+         accounting,
+         and
+         
+         
+         ###
+         File
+         - Fields:
+         1. (int)
+         
+         3. applicant_name
+         
+         5. (str) Interview, Rejected)
+         
+         resume_id (int)
+         - submitted by
+         
+         ```
+         1|1|John
+         
+         Johnson|robert@email.com|Interview|2025-01-15|3
+         
+         
+         ### resumes.txt
+         File data/resumes.txt
+         
+         1. resume_id (int)
+         2. (str)
+         applicant_email (str)
+         4. (str)
+         5. (YYYY-MM-DD str)
+         summary (str)
+         - uploaded metadata.
+         Examples:
+         
+         with 8
+         Smith|jane@email.com|jane_resume.pdf|2025-01-16|Data with background
+         3|Robert administrator 5 experience
+         ```
+         
+         ###
+         - File
+         -
+         (int)
+         
+         
+         - Description: categories.
+         - Examples:
+         
+         1|1|1
+         2|2|2
+         3|3|3
+         
+         
+         
+         
+         of Specification
+         
+         
+
+  [5] Agent: BackendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 37/63 words deleted (60%)
+
+      Before (full content):
+         You Developer
+         
+         with provided
+         
+         
+         1 Routes) (Data
+         app.py with
+         - and pipe-delimited 3
+         to redirect
+         frontend or content
+         fields in
+         
+         Implementation Requirements:
+         Setup**:
+         
+         Flask,
+         
+         app.config['SECRET_KEY']
+         
+         
+         
+         Implement routes 1
+         
+         Section 1
+         variables
+         For handle form using
+         
+         
+         
+         lines into dictionaries field
+         Handle error
+         - any respecting
+         from
+         
+         
+         '/' page
+         
+         
+         Best
+         -
+         
+         or data cases
+         Adhere functionality
+         
+         
+         Use app.py
+         and match
+         field
+         read or
+         or routes
+         
+         
+         
+
+      After (full content):
+         
+         
+         with
+         
+         
+         Routes)
+         app.py
+         3
+         to
+         frontend or content
+         in
+         
+         
+         
+         
+         Flask,
+         
+         
+         
+         
+         
+         routes
+         
+         1
+         variables
+         handle
+         
+         
+         
+         
+         Handle
+         - any respecting
+         
+         
+         
+         page
+         
+         
+         
+         -
+         
+         or
+         Adhere
+         
+         
+         Use
+         match
+         field
+         
+         or
+         
+         
+         
+
+  [6] Agent: BackendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 1020/1700 words deleted (60%)
+
+      Before (full content):
+         Implement app.py backend routes and data handling from design_spec.md Sections 1 and 3
+         === design_spec.md ===
+         # Design Specification for JobBoard Web Application
+         
+         ---
+         
+         ## 1. Flask Routes Specification
+         
+         | Route Path               | Function Name              | HTTP Methods | Template Rendered       | Context Variables and Types                                                | Form Fields (POST)                                         |
+         |--------------------------|----------------------------|--------------|-------------------------|---------------------------------------------------------------------------|------------------------------------------------------------|
+         | /                        | redirect_to_dashboard       | GET          | Redirect to /dashboard  | None                                                                      | None                                                       |
+         | /dashboard               | dashboard                  | GET          | dashboard.html          | featured_jobs: List[Dict] (job data), new_opportunities: List[Dict] (job data)
+                                                                                                  | None                                                       |
+         | /jobs                    | job_listings               | GET          | job_listings.html       | jobs: List[Dict], categories: List[Dict], locations: List[str], filters: Dict[str,str]
+                                                | None                                                       |
+         | /jobs/<int:job_id>       | job_details                | GET          | job_details.html        | job: Dict, company: Dict                                                 | None                                                       |
+         | /apply/<int:job_id>      | application_form           | GET, POST    | application_form.html   | job: Dict, errors: Dict[str,str] (only for GET with errors or POST failure) | applicant_name (str), applicant_email (str), resume_file (file), cover_letter (str) |
+         | /applications            | applications_tracking      | GET          | applications.html       | applications: List[Dict], filter_status: str                             | None                                                       |
+         | /application/<int:app_id>| application_details        | GET          | application_details.html | application: Dict, job: Dict, resume: Dict                                | None                                                       |
+         | /companies               | companies_directory        | GET          | companies.html          | companies: List[Dict], search_query: str                                | None                                                       |
+         | /companies/<int:company_id> | company_profile          | GET          | company_profile.html    | company: Dict, jobs: List[Dict]                                         | None                                                       |
+         | /resumes                 | resume_management          | GET, POST    | resumes.html            | resumes: List[Dict], errors: Dict[str,str] (optional)                    | resume_file (file, optional)                              |
+         | /resumes/delete/<int:resume_id> | delete_resume         | POST         | redirects to /resumes   | None                                                                      | None                                                       |
+         | /search                  | search_results             | GET          | search_results.html     | query: str, job_results: List[Dict], company_results: List[Dict]          | None                                                       |
+         
+         
+         ### Details per route:
+         
+         #### Root '/'
+         - Redirects to `/dashboard` route.
+         
+         #### /dashboard
+         - Function: `dashboard`
+         - Method: GET
+         - Template: `dashboard.html`
+         - Context:
+           - `featured_jobs`: List of dictionaries representing featured job postings. Each dictionary includes job_id, title, company_name, location, salary_min, salary_max.
+           - `new_opportunities`: List of dictionaries representing latest job opportunities similarly structured.
+         
+         #### /jobs
+         - Function: `job_listings`
+         - Method: GET
+         - Template: `job_listings.html`
+         - Context:
+           - `jobs`: List of job dictionaries for display.
+           - `categories`: List of category dictionaries with category_id and category_name.
+           - `locations`: List of strings representing location filters.
+           - `filters`: Dictionary containing keys 'search', 'category', 'location' representing current filter values.
+         
+         #### /jobs/<int:job_id>
+         - Function: `job_details`
+         - Method: GET
+         - Template: `job_details.html`
+         - Context:
+           - `job`: Dictionary with full job details.
+           - `company`: Dictionary containing company details.
+         
+         #### /apply/<int:job_id>
+         - Function: `application_form`
+         - Methods: GET, POST
+         - Template: `application_form.html`
+         - Context:
+           - `job`: Job dict for the job being applied to.
+           - `errors`: For GET or POST failures, dictionary mapping field name to error message.
+         - POST Form Fields:
+           - `applicant_name`: string
+           - `applicant_email`: string
+           - `resume_file`: file upload
+           - `cover_letter`: string
+         
+         #### /applications
+         - Function: `applications_tracking`
+         - Method: GET
+         - Template: `applications.html`
+         - Context:
+           - `applications`: List of applications with job title, company name, status, and date applied.
+           - `filter_status`: string indicating current status filter.
+         
+         #### /application/<int:app_id>
+         - Function: `application_details`
+         - Method: GET
+         - Template: `application_details.html`
+         - Context:
+           - `application`: Application dict
+           - `job`: Related job dict
+           - `resume`: Resume dict associated with application
+         
+         #### /companies
+         - Function: `companies_directory`
+         - Method: GET
+         - Template: `companies.html`
+         - Context:
+           - `companies`: List of company dictionaries.
+           - `search_query`: String search filter.
+         
+         #### /companies/<int:company_id>
+         - Function: `company_profile`
+         - Method: GET
+         - Template: `company_profile.html`
+         - Context:
+           - `company`: Company dictionary
+           - `jobs`: List of job dicts from the company
+         
+         #### /resumes
+         - Function: `resume_management`
+         - Methods: GET, POST
+         - Template: `resumes.html`
+         - Context:
+           - `resumes`: List of resume dicts.
+           - `errors`: Dict of errors from resume upload if any.
+         - POST Form Fields:
+           - `resume_file`: file upload
+         
+         #### /resumes/delete/<int:resume_id>
+         - Function: `delete_resume`
+         - Method: POST
+         - Redirects to `/resumes`
+         - No template
+         - No context
+         
+         #### /search
+         - Function: `search_results`
+         - Method: GET
+         - Template: `search_results.html`
+         - Context:
+           - `query`: Search string
+           - `job_results`: List of job dicts matching the query
+           - `company_results`: List of company dicts matching the query
+         
+         
+         ---
+         
+         ## 2. HTML Template Specifications
+         
+         ### dashboard.html
+         - Page Title: Job Board Dashboard (for `<title>` and `<h1>`)
+         - Elements:
+           - `dashboard-page`: Div - container for full dashboard page
+           - `featured-jobs`: Div - displays featured jobs (multiple job summary cards)
+           - `browse-jobs-button`: Button - navigates to job listings page
+           - `my-applications-button`: Button - navigates to applications tracking page
+           - `companies-button`: Button - navigates to companies directory page
+         - Context Variables:
+           - `featured_jobs`: List[Dict] (job_id, title, company_name, location, salary_min, salary_max)
+           - `new_opportunities`: List[Dict] similar structure
+         - Navigation:
+           - `browse-jobs-button` -> url_for('job_listings')
+           - `my-applications-button` -> url_for('applications_tracking')
+           - `companies-button` -> url_for('companies_directory')
+         
+         ### job_listings.html
+         - Page Title: Job Listings
+         - Elements:
+           - `listings-page`: Div - main container
+           - `search-input`: Input - search jobs text field
+           - `category-filter`: Dropdown - category filter
+           - `location-filter`: Dropdown - location filter
+           - `jobs-grid`: Div - grid containing job cards
+           - `view-job-button-{{ job.job_id }}`: Button - button on each job card for details
+         - Context Variables:
+           - `jobs`: List[Dict] with job data
+           - `categories`: List[Dict] with category_id, category_name
+           - `locations`: List[str]
+           - `filters`: Dict[str,str] keys: 'search', 'category', 'location'
+         - Navigation:
+           - `view-job-button-{{ job.job_id }}` -> url_for('job_details', job_id=job.job_id)
+         
+         ### job_details.html
+         - Page Title: Job Details
+         - Elements:
+           - `job-details-page`: Div - container
+           - `job-title`: H1 - job title text
+           - `company-name`: Div - company name
+           - `job-description`: Div - job description and requirements
+           - `salary-range`: Div - salary range
+           - `apply-now-button`: Button - navigates to application form
+         - Context Variables:
+           - `job`: Dict with job fields
+           - `company`: Dict with company info
+         - Navigation:
+           - `apply-now-button` -> url_for('application_form', job_id=job.job_id)
+         
+         ### application_form.html
+         - Page Title: Submit Application
+         - Elements:
+           - `application-form-page`: Div - container
+           - `applicant-name`: Input - text input for applicant name
+           - `applicant-email`: Input - text input for applicant email
+           - `resume-upload`: File Input - resume upload field
+           - `cover-letter`: Textarea - input for cover letter
+           - `submit-application-button`: Button - submit
+         - Context Variables:
+           - `job`: Dict with job data
+           - `errors`: Dict[str,str] error messages keyed by field
+         - Navigation:
+           - Form POSTs to url_for('application_form', job_id=job.job_id)
+         
+         ### applications.html
+         - Page Title: My Applications
+         - Elements:
+           - `tracking-page`: Div - container
+           - `applications-table`: Table - lists applications with columns job title, company, status, date applied
+           - `status-filter`: Dropdown - filter applications by status
+           - `view-application-button-{{ app.application_id }}`: Button to view details
+           - `back-to-dashboard`: Button - navigates to dashboard
+         - Context Variables:
+           - `applications`: List[Dict]
+           - `filter_status`: str
+         - Navigation:
+           - `view-application-button-{{ app.application_id }}` -> url_for('application_details', app_id=app.application_id)
+           - `back-to-dashboard` -> url_for('dashboard')
+         
+         ### companies.html
+         - Page Title: Company Directory
+         - Elements:
+           - `companies-page`: Div - main container
+           - `companies-list`: Div - list of company cards
+           - `search-company-input`: Input - search field
+           - `view-company-button-{{ company.company_id }}`: Button - view company profile
+           - `back-to-dashboard`: Button - navigates to dashboard
+         - Context Variables:
+           - `companies`: List[Dict]
+           - `search_query`: str
+         - Navigation:
+           - `view-company-button-{{ company.company_id }}` -> url_for('company_profile', company_id=company.company_id)
+           - `back-to-dashboard` -> url_for('dashboard')
+         
+         ### company_profile.html
+         - Page Title: Company Profile
+         - Elements:
+           - `company-profile-page`: Div - container
+           - `company-info`: Div - shows company name, industry, location, description
+           - `company-jobs`: Div - container for company's jobs
+           - `jobs-list`: Div - list of jobs with titles and status indicators
+           - `view-job-button-{{ job.job_id }}`: Button on each job to view details
+           - `back-to-companies`: Button - navigates back to companies directory
+         - Context Variables:
+           - `company`: Dict
+           - `jobs`: List[Dict]
+         - Navigation:
+           - `view-job-button-{{ job.job_id }}` -> url_for('job_details', job_id=job.job_id)
+           - `back-to-companies` -> url_for('companies_directory')
+         
+         ### resumes.html
+         - Page Title: My Resumes
+         - Elements:
+           - `resume-page`: Div - container
+           - `resumes-list`: Div - list of uploaded resumes
+           - `upload-resume-button`: Button - triggers file input
+           - `resume-file-input`: File Input (hidden) - upload field
+           - `delete-resume-button-{{ resume.resume_id }}`: Button to delete resume
+           - `back-to-dashboard`: Button - navigates to dashboard
+         - Context Variables:
+           - `resumes`: List[Dict]
+           - `errors`: Dict[str,str] (optional)
+         - Navigation:
+           - `delete-resume-button-{{ resume.resume_id }}` -> form POST to url_for('delete_resume', resume_id=resume.resume_id)
+           - `back-to-dashboard` -> url_for('dashboard')
+         
+         ### search_results.html
+         - Page Title: Search Results
+         - Elements:
+           - `search-results-page`: Div - container
+           - `search-query-display`: Div - shows entered search query
+           - `results-tabs`: Div - tab control to switch between job and company results
+           - `job-results`: Div - listing of job search results
+           - `company-results`: Div - listing of company search results
+           - `no-results-message`: Div - visible if no results found
+         - Context Variables:
+           - `query`: str
+           - `job_results`: List[Dict]
+           - `company_results`: List[Dict]
+         - Navigation:
+           - Each job and company entry includes buttons linking to their respective details pages using url_for('job_details', job_id=...) and url_for('company_profile', company_id=...)
+         
+         ---
+         
+         ## 3. Data File Schemas
+         
+         ### jobs.txt
+         - File Path: data/jobs.txt
+         - Fields:
+           1. job_id (int)
+           2. title (str)
+           3. company_id (int)
+           4. location (str)
+           5. salary_min (int)
+           6. salary_max (int)
+           7. category (str)
+           8. description (str)
+           9. posted_date (YYYY-MM-DD str)
+         - Description: Stores all job postings.
+         - Examples:
+           ```
+           1|Senior Python Developer|1|Remote|80000|120000|Technology|Experienced Python developer for web applications|2025-01-15
+           2|Data Analyst|2|New York, NY|60000|85000|Finance|Analyze financial data and create reports|2025-01-16
+           3|Healthcare Administrator|3|Los Angeles, CA|50000|70000|Healthcare|Manage hospital operations and patient records|2025-01-14
+           ```
+         
+         ### companies.txt
+         - File Path: data/companies.txt
+         - Fields:
+           1. company_id (int)
+           2. company_name (str)
+           3. industry (str)
+           4. location (str)
+           5. employee_count (int)
+           6. description (str)
+         - Description: Stores company profiles.
+         - Examples:
+           ```
+           1|TechCorp|Technology|San Francisco, CA|500|Leading software solutions provider
+           2|FinanceHub|Finance|New York, NY|300|Innovative financial services company
+           3|MediCare|Healthcare|Los Angeles, CA|200|Premier healthcare management organization
+           ```
+         
+         ### categories.txt
+         - File Path: data/categories.txt
+         - Fields:
+           1. category_id (int)
+           2. category_name (str)
+           3. description (str)
+         - Description: Stores categories for jobs.
+         - Examples:
+           ```
+           1|Technology|Software, IT, and tech-related positions
+           2|Finance|Banking, accounting, and finance positions
+           3|Healthcare|Medical and healthcare industry positions
+           ```
+         
+         ### applications.txt
+         - File Path: data/applications.txt
+         - Fields:
+           1. application_id (int)
+           2. job_id (int)
+           3. applicant_name (str)
+           4. applicant_email (str)
+           5. status (str) (e.g. Applied, Under Review, Interview, Rejected)
+           6. applied_date (YYYY-MM-DD str)
+           7. resume_id (int)
+         - Description: Stores job applications submitted by users.
+         - Examples:
+           ```
+           1|1|John Doe|john@email.com|Under Review|2025-01-17|1
+           2|2|Jane Smith|jane@email.com|Applied|2025-01-16|2
+           3|3|Robert Johnson|robert@email.com|Interview|2025-01-15|3
+           ```
+         
+         ### resumes.txt
+         - File Path: data/resumes.txt
+         - Fields:
+           1. resume_id (int)
+           2. applicant_name (str)
+           3. applicant_email (str)
+           4. filename (str)
+           5. upload_date (YYYY-MM-DD str)
+           6. summary (str)
+         - Description: Stores uploaded resumes metadata.
+         - Examples:
+           ```
+           1|John Doe|john@email.com|john_resume.pdf|2025-01-17|Senior developer with 8 years experience
+           2|Jane Smith|jane@email.com|jane_resume.pdf|2025-01-16|Data analyst with financial background
+           3|Robert Johnson|robert@email.com|robert_resume.pdf|2025-01-15|Healthcare administrator with 5 years experience
+           ```
+         
+         ### job_categories.txt
+         - File Path: data/job_categories.txt
+         - Fields:
+           1. mapping_id (int)
+           2. job_id (int)
+           3. category_id (int)
+         - Description: Maps jobs to categories.
+         - Examples:
+           ```
+           1|1|1
+           2|2|2
+           3|3|3
+           ```
+         
+         ---
+         
+         End of Design Specification
+         
+         
+
+      After (full content):
+         app.py and data handling design_spec.md 1
+         ===
+         Design Web Application
+         
+         
+         
+         1. Flask Routes
+         
+         Route | Function Name | HTTP Template Variables Types | Fields
+         |--------------------------|----------------------------|--------------|-------------------------|---------------------------------------------------------------------------|------------------------------------------------------------|
+         | Redirect /dashboard | None
+         dashboard | | List[Dict] new_opportunities:
+         None
+         | /jobs job_listings | | List[Dict], categories: locations:
+         None
+         | job_details job_details.html | job:
+         /apply/<int:job_id> | Dict[str,str] errors | applicant_name (file), cover_letter
+         /applications |
+         | | | Dict, resume:
+         | | companies.html | companies: search_query: str None
+         /companies/<int:company_id> | | Dict, jobs: |
+         | | | | resumes: errors: Dict[str,str] |
+         | /resumes/delete/<int:resume_id> | delete_resume redirects /resumes | None
+         | | query: str, List[Dict], company_results: List[Dict]
+         
+         
+         ###
+         
+         
+         Redirects `/dashboard` route.
+         
+         /dashboard
+         -
+         Method: GET
+         -
+         
+         - `featured_jobs`: of dictionaries Each company_name, salary_min,
+         - `new_opportunities`: representing latest job opportunities structured.
+         
+         
+         -
+         
+         `job_listings.html`
+         Context:
+         - of dictionaries display.
+         `categories`: of with category_id
+         List strings location filters.
+         `filters`: containing 'search', 'location' values.
+         
+         /jobs/<int:job_id>
+         - Function: `job_details`
+         GET
+         Template: `job_details.html`
+         -
+         job details.
+         - `company`: containing
+         
+         
+         Function: `application_form`
+         
+         - `application_form.html`
+         -
+         - job
+         - `errors`: dictionary field to message.
+         - POST Form Fields:
+         -
+         -
+         file
+         string
+         
+         
+         Function:
+         Method: GET
+         -
+         
+         name, applied.
+         string indicating status
+         
+         #### /application/<int:app_id>
+         Function:
+         GET
+         
+         - Context:
+         `application`: Application dict
+         - Related job dict
+         - associated application
+         
+         
+         -
+         Method:
+         `companies.html`
+         - Context:
+         List company
+         - String search filter.
+         
+         /companies/<int:company_id>
+         Function:
+         
+         - `company_profile.html`
+         Context:
+         `company`:
+         from
+         
+         /resumes
+         Function: `resume_management`
+         Methods: GET,
+         Template: `resumes.html`
+         -
+         `resumes`: of resume
+         - `errors`: errors resume if any.
+         POST
+         `resume_file`: file
+         
+         #### /resumes/delete/<int:resume_id>
+         Function:
+         - Method:
+         -
+         - No
+         
+         
+         #### /search
+         Function:
+         
+         
+         Context:
+         `query`: Search string
+         `job_results`: List dicts
+         of company dicts the
+         
+         
+         
+         
+         HTML
+         
+         ###
+         Page and
+         
+         Div container page
+         `featured-jobs`: Div featured job cards)
+         - `browse-jobs-button`: Button - navigates job
+         `my-applications-button`: -
+         `companies-button`: companies directory
+         
+         `featured_jobs`: salary_min, salary_max)
+         - `new_opportunities`:
+         -
+         `browse-jobs-button` url_for('job_listings')
+         - url_for('applications_tracking')
+         - url_for('companies_directory')
+         
+         job_listings.html
+         Title: Job
+         -
+         - main
+         - `search-input`: Input search
+         Dropdown category
+         `location-filter`: Dropdown filter
+         - `jobs-grid`: Div grid containing job
+         details
+         - Context
+         `jobs`: List[Dict] with job
+         - `categories`: List[Dict] category_id, category_name
+         -
+         'category', 'location'
+         
+         - `view-job-button-{{ job.job_id }}` -> job_id=job.job_id)
+         
+         
+         Page Title:
+         
+         - `job-details-page`: Div -
+         - job title
+         Div - company name
+         - job description and
+         Div salary
+         Button navigates
+         
+         - Dict fields
+         `company`: info
+         Navigation:
+         `apply-now-button` ->
+         
+         ### application_form.html
+         Application
+         
+         `application-form-page`: Div container
+         - `applicant-name`: - applicant
+         - applicant email
+         - upload field
+         Textarea input for letter
+         `submit-application-button`:
+         Context
+         - Dict with
+         - keyed by field
+         
+         Form to
+         
+         applications.html
+         
+         -
+         Div
+         - `applications-table`: Table applications with status, applied
+         `status-filter`: Dropdown - by
+         - view details
+         `back-to-dashboard`: Button navigates dashboard
+         Context Variables:
+         
+         
+         -
+         - `view-application-button-{{ app.application_id }}` app_id=app.application_id)
+         - `back-to-dashboard` url_for('dashboard')
+         
+         
+         Page
+         
+         - Div
+         Div of company cards
+         search field
+         `view-company-button-{{ company.company_id }}`: view profile
+         - `back-to-dashboard`: to
+         
+         -
+         - `search_query`: str
+         Navigation:
+         - `view-company-button-{{ company.company_id }}` company_id=company.company_id)
+         - url_for('dashboard')
+         
+         company_profile.html
+         -
+         - Elements:
+         - `company-profile-page`: -
+         - shows company industry,
+         -
+         `jobs-list`: list with and
+         on job to view
+         - `back-to-companies`:
+         Variables:
+         `company`:
+         - List[Dict]
+         
+         - -> job_id=job.job_id)
+         `back-to-companies`
+         
+         
+         -
+         
+         `resume-page`: Div
+         Div list uploaded
+         `upload-resume-button`: - triggers file
+         - `resume-file-input`: Input (hidden)
+         
+         `back-to-dashboard`: - to
+         Context
+         
+         `errors`:
+         -
+         `delete-resume-button-{{ resume.resume_id }}` form resume_id=resume.resume_id)
+         `back-to-dashboard` url_for('dashboard')
+         
+         
+         - Page
+         -
+         `search-results-page`: Div - container
+         Div search
+         Div control and
+         Div - listing of job
+         - listing company search
+         - `no-results-message`: Div visible if no found
+         Context Variables:
+         - str
+         - List[Dict]
+         
+         Navigation:
+         Each entry includes buttons to details job_id=...)
+         
+         ---
+         
+         
+         
+         jobs.txt
+         
+         -
+         1.
+         title
+         company_id (int)
+         
+         (int)
+         
+         
+         description (str)
+         9. (YYYY-MM-DD
+         Stores all postings.
+         Examples:
+         ```
+         Python Python developer applications|2025-01-15
+         Analyst|2|New York, create
+         Administrator|3|Los Angeles, CA|50000|70000|Healthcare|Manage patient records|2025-01-14
+         ```
+         
+         ###
+         Path:
+         Fields:
+         1.
+         (str)
+         industry
+         location
+         5. (int)
+         
+         
+         
+         
+         solutions provider
+         financial services
+         3|MediCare|Healthcare|Los Angeles, management
+         
+         
+         
+         File data/categories.txt
+         
+         1.
+         2. category_name
+         (str)
+         - Description: Stores for jobs.
+         
+         
+         1|Technology|Software, IT, and
+         2|Finance|Banking, accounting,
+         healthcare positions
+         ```
+         
+         ###
+         File Path: data/applications.txt
+         
+         
+         2.
+         
+         4.
+         Under Review, Interview,
+         6. applied_date str)
+         
+         Description: Stores submitted
+         Examples:
+         
+         1|1|John
+         
+         Johnson|robert@email.com|Interview|2025-01-15|3
+         
+         
+         resumes.txt
+         File Path: data/resumes.txt
+         
+         1.
+         applicant_name
+         
+         4. filename (str)
+         upload_date str)
+         6. summary (str)
+         - Description: resumes metadata.
+         - Examples:
+         
+         developer with 8 years
+         with
+         with years
+         ```
+         
+         ### job_categories.txt
+         - Path:
+         Fields:
+         mapping_id
+         (int)
+         3. category_id (int)
+         - Description: jobs to
+         Examples:
+         
+         
+         2|2|2
+         3|3|3
+         
+         
+         
+         
+         Specification
+         
+         
+
+================================================================================
+

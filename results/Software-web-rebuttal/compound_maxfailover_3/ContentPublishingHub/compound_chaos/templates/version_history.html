@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Version History - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="version-history-page">
+        <h1>Version History</h1>
+
+        <table id="version-table">
+            <thead>
+                <tr>
+                    <th>Version Number</th>
+                    <th>Author</th>
+                    <th>Created Date</th>
+                    <th>Change Summary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for version in versions %}
+                <tr>
+                    <td>{{ version.version_number }}</td>
+                    <td>{{ version.author }}</td>
+                    <td>{{ version.created_date }}</td>
+                    <td>{{ version.change_summary }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_article', article_id=article_id) }}" id="edit-version-{{ version.version_id }}">Edit</a>
+                        <a href="#" id="compare-version-{{ version.version_id }}">Compare</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if comparison_data %}
+        <section id="version-comparison">
+            <h2>Version Comparison</h2>
+            <div id="comparison-details">
+                <p>Comparing Version {{ comparison_data.version_a }} and Version {{ comparison_data.version_b }}</p>
+                <div id="changes">
+                    <ul>
+                        {% for change in comparison_data.changes %}
+                        <li>{{ change }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+            <a href="{{ url_for('edit_article', article_id=article_id) }}" id="edit-article">Edit Article</a>
+        </nav>
+    </div>
+</body>
+</html>

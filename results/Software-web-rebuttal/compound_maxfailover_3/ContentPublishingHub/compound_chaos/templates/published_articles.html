@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Published Articles - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="published-articles-page">
+        <h1>Published Articles</h1>
+
+        <form id="filter-form" method="get" action="{{ url_for('published_articles') }}">
+            <label for="category-filter">Filter by Category:</label>
+            <select id="category-filter" name="category">
+                <option value="">All</option>
+                {% for category in category_options %}
+                <option value="{{ category }}" {% if category == request.args.get('category') %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="sort-filter">Sort by:</label>
+            <select id="sort-filter" name="sort">
+                <option value="">Default</option>
+                {% for sort_option in sort_options %}
+                <option value="{{ sort_option }}" {% if sort_option == request.args.get('sort') %}selected{% endif %}>{{ sort_option }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" id="filter-submit">Apply Filters</button>
+        </form>
+
+        <table id="published-articles-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Published Date</th>
+                    <th>Views</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in published_articles %}
+                <tr>
+                    <td>{{ article.title }}</td>
+                    <td>{{ article.category }}</td>
+                    <td>{{ article.published_date }}</td>
+                    <td>{{ article.views }}</td>
+                    <td>
+                        <a href="{{ url_for('article_analytics', article_id=article.article_id) }}" id="analytics-{{ article.article_id }}">View Analytics</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+        </nav>
+    </div>
+</body>
+</html>

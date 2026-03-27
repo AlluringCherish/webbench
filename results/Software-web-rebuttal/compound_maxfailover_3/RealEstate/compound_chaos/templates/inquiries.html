@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Inquiries</title>
+</head>
+<body>
+    <div id="inquiries-page">
+        <label for="inquiry-status-filter">Filter Status:</label>
+        <select id="inquiry-status-filter" name="filter_status">
+            <option value="All" {% if filter_status == 'All' %}selected{% endif %}>All</option>
+            <option value="Pending" {% if filter_status == 'Pending' %}selected{% endif %}>Pending</option>
+            <option value="Contacted" {% if filter_status == 'Contacted' %}selected{% endif %}>Contacted</option>
+            <option value="Resolved" {% if filter_status == 'Resolved' %}selected{% endif %}>Resolved</option>
+        </select>
+
+        <table id="inquiries-table" border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Property</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inquiry in inquiries %}
+                <tr>
+                    <td>{{ inquiry.inquiry_id }}</td>
+                    <td>{{ inquiry.property_id }}</td>
+                    <td>{{ inquiry.customer_name }}</td>
+                    <td>{{ inquiry.customer_email }}</td>
+                    <td>{{ inquiry.customer_phone }}</td>
+                    <td>{{ inquiry.message }}</td>
+                    <td>{{ inquiry.inquiry_date }}</td>
+                    <td>{{ inquiry.status }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_inquiry', inquiry_id=inquiry.inquiry_id) }}" style="display:inline;">
+                            <button type="submit" id="delete-inquiry-button-{{ inquiry.inquiry_id }}">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

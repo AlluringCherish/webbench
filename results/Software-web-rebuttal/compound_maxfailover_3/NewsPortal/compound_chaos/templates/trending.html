@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Articles</title>
+</head>
+<body>
+    <div id="trending-page">
+        <h1>Trending Articles</h1>
+        <select id="time-period-filter" name="time_period" onchange="location.href=this.value">
+            <option value="" {% if not time_period %}selected{% endif %}>All Time Periods</option>
+            <option value="?time_period=Today" {% if time_period == 'Today' %}selected{% endif %}>Today</option>
+            <option value="?time_period=This Week" {% if time_period == 'This Week' %}selected{% endif %}>This Week</option>
+            <option value="?time_period=This Month" {% if time_period == 'This Month' %}selected{% endif %}>This Month</option>
+        </select>
+        <div id="trending-list">
+            {% for article in trending_articles %}
+            <div>
+                <h3>{{ article.article_title }}</h3>
+                <p>Category: {{ article.category }}</p>
+                <p>Views: {{ article.view_count }}</p>
+                <button id="view-article-button-{{ article.article_id }}" onclick="location.href='{{ url_for('article_details', article_id=article.article_id) }}'">View Article</button>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

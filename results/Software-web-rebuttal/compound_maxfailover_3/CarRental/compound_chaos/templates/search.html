@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Vehicles</title>
+</head>
+<body>
+    <div id="search-page">
+        <form method="get" action="{{ url_for('vehicle_search') }}">
+            <label for="location-filter">Pickup Location:</label>
+            <select id="location-filter" name="location">
+                <option value="">All Locations</option>
+                {% for location in locations %}
+                <option value="{{ location.city }}" {% if filters.location == location.city %}selected{% endif %}>{{ location.city }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="vehicle-type-filter">Vehicle Type:</label>
+            <select id="vehicle-type-filter" name="vehicle_type">
+                <option value="">All Types</option>
+                {% for vtype in vehicle_types %}
+                <option value="{{ vtype }}" {% if filters.vehicle_type == vtype %}selected{% endif %}>{{ vtype }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="date-range-input">Rental Date Range:</label>
+            <input id="date-range-input" type="text" name="date_range" value="{{ filters.date_range|default('') }}" placeholder="YYYY-MM-DD to YYYY-MM-DD">
+
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="vehicles-grid">
+            {% if vehicles %}
+            <ul>
+                {% for vehicle in vehicles %}
+                <li>
+                    <div>{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.vehicle_type }})</div>
+                    <div>Seats: {{ vehicle.seats }}</div>
+                    <div>Daily Rate: ${{ "%.2f" | format(vehicle.daily_rate) }}</div>
+                    <button id="view-details-button-{{ vehicle.vehicle_id }}" onclick="location.href='{{ url_for('vehicle_details', vehicle_id=vehicle.vehicle_id) }}'">View Details</button>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No vehicles found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

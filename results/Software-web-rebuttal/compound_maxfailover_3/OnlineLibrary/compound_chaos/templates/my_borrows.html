@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Borrowings</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>My Borrowings</h1>
+    {% if borrowings %}
+    <table border="1" id="borrowings-table">
+        <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for borrow in borrowings %}
+            <tr>
+                <td>{{ borrow.book_title }}</td>
+                <td>{{ borrow.borrow_date }}</td>
+                <td>{{ borrow.due_date }}</td>
+                <td>{{ borrow.status }}</td>
+                <td>
+                    {% if borrow.status == 'Active' %}
+                    <form action="{{ url_for('return_book', borrow_id=borrow.borrow_id) }}" method="POST" style="display:inline;">
+                        <button type="submit" id="return-book-button-{{ borrow.borrow_id }}">Return</button>
+                    </form>
+                    {% else %}
+                    <button disabled>Return</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div id="no-borrowings-message">You have no borrowings yet.</div>
+    {% endif %}
+    <button onclick="window.location.href='{{ url_for('dashboard') }}'" id="back-to-dashboard">Back to Dashboard</button>
+</body>
+</html>

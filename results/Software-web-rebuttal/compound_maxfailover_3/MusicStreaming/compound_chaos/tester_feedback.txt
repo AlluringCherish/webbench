@@ -1,0 +1,74 @@
+Tester Feedback for MusicStreaming Application
+==============================================
+
+--- Backend Functional Tests ---
+
+1. Root Redirect ('/'):
+   - Issues a HTTP 302 redirect to '/dashboard' as specified.
+   - 'dashboard_page' endpoint is correctly defined.
+
+2. Dashboard ('/dashboard'):
+   - Returns HTTP 200.
+   - Populates 'featured_songs' and 'trending_artists' with expected data fields per spec.
+
+3. Song Catalog ('/songs'):
+   - Returns HTTP 200.
+   - Correct context variables ('songs' list and 'genres' list) with required attributes.
+
+4. Song Search ('/songs/search'):
+   - Accepts POST with 'title' and 'genre' parameters and filters songs accordingly.
+   - Returns filtered songs with correct context.
+   - Backend expects form names 'title' and 'genre' but corresponding template form uses 'search_query' and 'genre_filter' - mismatch causing search malfunction.
+
+5. Song Details ('/song/<song_id>'):
+   - Returns detailed song info.
+   - Handles non-existent song IDs with 404.
+
+6. Playlists ('/playlists') and Playlist Details ('/playlist/<playlist_id>'):
+   - Lists playlists and songs within playlists correctly.
+   - Shows proper counts and handles 404 for invalid IDs.
+
+7. Playlist Creation and Saving ('/playlist/create', '/playlist/save'):
+   - Creation page renders correctly.
+   - Save endpoint expects form field names 'playlist-name-input' and 'playlist-description-input', but template uses 'playlist_name' and 'playlist_description' causing playlist creation to fail.
+
+8. Albums ('/albums') and Album Details ('/album/<album_id>'):
+   - Lists albums and their songs correctly.
+   - Proper 404 handling.
+
+9. Artists ('/artists') and Artist Profile ('/artist/<artist_id>'):
+   - Lists artists and artist-specific songs.
+   - 404 handling.
+
+10. Genres ('/genres'):
+    - Lists genres with featured songs and artists.
+
+--- Frontend UI Tests ---
+
+- All templates include the required page titles.
+- All critical element IDs per page specification are present.
+- Navigation button IDs and onclick navigation targets are correctly assigned.
+- Form actions and methods are mostly correct.
+
+Areas for correction:
+- create_playlist.html's input and textarea "name" attributes should be "playlist-name-input" and "playlist-description-input" respectively to match backend POST parameter expectations.
+- song_catalog.html's search form uses "search_query" and "genre_filter" as input names, but backend expects "title" and "genre". This inconsistency prevents proper searching.
+
+Additional notes:
+- No implementation found for adding songs or albums to playlists based on the current routes and templates.
+- The "Delete Playlist" button merely links back to playlists page without deletion logic.
+
+--- Summary ---
+
+The application’s backend logic and frontend templates are largely consistent with the design spec. However, crucial discrepancies in form input names prevent playlist creation and song searching features from functioning.
+
+--- Action Items ---
+
+1. Fix form field "name" attributes in create_playlist.html to "playlist-name-input" and "playlist-description-input".
+2. Adjust song_catalog.html search input names to "title" and "genre" or adapt backend to accept current names.
+3. Implement or clarify functionality for playlist deletion and adding songs/albums to playlists.
+
+--- Overall Approval Status ---
+NEED_MODIFY
+
+--- End of Tester Feedback ---

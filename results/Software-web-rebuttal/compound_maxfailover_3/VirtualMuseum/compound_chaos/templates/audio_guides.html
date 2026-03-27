@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audio Guides</title>
+</head>
+<body>
+    <div id="audio-guides-page">
+        <h1>Audio Guides</h1>
+        <form method="post" action="{{ url_for('apply_language_filter') }}">
+            <label for="filter-language">Filter by Language:</label>
+            <select id="filter-language" name="filter_language">
+                <option value="" {% if filter_language == "" %}selected{% endif %}>All</option>
+                {% set languages = audioguides | map(attribute='language') | unique | list %}
+                {% for lang in languages %}
+                <option value="{{ lang }}" {% if filter_language == lang %}selected{% endif %}>{{ lang }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" id="apply-language-filter">Apply Filter</button>
+        </form>
+        <table id="audio-guide-list" border="1">
+            <thead>
+                <tr>
+                    <th>Guide ID</th>
+                    <th>Exhibit Number</th>
+                    <th>Title</th>
+                    <th>Language</th>
+                    <th>Duration (min)</th>
+                    <th>Narrator</th>
+                    <th>Play</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for guide in audioguides %}
+                <tr>
+                    <td>{{ guide.guide_id }}</td>
+                    <td>{{ guide.exhibit_number }}</td>
+                    <td>{{ guide.title }}</td>
+                    <td>{{ guide.language }}</td>
+                    <td>{{ guide.duration }}</td>
+                    <td>{{ guide.narrator }}</td>
+                    <td>
+                        <button id="play-guide-button-{{ guide.guide_id }}" onclick="alert('Playing audio guide ID {{ guide.guide_id }}')">Play</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Your Rental</title>
+</head>
+<body>
+    <div id="booking-page">
+        <h1>Book Your Rental</h1>
+        <form method="post" action="{{ url_for('booking', vehicle_id=vehicle.vehicle_id) }}">
+            <label for="pickup-location">Pickup Location:</label>
+            <select id="pickup-location" name="pickup_location" required>
+                {% for location in locations %}
+                <option value="{{ location.city }}" {% if booking_data and booking_data.pickup_location == location.city %}selected{% endif %}>{{ location.city }} - {{ location.address }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="dropoff-location">Dropoff Location:</label>
+            <select id="dropoff-location" name="dropoff_location" required>
+                {% for location in locations %}
+                <option value="{{ location.city }}" {% if booking_data and booking_data.dropoff_location == location.city %}selected{% endif %}>{{ location.city }} - {{ location.address }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="pickup-date">Pickup Date:</label>
+            <input id="pickup-date" type="date" name="pickup_date" value="{{ booking_data.pickup_date if booking_data else '' }}" required>
+
+            <label for="dropoff-date">Dropoff Date:</label>
+            <input id="dropoff-date" type="date" name="dropoff_date" value="{{ booking_data.dropoff_date if booking_data else '' }}" required>
+
+            <button id="calculate-price-button" type="submit" name="action" value="calculate">Calculate Price</button>
+        </form>
+        <div id="total-price">
+            {% if price is defined %}
+            <p>Total Price: ${{ "%.2f" | format(price) }}</p>
+            {% else %}
+            <p>Total Price: N/A</p>
+            {% endif %}
+        </div>
+        {% if price is defined %}
+        <form method="get" action="{{ url_for('insurance_options', reservation_id='reservation_id_placeholder') }}">
+            <!-- As per spec, use a placeholder for reservation_id here -->
+            <button id="proceed-to-insurance-button" type="submit">Proceed to Insurance</button>
+        </form>
+        {% endif %}
+    </div>
+</body>
+</html>

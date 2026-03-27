@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Content Calendar - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="content-calendar-page">
+        <h1>Content Calendar</h1>
+
+        <section id="calendar-view-options">
+            <form id="view-options-form" method="get" action="{{ url_for('content_calendar') }}">
+                {% for option in view_options %}
+                <label>
+                    <input type="radio" name="view" value="{{ option }}" {% if request.args.get('view') == option %}checked{% elif not request.args.get('view') and loop.first %}checked{% endif %}>
+                    {{ option|capitalize }} View
+                </label>
+                {% endfor %}
+                <button type="submit" id="view-options-submit">Change View</button>
+            </form>
+        </section>
+
+        <section id="calendar-data">
+            <table id="calendar-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Scheduled Articles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for date, articles in calendar_data.items() %}
+                    <tr>
+                        <td>{{ date }}</td>
+                        <td>
+                            <ul>
+                                {% for article in articles %}
+                                <li>{{ article.title }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+        </nav>
+    </div>
+</body>
+</html>

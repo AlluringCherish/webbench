@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Resumes</title>
+</head>
+<body>
+    <div id="resume-page">
+        <h1>My Resumes</h1>
+
+        {% if errors %}
+        <div class="errors">
+            {% for field, message in errors.items() %}
+            <div>{{ field }}: {{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div id="resumes-list">
+            {% for resume in resumes %}
+            <div class="resume-item">
+                <div>{{ resume.applicant_name }} ({{ resume.applicant_email }})</div>
+                <div>Filename: {{ resume.filename }}</div>
+                <div>Uploaded: {{ resume.upload_date }}</div>
+                <div>Summary: {{ resume.summary }}</div>
+                <form method="post" action="{{ url_for('delete_resume', resume_id=resume.resume_id) }}">
+                    <button type="submit" id="delete-resume-button-{{ resume.resume_id }}">Delete</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+
+        <form method="post" action="" enctype="multipart/form-data">
+            <input type="file" id="resume-file-input" name="resume_file" style="display:none;">
+            <button type="button" id="upload-resume-button" onclick="document.getElementById('resume-file-input').click();">Upload Resume</button>
+            <button type="submit">Submit Upload</button>
+        </form>
+
+        <a href="{{ url_for('dashboard') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

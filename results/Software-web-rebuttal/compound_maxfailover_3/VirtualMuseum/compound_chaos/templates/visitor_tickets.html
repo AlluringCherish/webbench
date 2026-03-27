@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visitor Tickets</title>
+</head>
+<body>
+    <div id="visitor-tickets-page">
+        <h1>Visitor Tickets</h1>
+        <form method="post" action="{{ url_for('purchase_ticket') }}">
+            <label for="ticket-type">Ticket Type:</label>
+            <select id="ticket-type" name="ticket_type">
+                <option value="Standard">Standard</option>
+                <option value="VIP">VIP</option>
+                <option value="Student">Student</option>
+            </select>
+            <label for="number-of-tickets">Number of Tickets:</label>
+            <input type="number" id="number-of-tickets" name="number_of_tickets" min="1" required>
+            <button type="submit" id="purchase-ticket-button">Purchase Tickets</button>
+        </form>
+
+        {% if purchase_success is defined and purchase_success %}
+        <p>Purchase successful!</p>
+        {% endif %}
+
+        {% if purchase_error is defined and purchase_error %}
+        <p style="color:red;">Error: {{ purchase_error }}</p>
+        {% endif %}
+
+        <table id="my-tickets-table" border="1">
+            <thead>
+                <tr>
+                    <th>Ticket ID</th>
+                    <th>Ticket Type</th>
+                    <th>Visit Date</th>
+                    <th>Visit Time</th>
+                    <th>Number of Tickets</th>
+                    <th>Price</th>
+                    <th>Visitor Name</th>
+                    <th>Visitor Email</th>
+                    <th>Purchase Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                    {% if ticket.visitor_name == username %}
+                    <tr>
+                        <td>{{ ticket.ticket_id }}</td>
+                        <td>{{ ticket.ticket_type }}</td>
+                        <td>{{ ticket.visit_date }}</td>
+                        <td>{{ ticket.visit_time }}</td>
+                        <td>{{ ticket.number_of_tickets }}</td>
+                        <td>{{ ticket.price }}</td>
+                        <td>{{ ticket.visitor_name }}</td>
+                        <td>{{ ticket.visitor_email }}</td>
+                        <td>{{ ticket.purchase_date }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

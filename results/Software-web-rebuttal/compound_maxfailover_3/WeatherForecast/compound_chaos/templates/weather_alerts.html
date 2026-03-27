@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Alerts</title>
+</head>
+<body>
+<div id="page-container-alerts">
+    <h1>Weather Alerts</h1>
+    <nav>
+        <a id="nav-to-dashboard" href="{{ url_for('dashboard_page') }}">Dashboard</a>
+        <a id="nav-to-saved-locations" href="{{ url_for('saved_locations_page') }}">Saved Locations</a>
+        <a id="nav-to-settings" href="{{ url_for('settings_page') }}">Settings</a>
+        <a id="nav-to-location-search" href="{{ url_for('location_search_page') }}">Location Search</a>
+    </nav>
+    <div id="alerts-content">
+        {% if alerts %}
+        <table id="alerts-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Severity</th>
+                    <th>Description</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Acknowledge</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alert in alerts %}
+                <tr class="{% if alert.severity == 'Critical' %}critical-alert{% endif %}">
+                    <td>{{ alert.alert_id }}</td>
+                    <td>{{ alert.alert_type }}</td>
+                    <td>{{ alert.severity }}</td>
+                    <td>{{ alert.description }}</td>
+                    <td>{{ alert.start_time }}</td>
+                    <td>{{ alert.end_time }}</td>
+                    <td>
+                        {% if not alert.is_acknowledged %}
+                        <form method="POST" action="{{ url_for('acknowledge_alert', alert_id=alert.alert_id) }}">
+                            <button id="acknowledge-alert-button-{{ alert.alert_id }}" type="submit">Acknowledge</button>
+                        </form>
+                        {% else %}
+                        Acknowledged
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No alerts at this time.</p>
+        {% endif %}
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</div>
+</body>
+</html>

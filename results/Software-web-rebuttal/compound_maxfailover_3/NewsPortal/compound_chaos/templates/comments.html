@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article Comments</title>
+</head>
+<body>
+    <div id="comments-page">
+        <h1>Article Comments</h1>
+        <select id="filter-by-article" name="filter_by_article" onchange="location.href=this.value">
+            <option value="" {% if not selected_article_id %}selected{% endif %}>All Articles</option>
+            {% for article in articles %}
+            <option value="{{ url_for('comments') }}?article_id={{ article.article_id }}" {% if selected_article_id == article.article_id %}selected{% endif %}>{{ article.title }}</option>
+            {% endfor %}
+        </select>
+        <div id="comments-list">
+            {% for comment in comments %}
+            <div>
+                <h3>{{ comment.article_title }}</h3>
+                <p>By {{ comment.commenter_name }} on {{ comment.comment_date }}</p>
+                <p>{{ comment.comment_text }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="write-comment-button" onclick="location.href='{{ url_for('write_comment') }}'">Write Comment</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

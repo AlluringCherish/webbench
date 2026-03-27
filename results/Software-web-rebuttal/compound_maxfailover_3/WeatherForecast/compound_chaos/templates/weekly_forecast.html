@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Forecast</title>
+</head>
+<body>
+<div id="forecast-page">
+    <h1>Weekly Forecast for {{ location_name }}</h1>
+    <select id="location-filter" onchange="window.location.href='{{ url_for('weekly_forecast_page', location_id=0) }}'.replace('0', this.value)">
+        {% for location in location_filter_options %}
+        <option value="{{ location.location_id }}" {% if location.location_id == location_id %}selected{% endif %}>{{ location.location_name }}</option>
+        {% endfor %}
+    </select>
+    <table id="forecast-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>High Temp</th>
+                <th>Low Temp</th>
+                <th>Condition</th>
+                <th>Precipitation</th>
+                <th>Humidity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for forecast in weekly_forecast %}
+            <tr>
+                <td>{{ forecast.date }}</td>
+                <td>{{ forecast.high_temp }}</td>
+                <td>{{ forecast.low_temp }}</td>
+                <td>{{ forecast.condition }}</td>
+                <td>{{ forecast.precipitation }}</td>
+                <td>{{ forecast.humidity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

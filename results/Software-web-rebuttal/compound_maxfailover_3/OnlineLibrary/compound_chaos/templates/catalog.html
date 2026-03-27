@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Catalog</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div id="catalog-page">
+        <h1>Book Catalog</h1>
+        <input type="text" id="search-input" placeholder="Search books..." oninput="filterBooks()">
+        <select id="filter-status">
+            <option value="All">All Statuses</option>
+            <option value="Available">Available</option>
+            <option value="Borrowed">Borrowed</option>
+            <option value="Reserved">Reserved</option>
+        </select>
+        <div id="book-grid">
+            {% for book in books %}
+                <div class="book-card">
+                    <h2>{{ book.title }}</h2>
+                    <div>Author: {{ book.author }}</div>
+                    <div>Status: {{ book.status }}</div>
+                    <button onclick="window.location.href='{{ url_for('book_details', book_id=book.book_id) }}'">View Details</button>
+                </div>
+            {% endfor %}
+        </div>
+        <button id="dashboard-button" onclick="window.location.href='{{ url_for('dashboard') }}'">Dashboard</button>
+    </div>
+    <script>
+        function filterBooks() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('filter-status').value;
+            const books = document.getElementById('book-grid').children;
+            for (let book of books) {
+                const title = book.querySelector('h2').textContent.toLowerCase();
+                const status = book.querySelector('div:nth-child(3)').textContent.replace('Status: ', '');
+                const matchesSearch = title.includes(searchInput);
+                const matchesStatus = (statusFilter === 'All') || (status === statusFilter);
+                if (matchesSearch && matchesStatus) {
+                    book.style.display = '';
+                } else {
+                    book.style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

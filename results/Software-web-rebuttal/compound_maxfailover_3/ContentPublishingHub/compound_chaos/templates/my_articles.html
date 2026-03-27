@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Articles - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="my-articles-page">
+        <h1>My Articles</h1>
+
+        <form id="filter-form" method="get" action="{{ url_for('my_articles') }}">
+            <label for="status-filter">Filter by Status:</label>
+            <select id="status-filter" name="status">
+                <option value="">All</option>
+                {% for status in filter_status_options %}
+                <option value="{{ status }}" {% if status == request.args.get('status') %}selected{% endif %}>{{ status }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" id="filter-submit">Filter</button>
+        </form>
+
+        <table id="articles-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Last Updated</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr>
+                    <td>{{ article.title }}</td>
+                    <td>{{ article.status }}</td>
+                    <td>{{ article.last_updated }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_article', article_id=article.article_id) }}" id="edit-article-{{ article.article_id }}">Edit</a>
+                        <a href="{{ url_for('article_version_history', article_id=article.article_id) }}" id="version-history-{{ article.article_id }}">Version History</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+            <a href="{{ url_for('create_article') }}" id="create-new-article">Create New Article</a>
+        </nav>
+    </div>
+</body>
+</html>

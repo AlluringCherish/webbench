@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Active Orders</title>
+</head>
+<body>
+    <div id="active-orders-page">
+        <h1>Active Orders</h1>
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status">
+            <option value="all">All</option>
+            {% for status_option in status_options %}
+                <option value="{{ status_option }}">{{ status_option }}</option>
+            {% endfor %}
+        </select>
+        <div id="orders-list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer Name</th>
+                        <th>Restaurant ID</th>
+                        <th>Order Date</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Delivery Address</th>
+                        <th>Phone Number</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for order in active_orders %}
+                    <tr>
+                        <td>{{ order.order_id }}</td>
+                        <td>{{ order.customer_name }}</td>
+                        <td>{{ order.restaurant_id }}</td>
+                        <td>{{ order.order_date }}</td>
+                        <td>${{ order.total_amount }}</td>
+                        <td>{{ order.status }}</td>
+                        <td>{{ order.delivery_address }}</td>
+                        <td>{{ order.phone_number }}</td>
+                        <td>
+                            <a href="{{ url_for('track_order', order_id=order.order_id) }}">
+                                <button id="track-order-button-{{ order.order_id }}">Track Order</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <a href="{{ url_for('dashboard') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

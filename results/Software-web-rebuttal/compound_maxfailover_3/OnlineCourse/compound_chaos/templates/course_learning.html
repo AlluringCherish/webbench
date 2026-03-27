@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Learning</title>
+</head>
+<body>
+    <div id="learning-page">
+        <div id="lessons-list">
+            {% for lesson in lessons %}
+                <div id="lesson-{{ lesson.lesson_id }}" {% if lesson.lesson_id == current_lesson_id %}style="font-weight: bold;"{% endif %}>
+                    {{ lesson.title }}
+                </div>
+            {% else %}
+                <p>No lessons available.</p>
+            {% endfor %}
+        </div>
+
+        <div id="lesson-content">
+            {% for lesson in lessons %}
+                {% if lesson.lesson_id == current_lesson_id %}
+                    <h2>{{ lesson.title }}</h2>
+                    <p>{{ lesson.content }}</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <form method="post" action="{{ url_for('mark_lesson_complete', course_id=course.course_id) }}">
+            <button id="mark-complete-button" type="submit">Mark Complete</button>
+        </form>
+
+        {% if completion_certificate is not none %}
+            <p>Certificate Issued on: {{ completion_certificate.issue_date }}</p>
+        {% endif %}
+
+        <button id="back-to-my-courses" onclick="location.href='{{ url_for('my_courses') }}'">Back to My Courses</button>
+    </div>
+</body>
+</html>
