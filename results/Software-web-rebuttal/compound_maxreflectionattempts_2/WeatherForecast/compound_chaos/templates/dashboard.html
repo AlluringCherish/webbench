@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Dashboard</title>
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1 id="dashboard-page">Weather Dashboard</h1>
+
+        <div id="current-weather-summary">
+            <h2>Current Weather for {{ current_weather.location_name }}</h2>
+            <p>Temperature: {{ current_weather.temperature }}</p>
+            <p>Condition: {{ current_weather.condition }}</p>
+            <p>Humidity: {{ current_weather.humidity }}%</p>
+            <p>Wind Speed: {{ current_weather.wind_speed }}</p>
+            <p>Last Updated: {{ current_weather.last_updated }}</p>
+        </div>
+
+        <button id="search-location-button" onclick="location.href='{{ url_for('search_locations') }}'">Search Locations</button>
+        <button id="view-forecast-button" onclick="location.href='{{ url_for('weekly_forecast', location_id=default_location_id) }}'">View Weekly Forecast</button>
+        <button id="view-alerts-button" onclick="location.href='{{ url_for('alerts_page', location_id=default_location_id) }}'">View Weather Alerts</button>
+
+        <h2>Saved Locations</h2>
+        <ul>
+            {% for location in saved_locations %}
+            <li>
+                {{ location.location_name }} 
+                <button id="select-location-button-{{ location.location_id }}" onclick="location.href='{{ url_for('current_weather', location_id=location.location_id) }}'">Select</button>
+                <button id="remove-location-button-{{ location.location_id }}">Remove</button>
+                {% if location.is_default %}<strong>(Default)</strong>{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+</body>
+</html>

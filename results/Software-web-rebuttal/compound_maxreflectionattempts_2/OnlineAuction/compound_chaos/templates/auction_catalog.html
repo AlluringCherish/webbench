@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Catalog</title>
+</head>
+<body>
+    <div id="catalog-page">
+        <h1>Auction Catalog</h1>
+
+        <form method="GET" action="">
+            <input type="text" name="search" value="{{ search_query }}" id="search-input" placeholder="Search auctions...">
+            <select name="category" id="category-filter">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="auctions-grid">
+            {% for auction in auctions %}
+            <div class="auction-item">
+                <h2>{{ auction.item_name }}</h2>
+                <p>{{ auction.description }}</p>
+                <p>Category: {{ auction.category }}</p>
+                <p>Current Bid: ${{ '%.2f'|format(auction.current_bid) }}</p>
+                <p>Ends At: {{ auction.end_time }}</p>
+                <a href="{{ url_for('auction_details_page', auction_id=auction.auction_id) }}">
+                    <button id="view-auction-button-{{ auction.auction_id }}">View Details</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</body>
+</html>

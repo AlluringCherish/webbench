@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Packages</title>
+</head>
+<body>
+    <div id="packages-page">
+        <h1 id="page-title">Travel Packages</h1>
+
+        <form method="GET" action="">
+            <label for="duration-filter">Filter by Duration:</label>
+            <select id="duration-filter" name="duration_filter">
+                <option value="" {% if not duration_filter %}selected{% endif %}>All Durations</option>
+                {% for duration_option in duration_options %}
+                <option value="{{ duration_option }}" {% if duration_option == duration_filter %}selected{% endif %}>{{ duration_option }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="packages-grid">
+            {% for pkg in packages %}
+            <div class="package-card">
+                <h3>{{ pkg.package_name }}</h3>
+                <p>Destination: {{ pkg.destination }}</p>
+                <p>Duration: {{ pkg.duration_days }} days</p>
+                <p>Price: ${{ '%.2f'|format(pkg.price) }}</p>
+                <p>Includes: {{ pkg.included_items }}</p>
+                <p>Difficulty: {{ pkg.difficulty_level }}</p>
+                <button id="view-package-details-button-{{ pkg.package_id }}" onclick="location.href='{{ url_for('package_details', pkg_id=pkg.package_id) }}'">View Details</button>
+                <button id="book-package-button-{{ pkg.package_id }}">Book Package</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

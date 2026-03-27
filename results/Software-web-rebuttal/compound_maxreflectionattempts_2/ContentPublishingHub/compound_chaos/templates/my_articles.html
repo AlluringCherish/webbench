@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Articles</title>
+</head>
+<body>
+<div id="my_articles-page">
+    <h1>My Articles</h1>
+    <form id="filter_form" method="GET" action="{{ url_for('my_articles') }}">
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status">
+            <option value="">All</option>
+            {% for status_option in filter_options %}
+            <option value="{{ status_option }}" {% if status_option == selected_filter %}selected{% endif %}>{{ status_option }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Apply Filter</button>
+    </form>
+
+    <section id="articles_list">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Last Modified</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr id="article-{{ article.article_id }}">
+                    <td>{{ article.title }}</td>
+                    <td>{{ article.status }}</td>
+                    <td>{{ article.updated_at }}</td>
+                    <td>
+                        <button onclick="window.location.href='{{ url_for('edit_article', article_id=article.article_id) }}'">Edit</button>
+                        <button onclick="window.location.href='{{ url_for('article_version_history', article_id=article.article_id) }}'">Versions</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <nav id="nav_buttons">
+        <button onclick="window.location.href='{{ url_for('dashboard') }}'">Dashboard</button>
+        <button onclick="window.location.href='{{ url_for('create_article') }}'">Create Article</button>
+    </nav>
+</div>
+</body>
+</html>

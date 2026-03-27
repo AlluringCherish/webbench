@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="ticket_booking_page">
+        <h1>{{ page_title }}</h1>
+        <div id="venue_details">
+            <h2 id="venue-name">{{ venue_name }}</h2>
+            <p id="venue-location">{{ venue_location }}</p>
+            <p id="venue-capacity">Capacity: {{ venue_capacity }}</p>
+            <p id="venue-amenities">Amenities: {{ venue_amenities | join(", ") }}</p>
+        </div>
+        <form method="POST" action="{{ url_for('submit_ticket_booking') }}" id="booking_form">
+            <input type="hidden" name="event_id" value="{{ event_id }}">
+            <label for="ticket_type_select">Ticket Type:</label>
+            <select id="ticket_type_select" name="ticket_type">
+                {% for ticket in ticket_types %}
+                <option value="{{ ticket.type }}">{{ ticket.type }} - ${{ ticket.price }}</option>
+                {% endfor %}
+            </select>
+            <label for="ticket-quantity-input">Quantity:</label>
+            <input type="number" id="ticket-quantity-input" name="ticket_quantity" min="1" max="10" value="1" required>
+            <button type="submit" id="book-ticket-button">Book Ticket</button>
+        </form>
+        {% if error %}
+        <div id="error">
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

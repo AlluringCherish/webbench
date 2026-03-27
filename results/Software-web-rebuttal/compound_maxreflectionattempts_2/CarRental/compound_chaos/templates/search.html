@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Vehicles</title>
+</head>
+<body>
+    <div id="main-container">
+        <h1>Search Vehicles</h1>
+        <div id="search-page">
+            <label for="location-filter">Pickup Location:</label>
+            <select id="location-filter" name="location-filter">
+                {% for loc in locations %}
+                <option value="{{ loc.location_id }}">{{ loc.city }} - {{ loc.address }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="vehicle-type-filter">Vehicle Type:</label>
+            <select id="vehicle-type-filter" name="vehicle-type-filter">
+                {% for vt in vehicle_types %}
+                <option value="{{ vt }}">{{ vt }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="date-range-input">Rental Date Range:</label>
+            <input type="text" id="date-range-input" name="date-range-input" placeholder="YYYY-MM-DD to YYYY-MM-DD" />
+
+            <div id="vehicles-grid">
+                {% for vehicle in vehicles %}
+                <div class="vehicle-card">
+                    <h2>{{ vehicle.make }} {{ vehicle.model }}</h2>
+                    <p>Type: {{ vehicle.vehicle_type }}</p>
+                    <p>Daily Rate: ${{ "%.2f"|format(vehicle.daily_rate) }}</p>
+                    <p>Seats: {{ vehicle.seats }}</p>
+                    <p>Transmission: {{ vehicle.transmission }}</p>
+                    <p>Fuel: {{ vehicle.fuel_type }}</p>
+                    <p>Status: {{ vehicle.status }}</p>
+                    <button id="view-details-button-{{ vehicle.vehicle_id }}" onclick="window.location.href='{{ url_for('vehicle_details', vehicle_id=vehicle.vehicle_id) }}'">View Details</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

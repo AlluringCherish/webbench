@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Inquiries</title>
+</head>
+<body>
+    <div id="inquiries-page">
+        <h1>My Inquiries</h1>
+
+        <form method="POST">
+            <label for="inquiry-status-filter">Filter by Status:</label>
+            <select id="inquiry-status-filter" name="inquiry_status_filter">
+                <option value="All" {% if inquiry_status_filter == 'All' %}selected{% endif %}>All</option>
+                <option value="Pending" {% if inquiry_status_filter == 'Pending' %}selected{% endif %}>Pending</option>
+                <option value="Contacted" {% if inquiry_status_filter == 'Contacted' %}selected{% endif %}>Contacted</option>
+                <option value="Resolved" {% if inquiry_status_filter == 'Resolved' %}selected{% endif %}>Resolved</option>
+            </select>
+            <button type="submit" id="filter-inquiries-submit">Filter</button>
+        </form>
+
+        <table id="inquiries-table" border="1">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inquiry in inquiries %}
+                <tr>
+                    <td>{{ inquiry.property_address }}</td>
+                    <td>{{ inquiry.customer_name }}</td>
+                    <td>{{ inquiry.customer_email }}</td>
+                    <td>{{ inquiry.customer_phone }}</td>
+                    <td>{{ inquiry.message }}</td>
+                    <td>{{ inquiry.inquiry_date }}</td>
+                    <td>{{ inquiry.status }}</td>
+                    <td>
+                        <form method="POST" style="display:inline;">
+                            <input type="hidden" name="delete_inquiry_id" value="{{ inquiry.inquiry_id }}">
+                            <button type="submit" id="delete-inquiry-button-{{ inquiry.inquiry_id }}">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('dashboard') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+
+    </div>
+</body>
+</html>

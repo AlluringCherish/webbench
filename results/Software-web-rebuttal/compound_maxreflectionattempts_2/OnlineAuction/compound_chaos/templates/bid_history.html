@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bid History</title>
+</head>
+<body>
+    <div id="bid-history-page">
+        <h1>Bid History</h1>
+
+        <form method="GET" action="">
+            <label for="filter-by-auction">Filter by Auction:</label>
+            <select id="filter-by-auction" name="auction_id">
+                <option value="">All Auctions</option>
+                {% for auction in auctions %}
+                <option value="{{ auction.auction_id }}" {% if filter_auction_id == auction.auction_id %}selected{% endif %}>{{ auction.item_name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" id="sort-by-amount">Sort by Amount</button>
+        </form>
+
+        <table id="bids-table" border="1">
+            <thead>
+                <tr>
+                    <th>Bid ID</th>
+                    <th>Auction Name</th>
+                    <th>Bidder Name</th>
+                    <th>Bid Amount</th>
+                    <th>Bid Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bid in bids %}
+                <tr>
+                    <td>{{ bid.bid_id }}</td>
+                    <td>{{ bid.auction_name }}</td>
+                    <td>{{ bid.bidder_name }}</td>
+                    <td>${{ '%.2f'|format(bid.bid_amount) }}</td>
+                    <td>{{ bid.bid_timestamp }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('dashboard_page') }}"><button id="back-to-dashboard">Back to Dashboard</button></a>
+    </div>
+</body>
+</html>

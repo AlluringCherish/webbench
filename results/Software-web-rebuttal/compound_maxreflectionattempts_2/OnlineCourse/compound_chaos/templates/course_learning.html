@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Learning</title>
+</head>
+<body>
+    <div id="learning-page">
+        <div id="lessons-list">
+            <ul>
+            {% for lesson in lessons %}
+                <li>
+                    {% if lesson.lesson_id in completed_lessons_ids %}
+                        <strong>{{ lesson.title }} (Completed)</strong>
+                    {% else %}
+                        {{ lesson.title }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+
+        <div id="lesson-content">
+            <h2>{{ current_lesson.title }}</h2>
+            <p>{{ current_lesson.content }}</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('mark_lesson_complete', course_id=course_id) }}">
+            {% set current_index = lessons|map(attribute='lesson_id')|list|index(current_lesson.lesson_id) %}
+            {% set next_lesson_id = lessons[current_index + 1].lesson_id if current_index + 1 < lessons|length else None %}
+            {% set last_completed_index = -1 %}
+            {% for i in range(lessons|length) %}
+                {% if lessons[i].lesson_id in completed_lessons_ids %}
+                    {% set last_completed_index = i %}
+                {% endif %}
+            {% endfor %}
+
+            {% if current_index == last_completed_index + 1 %}
+                <button id="mark-complete-button" type="submit">Mark Complete</button>
+            {% else %}
+                <button id="mark-complete-button" type="submit" disabled>Mark Complete</button>
+            {% endif %}
+        </form>
+
+        <button id="back-to-my-courses" onclick="window.location.href='{{ url_for('my_courses') }}'">Back to My Courses</button>
+    </div>
+</body>
+</html>

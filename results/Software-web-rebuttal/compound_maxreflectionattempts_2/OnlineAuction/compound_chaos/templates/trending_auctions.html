@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Auctions</title>
+</head>
+<body>
+    <div id="trending-page">
+        <h1>Trending Auctions</h1>
+
+        <label for="time-range-filter">Filter by Time Range:</label>
+        <select id="time-range-filter" name="time_range">
+            <option value="This Week" {% if time_range == "This Week" %}selected{% endif %}>This Week</option>
+            <option value="This Month" {% if time_range == "This Month" %}selected{% endif %}>This Month</option>
+            <option value="This Year" {% if time_range == "This Year" %}selected{% endif %}>This Year</option>
+        </select>
+
+        <div id="trending-list">
+            {% for auction in trending_auctions %}
+            <div class="trending-auction-item">
+                <h2>{{ auction.item_name }}</h2>
+                <p>Current Bid: ${{ '%.2f'|format(auction.current_bid) }}</p>
+                <p>Bids: {{ auction.bid_count }}</p>
+                <p>Rank: {{ auction.trending_rank }}</p>
+                <a href="{{ url_for('auction_details_page', auction_id=auction.auction_id) }}">
+                    <button id="view-auction-button-{{ auction.auction_id }}">View Details</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard_page') }}"><button id="back-to-dashboard">Back to Dashboard</button></a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Alerts</title>
+</head>
+<body>
+    <div id="alerts-page">
+        <h1>Weather Alerts</h1>
+
+        <label for="location-filter-alerts">Filter by Location:</label>
+        <select id="location-filter-alerts">
+            {% for location in location_filter_options %}
+            <option value="{{ location.location_id }}" {% if location.location_id == selected_location_id %}selected{% endif %}>{{ location.location_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="severity-filter">Filter by Severity:</label>
+        <select id="severity-filter">
+            {% for severity in severity_filter_options %}
+            <option value="{{ severity }}" {% if severity == selected_severity %}selected{% endif %}>{{ severity }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="alerts-list">
+            {% for alert in alerts %}
+            <div class="alert-entry">
+                <h3>{{ alert.alert_type }} ({{ alert.severity }})</h3>
+                <p>{{ alert.description }}</p>
+                <p>Start: {{ alert.start_time }} - End: {{ alert.end_time }}</p>
+                {% if not alert.is_acknowledged %}
+                <button id="acknowledge-alert-button-{{ alert.alert_id }}">Acknowledge</button>
+                {% else %}
+                <span>Acknowledged</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

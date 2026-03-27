@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Showtime</title>
+</head>
+<body>
+    <div id="showtime-page">
+        <h1>Select Showtime</h1>
+
+        <form method="get" action="" id="filters-form">
+            <select id="theater-filter" name="selected_theater" onchange="this.form.submit()">
+                <option value="">All Theaters</option>
+                {% for theater in theaters %}
+                    <option value="{{ theater.theater_id }}" {% if selected_theater == theater.theater_id %}selected{% endif %}>{{ theater.theater_name }}</option>
+                {% endfor %}
+            </select>
+            <input type="date" id="date-filter" name="selected_date" value="{{ selected_date if selected_date else '' }}" onchange="this.form.submit()">
+        </form>
+
+        <div id="showtimes-list">
+            {% for showtime in showtimes %}
+                <div class="showtime-item">
+                    <div>Theater: {{ showtime.theater_id }}</div>
+                    <div>Date: {{ showtime.showtime_date }}</div>
+                    <div>Time: {{ showtime.showtime_time }}</div>
+                    <div>Price: ${{ '%.2f' | format(showtime.price) }}</div>
+                    <div>Available Seats: {{ showtime.available_seats }}</div>
+                    <button id="select-showtime-button-{{ showtime.showtime_id }}" onclick="window.location.href='{{ url_for('seat_selection', movie_id=movie.movie_id, showtime_id=showtime.showtime_id) }}'">Select</button>
+                </div>
+            {% else %}
+                <div>No showtimes available.</div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

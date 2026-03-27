@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Energy Report</title>
+</head>
+<body>
+    <div id="energy-page">
+        <h1>Energy Report</h1>
+        <div id="energy-summary">
+            <!-- Total energy consumption and cost estimate -->
+            <p>Total Consumption: {{ energy_summary.total_consumption }} kWh</p>
+            <p>Estimated Cost: ${{ energy_summary.cost_estimate }}</p>
+        </div>
+        <form method="POST" action="{{ url_for('energy_report_page') }}">
+            <label for="date-filter">Date:</label>
+            <input type="date" id="date-filter" name="date_filter" value="{{ date_filter }}">
+            <button type="submit" id="apply-filter-button">Apply Filter</button>
+        </form>
+        <table id="energy-table" border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Device</th>
+                    <th>Consumption (kWh)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in energy_logs %}
+                <tr>
+                    <td>{{ log.date }}</td>
+                    <td>
+                        {% for device in devices %}
+                            {% if device.device_id == log.device_id %}
+                                {{ device.device_name }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ log.consumption_kwh }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

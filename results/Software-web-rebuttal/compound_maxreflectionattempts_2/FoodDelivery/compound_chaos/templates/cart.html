@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="main-container">
+        <div id="cart-page">
+            <h1>Shopping Cart</h1>
+            <form method="POST" action="{{ url_for('update_cart_quantity') }}">
+                <table id="cart-items-table" border="1">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Quantity</th>
+                            <th>Price Each</th>
+                            <th>Subtotal</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                            <tr>
+                                <td>{{ item.item_name }}</td>
+                                <td>
+                                    <input type="number" id="update-quantity-{{ item.item_id }}" name="quantities[{{ item.item_id }}]" value="{{ item.quantity }}" min="1">
+                                </td>
+                                <td>${{ '%.2f' | format(item.price) }}</td>
+                                <td>${{ '%.2f' | format(item.price * item.quantity) }}</td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('remove_cart_item', item_id=item.item_id) }}" style="display:inline;">
+                                        <button type="submit" id="remove-item-button-{{ item.item_id }}">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div id="total-amount">
+                    <strong>Total Amount: ${{ '%.2f' | format(total_amount) }}</strong>
+                </div>
+                <button type="submit">Update Quantities</button>
+            </form>
+            <a href="{{ url_for('checkout_page') }}">
+                <button id="proceed-checkout-button">Proceed to Checkout</button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

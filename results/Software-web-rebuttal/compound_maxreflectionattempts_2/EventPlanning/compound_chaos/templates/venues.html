@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="venues-grid">
+        <h1>{{ page_title }}</h1>
+        <div id="venue-capacity-filter">
+            <form method="GET" action="{{ url_for('venues_page') }}">
+                <select id="venue-capacity-filter" name="capacity">
+                    <option value="">All</option>
+                    {% for capacity in capacity_filters %}
+                        <option value="{{ capacity }}" {% if capacity == selected_capacity %}selected{% endif %}>{{ capacity }}</option>
+                    {% endfor %}
+                </select>
+                <button id="filter-venues-button" type="submit">Filter</button>
+            </form>
+        </div>
+        <div id="venues-list">
+            {% for venue in venues %}
+            <div class="venue-card" id="venue-{{ venue.venue_id }}">
+                <h2 id="venue-name">{{ venue.venue_name }}</h2>
+                <p id="venue-location">{{ venue.location }}</p>
+                <p id="venue-capacity">Capacity: {{ venue.capacity }}</p>
+                <p id="venue-amenities">Amenities: {{ venue.amenities | join(", ") }}</p>
+                <a href="{{ url_for('view_venue_details', venue_id=venue.venue_id) }}" id="view-venue-details-{{ venue.venue_id }}">View Details</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

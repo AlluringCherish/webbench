@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Published Articles</title>
+</head>
+<body>
+<div id="published_articles-page">
+    <h1>Published Articles</h1>
+    <form id="filter_form" method="GET" action="{{ url_for('published_articles') }}">
+        <label for="category-filter">Filter by Category:</label>
+        <select id="category-filter" name="category">
+            <option value="">All</option>
+            {% for category in categories %}
+            <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="sort-filter">Sort By:</label>
+        <select id="sort-filter" name="sort">
+            {% for sort_option in sort_options %}
+            <option value="{{ sort_option }}" {% if sort_option == selected_sort %}selected{% endif %}>{{ sort_option }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Apply</button>
+    </form>
+
+    <section id="articles_list">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Published Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr id="article-{{ article.article_id }}">
+                    <td>{{ article.title }}</td>
+                    <td>{{ article.category }}</td>
+                    <td>{{ article.updated_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <nav id="nav_buttons">
+        <button onclick="window.location.href='{{ url_for('dashboard') }}'">Dashboard</button>
+        <button onclick="window.location.href='{{ url_for('create_article') }}'">Create Article</button>
+        <button onclick="window.location.href='{{ url_for('my_articles') }}'">My Articles</button>
+    </nav>
+</div>
+</body>
+</html>

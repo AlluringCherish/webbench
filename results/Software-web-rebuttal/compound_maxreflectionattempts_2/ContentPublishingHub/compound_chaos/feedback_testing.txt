@@ -1,0 +1,43 @@
+Feedback for Content Publishing Hub - Functional Testing
+
+Testing started at /dashboard.
+
+1. Defect: Backend Import Failure - Missing utils Module
+- Description: app.py fails to run due to missing 'utils.file_io' module which is critical for file I/O operations. This breaks all routes relying on model data.
+- Reproduction: Run or import app.py.
+- Suggestion: Add or provide the missing 'utils/file_io.py' with functions 'read_file_lines' and 'write_file_lines_atomic'.
+
+2. Defect: Template Data Mismatch Causes Rendering Errors
+- Several templates such as edit_article.html, my_articles.html, published_articles.html, article_analytics.html, and version_history.html refer to object fields that do not exist or have different keys in backend dictionaries.
+  Examples include 'article.id' instead of 'article.article_id', 'article.content' missing in article level (content stored in versions), 'last_modified' vs 'updated_at', and analytics keys mismatch.
+- Reproduction: Visit pages using these templates with realistic article data.
+- Suggestion: Update templates to match backend key names and pass needed data (e.g. latest version content to edit_article).
+
+3. Defect: Filtering Parameter Name Mismatch on My Articles
+- The filter form uses a parameter name 'filter_status' which the backend does not interpret (expects 'status').
+- Reproduction: Use filter form in /articles/mine.
+- Suggestion: Rename filter input names to match backend query parameters.
+
+4. Defect: Dashboard Analytics Button Uses Invalid Static Article ID
+- The dashboard's analytics button links to article_id=0 which likely does not exist, causing 404 errors.
+- Reproduction: Click 'Article Analytics' on dashboard.
+- Suggestion: Link dynamically to a valid article or present article selection for analytics.
+
+5. Defect: Edit Article Form Content Blank
+- The edit_article page does not populate content because article dict does not contain content; it's stored in versions.
+- Reproduction: Open edit article page.
+- Suggestion: Pass latest version content into template to populate content field.
+
+6. Defect: Article Analytics Page Missing Traffic Data
+- The template expects 'traffic_by_date' data, but backend does not supply it.
+- Reproduction: View article analytics page.
+- Suggestion: Provide traffic data or handle missing traffic data gracefully in template.
+
+7. Defect: Version History Template Errors
+- Template expects 'comparison' object and wrong keys (timestamp), backend gives 'created_at' and no comparison object.
+- Reproduction: Access version history page.
+- Suggestion: Add backend support for version comparison and align template to correct keys.
+
+Final Status: NEED_MODIFY
+
+Summary: The main blockers are the missing utils module preventing app execution and multiple template/backend data mismatches that cause UI breaks or unexpected behavior. Fixing these will enable full functional testing and improve user experience.

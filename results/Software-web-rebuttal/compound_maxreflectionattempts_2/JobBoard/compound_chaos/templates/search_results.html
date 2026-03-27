@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+</head>
+<body>
+    <div id="search-results-page">
+        <h1>Search Results</h1>
+
+        <div id="search-query-display">Search Query: {{ search_query }}</div>
+
+        <div id="results-tabs">
+            <button id="tab-jobs" onclick="document.getElementById('job-results').style.display='block'; document.getElementById('company-results').style.display='none';">Jobs</button>
+            <button id="tab-companies" onclick="document.getElementById('job-results').style.display='none'; document.getElementById('company-results').style.display='block';">Companies</button>
+        </div>
+
+        {% set has_job_results = job_results|length > 0 %}
+        {% set has_company_results = company_results|length > 0 %}
+
+        <div id="job-results" style="display: {{ 'block' if has_job_results else 'none' }};">
+            {% if has_job_results %}
+                {% for job in job_results %}
+                <div class="job-result-card">
+                    <h3>{{ job.title }}</h3>
+                    <p><strong>Company:</strong> {{ job.company_name }}</p>
+                    <p><strong>Location:</strong> {{ job.location }}</p>
+                    <p><strong>Salary:</strong> ${{ job.salary_min }} - ${{ job.salary_max }}</p>
+                    <a href="{{ url_for('job_details', job_id=job.job_id) }}">
+                        <button id="view-job-button-{{ job.job_id }}">View Details</button>
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+            <p id="no-results-message">No job results found.</p>
+            {% endif %}
+        </div>
+
+        <div id="company-results" style="display: {{ 'block' if has_company_results and not has_job_results else 'none' }};">
+            {% if has_company_results %}
+                {% for company in company_results %}
+                <div class="company-result-card">
+                    <h3>{{ company.company_name }}</h3>
+                    <p><strong>Industry:</strong> {{ company.industry }}</p>
+                    <a href="{{ url_for('company_profile', company_id=company.company_id) }}">
+                        <button id="view-company-button-{{ company.company_id }}">View Profile</button>
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+            <p id="no-results-message">No company results found.</p>
+            {% endif %}
+        </div>
+
+        {% if not has_job_results and not has_company_results %}
+        <div id="no-results-message">No results found for your query.</div>
+        {% endif %}
+
+    </div>
+</body>
+</html>

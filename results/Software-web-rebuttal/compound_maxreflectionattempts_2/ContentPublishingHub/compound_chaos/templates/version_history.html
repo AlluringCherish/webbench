@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version History</title>
+</head>
+<body>
+<div id="version_history-page">
+    <h1>Version History</h1>
+    <section id="versions_list">
+        <h2>Versions</h2>
+        <ul>
+            {% for version in versions %}
+            <li id="version-{{ version.version_id }}">
+                Version {{ version.version_number }} - {{ version.created_at }}
+                <button onclick="window.location.href='{{ url_for('edit_article', article_id=version.article_id) }}'">Edit</button>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+    <section id="version_comparison">
+        <h2>Version Comparison</h2>
+        {% if comparison %}
+        <div>
+            <p>Comparing version {{ comparison.old_version.version_number }} to {{ comparison.new_version.version_number }}</p>
+            <pre>{{ comparison.diff }}</pre>
+        </div>
+        {% else %}
+        <p>No comparison data available.</p>
+        {% endif %}
+    </section>
+
+    <nav id="nav_buttons">
+        <button onclick="window.location.href='{{ url_for('dashboard') }}'">Dashboard</button>
+        <button onclick="window.location.href='{{ url_for('edit_article', article_id=versions[0].article_id if versions|length > 0 else 0) }}'">Edit Article</button>
+        <button onclick="window.location.href='{{ url_for('my_articles') }}'">My Articles</button>
+    </nav>
+</div>
+</body>
+</html>

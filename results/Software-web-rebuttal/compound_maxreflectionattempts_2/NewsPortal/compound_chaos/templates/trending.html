@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trending Articles</title>
+</head>
+<body>
+  <div id="trending-page">
+    <h1>Trending Articles</h1>
+
+    <form method="post" action="{{ url_for('filter_trending') }}">
+      <label for="time-period-filter">Filter by Time Period:</label>
+      <select id="time-period-filter" name="time_period">
+        <option value="24h" {% if time_period == '24h' %}selected{% endif %}>Last 24 Hours</option>
+        <option value="7d" {% if time_period == '7d' %}selected{% endif %}>Last 7 Days</option>
+        <option value="30d" {% if time_period == '30d' %}selected{% endif %}>Last 30 Days</option>
+      </select>
+      <button type="submit">Filter</button>
+    </form>
+
+    <div id="trending-list">
+      {% for article in trending_articles %}
+      <div class="trending-article">
+        <strong>{{ article.article_title }}</strong> - Category: {{ article.category }} - Views: {{ article.view_count }}
+        <form method="get" action="{{ url_for('article_details', article_id=article.article_id) }}" style="display:inline;">
+          <button id="view-article-button-{{ article.article_id }}" type="submit">View Article</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+    <form method="get" action="{{ url_for('dashboard') }}">
+      <button id="back-to-dashboard" type="submit">Back to Dashboard</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,1623 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "SystemArchitect",
+      "FrontendDeveloper",
+      "FrontendDeveloper_Fix"
+    ],
+    "num_all_targets": 3,
+    "agent_chaos_targets": [
+      "SystemArchitect",
+      "FrontendDeveloper_Fix"
+    ],
+    "stress_chaos_targets": [
+      "FrontendDeveloper"
+    ],
+    "io_chaos_targets": [
+      "SystemArchitect"
+    ],
+    "tool_chaos_targets": []
+  },
+  "agent_chaos": {
+    "enabled": true,
+    "targets_selected": 2,
+    "unique_injections": 2,
+    "injection_attempts": 4,
+    "log": [
+      {
+        "timestamp": 1774617367.222101,
+        "agent": "SystemArchitect",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1774617368.223541,
+        "agent": "SystemArchitect",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1774617624.6434343,
+        "agent": "FrontendDeveloper_Fix",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1774617625.6468446,
+        "agent": "FrontendDeveloper_Fix",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      }
+    ]
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordDeletion",
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 4,
+    "method_selection": "Mode: WordDeletion (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": [
+      {
+        "timestamp": 1774617436.196945,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 161/269 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "You are a Frontend Developer specializing in HTML and Jinja2 templating for Flask applications.\n\nYour goal is to create all HTML template files for the NewsPortal application based on the frontend section of design_spec.md.\n\nTask Details:\n- Read only the HTML Templates section of design_spec.md\n- Implement all specified templates (*.html) with exact page layouts and UI element IDs\n- Include correct page titles as specified\n- Implement navigation using url_for() with exact function names from the spec\n- Do NOT read or implement backend code or data schemas\n- Do NOT add any UI elements or pages not documented in the specification\n\nImplementation Requirements:\n1. **Template File Structure**:\n   '''html\n   <!DOCTYPE html>\n   <html lang=\"en\">\n   <head>\n       <meta charset=\"UTF-8\">\n       <title>{{ page_title }}</title>\n   </head>\n   <body>\n       <div id=\"main-container-id\">\n           <h1>{{ page_title }}</h1>\n           <!-- Page content here -->\n       </div>\n   </body>\n   </html>\n   '''\n\n2. **Element IDs**:\n   - Use all element IDs exactly as specified (case-sensitive)\n   - For dynamic elements with variable IDs (e.g., view-article-button-{article_id}), use Jinja2 syntax:\n     id=\"view-article-button-{{ article.article_id }}\"\n\n3. **Navigation Links**:\n   - Use url_for() with exact function names for all navigation buttons and links\n   - For dynamic links including parameters, use Jinja2 variable syntax in url_for calls\n\n4. **Form Elements**:\n   - For pages with forms (e.g., Write Comment), implement form tags with method and action attributes per specification\n   - Use appropriate input types and button IDs\n\nCRITICAL REQUIREMENTS:\n- Use write_text_file tool to save all required template files inside 'templates/' directory\n- Do NOT modify backend or data files\n- Do NOT include any client-side scripting unless specified\n- All element IDs and page titles must be exact matches to spec\n- Navigation must exactly match design_spec.md instructions\n\nOutput: templates/*.html",
+        "after": "are a in HTML Jinja2\n\nto HTML template NewsPortal application the frontend section\n\nTask\nonly HTML Templates\nall UI element\npage specified\nusing exact the\n- Do read or backend\nDo any UI elements the specification\n\nImplementation\n1.\n\n<!DOCTYPE\n<html lang=\"en\">\n\n<meta\n<title>{{ page_title }}</title>\n</head>\n<body>\n\n<h1>{{ page_title }}</h1>\nPage content\n\n\n\n\n\n2.\n- element IDs exactly as specified (case-sensitive)\n- dynamic variable IDs Jinja2\n\n\n3.\nnames for buttons and links\nvariable\n\n**Form\n- For pages forms Comment), form with method and action attributes specification\nUse appropriate IDs\n\nCRITICAL\n- 'templates/'\n- modify backend data files\nNOT any client-side scripting specified\n- element IDs and page must be matches to\nNavigation\n\nOutput:"
+      },
+      {
+        "timestamp": 1774617436.197966,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 907/1513 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement all HTML templates based on HTML Templates section of design_spec.md\n=== design_spec.md ===\n# Design Specification for NewsPortal Web Application\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Route Path              | Flask Function Name      | HTTP Method(s) | Template File Rendered           | Context Variables Passed to Templates                           | Form Data in POST Routes                         |\n|-------------------------|-------------------------|----------------|---------------------------------|----------------------------------------------------------------|-------------------------------------------------|\n| /                       | root_redirect            | GET            | None (redirect)                  | None                                                           | None                                            |\n| /dashboard              | dashboard                | GET            | dashboard.html                  | featured_articles (list of dict), trending_articles (list of dict) | None                                            |\n| /catalog                | article_catalog          | GET            | article_catalog.html            | articles (list of dict), categories (list of dict), search_query (str, optional), selected_category (str, optional) | None                                            |\n| /catalog/search         | catalog_search           | POST           | search_results.html             | search_query (str), results (list of dict)                     | search_query (str), category_filter (str, optional) |\n| /article/<int:article_id> | article_details         | GET            | article_details.html            | article (dict), is_bookmarked (bool)                           | None                                            |\n| /article/<int:article_id>/bookmark | bookmark_article    | POST           | None (redirect to article_details) | None                                                           | None (uses route param)                          |\n| /bookmarks              | bookmarks                | GET            | bookmarks.html                  | bookmarks (list of dict)                                      | None                                            |\n| /bookmarks/remove/<int:bookmark_id> | remove_bookmark     | POST           | None (redirect to bookmarks)    | None                                                           | None (uses route param)                          |\n| /comments               | comments                 | GET            | comments.html                  | comments (list of dict), articles (list of dict), selected_article (str, optional) | None                                            |\n| /comments/filter         | filter_comments          | POST           | comments.html                  | comments (list of dict), articles (list of dict), selected_article (str) | selected_article (str)                           |\n| /comments/write          | write_comment_page       | GET            | write_comment.html             | articles (list of dict)                                      | None                                            |\n| /comments/submit         | submit_comment           | POST           | None (redirect to comments)    | None                                                           | article_id (int), commenter_name (str), comment_text (str) |\n| /trending               | trending_articles        | GET            | trending.html                  | trending_articles (list of dict), time_period (str, optional) | None                                            |\n| /trending/filter         | filter_trending          | POST           | trending.html                  | trending_articles (list of dict), time_period (str)            | time_period (str)                                |\n| /category/<category_name> | category_articles       | GET            | category.html                  | category_name (str), articles (list of dict)                   | None                                            |\n| /category/<category_name>/sort | sort_category_articles | POST           | category.html                  | category_name (str), articles (list of dict), sort_option (str) | sort_option (str)                                |\n\n\nNotes:\n- The root route `/` redirects to `/dashboard`.\n- POST routes are used for filtering, sorting, submitting, or modifying data.\n- Context variables are structured data objects (list or dict) mirroring the data schema and requirements.\n- Function names precisely reflect the purpose of the route and use lowercase_underscore style.\n\n---\n\n## Section 2: HTML Template Specifications\n\n### templates/dashboard.html\n- Page Title: News Portal\n- Element IDs:\n  - dashboard-page (Div): Main container for Dashboard page.\n  - featured-articles (Div): Displays list of featured articles.\n  - browse-articles-button (Button): Navigates to article catalog page.\n  - view-bookmarks-button (Button): Navigates to bookmarks page.\n  - trending-articles-button (Button): Navigates to trending articles page.\n- Context Variables:\n  - featured_articles: list of dicts (article_id:int, title:str, author:str, category:str, date:str, excerpt:str)\n  - trending_articles: list of dicts (article_id:int, title:str, category:str, view_count:int)\n- Navigation Mappings:\n  - browse-articles-button: url_for('article_catalog')\n  - view-bookmarks-button: url_for('bookmarks')\n  - trending-articles-button: url_for('trending_articles')\n- Jinja2 Usage:\n  - Loop over featured_articles to generate article previews inside featured-articles div.\n  - Loop over trending_articles to show a summarized list.\n\n\n### templates/article_catalog.html\n- Page Title: Article Catalog\n- Element IDs:\n  - catalog-page (Div): Main container.\n  - search-input (Input): Text input for search queries.\n  - category-filter (Dropdown): Select dropdown for article categories.\n  - articles-grid (Div): Grid layout for article cards.\n  - view-article-button-{{article_id}} (Button): Button for each article card to view details.\n- Context Variables:\n  - articles: list of dicts (article_id:int, title:str, author:str, category:str, date:str, excerpt:str)\n  - categories: list of dicts (category_id:int, category_name:str)\n  - search_query: str (optional)\n  - selected_category: str (optional)\n- Navigation Mappings:\n  - view-article-button-{{article_id}}: url_for('article_details', article_id=article_id)\n- Jinja2 Usage:\n  - Loop over articles to create article cards.\n  - Loop over categories to populate category-filter dropdown.\n\n\n### templates/article_details.html\n- Page Title: Article Details\n- Element IDs:\n  - article-details-page (Div): Main container.\n  - article-title (H1): Article title display.\n  - article-author (Div): Article author display.\n  - article-date (Div): Publication date display.\n  - bookmark-button (Button): Bookmark the article.\n  - article-content (Div): Full article content.\n- Context Variables:\n  - article: dict with keys (article_id:int, title:str, author:str, category:str, content:str, date:str, views:int)\n  - is_bookmarked: bool\n- Navigation Mappings:\n  - bookmark-button: POST to url_for('bookmark_article', article_id=article['article_id'])\n- Jinja2 Usage:\n  - Display article fields using variable substitutions.\n\n\n### templates/bookmarks.html\n- Page Title: My Bookmarks\n- Element IDs:\n  - bookmarks-page (Div): Main container.\n  - bookmarks-list (Div): Shows list of bookmarked articles.\n  - remove-bookmark-button-{{bookmark_id}} (Button): Remove bookmark button per bookmark.\n  - read-bookmark-button-{{bookmark_id}} (Button): View bookmarked article button per bookmark.\n  - back-to-dashboard (Button): Navigates back to dashboard.\n- Context Variables:\n  - bookmarks: list of dicts (bookmark_id:int, article_id:int, article_title:str, bookmarked_date:str)\n- Navigation Mappings:\n  - remove-bookmark-button-{{bookmark_id}}: POST to url_for('remove_bookmark', bookmark_id=bookmark_id)\n  - read-bookmark-button-{{bookmark_id}}: url_for('article_details', article_id=article_id)\n  - back-to-dashboard: url_for('dashboard')\n- Jinja2 Usage:\n  - Loop over bookmarks to display bookmarks-list.\n\n\n### templates/comments.html\n- Page Title: Article Comments\n- Element IDs:\n  - comments-page (Div): Main container.\n  - comments-list (Div): List of comments.\n  - write-comment-button (Button): Navigates to write comment page.\n  - filter-by-article (Dropdown): Dropdown to filter comments by article.\n  - back-to-dashboard (Button): Navigates back to dashboard.\n- Context Variables:\n  - comments: list of dicts (comment_id:int, article_id:int, article_title:str, commenter_name:str, comment_text:str, comment_date:str)\n  - articles: list of dicts (article_id:int, title:str)\n  - selected_article: str (optional)\n- Navigation Mappings:\n  - write-comment-button: url_for('write_comment_page')\n  - back-to-dashboard: url_for('dashboard')\n- Jinja2 Usage:\n  - Loop over comments to render comments-list.\n  - Loop over articles for filter-by-article dropdown.\n\n\n### templates/write_comment.html\n- Page Title: Write a Comment\n- Element IDs:\n  - write-comment-page (Div): Main container.\n  - select-article (Dropdown): Dropdown to select article for commenting.\n  - commenter-name (Input): Input field for commenter name.\n  - comment-text (Textarea): Textarea for comment text.\n  - submit-comment-button (Button): Submit comment button.\n- Context Variables:\n  - articles: list of dicts (article_id:int, title:str)\n- Navigation Mappings:\n  - submit-comment-button: form POST to url_for('submit_comment')\n- Jinja2 Usage:\n  - Loop over articles to populate select-article dropdown.\n\n\n### templates/trending.html\n- Page Title: Trending Articles\n- Element IDs:\n  - trending-page (Div): Main container.\n  - trending-list (Div): Ranked list of trending articles.\n  - time-period-filter (Dropdown): Dropdown filter for time period.\n  - view-article-button-{{article_id}} (Button): View article details button for each trending article.\n  - back-to-dashboard (Button): Navigates back to dashboard.\n- Context Variables:\n  - trending_articles: list of dicts (article_id:int, article_title:str, category:str, view_count:int)\n  - time_period: str (optional)\n- Navigation Mappings:\n  - view-article-button-{{article_id}}: url_for('article_details', article_id=article_id)\n  - back-to-dashboard: url_for('dashboard')\n- Jinja2 Usage:\n  - Loop over trending_articles for trending-list.\n  - Loop over time period options for dropdown.\n\n\n### templates/category.html\n- Page Title: Category Articles\n- Element IDs:\n  - category-page (Div): Main container.\n  - category-title (H1): Displays category name.\n  - category-articles (Div): List of articles in this category.\n  - sort-by-date (Button): Sort articles by date.\n  - sort-by-popularity (Button): Sort articles by popularity.\n  - back-to-dashboard (Button): Navigate back to dashboard.\n- Context Variables:\n  - category_name: str\n  - articles: list of dicts (article_id:int, title:str, author:str, date:str, views:int)\n- Navigation Mappings:\n  - sort-by-date: POST to url_for('sort_category_articles', category_name=category_name) with sort_option='date'\n  - sort-by-popularity: POST to url_for('sort_category_articles', category_name=category_name) with sort_option='popularity'\n  - back-to-dashboard: url_for('dashboard')\n- Jinja2 Usage:\n  - Loop over articles for category-articles div.\n\n\n### templates/search_results.html\n- Page Title: Search Results\n- Element IDs:\n  - search-results-page (Div): Main container.\n  - search-query-display (Div): Displays search query string.\n  - results-list (Div): List of search result articles.\n  - no-results-message (Div): Displays if no results found.\n  - back-to-dashboard (Button): Navigate back to dashboard.\n- Context Variables:\n  - search_query: str\n  - results: list of dicts (article_id:int, title:str, excerpt:str)\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n- Jinja2 Usage:\n  - If results list empty, show no-results-message.\n  - Loop over results for results-list div.\n\n---\n\n## Section 3: Data File Schemas\n\n### data/articles.txt\n- Fields (pipe-delimited):\n  1. article_id (int)\n  2. title (str)\n  3. author (str)\n  4. category (str)\n  5. content (str)\n  6. date (str, YYYY-MM-DD)\n  7. views (int)\n- Description: Stores all news articles with detailed content and metadata.\n- Example Rows:\n  ```\n  1|Breaking: New Technology Breakthrough|John Smith|Technology|Revolutionary advancement in quantum computing announced today|2025-01-20|5432\n  2|Sports: Championship Victory|Sarah Johnson|Sports|Team wins the national championship with a thrilling final match|2025-01-19|3210\n  3|Business: Market Trends Analysis|Michael Chen|Business|Expert analysis of current market conditions and forecasts|2025-01-18|2891\n  ```\n\n### data/categories.txt\n- Fields (pipe-delimited):\n  1. category_id (int)\n  2. category_name (str)\n  3. description (str)\n- Description: Defines the categories for articles.\n- Example Rows:\n  ```\n  1|Technology|Latest tech news and innovations\n  2|Sports|Sports news and event coverage\n  3|Business|Business and finance news\n  ```\n\n### data/bookmarks.txt\n- Fields (pipe-delimited):\n  1. bookmark_id (int)\n  2. article_id (int)\n  3. article_title (str)\n  4. bookmarked_date (str, YYYY-MM-DD)\n- Description: Stores user's bookmarked articles.\n- Example Rows:\n  ```\n  1|1|Breaking: New Technology Breakthrough|2025-01-20\n  2|3|Business: Market Trends Analysis|2025-01-18\n  ```\n\n### data/comments.txt\n- Fields (pipe-delimited):\n  1. comment_id (int)\n  2. article_id (int)\n  3. article_title (str)\n  4. commenter_name (str)\n  5. comment_text (str)\n  6. comment_date (str, YYYY-MM-DD)\n- Description: Stores comments made on articles.\n- Example Rows:\n  ```\n  1|1|Breaking: New Technology Breakthrough|Alice Davis|Fascinating development!|2025-01-20\n  2|2|Sports: Championship Victory|Robert Wilson|Amazing performance by the team!|2025-01-19\n  ```\n\n### data/trending.txt\n- Fields (pipe-delimited):\n  1. article_id (int)\n  2. article_title (str)\n  3. category (str)\n  4. view_count (int)\n  5. period (str)\n- Description: Stores trending articles ranked by views and time period.\n- Example Rows:\n  ```\n  1|Breaking: New Technology Breakthrough|Technology|5432|This Week\n  2|Sports: Championship Victory|Sports|3210|This Week\n  3|Business: Market Trends Analysis|Business|2891|This Month\n  ```\n\n",
+        "after": "HTML templates HTML section design_spec.md\n=== design_spec.md ===\nSpecification for Web Application\n\n\n\nFlask Specification\n\nRoute | Name HTTP | File Rendered | Passed to Data\n\n| / | | None | |\n| /dashboard | dashboard.html dict), trending_articles (list None |\narticle_catalog | | article_catalog.html articles of dict), (str, (str, None\n| /catalog/search | POST | | (str), results search_query (str), category_filter\n| | | (dict), is_bookmarked |\n/article/<int:article_id>/bookmark bookmark_article | POST | | route\n/bookmarks | bookmarks |\n| to None | |\n| | | comments.html | (list\n| /comments/filter | POST | comments of | |\n| | write_comment.html\n| | submit_comment POST | None (redirect to article_id comment_text (str) |\n| | | GET | (list dict), time_period (str, None |\n| filter_trending | (list dict), (str) (str) |\n| GET | category.html | articles | None |\n| | category_name of sort_option (str)\n\n\n\nredirects `/dashboard`.\nare for filtering, submitting, or\n- are structured objects\n- names precisely reflect of use lowercase_underscore\n\n\n\n\n\n### templates/dashboard.html\nPortal\n\nDashboard page.\nlist articles.\narticle catalog page.\nview-bookmarks-button (Button):\n- to\nContext\n- featured_articles: excerpt:str)\nlist of category:str,\n- Navigation\n- url_for('article_catalog')\n-\n- url_for('trending_articles')\nJinja2\nover to inside featured-articles\nshow list.\n\n\n### templates/article_catalog.html\nPage Article Catalog\n- Element\ncatalog-page\n- queries.\ncategory-filter Select dropdown for article\n(Div): Grid layout cards.\n- view-article-button-{{article_id}} (Button): Button for to\nContext\ndate:str, excerpt:str)\ncategories: (category_id:int, category_name:str)\n\nselected_category: str\nMappings:\narticle_id=article_id)\n\n- Loop article\n- Loop over categories\n\n\n\nTitle: Article\n-\n\n- article-title (H1): title\n(Div): display.\nPublication\n- the article.\n- article\nVariables:\n- dict with keys (article_id:int, title:str, author:str, content:str,\n\n-\n- POST article_id=article['article_id'])\n\nDisplay article using\n\n\n\n- Title:\n\n(Div):\n- (Div): articles.\nremove-bookmark-button-{{bookmark_id}} Remove button\n- (Button): View bookmarked article per\n- (Button): Navigates back to dashboard.\n-\n- article_id:int,\n- Navigation Mappings:\n- POST url_for('remove_bookmark', bookmark_id=bookmark_id)\nread-bookmark-button-{{bookmark_id}}: url_for('article_details',\n- url_for('dashboard')\nUsage:\n- over display\n\n\n###\n\nIDs:\ncomments-page container.\n- comments-list of\nto comment page.\n- Dropdown to\nback-to-dashboard Navigates to dashboard.\n- Context Variables:\n- list of dicts (comment_id:int, commenter_name:str, comment_text:str, comment_date:str)\n- articles: title:str)\n\n- Navigation\n\nurl_for('dashboard')\n\nto comments-list.\nfor filter-by-article dropdown.\n\n\n###\nPage Title: a\n\n- write-comment-page (Div): container.\nselect-article article for\n(Input): for\nTextarea\nsubmit-comment-button (Button): button.\n\n- (article_id:int, title:str)\n-\nsubmit-comment-button: form to url_for('submit_comment')\nUsage:\narticles to\n\n\ntemplates/trending.html\n- Title:\nIDs:\n(Div): Main\n(Div): trending\n- time-period-filter (Dropdown): Dropdown for time period.\n- article details button\n- dashboard.\nContext Variables:\n- trending_articles: list article_title:str, category:str,\n(optional)\nNavigation\narticle_id=article_id)\nurl_for('dashboard')\n- Jinja2\n- Loop trending_articles trending-list.\n- over for\n\n\n### templates/category.html\nArticles\nElement\n-\n(H1): Displays category name.\n- category-articles of\n- sort-by-date Sort by\nsort-by-popularity articles\n(Button): back dashboard.\n- Context Variables:\n\nof dicts (article_id:int, title:str,\n\ncategory_name=category_name) with sort_option='date'\nsort-by-popularity: url_for('sort_category_articles', category_name=category_name)\n\n\nLoop articles category-articles\n\n\n\nTitle: Results\nIDs:\nMain container.\n- search-query-display\n- (Div): List of search\n(Div): Displays results\n- back-to-dashboard (Button):\n- Context Variables:\n- search_query: str\nresults: list of dicts excerpt:str)\n-\nback-to-dashboard:\nJinja2\nIf list empty,\nresults for div.\n\n---\n\nSection File Schemas\n\n### data/articles.txt\n- Fields (pipe-delimited):\n(int)\ntitle\nauthor (str)\n(str)\n5. content\n6. YYYY-MM-DD)\n\nDescription: with detailed\n-\n```\nNew advancement quantum announced today|2025-01-20|5432\n2|Sports: Johnson|Sports|Team wins a thrilling\n3|Business: analysis current market and forecasts|2025-01-18|2891\n\n\n### data/categories.txt\n(pipe-delimited):\n\n2. (str)\n3.\n- Defines the categories articles.\n\n\ntech innovations\n2|Sports|Sports news and event\nnews\n\n\n### data/bookmarks.txt\n-\nbookmark_id\narticle_id (int)\n\n4. bookmarked_date (str, YYYY-MM-DD)\n- bookmarked\nExample Rows:\n\nNew Technology\n2|3|Business: Market\n\n\n\n\n1. comment_id\n2. article_id\n3. (str)\n\n5.\n\n- comments\n-\n\nBreakthrough|Alice\nVictory|Robert Wilson|Amazing by the\n\n\n###\nFields\n1. article_id\n(str)\n(str)\nview_count\n5.\nDescription: Stores trending and time\nExample\n```\nNew\nChampionship Week\nMarket\n```\n\n"
+      },
+      {
+        "timestamp": 1774617470.4872572,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 64/108 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "are a in HTML Jinja2\n\nto HTML template NewsPortal application the frontend section\n\nTask\nonly HTML Templates\nall UI element\npage specified\nusing exact the\n- Do read or backend\nDo any UI elements the specification\n\nImplementation\n1.\n\n<!DOCTYPE\n<html lang=\"en\">\n\n<meta\n<title>{{ page_title }}</title>\n</head>\n<body>\n\n<h1>{{ page_title }}</h1>\nPage content\n\n\n\n\n\n2.\n- element IDs exactly as specified (case-sensitive)\n- dynamic variable IDs Jinja2\n\n\n3.\nnames for buttons and links\nvariable\n\n**Form\n- For pages forms Comment), form with method and action attributes specification\nUse appropriate IDs\n\nCRITICAL\n- 'templates/'\n- modify backend data files\nNOT any client-side scripting specified\n- element IDs and page must be matches to\nNavigation\n\nOutput:",
+        "after": "\n\nto NewsPortal\n\n\nonly\nall\npage\nthe\n- Do or\nUI\n\nImplementation\n1.\n\n\n\n\n<meta\n<title>{{ page_title }}</title>\n</head>\n<body>\n\n\ncontent\n\n\n\n\n\n2.\nelement specified\ndynamic variable Jinja2\n\n\n\nnames for\n\n\n**Form\n- For Comment), action attributes specification\nappropriate IDs\n\n\n\n- backend data\nNOT any scripting\nIDs and must to\n\n\n"
+      },
+      {
+        "timestamp": 1774617470.488166,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 907/1513 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement all HTML templates based on HTML Templates section of design_spec.md\n=== design_spec.md ===\n# Design Specification for NewsPortal Web Application\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Route Path              | Flask Function Name      | HTTP Method(s) | Template File Rendered           | Context Variables Passed to Templates                           | Form Data in POST Routes                         |\n|-------------------------|-------------------------|----------------|---------------------------------|----------------------------------------------------------------|-------------------------------------------------|\n| /                       | root_redirect            | GET            | None (redirect)                  | None                                                           | None                                            |\n| /dashboard              | dashboard                | GET            | dashboard.html                  | featured_articles (list of dict), trending_articles (list of dict) | None                                            |\n| /catalog                | article_catalog          | GET            | article_catalog.html            | articles (list of dict), categories (list of dict), search_query (str, optional), selected_category (str, optional) | None                                            |\n| /catalog/search         | catalog_search           | POST           | search_results.html             | search_query (str), results (list of dict)                     | search_query (str), category_filter (str, optional) |\n| /article/<int:article_id> | article_details         | GET            | article_details.html            | article (dict), is_bookmarked (bool)                           | None                                            |\n| /article/<int:article_id>/bookmark | bookmark_article    | POST           | None (redirect to article_details) | None                                                           | None (uses route param)                          |\n| /bookmarks              | bookmarks                | GET            | bookmarks.html                  | bookmarks (list of dict)                                      | None                                            |\n| /bookmarks/remove/<int:bookmark_id> | remove_bookmark     | POST           | None (redirect to bookmarks)    | None                                                           | None (uses route param)                          |\n| /comments               | comments                 | GET            | comments.html                  | comments (list of dict), articles (list of dict), selected_article (str, optional) | None                                            |\n| /comments/filter         | filter_comments          | POST           | comments.html                  | comments (list of dict), articles (list of dict), selected_article (str) | selected_article (str)                           |\n| /comments/write          | write_comment_page       | GET            | write_comment.html             | articles (list of dict)                                      | None                                            |\n| /comments/submit         | submit_comment           | POST           | None (redirect to comments)    | None                                                           | article_id (int), commenter_name (str), comment_text (str) |\n| /trending               | trending_articles        | GET            | trending.html                  | trending_articles (list of dict), time_period (str, optional) | None                                            |\n| /trending/filter         | filter_trending          | POST           | trending.html                  | trending_articles (list of dict), time_period (str)            | time_period (str)                                |\n| /category/<category_name> | category_articles       | GET            | category.html                  | category_name (str), articles (list of dict)                   | None                                            |\n| /category/<category_name>/sort | sort_category_articles | POST           | category.html                  | category_name (str), articles (list of dict), sort_option (str) | sort_option (str)                                |\n\n\nNotes:\n- The root route `/` redirects to `/dashboard`.\n- POST routes are used for filtering, sorting, submitting, or modifying data.\n- Context variables are structured data objects (list or dict) mirroring the data schema and requirements.\n- Function names precisely reflect the purpose of the route and use lowercase_underscore style.\n\n---\n\n## Section 2: HTML Template Specifications\n\n### templates/dashboard.html\n- Page Title: News Portal\n- Element IDs:\n  - dashboard-page (Div): Main container for Dashboard page.\n  - featured-articles (Div): Displays list of featured articles.\n  - browse-articles-button (Button): Navigates to article catalog page.\n  - view-bookmarks-button (Button): Navigates to bookmarks page.\n  - trending-articles-button (Button): Navigates to trending articles page.\n- Context Variables:\n  - featured_articles: list of dicts (article_id:int, title:str, author:str, category:str, date:str, excerpt:str)\n  - trending_articles: list of dicts (article_id:int, title:str, category:str, view_count:int)\n- Navigation Mappings:\n  - browse-articles-button: url_for('article_catalog')\n  - view-bookmarks-button: url_for('bookmarks')\n  - trending-articles-button: url_for('trending_articles')\n- Jinja2 Usage:\n  - Loop over featured_articles to generate article previews inside featured-articles div.\n  - Loop over trending_articles to show a summarized list.\n\n\n### templates/article_catalog.html\n- Page Title: Article Catalog\n- Element IDs:\n  - catalog-page (Div): Main container.\n  - search-input (Input): Text input for search queries.\n  - category-filter (Dropdown): Select dropdown for article categories.\n  - articles-grid (Div): Grid layout for article cards.\n  - view-article-button-{{article_id}} (Button): Button for each article card to view details.\n- Context Variables:\n  - articles: list of dicts (article_id:int, title:str, author:str, category:str, date:str, excerpt:str)\n  - categories: list of dicts (category_id:int, category_name:str)\n  - search_query: str (optional)\n  - selected_category: str (optional)\n- Navigation Mappings:\n  - view-article-button-{{article_id}}: url_for('article_details', article_id=article_id)\n- Jinja2 Usage:\n  - Loop over articles to create article cards.\n  - Loop over categories to populate category-filter dropdown.\n\n\n### templates/article_details.html\n- Page Title: Article Details\n- Element IDs:\n  - article-details-page (Div): Main container.\n  - article-title (H1): Article title display.\n  - article-author (Div): Article author display.\n  - article-date (Div): Publication date display.\n  - bookmark-button (Button): Bookmark the article.\n  - article-content (Div): Full article content.\n- Context Variables:\n  - article: dict with keys (article_id:int, title:str, author:str, category:str, content:str, date:str, views:int)\n  - is_bookmarked: bool\n- Navigation Mappings:\n  - bookmark-button: POST to url_for('bookmark_article', article_id=article['article_id'])\n- Jinja2 Usage:\n  - Display article fields using variable substitutions.\n\n\n### templates/bookmarks.html\n- Page Title: My Bookmarks\n- Element IDs:\n  - bookmarks-page (Div): Main container.\n  - bookmarks-list (Div): Shows list of bookmarked articles.\n  - remove-bookmark-button-{{bookmark_id}} (Button): Remove bookmark button per bookmark.\n  - read-bookmark-button-{{bookmark_id}} (Button): View bookmarked article button per bookmark.\n  - back-to-dashboard (Button): Navigates back to dashboard.\n- Context Variables:\n  - bookmarks: list of dicts (bookmark_id:int, article_id:int, article_title:str, bookmarked_date:str)\n- Navigation Mappings:\n  - remove-bookmark-button-{{bookmark_id}}: POST to url_for('remove_bookmark', bookmark_id=bookmark_id)\n  - read-bookmark-button-{{bookmark_id}}: url_for('article_details', article_id=article_id)\n  - back-to-dashboard: url_for('dashboard')\n- Jinja2 Usage:\n  - Loop over bookmarks to display bookmarks-list.\n\n\n### templates/comments.html\n- Page Title: Article Comments\n- Element IDs:\n  - comments-page (Div): Main container.\n  - comments-list (Div): List of comments.\n  - write-comment-button (Button): Navigates to write comment page.\n  - filter-by-article (Dropdown): Dropdown to filter comments by article.\n  - back-to-dashboard (Button): Navigates back to dashboard.\n- Context Variables:\n  - comments: list of dicts (comment_id:int, article_id:int, article_title:str, commenter_name:str, comment_text:str, comment_date:str)\n  - articles: list of dicts (article_id:int, title:str)\n  - selected_article: str (optional)\n- Navigation Mappings:\n  - write-comment-button: url_for('write_comment_page')\n  - back-to-dashboard: url_for('dashboard')\n- Jinja2 Usage:\n  - Loop over comments to render comments-list.\n  - Loop over articles for filter-by-article dropdown.\n\n\n### templates/write_comment.html\n- Page Title: Write a Comment\n- Element IDs:\n  - write-comment-page (Div): Main container.\n  - select-article (Dropdown): Dropdown to select article for commenting.\n  - commenter-name (Input): Input field for commenter name.\n  - comment-text (Textarea): Textarea for comment text.\n  - submit-comment-button (Button): Submit comment button.\n- Context Variables:\n  - articles: list of dicts (article_id:int, title:str)\n- Navigation Mappings:\n  - submit-comment-button: form POST to url_for('submit_comment')\n- Jinja2 Usage:\n  - Loop over articles to populate select-article dropdown.\n\n\n### templates/trending.html\n- Page Title: Trending Articles\n- Element IDs:\n  - trending-page (Div): Main container.\n  - trending-list (Div): Ranked list of trending articles.\n  - time-period-filter (Dropdown): Dropdown filter for time period.\n  - view-article-button-{{article_id}} (Button): View article details button for each trending article.\n  - back-to-dashboard (Button): Navigates back to dashboard.\n- Context Variables:\n  - trending_articles: list of dicts (article_id:int, article_title:str, category:str, view_count:int)\n  - time_period: str (optional)\n- Navigation Mappings:\n  - view-article-button-{{article_id}}: url_for('article_details', article_id=article_id)\n  - back-to-dashboard: url_for('dashboard')\n- Jinja2 Usage:\n  - Loop over trending_articles for trending-list.\n  - Loop over time period options for dropdown.\n\n\n### templates/category.html\n- Page Title: Category Articles\n- Element IDs:\n  - category-page (Div): Main container.\n  - category-title (H1): Displays category name.\n  - category-articles (Div): List of articles in this category.\n  - sort-by-date (Button): Sort articles by date.\n  - sort-by-popularity (Button): Sort articles by popularity.\n  - back-to-dashboard (Button): Navigate back to dashboard.\n- Context Variables:\n  - category_name: str\n  - articles: list of dicts (article_id:int, title:str, author:str, date:str, views:int)\n- Navigation Mappings:\n  - sort-by-date: POST to url_for('sort_category_articles', category_name=category_name) with sort_option='date'\n  - sort-by-popularity: POST to url_for('sort_category_articles', category_name=category_name) with sort_option='popularity'\n  - back-to-dashboard: url_for('dashboard')\n- Jinja2 Usage:\n  - Loop over articles for category-articles div.\n\n\n### templates/search_results.html\n- Page Title: Search Results\n- Element IDs:\n  - search-results-page (Div): Main container.\n  - search-query-display (Div): Displays search query string.\n  - results-list (Div): List of search result articles.\n  - no-results-message (Div): Displays if no results found.\n  - back-to-dashboard (Button): Navigate back to dashboard.\n- Context Variables:\n  - search_query: str\n  - results: list of dicts (article_id:int, title:str, excerpt:str)\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n- Jinja2 Usage:\n  - If results list empty, show no-results-message.\n  - Loop over results for results-list div.\n\n---\n\n## Section 3: Data File Schemas\n\n### data/articles.txt\n- Fields (pipe-delimited):\n  1. article_id (int)\n  2. title (str)\n  3. author (str)\n  4. category (str)\n  5. content (str)\n  6. date (str, YYYY-MM-DD)\n  7. views (int)\n- Description: Stores all news articles with detailed content and metadata.\n- Example Rows:\n  ```\n  1|Breaking: New Technology Breakthrough|John Smith|Technology|Revolutionary advancement in quantum computing announced today|2025-01-20|5432\n  2|Sports: Championship Victory|Sarah Johnson|Sports|Team wins the national championship with a thrilling final match|2025-01-19|3210\n  3|Business: Market Trends Analysis|Michael Chen|Business|Expert analysis of current market conditions and forecasts|2025-01-18|2891\n  ```\n\n### data/categories.txt\n- Fields (pipe-delimited):\n  1. category_id (int)\n  2. category_name (str)\n  3. description (str)\n- Description: Defines the categories for articles.\n- Example Rows:\n  ```\n  1|Technology|Latest tech news and innovations\n  2|Sports|Sports news and event coverage\n  3|Business|Business and finance news\n  ```\n\n### data/bookmarks.txt\n- Fields (pipe-delimited):\n  1. bookmark_id (int)\n  2. article_id (int)\n  3. article_title (str)\n  4. bookmarked_date (str, YYYY-MM-DD)\n- Description: Stores user's bookmarked articles.\n- Example Rows:\n  ```\n  1|1|Breaking: New Technology Breakthrough|2025-01-20\n  2|3|Business: Market Trends Analysis|2025-01-18\n  ```\n\n### data/comments.txt\n- Fields (pipe-delimited):\n  1. comment_id (int)\n  2. article_id (int)\n  3. article_title (str)\n  4. commenter_name (str)\n  5. comment_text (str)\n  6. comment_date (str, YYYY-MM-DD)\n- Description: Stores comments made on articles.\n- Example Rows:\n  ```\n  1|1|Breaking: New Technology Breakthrough|Alice Davis|Fascinating development!|2025-01-20\n  2|2|Sports: Championship Victory|Robert Wilson|Amazing performance by the team!|2025-01-19\n  ```\n\n### data/trending.txt\n- Fields (pipe-delimited):\n  1. article_id (int)\n  2. article_title (str)\n  3. category (str)\n  4. view_count (int)\n  5. period (str)\n- Description: Stores trending articles ranked by views and time period.\n- Example Rows:\n  ```\n  1|Breaking: New Technology Breakthrough|Technology|5432|This Week\n  2|Sports: Championship Victory|Sports|3210|This Week\n  3|Business: Market Trends Analysis|Business|2891|This Month\n  ```\n\n",
+        "after": "HTML\ndesign_spec.md ===\n# Specification Application\n\n\n\n1: Flask Specification\n\nPath | Function Method(s) File to Data in POST\n\nroot_redirect GET | None None\ndashboard | | featured_articles of dict), |\n| | GET (list (list search_query optional), None |\n| /catalog/search | | (str), of search_query optional)\n| article_details.html article (dict),\n| /article/<int:article_id>/bookmark | (redirect to article_details) | None\n| GET bookmarks.html\nremove_bookmark POST None bookmarks) None | param)\n/comments | comments | comments of dict), articles of optional) |\n| dict), (list (str) | selected_article\n/comments/write | | GET | (list of dict) |\n| (redirect comments) | (int), (str),\n| GET | (list dict), (str, |\n| trending.html dict), time_period (str)\n| GET | (str), articles None |\n| | | POST category.html | category_name of sort_option | sort_option (str)\n\n\nNotes:\n- The root route `/` redirects to `/dashboard`.\n- POST routes used for sorting, or\nobjects (list or dict) the schema and requirements.\nFunction names precisely the purpose of and use\n\n\n\nSection 2: Template Specifications\n\n\nTitle: News\n- Element\n- dashboard-page (Div): container for Dashboard\n- Displays list\n- browse-articles-button catalog\n- view-bookmarks-button (Button): Navigates to page.\ntrending-articles-button (Button):\n\n- dicts (article_id:int,\n- trending_articles: list of\n\n-\n-\nurl_for('trending_articles')\n- Jinja2\n- Loop over to generate article inside\nLoop summarized\n\n\n\n- Page Title: Catalog\n- Element\n- catalog-page Main\nfor\nfor article categories.\n- (Div): Grid for article cards.\n- (Button): Button each article\n\n- articles: (article_id:int, date:str, excerpt:str)\ncategories: list of dicts category_name:str)\n(optional)\n\n- Navigation\n\nJinja2 Usage:\n- article\ncategories to dropdown.\n\n\n###\nTitle:\nElement\n(Div): Main container.\n(H1): Article title\n- Article\ndate\nthe article.\nFull article\n- Variables:\narticle: with author:str, content:str, date:str, views:int)\n- bool\nNavigation\n- article_id=article['article_id'])\n- Usage:\n- article\n\n\n###\n- Title: Bookmarks\n\n- bookmarks-page container.\nShows of\nRemove bookmark bookmark.\nread-bookmark-button-{{bookmark_id}} View article button\n- back-to-dashboard to dashboard.\n- Context\n- bookmarks: of (bookmark_id:int, article_id:int, article_title:str,\nNavigation\nbookmark_id=bookmark_id)\n\n- back-to-dashboard:\n\nover bookmarks-list.\n\n\n\n- Page Article Comments\n\ncomments-page (Div): container.\n- (Div): List comments.\n- (Button):\n(Dropdown): Dropdown article.\n- back-to-dashboard (Button): Navigates to\nVariables:\n- comments: list of article_title:str, comment_text:str,\n- articles: list dicts (article_id:int,\nstr\nMappings:\nwrite-comment-button: url_for('write_comment_page')\n- url_for('dashboard')\nJinja2\n- render\n- over for\n\n\n\nWrite Comment\n- IDs:\n-\nselect\n- commenter-name Input\n- comment\ncomment\n-\n- of dicts\nMappings:\nform\n\n- dropdown.\n\n\n\n\nIDs:\n-\n- trending-list (Div): Ranked trending articles.\ntime-period-filter (Dropdown): Dropdown for\n- article details button for each\nNavigates dashboard.\n- Context\n-\n\nMappings:\n\nback-to-dashboard:\nJinja2\n- Loop trending_articles\n- options\n\n\ntemplates/category.html\nPage\n- Element\ncategory-page (Div): Main\ncategory-title (H1): Displays category\n- articles this\narticles by date.\n-\n- dashboard.\n-\n- str\n- articles: of dicts\n\nPOST to url_for('sort_category_articles',\n- category_name=category_name) with sort_option='popularity'\n- back-to-dashboard: url_for('dashboard')\n- Jinja2\n- category-articles div.\n\n\ntemplates/search_results.html\n- Page Results\n- Element IDs:\n(Div): Main\n- search-query-display (Div): query string.\n- results-list List of search articles.\nDisplays if results\n- (Button): back dashboard.\nVariables:\nsearch_query: str\nlist of title:str,\n\nurl_for('dashboard')\n-\n- empty, no-results-message.\n- over results div.\n\n\n\n## 3: File\n\n\n-\n(int)\n(str)\n(str)\ncategory (str)\ncontent\n6. (str,\n7. (int)\nDescription: Stores all detailed\nRows:\n\nTechnology quantum announced\nChampionship thrilling final\n3|Business: Trends of market forecasts|2025-01-18|2891\n\n\ndata/categories.txt\n- (pipe-delimited):\n1. category_id\n(str)\n3. (str)\n- the articles.\nRows:\n\ninnovations\n2|Sports|Sports news and coverage\n3|Business|Business\n```\n\n###\n\n1.\narticle_id\n3. (str)\nbookmarked_date\nStores user's\nExample\n\n1|1|Breaking: New\nMarket Analysis|2025-01-18\n```\n\ndata/comments.txt\n-\n1. comment_id\n2. article_id\n3. article_title\n(str)\ncomment_text\ncomment_date YYYY-MM-DD)\nDescription: on\nExample\n\nNew Davis|Fascinating\nthe\n```\n\n\n\n1. article_id\n2. (str)\n(str)\n4.\n(str)\ntrending ranked views\nExample Rows:\n```\nNew Breakthrough|Technology|5432|This Week\nWeek\n3|Business: Trends Analysis|Business|2891|This\n\n\n"
+      }
+    ]
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "WordDeletion",
+    "targets_selected": 1,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordDeletion (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": []
+  },
+  "tool_chaos": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (NoResponse, WordShuffle, WordDeletion, WordReplacement)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 3,
+      "FP": 1,
+      "FN": 0,
+      "TN": 2
+    },
+    "precision": 0.75,
+    "recall": 1.0,
+    "f1_score": 0.8571428571428571,
+    "total_agents": 6,
+    "error_agents": 3,
+    "normal_agents": 3,
+    "actually_injected_agents": [
+      "SystemArchitect",
+      "FrontendDeveloper",
+      "FrontendDeveloper_Fix"
+    ],
+    "target_agents": [
+      "SystemArchitect",
+      "FrontendDeveloper",
+      "FrontendDeveloper_Fix"
+    ],
+    "not_injected_targets": [],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 0,
+        "failover_count": 1,
+        "category": "TP"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 2,
+        "failover_count": 1,
+        "category": "TP"
+      },
+      {
+        "agent_name": "Tester",
+        "original_name": "Tester",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "BackendDeveloper_Fix",
+        "original_name": "BackendDeveloper_Fix",
+        "is_error_agent": false,
+        "recovery_attempted": true,
+        "reflection_count": 4,
+        "failover_count": 1,
+        "category": "FP"
+      },
+      {
+        "agent_name": "FrontendDeveloper_Fix",
+        "original_name": "FrontendDeveloper_Fix",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 2,
+        "failover_count": 1,
+        "category": "TP"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 3               FN = 0   
+Actual: Normal Agent    FP = 1               TN = 2   
+
+Agent Distribution:
+  Total Agents: 6
+  Error Agents (Actually Injected): 3
+  Normal Agents: 3
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 3 agents
+    - Actually Injected: 3 agents
+
+Performance Metrics:
+  Precision: 0.7500 (TP / (TP + FP))
+  Recall:    1.0000 (TP / (TP + FN))
+  F1-Score:  0.8571
+
+Interpretation:
+  - TP (3): Error agents with successful recovery attempt
+  - FP (1): Normal agents with unnecessary recovery
+  - FN (0): Error agents without recovery (system failure)
+  - TN (2): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+Stress Chaos Injections (4 total):
+
+  [1] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 161/269 words deleted (60%)
+
+      Before (full content):
+         You are a Frontend Developer specializing in HTML and Jinja2 templating for Flask applications.
+         
+         Your goal is to create all HTML template files for the NewsPortal application based on the frontend section of design_spec.md.
+         
+         Task Details:
+         - Read only the HTML Templates section of design_spec.md
+         - Implement all specified templates (*.html) with exact page layouts and UI element IDs
+         - Include correct page titles as specified
+         - Implement navigation using url_for() with exact function names from the spec
+         - Do NOT read or implement backend code or data schemas
+         - Do NOT add any UI elements or pages not documented in the specification
+         
+         Implementation Requirements:
+         1. **Template File Structure**:
+            '''html
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>{{ page_title }}</title>
+            </head>
+            <body>
+                <div id="main-container-id">
+                    <h1>{{ page_title }}</h1>
+                    <!-- Page content here -->
+                </div>
+            </body>
+            </html>
+            '''
+         
+         2. **Element IDs**:
+            - Use all element IDs exactly as specified (case-sensitive)
+            - For dynamic elements with variable IDs (e.g., view-article-button-{article_id}), use Jinja2 syntax:
+              id="view-article-button-{{ article.article_id }}"
+         
+         3. **Navigation Links**:
+            - Use url_for() with exact function names for all navigation buttons and links
+            - For dynamic links including parameters, use Jinja2 variable syntax in url_for calls
+         
+         4. **Form Elements**:
+            - For pages with forms (e.g., Write Comment), implement form tags with method and action attributes per specification
+            - Use appropriate input types and button IDs
+         
+         CRITICAL REQUIREMENTS:
+         - Use write_text_file tool to save all required template files inside 'templates/' directory
+         - Do NOT modify backend or data files
+         - Do NOT include any client-side scripting unless specified
+         - All element IDs and page titles must be exact matches to spec
+         - Navigation must exactly match design_spec.md instructions
+         
+         Output: templates/*.html
+
+      After (full content):
+         are a in HTML Jinja2
+         
+         to HTML template NewsPortal application the frontend section
+         
+         Task
+         only HTML Templates
+         all UI element
+         page specified
+         using exact the
+         - Do read or backend
+         Do any UI elements the specification
+         
+         Implementation
+         1.
+         
+         <!DOCTYPE
+         <html lang="en">
+         
+         <meta
+         <title>{{ page_title }}</title>
+         </head>
+         <body>
+         
+         <h1>{{ page_title }}</h1>
+         Page content
+         
+         
+         
+         
+         
+         2.
+         - element IDs exactly as specified (case-sensitive)
+         - dynamic variable IDs Jinja2
+         
+         
+         3.
+         names for buttons and links
+         variable
+         
+         **Form
+         - For pages forms Comment), form with method and action attributes specification
+         Use appropriate IDs
+         
+         CRITICAL
+         - 'templates/'
+         - modify backend data files
+         NOT any client-side scripting specified
+         - element IDs and page must be matches to
+         Navigation
+         
+         Output:
+
+  [2] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 907/1513 words deleted (60%)
+
+      Before (full content):
+         Implement all HTML templates based on HTML Templates section of design_spec.md
+         === design_spec.md ===
+         # Design Specification for NewsPortal Web Application
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path              | Flask Function Name      | HTTP Method(s) | Template File Rendered           | Context Variables Passed to Templates                           | Form Data in POST Routes                         |
+         |-------------------------|-------------------------|----------------|---------------------------------|----------------------------------------------------------------|-------------------------------------------------|
+         | /                       | root_redirect            | GET            | None (redirect)                  | None                                                           | None                                            |
+         | /dashboard              | dashboard                | GET            | dashboard.html                  | featured_articles (list of dict), trending_articles (list of dict) | None                                            |
+         | /catalog                | article_catalog          | GET            | article_catalog.html            | articles (list of dict), categories (list of dict), search_query (str, optional), selected_category (str, optional) | None                                            |
+         | /catalog/search         | catalog_search           | POST           | search_results.html             | search_query (str), results (list of dict)                     | search_query (str), category_filter (str, optional) |
+         | /article/<int:article_id> | article_details         | GET            | article_details.html            | article (dict), is_bookmarked (bool)                           | None                                            |
+         | /article/<int:article_id>/bookmark | bookmark_article    | POST           | None (redirect to article_details) | None                                                           | None (uses route param)                          |
+         | /bookmarks              | bookmarks                | GET            | bookmarks.html                  | bookmarks (list of dict)                                      | None                                            |
+         | /bookmarks/remove/<int:bookmark_id> | remove_bookmark     | POST           | None (redirect to bookmarks)    | None                                                           | None (uses route param)                          |
+         | /comments               | comments                 | GET            | comments.html                  | comments (list of dict), articles (list of dict), selected_article (str, optional) | None                                            |
+         | /comments/filter         | filter_comments          | POST           | comments.html                  | comments (list of dict), articles (list of dict), selected_article (str) | selected_article (str)                           |
+         | /comments/write          | write_comment_page       | GET            | write_comment.html             | articles (list of dict)                                      | None                                            |
+         | /comments/submit         | submit_comment           | POST           | None (redirect to comments)    | None                                                           | article_id (int), commenter_name (str), comment_text (str) |
+         | /trending               | trending_articles        | GET            | trending.html                  | trending_articles (list of dict), time_period (str, optional) | None                                            |
+         | /trending/filter         | filter_trending          | POST           | trending.html                  | trending_articles (list of dict), time_period (str)            | time_period (str)                                |
+         | /category/<category_name> | category_articles       | GET            | category.html                  | category_name (str), articles (list of dict)                   | None                                            |
+         | /category/<category_name>/sort | sort_category_articles | POST           | category.html                  | category_name (str), articles (list of dict), sort_option (str) | sort_option (str)                                |
+         
+         
+         Notes:
+         - The root route `/` redirects to `/dashboard`.
+         - POST routes are used for filtering, sorting, submitting, or modifying data.
+         - Context variables are structured data objects (list or dict) mirroring the data schema and requirements.
+         - Function names precisely reflect the purpose of the route and use lowercase_underscore style.
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications
+         
+         ### templates/dashboard.html
+         - Page Title: News Portal
+         - Element IDs:
+           - dashboard-page (Div): Main container for Dashboard page.
+           - featured-articles (Div): Displays list of featured articles.
+           - browse-articles-button (Button): Navigates to article catalog page.
+           - view-bookmarks-button (Button): Navigates to bookmarks page.
+           - trending-articles-button (Button): Navigates to trending articles page.
+         - Context Variables:
+           - featured_articles: list of dicts (article_id:int, title:str, author:str, category:str, date:str, excerpt:str)
+           - trending_articles: list of dicts (article_id:int, title:str, category:str, view_count:int)
+         - Navigation Mappings:
+           - browse-articles-button: url_for('article_catalog')
+           - view-bookmarks-button: url_for('bookmarks')
+           - trending-articles-button: url_for('trending_articles')
+         - Jinja2 Usage:
+           - Loop over featured_articles to generate article previews inside featured-articles div.
+           - Loop over trending_articles to show a summarized list.
+         
+         
+         ### templates/article_catalog.html
+         - Page Title: Article Catalog
+         - Element IDs:
+           - catalog-page (Div): Main container.
+           - search-input (Input): Text input for search queries.
+           - category-filter (Dropdown): Select dropdown for article categories.
+           - articles-grid (Div): Grid layout for article cards.
+           - view-article-button-{{article_id}} (Button): Button for each article card to view details.
+         - Context Variables:
+           - articles: list of dicts (article_id:int, title:str, author:str, category:str, date:str, excerpt:str)
+           - categories: list of dicts (category_id:int, category_name:str)
+           - search_query: str (optional)
+           - selected_category: str (optional)
+         - Navigation Mappings:
+           - view-article-button-{{article_id}}: url_for('article_details', article_id=article_id)
+         - Jinja2 Usage:
+           - Loop over articles to create article cards.
+           - Loop over categories to populate category-filter dropdown.
+         
+         
+         ### templates/article_details.html
+         - Page Title: Article Details
+         - Element IDs:
+           - article-details-page (Div): Main container.
+           - article-title (H1): Article title display.
+           - article-author (Div): Article author display.
+           - article-date (Div): Publication date display.
+           - bookmark-button (Button): Bookmark the article.
+           - article-content (Div): Full article content.
+         - Context Variables:
+           - article: dict with keys (article_id:int, title:str, author:str, category:str, content:str, date:str, views:int)
+           - is_bookmarked: bool
+         - Navigation Mappings:
+           - bookmark-button: POST to url_for('bookmark_article', article_id=article['article_id'])
+         - Jinja2 Usage:
+           - Display article fields using variable substitutions.
+         
+         
+         ### templates/bookmarks.html
+         - Page Title: My Bookmarks
+         - Element IDs:
+           - bookmarks-page (Div): Main container.
+           - bookmarks-list (Div): Shows list of bookmarked articles.
+           - remove-bookmark-button-{{bookmark_id}} (Button): Remove bookmark button per bookmark.
+           - read-bookmark-button-{{bookmark_id}} (Button): View bookmarked article button per bookmark.
+           - back-to-dashboard (Button): Navigates back to dashboard.
+         - Context Variables:
+           - bookmarks: list of dicts (bookmark_id:int, article_id:int, article_title:str, bookmarked_date:str)
+         - Navigation Mappings:
+           - remove-bookmark-button-{{bookmark_id}}: POST to url_for('remove_bookmark', bookmark_id=bookmark_id)
+           - read-bookmark-button-{{bookmark_id}}: url_for('article_details', article_id=article_id)
+           - back-to-dashboard: url_for('dashboard')
+         - Jinja2 Usage:
+           - Loop over bookmarks to display bookmarks-list.
+         
+         
+         ### templates/comments.html
+         - Page Title: Article Comments
+         - Element IDs:
+           - comments-page (Div): Main container.
+           - comments-list (Div): List of comments.
+           - write-comment-button (Button): Navigates to write comment page.
+           - filter-by-article (Dropdown): Dropdown to filter comments by article.
+           - back-to-dashboard (Button): Navigates back to dashboard.
+         - Context Variables:
+           - comments: list of dicts (comment_id:int, article_id:int, article_title:str, commenter_name:str, comment_text:str, comment_date:str)
+           - articles: list of dicts (article_id:int, title:str)
+           - selected_article: str (optional)
+         - Navigation Mappings:
+           - write-comment-button: url_for('write_comment_page')
+           - back-to-dashboard: url_for('dashboard')
+         - Jinja2 Usage:
+           - Loop over comments to render comments-list.
+           - Loop over articles for filter-by-article dropdown.
+         
+         
+         ### templates/write_comment.html
+         - Page Title: Write a Comment
+         - Element IDs:
+           - write-comment-page (Div): Main container.
+           - select-article (Dropdown): Dropdown to select article for commenting.
+           - commenter-name (Input): Input field for commenter name.
+           - comment-text (Textarea): Textarea for comment text.
+           - submit-comment-button (Button): Submit comment button.
+         - Context Variables:
+           - articles: list of dicts (article_id:int, title:str)
+         - Navigation Mappings:
+           - submit-comment-button: form POST to url_for('submit_comment')
+         - Jinja2 Usage:
+           - Loop over articles to populate select-article dropdown.
+         
+         
+         ### templates/trending.html
+         - Page Title: Trending Articles
+         - Element IDs:
+           - trending-page (Div): Main container.
+           - trending-list (Div): Ranked list of trending articles.
+           - time-period-filter (Dropdown): Dropdown filter for time period.
+           - view-article-button-{{article_id}} (Button): View article details button for each trending article.
+           - back-to-dashboard (Button): Navigates back to dashboard.
+         - Context Variables:
+           - trending_articles: list of dicts (article_id:int, article_title:str, category:str, view_count:int)
+           - time_period: str (optional)
+         - Navigation Mappings:
+           - view-article-button-{{article_id}}: url_for('article_details', article_id=article_id)
+           - back-to-dashboard: url_for('dashboard')
+         - Jinja2 Usage:
+           - Loop over trending_articles for trending-list.
+           - Loop over time period options for dropdown.
+         
+         
+         ### templates/category.html
+         - Page Title: Category Articles
+         - Element IDs:
+           - category-page (Div): Main container.
+           - category-title (H1): Displays category name.
+           - category-articles (Div): List of articles in this category.
+           - sort-by-date (Button): Sort articles by date.
+           - sort-by-popularity (Button): Sort articles by popularity.
+           - back-to-dashboard (Button): Navigate back to dashboard.
+         - Context Variables:
+           - category_name: str
+           - articles: list of dicts (article_id:int, title:str, author:str, date:str, views:int)
+         - Navigation Mappings:
+           - sort-by-date: POST to url_for('sort_category_articles', category_name=category_name) with sort_option='date'
+           - sort-by-popularity: POST to url_for('sort_category_articles', category_name=category_name) with sort_option='popularity'
+           - back-to-dashboard: url_for('dashboard')
+         - Jinja2 Usage:
+           - Loop over articles for category-articles div.
+         
+         
+         ### templates/search_results.html
+         - Page Title: Search Results
+         - Element IDs:
+           - search-results-page (Div): Main container.
+           - search-query-display (Div): Displays search query string.
+           - results-list (Div): List of search result articles.
+           - no-results-message (Div): Displays if no results found.
+           - back-to-dashboard (Button): Navigate back to dashboard.
+         - Context Variables:
+           - search_query: str
+           - results: list of dicts (article_id:int, title:str, excerpt:str)
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+         - Jinja2 Usage:
+           - If results list empty, show no-results-message.
+           - Loop over results for results-list div.
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### data/articles.txt
+         - Fields (pipe-delimited):
+           1. article_id (int)
+           2. title (str)
+           3. author (str)
+           4. category (str)
+           5. content (str)
+           6. date (str, YYYY-MM-DD)
+           7. views (int)
+         - Description: Stores all news articles with detailed content and metadata.
+         - Example Rows:
+           ```
+           1|Breaking: New Technology Breakthrough|John Smith|Technology|Revolutionary advancement in quantum computing announced today|2025-01-20|5432
+           2|Sports: Championship Victory|Sarah Johnson|Sports|Team wins the national championship with a thrilling final match|2025-01-19|3210
+           3|Business: Market Trends Analysis|Michael Chen|Business|Expert analysis of current market conditions and forecasts|2025-01-18|2891
+           ```
+         
+         ### data/categories.txt
+         - Fields (pipe-delimited):
+           1. category_id (int)
+           2. category_name (str)
+           3. description (str)
+         - Description: Defines the categories for articles.
+         - Example Rows:
+           ```
+           1|Technology|Latest tech news and innovations
+           2|Sports|Sports news and event coverage
+           3|Business|Business and finance news
+           ```
+         
+         ### data/bookmarks.txt
+         - Fields (pipe-delimited):
+           1. bookmark_id (int)
+           2. article_id (int)
+           3. article_title (str)
+           4. bookmarked_date (str, YYYY-MM-DD)
+         - Description: Stores user's bookmarked articles.
+         - Example Rows:
+           ```
+           1|1|Breaking: New Technology Breakthrough|2025-01-20
+           2|3|Business: Market Trends Analysis|2025-01-18
+           ```
+         
+         ### data/comments.txt
+         - Fields (pipe-delimited):
+           1. comment_id (int)
+           2. article_id (int)
+           3. article_title (str)
+           4. commenter_name (str)
+           5. comment_text (str)
+           6. comment_date (str, YYYY-MM-DD)
+         - Description: Stores comments made on articles.
+         - Example Rows:
+           ```
+           1|1|Breaking: New Technology Breakthrough|Alice Davis|Fascinating development!|2025-01-20
+           2|2|Sports: Championship Victory|Robert Wilson|Amazing performance by the team!|2025-01-19
+           ```
+         
+         ### data/trending.txt
+         - Fields (pipe-delimited):
+           1. article_id (int)
+           2. article_title (str)
+           3. category (str)
+           4. view_count (int)
+           5. period (str)
+         - Description: Stores trending articles ranked by views and time period.
+         - Example Rows:
+           ```
+           1|Breaking: New Technology Breakthrough|Technology|5432|This Week
+           2|Sports: Championship Victory|Sports|3210|This Week
+           3|Business: Market Trends Analysis|Business|2891|This Month
+           ```
+         
+         
+
+      After (full content):
+         HTML templates HTML section design_spec.md
+         === design_spec.md ===
+         Specification for Web Application
+         
+         
+         
+         Flask Specification
+         
+         Route | Name HTTP | File Rendered | Passed to Data
+         
+         | / | | None | |
+         | /dashboard | dashboard.html dict), trending_articles (list None |
+         article_catalog | | article_catalog.html articles of dict), (str, (str, None
+         | /catalog/search | POST | | (str), results search_query (str), category_filter
+         | | | (dict), is_bookmarked |
+         /article/<int:article_id>/bookmark bookmark_article | POST | | route
+         /bookmarks | bookmarks |
+         | to None | |
+         | | | comments.html | (list
+         | /comments/filter | POST | comments of | |
+         | | write_comment.html
+         | | submit_comment POST | None (redirect to article_id comment_text (str) |
+         | | | GET | (list dict), time_period (str, None |
+         | filter_trending | (list dict), (str) (str) |
+         | GET | category.html | articles | None |
+         | | category_name of sort_option (str)
+         
+         
+         
+         redirects `/dashboard`.
+         are for filtering, submitting, or
+         - are structured objects
+         - names precisely reflect of use lowercase_underscore
+         
+         
+         
+         
+         
+         ### templates/dashboard.html
+         Portal
+         
+         Dashboard page.
+         list articles.
+         article catalog page.
+         view-bookmarks-button (Button):
+         - to
+         Context
+         - featured_articles: excerpt:str)
+         list of category:str,
+         - Navigation
+         - url_for('article_catalog')
+         -
+         - url_for('trending_articles')
+         Jinja2
+         over to inside featured-articles
+         show list.
+         
+         
+         ### templates/article_catalog.html
+         Page Article Catalog
+         - Element
+         catalog-page
+         - queries.
+         category-filter Select dropdown for article
+         (Div): Grid layout cards.
+         - view-article-button-{{article_id}} (Button): Button for to
+         Context
+         date:str, excerpt:str)
+         categories: (category_id:int, category_name:str)
+         
+         selected_category: str
+         Mappings:
+         article_id=article_id)
+         
+         - Loop article
+         - Loop over categories
+         
+         
+         
+         Title: Article
+         -
+         
+         - article-title (H1): title
+         (Div): display.
+         Publication
+         - the article.
+         - article
+         Variables:
+         - dict with keys (article_id:int, title:str, author:str, content:str,
+         
+         -
+         - POST article_id=article['article_id'])
+         
+         Display article using
+         
+         
+         
+         - Title:
+         
+         (Div):
+         - (Div): articles.
+         remove-bookmark-button-{{bookmark_id}} Remove button
+         - (Button): View bookmarked article per
+         - (Button): Navigates back to dashboard.
+         -
+         - article_id:int,
+         - Navigation Mappings:
+         - POST url_for('remove_bookmark', bookmark_id=bookmark_id)
+         read-bookmark-button-{{bookmark_id}}: url_for('article_details',
+         - url_for('dashboard')
+         Usage:
+         - over display
+         
+         
+         ###
+         
+         IDs:
+         comments-page container.
+         - comments-list of
+         to comment page.
+         - Dropdown to
+         back-to-dashboard Navigates to dashboard.
+         - Context Variables:
+         - list of dicts (comment_id:int, commenter_name:str, comment_text:str, comment_date:str)
+         - articles: title:str)
+         
+         - Navigation
+         
+         url_for('dashboard')
+         
+         to comments-list.
+         for filter-by-article dropdown.
+         
+         
+         ###
+         Page Title: a
+         
+         - write-comment-page (Div): container.
+         select-article article for
+         (Input): for
+         Textarea
+         submit-comment-button (Button): button.
+         
+         - (article_id:int, title:str)
+         -
+         submit-comment-button: form to url_for('submit_comment')
+         Usage:
+         articles to
+         
+         
+         templates/trending.html
+         - Title:
+         IDs:
+         (Div): Main
+         (Div): trending
+         - time-period-filter (Dropdown): Dropdown for time period.
+         - article details button
+         - dashboard.
+         Context Variables:
+         - trending_articles: list article_title:str, category:str,
+         (optional)
+         Navigation
+         article_id=article_id)
+         url_for('dashboard')
+         - Jinja2
+         - Loop trending_articles trending-list.
+         - over for
+         
+         
+         ### templates/category.html
+         Articles
+         Element
+         -
+         (H1): Displays category name.
+         - category-articles of
+         - sort-by-date Sort by
+         sort-by-popularity articles
+         (Button): back dashboard.
+         - Context Variables:
+         
+         of dicts (article_id:int, title:str,
+         
+         category_name=category_name) with sort_option='date'
+         sort-by-popularity: url_for('sort_category_articles', category_name=category_name)
+         
+         
+         Loop articles category-articles
+         
+         
+         
+         Title: Results
+         IDs:
+         Main container.
+         - search-query-display
+         - (Div): List of search
+         (Div): Displays results
+         - back-to-dashboard (Button):
+         - Context Variables:
+         - search_query: str
+         results: list of dicts excerpt:str)
+         -
+         back-to-dashboard:
+         Jinja2
+         If list empty,
+         results for div.
+         
+         ---
+         
+         Section File Schemas
+         
+         ### data/articles.txt
+         - Fields (pipe-delimited):
+         (int)
+         title
+         author (str)
+         (str)
+         5. content
+         6. YYYY-MM-DD)
+         
+         Description: with detailed
+         -
+         ```
+         New advancement quantum announced today|2025-01-20|5432
+         2|Sports: Johnson|Sports|Team wins a thrilling
+         3|Business: analysis current market and forecasts|2025-01-18|2891
+         
+         
+         ### data/categories.txt
+         (pipe-delimited):
+         
+         2. (str)
+         3.
+         - Defines the categories articles.
+         
+         
+         tech innovations
+         2|Sports|Sports news and event
+         news
+         
+         
+         ### data/bookmarks.txt
+         -
+         bookmark_id
+         article_id (int)
+         
+         4. bookmarked_date (str, YYYY-MM-DD)
+         - bookmarked
+         Example Rows:
+         
+         New Technology
+         2|3|Business: Market
+         
+         
+         
+         
+         1. comment_id
+         2. article_id
+         3. (str)
+         
+         5.
+         
+         - comments
+         -
+         
+         Breakthrough|Alice
+         Victory|Robert Wilson|Amazing by the
+         
+         
+         ###
+         Fields
+         1. article_id
+         (str)
+         (str)
+         view_count
+         5.
+         Description: Stores trending and time
+         Example
+         ```
+         New
+         Championship Week
+         Market
+         ```
+         
+         
+
+  [3] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 64/108 words deleted (60%)
+
+      Before (full content):
+         are a in HTML Jinja2
+         
+         to HTML template NewsPortal application the frontend section
+         
+         Task
+         only HTML Templates
+         all UI element
+         page specified
+         using exact the
+         - Do read or backend
+         Do any UI elements the specification
+         
+         Implementation
+         1.
+         
+         <!DOCTYPE
+         <html lang="en">
+         
+         <meta
+         <title>{{ page_title }}</title>
+         </head>
+         <body>
+         
+         <h1>{{ page_title }}</h1>
+         Page content
+         
+         
+         
+         
+         
+         2.
+         - element IDs exactly as specified (case-sensitive)
+         - dynamic variable IDs Jinja2
+         
+         
+         3.
+         names for buttons and links
+         variable
+         
+         **Form
+         - For pages forms Comment), form with method and action attributes specification
+         Use appropriate IDs
+         
+         CRITICAL
+         - 'templates/'
+         - modify backend data files
+         NOT any client-side scripting specified
+         - element IDs and page must be matches to
+         Navigation
+         
+         Output:
+
+      After (full content):
+         
+         
+         to NewsPortal
+         
+         
+         only
+         all
+         page
+         the
+         - Do or
+         UI
+         
+         Implementation
+         1.
+         
+         
+         
+         
+         <meta
+         <title>{{ page_title }}</title>
+         </head>
+         <body>
+         
+         
+         content
+         
+         
+         
+         
+         
+         2.
+         element specified
+         dynamic variable Jinja2
+         
+         
+         
+         names for
+         
+         
+         **Form
+         - For Comment), action attributes specification
+         appropriate IDs
+         
+         
+         
+         - backend data
+         NOT any scripting
+         IDs and must to
+         
+         
+         
+
+  [4] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 907/1513 words deleted (60%)
+
+      Before (full content):
+         Implement all HTML templates based on HTML Templates section of design_spec.md
+         === design_spec.md ===
+         # Design Specification for NewsPortal Web Application
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path              | Flask Function Name      | HTTP Method(s) | Template File Rendered           | Context Variables Passed to Templates                           | Form Data in POST Routes                         |
+         |-------------------------|-------------------------|----------------|---------------------------------|----------------------------------------------------------------|-------------------------------------------------|
+         | /                       | root_redirect            | GET            | None (redirect)                  | None                                                           | None                                            |
+         | /dashboard              | dashboard                | GET            | dashboard.html                  | featured_articles (list of dict), trending_articles (list of dict) | None                                            |
+         | /catalog                | article_catalog          | GET            | article_catalog.html            | articles (list of dict), categories (list of dict), search_query (str, optional), selected_category (str, optional) | None                                            |
+         | /catalog/search         | catalog_search           | POST           | search_results.html             | search_query (str), results (list of dict)                     | search_query (str), category_filter (str, optional) |
+         | /article/<int:article_id> | article_details         | GET            | article_details.html            | article (dict), is_bookmarked (bool)                           | None                                            |
+         | /article/<int:article_id>/bookmark | bookmark_article    | POST           | None (redirect to article_details) | None                                                           | None (uses route param)                          |
+         | /bookmarks              | bookmarks                | GET            | bookmarks.html                  | bookmarks (list of dict)                                      | None                                            |
+         | /bookmarks/remove/<int:bookmark_id> | remove_bookmark     | POST           | None (redirect to bookmarks)    | None                                                           | None (uses route param)                          |
+         | /comments               | comments                 | GET            | comments.html                  | comments (list of dict), articles (list of dict), selected_article (str, optional) | None                                            |
+         | /comments/filter         | filter_comments          | POST           | comments.html                  | comments (list of dict), articles (list of dict), selected_article (str) | selected_article (str)                           |
+         | /comments/write          | write_comment_page       | GET            | write_comment.html             | articles (list of dict)                                      | None                                            |
+         | /comments/submit         | submit_comment           | POST           | None (redirect to comments)    | None                                                           | article_id (int), commenter_name (str), comment_text (str) |
+         | /trending               | trending_articles        | GET            | trending.html                  | trending_articles (list of dict), time_period (str, optional) | None                                            |
+         | /trending/filter         | filter_trending          | POST           | trending.html                  | trending_articles (list of dict), time_period (str)            | time_period (str)                                |
+         | /category/<category_name> | category_articles       | GET            | category.html                  | category_name (str), articles (list of dict)                   | None                                            |
+         | /category/<category_name>/sort | sort_category_articles | POST           | category.html                  | category_name (str), articles (list of dict), sort_option (str) | sort_option (str)                                |
+         
+         
+         Notes:
+         - The root route `/` redirects to `/dashboard`.
+         - POST routes are used for filtering, sorting, submitting, or modifying data.
+         - Context variables are structured data objects (list or dict) mirroring the data schema and requirements.
+         - Function names precisely reflect the purpose of the route and use lowercase_underscore style.
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications
+         
+         ### templates/dashboard.html
+         - Page Title: News Portal
+         - Element IDs:
+           - dashboard-page (Div): Main container for Dashboard page.
+           - featured-articles (Div): Displays list of featured articles.
+           - browse-articles-button (Button): Navigates to article catalog page.
+           - view-bookmarks-button (Button): Navigates to bookmarks page.
+           - trending-articles-button (Button): Navigates to trending articles page.
+         - Context Variables:
+           - featured_articles: list of dicts (article_id:int, title:str, author:str, category:str, date:str, excerpt:str)
+           - trending_articles: list of dicts (article_id:int, title:str, category:str, view_count:int)
+         - Navigation Mappings:
+           - browse-articles-button: url_for('article_catalog')
+           - view-bookmarks-button: url_for('bookmarks')
+           - trending-articles-button: url_for('trending_articles')
+         - Jinja2 Usage:
+           - Loop over featured_articles to generate article previews inside featured-articles div.
+           - Loop over trending_articles to show a summarized list.
+         
+         
+         ### templates/article_catalog.html
+         - Page Title: Article Catalog
+         - Element IDs:
+           - catalog-page (Div): Main container.
+           - search-input (Input): Text input for search queries.
+           - category-filter (Dropdown): Select dropdown for article categories.
+           - articles-grid (Div): Grid layout for article cards.
+           - view-article-button-{{article_id}} (Button): Button for each article card to view details.
+         - Context Variables:
+           - articles: list of dicts (article_id:int, title:str, author:str, category:str, date:str, excerpt:str)
+           - categories: list of dicts (category_id:int, category_name:str)
+           - search_query: str (optional)
+           - selected_category: str (optional)
+         - Navigation Mappings:
+           - view-article-button-{{article_id}}: url_for('article_details', article_id=article_id)
+         - Jinja2 Usage:
+           - Loop over articles to create article cards.
+           - Loop over categories to populate category-filter dropdown.
+         
+         
+         ### templates/article_details.html
+         - Page Title: Article Details
+         - Element IDs:
+           - article-details-page (Div): Main container.
+           - article-title (H1): Article title display.
+           - article-author (Div): Article author display.
+           - article-date (Div): Publication date display.
+           - bookmark-button (Button): Bookmark the article.
+           - article-content (Div): Full article content.
+         - Context Variables:
+           - article: dict with keys (article_id:int, title:str, author:str, category:str, content:str, date:str, views:int)
+           - is_bookmarked: bool
+         - Navigation Mappings:
+           - bookmark-button: POST to url_for('bookmark_article', article_id=article['article_id'])
+         - Jinja2 Usage:
+           - Display article fields using variable substitutions.
+         
+         
+         ### templates/bookmarks.html
+         - Page Title: My Bookmarks
+         - Element IDs:
+           - bookmarks-page (Div): Main container.
+           - bookmarks-list (Div): Shows list of bookmarked articles.
+           - remove-bookmark-button-{{bookmark_id}} (Button): Remove bookmark button per bookmark.
+           - read-bookmark-button-{{bookmark_id}} (Button): View bookmarked article button per bookmark.
+           - back-to-dashboard (Button): Navigates back to dashboard.
+         - Context Variables:
+           - bookmarks: list of dicts (bookmark_id:int, article_id:int, article_title:str, bookmarked_date:str)
+         - Navigation Mappings:
+           - remove-bookmark-button-{{bookmark_id}}: POST to url_for('remove_bookmark', bookmark_id=bookmark_id)
+           - read-bookmark-button-{{bookmark_id}}: url_for('article_details', article_id=article_id)
+           - back-to-dashboard: url_for('dashboard')
+         - Jinja2 Usage:
+           - Loop over bookmarks to display bookmarks-list.
+         
+         
+         ### templates/comments.html
+         - Page Title: Article Comments
+         - Element IDs:
+           - comments-page (Div): Main container.
+           - comments-list (Div): List of comments.
+           - write-comment-button (Button): Navigates to write comment page.
+           - filter-by-article (Dropdown): Dropdown to filter comments by article.
+           - back-to-dashboard (Button): Navigates back to dashboard.
+         - Context Variables:
+           - comments: list of dicts (comment_id:int, article_id:int, article_title:str, commenter_name:str, comment_text:str, comment_date:str)
+           - articles: list of dicts (article_id:int, title:str)
+           - selected_article: str (optional)
+         - Navigation Mappings:
+           - write-comment-button: url_for('write_comment_page')
+           - back-to-dashboard: url_for('dashboard')
+         - Jinja2 Usage:
+           - Loop over comments to render comments-list.
+           - Loop over articles for filter-by-article dropdown.
+         
+         
+         ### templates/write_comment.html
+         - Page Title: Write a Comment
+         - Element IDs:
+           - write-comment-page (Div): Main container.
+           - select-article (Dropdown): Dropdown to select article for commenting.
+           - commenter-name (Input): Input field for commenter name.
+           - comment-text (Textarea): Textarea for comment text.
+           - submit-comment-button (Button): Submit comment button.
+         - Context Variables:
+           - articles: list of dicts (article_id:int, title:str)
+         - Navigation Mappings:
+           - submit-comment-button: form POST to url_for('submit_comment')
+         - Jinja2 Usage:
+           - Loop over articles to populate select-article dropdown.
+         
+         
+         ### templates/trending.html
+         - Page Title: Trending Articles
+         - Element IDs:
+           - trending-page (Div): Main container.
+           - trending-list (Div): Ranked list of trending articles.
+           - time-period-filter (Dropdown): Dropdown filter for time period.
+           - view-article-button-{{article_id}} (Button): View article details button for each trending article.
+           - back-to-dashboard (Button): Navigates back to dashboard.
+         - Context Variables:
+           - trending_articles: list of dicts (article_id:int, article_title:str, category:str, view_count:int)
+           - time_period: str (optional)
+         - Navigation Mappings:
+           - view-article-button-{{article_id}}: url_for('article_details', article_id=article_id)
+           - back-to-dashboard: url_for('dashboard')
+         - Jinja2 Usage:
+           - Loop over trending_articles for trending-list.
+           - Loop over time period options for dropdown.
+         
+         
+         ### templates/category.html
+         - Page Title: Category Articles
+         - Element IDs:
+           - category-page (Div): Main container.
+           - category-title (H1): Displays category name.
+           - category-articles (Div): List of articles in this category.
+           - sort-by-date (Button): Sort articles by date.
+           - sort-by-popularity (Button): Sort articles by popularity.
+           - back-to-dashboard (Button): Navigate back to dashboard.
+         - Context Variables:
+           - category_name: str
+           - articles: list of dicts (article_id:int, title:str, author:str, date:str, views:int)
+         - Navigation Mappings:
+           - sort-by-date: POST to url_for('sort_category_articles', category_name=category_name) with sort_option='date'
+           - sort-by-popularity: POST to url_for('sort_category_articles', category_name=category_name) with sort_option='popularity'
+           - back-to-dashboard: url_for('dashboard')
+         - Jinja2 Usage:
+           - Loop over articles for category-articles div.
+         
+         
+         ### templates/search_results.html
+         - Page Title: Search Results
+         - Element IDs:
+           - search-results-page (Div): Main container.
+           - search-query-display (Div): Displays search query string.
+           - results-list (Div): List of search result articles.
+           - no-results-message (Div): Displays if no results found.
+           - back-to-dashboard (Button): Navigate back to dashboard.
+         - Context Variables:
+           - search_query: str
+           - results: list of dicts (article_id:int, title:str, excerpt:str)
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+         - Jinja2 Usage:
+           - If results list empty, show no-results-message.
+           - Loop over results for results-list div.
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### data/articles.txt
+         - Fields (pipe-delimited):
+           1. article_id (int)
+           2. title (str)
+           3. author (str)
+           4. category (str)
+           5. content (str)
+           6. date (str, YYYY-MM-DD)
+           7. views (int)
+         - Description: Stores all news articles with detailed content and metadata.
+         - Example Rows:
+           ```
+           1|Breaking: New Technology Breakthrough|John Smith|Technology|Revolutionary advancement in quantum computing announced today|2025-01-20|5432
+           2|Sports: Championship Victory|Sarah Johnson|Sports|Team wins the national championship with a thrilling final match|2025-01-19|3210
+           3|Business: Market Trends Analysis|Michael Chen|Business|Expert analysis of current market conditions and forecasts|2025-01-18|2891
+           ```
+         
+         ### data/categories.txt
+         - Fields (pipe-delimited):
+           1. category_id (int)
+           2. category_name (str)
+           3. description (str)
+         - Description: Defines the categories for articles.
+         - Example Rows:
+           ```
+           1|Technology|Latest tech news and innovations
+           2|Sports|Sports news and event coverage
+           3|Business|Business and finance news
+           ```
+         
+         ### data/bookmarks.txt
+         - Fields (pipe-delimited):
+           1. bookmark_id (int)
+           2. article_id (int)
+           3. article_title (str)
+           4. bookmarked_date (str, YYYY-MM-DD)
+         - Description: Stores user's bookmarked articles.
+         - Example Rows:
+           ```
+           1|1|Breaking: New Technology Breakthrough|2025-01-20
+           2|3|Business: Market Trends Analysis|2025-01-18
+           ```
+         
+         ### data/comments.txt
+         - Fields (pipe-delimited):
+           1. comment_id (int)
+           2. article_id (int)
+           3. article_title (str)
+           4. commenter_name (str)
+           5. comment_text (str)
+           6. comment_date (str, YYYY-MM-DD)
+         - Description: Stores comments made on articles.
+         - Example Rows:
+           ```
+           1|1|Breaking: New Technology Breakthrough|Alice Davis|Fascinating development!|2025-01-20
+           2|2|Sports: Championship Victory|Robert Wilson|Amazing performance by the team!|2025-01-19
+           ```
+         
+         ### data/trending.txt
+         - Fields (pipe-delimited):
+           1. article_id (int)
+           2. article_title (str)
+           3. category (str)
+           4. view_count (int)
+           5. period (str)
+         - Description: Stores trending articles ranked by views and time period.
+         - Example Rows:
+           ```
+           1|Breaking: New Technology Breakthrough|Technology|5432|This Week
+           2|Sports: Championship Victory|Sports|3210|This Week
+           3|Business: Market Trends Analysis|Business|2891|This Month
+           ```
+         
+         
+
+      After (full content):
+         HTML
+         design_spec.md ===
+         # Specification Application
+         
+         
+         
+         1: Flask Specification
+         
+         Path | Function Method(s) File to Data in POST
+         
+         root_redirect GET | None None
+         dashboard | | featured_articles of dict), |
+         | | GET (list (list search_query optional), None |
+         | /catalog/search | | (str), of search_query optional)
+         | article_details.html article (dict),
+         | /article/<int:article_id>/bookmark | (redirect to article_details) | None
+         | GET bookmarks.html
+         remove_bookmark POST None bookmarks) None | param)
+         /comments | comments | comments of dict), articles of optional) |
+         | dict), (list (str) | selected_article
+         /comments/write | | GET | (list of dict) |
+         | (redirect comments) | (int), (str),
+         | GET | (list dict), (str, |
+         | trending.html dict), time_period (str)
+         | GET | (str), articles None |
+         | | | POST category.html | category_name of sort_option | sort_option (str)
+         
+         
+         Notes:
+         - The root route `/` redirects to `/dashboard`.
+         - POST routes used for sorting, or
+         objects (list or dict) the schema and requirements.
+         Function names precisely the purpose of and use
+         
+         
+         
+         Section 2: Template Specifications
+         
+         
+         Title: News
+         - Element
+         - dashboard-page (Div): container for Dashboard
+         - Displays list
+         - browse-articles-button catalog
+         - view-bookmarks-button (Button): Navigates to page.
+         trending-articles-button (Button):
+         
+         - dicts (article_id:int,
+         - trending_articles: list of
+         
+         -
+         -
+         url_for('trending_articles')
+         - Jinja2
+         - Loop over to generate article inside
+         Loop summarized
+         
+         
+         
+         - Page Title: Catalog
+         - Element
+         - catalog-page Main
+         for
+         for article categories.
+         - (Div): Grid for article cards.
+         - (Button): Button each article
+         
+         - articles: (article_id:int, date:str, excerpt:str)
+         categories: list of dicts category_name:str)
+         (optional)
+         
+         - Navigation
+         
+         Jinja2 Usage:
+         - article
+         categories to dropdown.
+         
+         
+         ###
+         Title:
+         Element
+         (Div): Main container.
+         (H1): Article title
+         - Article
+         date
+         the article.
+         Full article
+         - Variables:
+         article: with author:str, content:str, date:str, views:int)
+         - bool
+         Navigation
+         - article_id=article['article_id'])
+         - Usage:
+         - article
+         
+         
+         ###
+         - Title: Bookmarks
+         
+         - bookmarks-page container.
+         Shows of
+         Remove bookmark bookmark.
+         read-bookmark-button-{{bookmark_id}} View article button
+         - back-to-dashboard to dashboard.
+         - Context
+         - bookmarks: of (bookmark_id:int, article_id:int, article_title:str,
+         Navigation
+         bookmark_id=bookmark_id)
+         
+         - back-to-dashboard:
+         
+         over bookmarks-list.
+         
+         
+         
+         - Page Article Comments
+         
+         comments-page (Div): container.
+         - (Div): List comments.
+         - (Button):
+         (Dropdown): Dropdown article.
+         - back-to-dashboard (Button): Navigates to
+         Variables:
+         - comments: list of article_title:str, comment_text:str,
+         - articles: list dicts (article_id:int,
+         str
+         Mappings:
+         write-comment-button: url_for('write_comment_page')
+         - url_for('dashboard')
+         Jinja2
+         - render
+         - over for
+         
+         
+         
+         Write Comment
+         - IDs:
+         -
+         select
+         - commenter-name Input
+         - comment
+         comment
+         -
+         - of dicts
+         Mappings:
+         form
+         
+         - dropdown.
+         
+         
+         
+         
+         IDs:
+         -
+         - trending-list (Div): Ranked trending articles.
+         time-period-filter (Dropdown): Dropdown for
+         - article details button for each
+         Navigates dashboard.
+         - Context
+         -
+         
+         Mappings:
+         
+         back-to-dashboard:
+         Jinja2
+         - Loop trending_articles
+         - options
+         
+         
+         templates/category.html
+         Page
+         - Element
+         category-page (Div): Main
+         category-title (H1): Displays category
+         - articles this
+         articles by date.
+         -
+         - dashboard.
+         -
+         - str
+         - articles: of dicts
+         
+         POST to url_for('sort_category_articles',
+         - category_name=category_name) with sort_option='popularity'
+         - back-to-dashboard: url_for('dashboard')
+         - Jinja2
+         - category-articles div.
+         
+         
+         templates/search_results.html
+         - Page Results
+         - Element IDs:
+         (Div): Main
+         - search-query-display (Div): query string.
+         - results-list List of search articles.
+         Displays if results
+         - (Button): back dashboard.
+         Variables:
+         search_query: str
+         list of title:str,
+         
+         url_for('dashboard')
+         -
+         - empty, no-results-message.
+         - over results div.
+         
+         
+         
+         ## 3: File
+         
+         
+         -
+         (int)
+         (str)
+         (str)
+         category (str)
+         content
+         6. (str,
+         7. (int)
+         Description: Stores all detailed
+         Rows:
+         
+         Technology quantum announced
+         Championship thrilling final
+         3|Business: Trends of market forecasts|2025-01-18|2891
+         
+         
+         data/categories.txt
+         - (pipe-delimited):
+         1. category_id
+         (str)
+         3. (str)
+         - the articles.
+         Rows:
+         
+         innovations
+         2|Sports|Sports news and coverage
+         3|Business|Business
+         ```
+         
+         ###
+         
+         1.
+         article_id
+         3. (str)
+         bookmarked_date
+         Stores user's
+         Example
+         
+         1|1|Breaking: New
+         Market Analysis|2025-01-18
+         ```
+         
+         data/comments.txt
+         -
+         1. comment_id
+         2. article_id
+         3. article_title
+         (str)
+         comment_text
+         comment_date YYYY-MM-DD)
+         Description: on
+         Example
+         
+         New Davis|Fascinating
+         the
+         ```
+         
+         
+         
+         1. article_id
+         2. (str)
+         (str)
+         4.
+         (str)
+         trending ranked views
+         Example Rows:
+         ```
+         New Breakthrough|Technology|5432|This Week
+         Week
+         3|Business: Trends Analysis|Business|2891|This
+         
+         
+         
+
+================================================================================
+

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bestsellers</title>
+</head>
+<body>
+    <div id="bestsellers-page">
+        <h1>Bestsellers</h1>
+
+        <form method="get" action="{{ url_for('bestsellers_page') }}">
+            <label for="time-period-filter">Filter by Time Period:</label><br>
+            <select id="time-period-filter" name="time_period_filter" onchange="this.form.submit()">
+                <option value="This Week" {% if time_period_filter == 'This Week' %}selected{% endif %}>This Week</option>
+                <option value="This Month" {% if time_period_filter == 'This Month' %}selected{% endif %}>This Month</option>
+                <option value="All Time" {% if time_period_filter == 'All Time' %}selected{% endif %}>All Time</option>
+            </select>
+        </form>
+
+        <div id="bestsellers-list">
+            <ol>
+            {% for bestseller in bestsellers %}
+                <li>
+                    <strong>{{ bestseller.title }}</strong> by {{ bestseller.author }} - Sales: {{ bestseller.sales_count }}
+                    <button id="view-book-button-{{ bestseller.book_id }}" onclick="location.href='{{ url_for('book_details_page', book_id=bestseller.book_id) }}'">View Details</button>
+                </li>
+            {% else %}
+                <li>No bestsellers found.</li>
+            {% endfor %}
+            </ol>
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

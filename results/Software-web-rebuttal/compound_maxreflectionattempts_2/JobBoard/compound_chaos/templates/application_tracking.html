@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Applications</title>
+</head>
+<body>
+    <div id="tracking-page">
+        <h1>My Applications</h1>
+
+        <select id="status-filter">
+            <option value="">All Statuses</option>
+            {% set statuses = applications | map(attribute='status') | unique | list %}
+            {% for status in statuses %}
+            <option value="{{ status }}">{{ status }}</option>
+            {% endfor %}
+        </select>
+
+        <table id="applications-table" border="1" cellspacing="0" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Date Applied</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td>{{ app.job_title }}</td>
+                    <td>{{ app.company_name }}</td>
+                    <td>{{ app.status }}</td>
+                    <td>{{ app.applied_date }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">No applications found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('dashboard_view') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

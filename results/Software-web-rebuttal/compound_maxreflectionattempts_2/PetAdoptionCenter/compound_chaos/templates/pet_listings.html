@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Pets</title>
+</head>
+<body>
+    <div id="pet-listings-page">
+        <h1>Available Pets</h1>
+
+        <form method="POST" action="{{ url_for('pet_listings') }}">
+            <input id="search-input" name="search_query" type="text" placeholder="Search pets..." value="{{ search_query }}">
+            <select id="filter-species" name="filter_species">
+                <option value="" {% if filter_species == '' %}selected{% endif %}>All Species</option>
+                <option value="Dog" {% if filter_species == 'Dog' %}selected{% endif %}>Dog</option>
+                <option value="Cat" {% if filter_species == 'Cat' %}selected{% endif %}>Cat</option>
+                <option value="Other" {% if filter_species == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="pet-grid">
+            {% for pet in pets %}
+            <div onclick="window.location.href='{{ url_for('pet_details', pet_id=pet.pet_id) }}'" style="cursor:pointer; border: 1px solid #ccc; padding:10px; margin:5px; display: inline-block; width: 200px; vertical-align: top;">
+                {% if pet.photo_url %}
+                <img src="{{ pet.photo_url }}" alt="Photo of {{ pet.name }}" style="max-width:100%; height:auto;">
+                {% endif %}
+                <h3>{{ pet.name }}</h3>
+                <p>Species: {{ pet.species }}</p>
+                <p>Age: {{ pet.age }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

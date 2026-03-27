@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="bookings_summary">
+        <h1>Bookings Summary</h1>
+        {% if bookings %}
+        <table id="bookings-table">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Event Name</th>
+                    <th>Participant Name</th>
+                    <th>Ticket Type</th>
+                    <th>Status</th>
+                    <th>Booking Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr id="booking-row-{{ booking.booking_id }}">
+                    <td>{{ booking.booking_id }}</td>
+                    <td>{{ booking.event_name }}</td>
+                    <td>{{ booking.participant_name }}</td>
+                    <td>{{ booking.ticket_type }}</td>
+                    <td>{{ booking.status }}</td>
+                    <td>{{ booking.booking_date }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('cancel_booking', booking_id=booking.booking_id) }}" style="display:inline">
+                            <button type="submit" id="cancel-booking-button-{{ booking.booking_id }}">Cancel</button>
+                        </form>
+                        <a href="{{ url_for('view_tickets', booking_id=booking.booking_id) }}" id="view-tickets-button-{{ booking.booking_id }}">View Tickets</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p id="no-bookings-message">No bookings found.</p>
+        {% endif %}
+        <a href="{{ url_for('dashboard_page') }}" id="back-to-dashboard">Back to Dashboard</a>
+    </div>
+</body>
+</html>
