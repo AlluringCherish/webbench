@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Featured Locations</title>
+</head>
+<body>
+<div id="locations-page">
+
+    <h1>Featured Locations</h1>
+
+    <form id="location-sort" method="GET" action="{{ url_for('locations_page') }}">
+        <label for="sort_by">Sort by:</label>
+        <select id="sort_by" name="sort_by">
+            <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Name</option>
+            <option value="region" {% if sort_by == 'region' %}selected{% endif %}>Region</option>
+            <option value="average_price" {% if sort_by == 'average_price' %}selected{% endif %}>Average Price</option>
+            <option value="property_count" {% if sort_by == 'property_count' %}selected{% endif %}>Property Count</option>
+        </select>
+        <button type="submit">Sort</button>
+    </form>
+
+    <ul id="locations-list">
+        {% for location in locations %}
+        <li id="location-{{ location.location_id }}">
+            <span>{{ location.location_name }}</span> |
+            <span>{{ location.region }}</span> |
+            <span>${{ "{:,}".format(location.average_price) }}</span> |
+            <span>{{ location.property_count }}</span> |
+            <span>{{ location.description }}</span>
+            <a href="{{ url_for('property_search', location=location.location_name) }}" id="view-location-button-{{ location.location_id }}">View Properties</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+
+</div>
+</body>
+</html>

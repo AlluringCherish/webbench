@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Make Reservation</title>
+</head>
+<body>
+    <div id="reservation-page">
+        <form method="POST" action="{{ url_for('make_reservation') }}">
+            <label for="guest-name">Guest Name:</label>
+            <input type="text" id="guest-name" name="guest_name" value="{{ request.form.guest_name if request.method == 'POST' else '' }}" required>
+
+            <label for="party-size">Party Size:</label>
+            <select id="party-size" name="party_size">
+                {% for i in range(1, 11) %}
+                    <option value="{{ i }}" {% if request.method == 'POST' and request.form.party_size == i|string %}selected{% endif %}>{{ i }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="reservation-date">Reservation Date:</label>
+            <input type="date" id="reservation-date" name="reservation_date" value="{{ request.form.reservation_date if request.method == 'POST' else '' }}" required>
+
+            <label for="special-requests">Special Requests (optional):</label>
+            <textarea id="special-requests" name="special_requests">{{ request.form.special_requests if request.method == 'POST' else '' }}</textarea>
+
+            {% if errors %}
+            <div id="errors">
+                {% for field, message in errors.items() %}
+                    <p>{{ field }}: {{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <button id="submit-reservation-button" type="submit">Submit</button>
+            <button id="back-to-dashboard" type="button" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

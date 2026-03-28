@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+    <script>
+        function cancelBooking(bookingId) {
+            // This function should trigger a backend cancellation process via AJAX or navigation
+            alert('Cancel Booking with ID: ' + bookingId);
+            // Implementation detail is backend-dependent
+        }
+    </script>
+</head>
+<body>
+    <div id="bookings-page">
+        <h1>{{ page_title }}</h1>
+
+        <input type="text" id="booking-search-input" name="search_query" placeholder="Search bookings..." />
+
+        <table id="bookings-table" border="1">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Event Name</th>
+                    <th>Date</th>
+                    <th>Ticket Count</th>
+                    <th>Ticket Type</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.booking_id }}</td>
+                    <td>{{ booking.event_name }}</td>
+                    <td>{{ booking.date }}</td>
+                    <td>{{ booking.ticket_count }}</td>
+                    <td>{{ booking.ticket_type }}</td>
+                    <td>{{ booking.status }}</td>
+                    <td>
+                        <button id="cancel-booking-button-{{ booking.booking_id }}" onclick="cancelBooking('{{ booking.booking_id }}')">Cancel Booking</button>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="7">No bookings found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

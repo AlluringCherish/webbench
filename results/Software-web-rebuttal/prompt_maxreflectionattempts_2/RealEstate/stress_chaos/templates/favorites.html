@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Favorite Properties</title>
+</head>
+<body>
+<div id="favorites-page">
+
+    <h1>My Favorite Properties ({{ favorites|length }})</h1>
+
+    <div id="favorites-list">
+        {% for favorite in favorites %}
+        <div class="favorite-property" id="favorite-property-{{ favorite.property_id }}">
+            <span>{{ properties_map[favorite.property_id].address }}</span> |
+            <span>${{ "{:,}".format(properties_map[favorite.property_id].price) }}</span> |
+            <a href="{{ url_for('property_details', property_id=favorite.property_id) }}" id="view-property-button-{{ favorite.property_id }}">View</a>
+            <form method="POST" action="{{ url_for('my_favorites') }}" style="display:inline;">
+                <input type="hidden" name="action" value="remove">
+                <input type="hidden" name="property_id" value="{{ favorite.property_id }}">
+                <button id="remove-from-favorites-button-{{ favorite.property_id }}" type="submit">Remove</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+
+</div>
+</body>
+</html>

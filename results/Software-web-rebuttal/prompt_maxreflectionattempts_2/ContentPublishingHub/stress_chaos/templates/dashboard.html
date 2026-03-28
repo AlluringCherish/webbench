@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - ContentPublishingHub</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <nav id="dashboard-navigation">
+        <button onclick="location.href='{{ url_for('create_article') }}'" id="create-article-button">Create Article</button>
+        <button onclick="location.href='{{ url_for('my_articles') }}'" id="my-articles-button">My Articles</button>
+        <button onclick="location.href='{{ url_for('published_articles') }}'" id="published-articles-button">Published Articles</button>
+        <button onclick="location.href='{{ url_for('content_calendar') }}'" id="content-calendar-button">Content Calendar</button>
+    </nav>
+    {% if status_msg %}
+    <p id="status-msg">{{ status_msg }}</p>
+    {% endif %}
+
+    <section id="quick-stats">
+        <h2>Quick Stats</h2>
+        <ul id="quick-stats-list">
+            {% for stat_name, stat_value in quick_stats.items() %}
+                <li id="quick-stat-{{ stat_name|replace(' ', '-') }}"><strong>{{ stat_name }}:</strong> 
+                    {% if stat_name == 'status_counts' %}
+                        <ul>
+                        {% for status, count in stat_value.items() %}
+                            <li id="status-count-{{ status }}">{{ status }}: {{ count }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        {{ stat_value }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section id="recent-activity">
+        <h2>Recent Activity</h2>
+        <ul id="recent-activity-list">
+            {% for activity in recent_activity %}
+            <li id="recent-activity-{{ loop.index }}">Version {{ activity.version_number }} by {{ activity.author }} on {{ activity.created_date }}</li>
+            {% else %}
+            <li>No recent activity.</li>
+            {% endfor %}
+        </ul>
+    </section>
+</body>
+</html>

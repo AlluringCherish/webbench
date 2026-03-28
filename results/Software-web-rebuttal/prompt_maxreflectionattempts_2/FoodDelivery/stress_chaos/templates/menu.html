@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurant Menu</title>
+</head>
+<body>
+    <div id="main-container">
+        <div id="menu-page">
+            <h1 id="restaurant-name">{{ restaurant_info.name }}</h1>
+            <div id="restaurant-info">
+                <p>Cuisine: {{ restaurant_info.cuisine }}</p>
+                <p>Address: {{ restaurant_info.address }}</p>
+                <p>Phone: {{ restaurant_info.phone }}</p>
+                <p>Rating: {{ restaurant_info.rating }}</p>
+                <p>Delivery Time: {{ restaurant_info.delivery_time }} mins</p>
+                <p>Minimum Order: ${{ '%.2f'|format(restaurant_info.min_order) }}</p>
+            </div>
+            <div id="menu-items-grid">
+                {% for item in menu_items %}
+                <div class="menu-item-card">
+                    <h2>{{ item.item_name }}</h2>
+                    <p>Category: {{ item.category }}</p>
+                    <p>{{ item.description }}</p>
+                    <p>Price: ${{ '%.2f'|format(item.price) }}</p>
+                    <form method="POST" action="{{ url_for('restaurant_menu_page', restaurant_id=restaurant_info.restaurant_id) }}">
+                        <input type="hidden" name="item_id" value="{{ item.item_id }}">
+                        <button type="submit" id="add-to-cart-button-{{ item.item_id }}">Add to Cart</button>
+                    </form>
+                    <a href="{{ url_for('item_details_page', item_id=item.item_id) }}">
+                        <button id="view-item-details-{{ item.item_id }}">View Details</button>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

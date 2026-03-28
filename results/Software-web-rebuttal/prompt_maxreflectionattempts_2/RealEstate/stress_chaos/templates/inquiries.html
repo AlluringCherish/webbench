@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Inquiries</title>
+</head>
+<body>
+<div id="inquiries-page">
+
+    <h1>My Inquiries</h1>
+
+    <form id="inquiry-status-filter" method="GET" action="{{ url_for('my_inquiries') }}">
+        <label for="status_filter">Filter by Status:</label>
+        <select id="status_filter" name="status_filter">
+            <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All</option>
+            <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
+            <option value="Resolved" {% if status_filter == 'Resolved' %}selected{% endif %}>Resolved</option>
+            <option value="Contacted" {% if status_filter == 'Contacted' %}selected{% endif %}>Contacted</option>
+        </select>
+        <button type="submit">Apply Filter</button>
+    </form>
+
+    <table id="inquiries-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Property</th>
+                <th>Customer Name</th>
+                <th>Status</th>
+                <th>Message</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inquiry in inquiries %}
+            <tr id="inquiry-{{ inquiry.inquiry_id }}">
+                <td>{{ inquiry.inquiry_id }}</td>
+                <td>{{ inquiry.property_address }}</td>
+                <td>{{ inquiry.customer_name }}</td>
+                <td>{{ inquiry.status }}</td>
+                <td>{{ inquiry.message }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('my_inquiries') }}">
+                        <input type="hidden" name="inquiry_id" value="{{ inquiry.inquiry_id }}">
+                        <button id="delete-inquiry-button-{{ inquiry.inquiry_id }}" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+
+</div>
+</body>
+</html>

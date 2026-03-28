@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Air Quality Index</title>
+</head>
+<body>
+  <div id="air-quality-page">
+    <h1>Air Quality Index</h1>
+    <label for="location-aqi-filter">Filter by Location:</label>
+    <select id="location-aqi-filter" onchange="location.href='{{ url_for('air_quality') }}?location_id=' + this.value">
+      {% for loc in locations %}
+      <option value="{{ loc.location_id }}" {% if loc.location_id == selected_location_id %}selected{% endif %}>{{ loc.location_name }}</option>
+      {% endfor %}
+    </select>
+    {% if air_quality_data %}
+    <div id="aqi-display">
+      <p>AQI Index: {{ air_quality_data.aqi_index }}</p>
+    </div>
+    <div id="aqi-description">{{ aqi_description }}</div>
+    <table id="pollution-details" border="1">
+      <tr><th>Pollutant</th><th>Value</th></tr>
+      <tr><td>PM2.5</td><td>{{ air_quality_data.pm25 }}</td></tr>
+      <tr><td>PM10</td><td>{{ air_quality_data.pm10 }}</td></tr>
+      <tr><td>NO2</td><td>{{ air_quality_data.no2 }}</td></tr>
+      <tr><td>O3</td><td>{{ air_quality_data.o3 }}</td></tr>
+    </table>
+    <div id="health-recommendation">{{ health_recommendation }}</div>
+    {% else %}
+    <p>No air quality data available.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

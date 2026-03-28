@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="participants-page">
+        <h1>{{ page_title }}</h1>
+
+        <form method="GET" action="{{ url_for('participants_management') }}">
+            <input type="text" id="search-participant-input" name="search_query" placeholder="Search participants..." value="{{ search_query }}" />
+
+            <select id="participant-status-filter" name="selected_status">
+                <option value="">All Statuses</option>
+                <option value="Registered" {% if selected_status == 'Registered' %}selected{% endif %}>Registered</option>
+                <option value="Confirmed" {% if selected_status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                <option value="Attended" {% if selected_status == 'Attended' %}selected{% endif %}>Attended</option>
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
+
+        <button id="add-participant-button" onclick="location.href='{{ url_for('add_participant') }}'">Add Participant</button>
+
+        <table id="participants-table" border="1">
+            <thead>
+                <tr>
+                    <th>Participant ID</th>
+                    <th>Event ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Booking ID</th>
+                    <th>Status</th>
+                    <th>Registration Date</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in participants %}
+                <tr>
+                    <td>{{ p.participant_id }}</td>
+                    <td>{{ p.event_id }}</td>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.email }}</td>
+                    <td>{{ p.booking_id }}</td>
+                    <td>{{ p.status }}</td>
+                    <td>{{ p.registration_date }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="7">No participants found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

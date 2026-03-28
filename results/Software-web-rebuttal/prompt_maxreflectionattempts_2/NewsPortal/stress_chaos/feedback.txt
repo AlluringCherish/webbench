@@ -1,0 +1,30 @@
+[NEED_MODIFY]
+
+Integration tests failed due to a critical Flask/Jinja2 runtime error in the bookmarks page:
+
+1. Error Details:
+- Location: Rendering bookmarks.html template
+- Cause: Template uses bookmark.article_id field in url_for, but bookmarks_list data dicts lack 'article_id' key.
+- Exception: jinja2.exceptions.UndefinedError: 'dict object' has no attribute 'article_id'
+
+2. Reproduction Steps:
+- Access /bookmarks route
+- Observe internal server error due to missing 'article_id' in bookmarks_list context
+
+3. Impact:
+- Bookmarks page cannot render correctly; user cannot view or navigate bookmarks sections.
+- This error blocks all tests involving bookmarks page and breaks front-end functionality.
+
+4. Required Fix:
+- Modify bookmarks_page() function in app.py to include 'article_id' in each bookmark dict in bookmarks_list context passed to the template.
+
+5. Additional Notes:
+- Ensure all other templates have correct element IDs as per UI automation requirements.
+
+Summary:
+- The tested app fails integration tests due to missing 'article_id' field in bookmarks template context.
+- Fixing the bookmarks context structure will unblock further functional and integration testing.
+
+Until the fix is applied, the app is not fully functional.
+
+Status: NEED_MODIFY

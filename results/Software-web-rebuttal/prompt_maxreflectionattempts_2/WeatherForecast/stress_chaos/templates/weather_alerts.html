@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather Alerts</title>
+</head>
+<body>
+  <div id="alerts-page">
+    <h1>Weather Alerts</h1>
+    <label for="severity-filter">Filter by Severity:</label>
+    <select id="severity-filter" onchange="location.href='{{ url_for('weather_alerts') }}?severity=' + this.value">
+      <option value="All" {% if severity_filter == 'All' %}selected{% endif %}>All</option>
+      <option value="Critical" {% if severity_filter == 'Critical' %}selected{% endif %}>Critical</option>
+      <option value="High" {% if severity_filter == 'High' %}selected{% endif %}>High</option>
+      <option value="Medium" {% if severity_filter == 'Medium' %}selected{% endif %}>Medium</option>
+      <option value="Low" {% if severity_filter == 'Low' %}selected{% endif %}>Low</option>
+    </select>
+    <label for="location-filter-alerts">Filter by Location:</label>
+    <select id="location-filter-alerts" onchange="location.href='{{ url_for('weather_alerts') }}?location=' + this.value">
+      <option value="All" {% if location_filter == None %}selected{% endif %}>All</option>
+      {% for loc in alerts|map(attribute='location_name')|unique %}
+      <option value="{{ loc }}" {% if loc == location_filter %}selected{% endif %}>{{ loc }}</option>
+      {% endfor %}
+    </select>
+    <div id="alerts-list">
+      {% for alert in alerts %}
+      <div>
+        <p>Location: {{ alert.location_name }}</p>
+        <p>Type: {{ alert.alert_type }}</p>
+        <p>Severity: {{ alert.severity }}</p>
+        <p>Description: {{ alert.description }}</p>
+        <p>Start: {{ alert.start_time }}</p>
+        <p>End: {{ alert.end_time }}</p>
+        {% if not alert.is_acknowledged %}
+        <button id="acknowledge-alert-button-{{ alert.alert_id }}">Acknowledge</button>
+        {% else %}
+        <span>Acknowledged</span>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

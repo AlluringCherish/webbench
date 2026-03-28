@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version History - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="version-history-page">
+        <h1>Version History</h1>
+
+        <nav id="version-history-navigation">
+            <button onclick="location.href='{{ url_for('edit_article', article_id=article_id) }}'" id="back-to-edit-button">Back to Edit Article</button>
+            <button onclick="location.href='{{ url_for('dashboard') }}'" id="back-to-dashboard-button">Back to Dashboard</button>
+        </nav>
+
+        <section id="versions-list">
+            <h2>Versions</h2>
+            <ul>
+            {% for version in versions %}
+                <li>
+                    <strong>Version {{ version.version_number }}</strong> - {{ version.created_date }} by {{ version.author }}<br>
+                    Summary: {{ version.change_summary }}<br>
+                    <button onclick="location.href='{{ url_for('article_version_history', article_id=article_id) }}?compare_with={{ version.version_id }}'" id="compare-version-{{ version.version_number }}">Compare</button>
+                </li>
+            {% endfor %}
+            </ul>
+        </section>
+
+        {% if comparison %}
+        <section id="version-comparison">
+            <h2>Version Comparison</h2>
+            <p>Comparing version {{ comparison.current_version.version_number }} with version {{ comparison.compare_version.version_number }}</p>
+            <div id="comparison-diff">
+                {{ comparison.diff_html|safe }}
+            </div>
+        </section>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+</head>
+<body>
+<div id="search-results-page">
+    <h1>Search Results</h1>
+    <div id="search-query-display">Search term: {{ query }}</div>
+    <div id="results-tabs">
+        <!-- Specification does not require tab button IDs or onclick handlers, so omitted here -->
+    </div>
+    <div id="job-results">
+        {% if job_results %}
+            {% for job in job_results %}
+            <div class="job-result-card">
+                <div>{{ job.title }}</div>
+                <div>{{ job.company_name }}</div>
+                <div>{{ job.location }}</div>
+                <div>Salary: ${{ job.salary_min }} - ${{ job.salary_max }}</div>
+                <a href="{{ url_for('job_details', job_id=job.job_id) }}">View Job Details</a>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div id="company-results">
+        {% if company_results %}
+            {% for company in company_results %}
+            <div class="company-result-card">
+                <div>{{ company.company_name }}</div>
+                <div>{{ company.industry }}</div>
+                <div>{{ company.location }}</div>
+                <a href="{{ url_for('company_profile', company_id=company.company_id) }}">View Company Profile</a>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    {% if not job_results and not company_results %}
+        <div id="no-results-message">No results found.</div>
+    {% endif %}
+</div>
+</body>
+</html>

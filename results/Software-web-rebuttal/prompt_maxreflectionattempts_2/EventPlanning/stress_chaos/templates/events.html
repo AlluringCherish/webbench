@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="events-page">
+        <h1>{{ page_title }}</h1>
+
+        <form method="GET" action="{{ url_for('events') }}">
+            <input type="text" id="event-search-input" name="search_query" placeholder="Search events..." value="{{ search_query }}" />
+
+            <select id="event-category-filter" name="selected_category">
+                <option value="">All Categories</option>
+                <option value="Conference" {% if selected_category == 'Conference' %}selected{% endif %}>Conference</option>
+                <option value="Concert" {% if selected_category == 'Concert' %}selected{% endif %}>Concert</option>
+                <option value="Sports" {% if selected_category == 'Sports' %}selected{% endif %}>Sports</option>
+                <option value="Workshop" {% if selected_category == 'Workshop' %}selected{% endif %}>Workshop</option>
+                <option value="Social" {% if selected_category == 'Social' %}selected{% endif %}>Social</option>
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="events-grid">
+            {% for event in events %}
+                <div class="event-card">
+                    <h3>{{ event.event_name }}</h3>
+                    <p>Category: {{ event.category }}</p>
+                    <p>Date: {{ event.date }}</p>
+                    <p>Time: {{ event.time }}</p>
+                    <p>Location: {{ event.location }}</p>
+                    <button id="view-event-button-{{ event.event_id }}" onclick="location.href='{{ url_for('event_details', event_id=event.event_id) }}'">View Details</button>
+                </div>
+            {% else %}
+                <p>No events found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

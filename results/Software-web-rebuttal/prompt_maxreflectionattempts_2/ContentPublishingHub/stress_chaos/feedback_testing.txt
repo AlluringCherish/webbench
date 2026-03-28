@@ -1,0 +1,37 @@
+Functional Testing Feedback Summary
+
+Dashboard (/dashboard) renders with correct page title and contains username, quick stats with total articles and status breakdown.
+Recent activities show last 5 versions but template renders raw dict; should access keys for formatted output.
+Navigation buttons for Create, My Articles, Published Articles and Content Calendar exist with correct IDs.
+
+Create Article GET displays form with proper IDs and POST validation for title, content, category works correctly.
+Successful POST saves article and first version, redirects to edit page.
+
+Edit article GET loads latest version content; POST adds new version and resets status to draft.
+Empty content on POST returns validation errors.
+Form action URLs and some input IDs use incorrect attribute names (e.g., article["id"] vs article_id).
+
+Version History lists all versions sorted descending, shows approval and comment counts correctly.
+
+My Articles filters by current user and status; Published Articles filterable by category and sortable by date or title.
+Published Articles template uses non-existing published_date field; should use last_modified_date or created_date.
+
+Content Calendar GET presents calendar data grouped by scheduled dates.
+Defect: Form input names mismatch between template (schedule_date) and backend (new_date) causes scheduling failures.
+POST schedules article date if valid; errors returned on invalid data.
+
+Analytics page aggregates metrics correctly.
+Defect: Template uses undefined article_id variable instead of article.article_id for URLs.
+
+Templates often inconsistently use "id" vs "article_id" for article keys, causing rendering and link issues.
+Dynamic lists and buttons lack unique element IDs, impairing accessibility and automated testing.
+
+Suggested Fixes:
+1. Align calendar form input names with backend expected POST keys.
+2. Use article_id consistently between backend and templates.
+3. Adjust recent activity rendering in dashboard to access version details properly.
+4. Replace published_date with last_modified_date or created_date in published articles page.
+5. Fix analytics template URLs to use article.article_id.
+6. Add unique IDs to dynamic list items and buttons for UI consistency and testing.
+
+Status: NEED_MODIFY

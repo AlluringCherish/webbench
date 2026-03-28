@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Locations</title>
+</head>
+<body>
+  <div id="search-page">
+    <h1>Search Locations</h1>
+    <form action="{{ url_for('location_search') }}" method="POST">
+      <input id="location-search-input" name="q" type="text" value="{{ search_query|default('') }}" placeholder="Enter location name" />
+      <button type="submit">Search</button>
+    </form>
+    <div id="search-results">
+      {% if search_results %}
+      <ul>
+        {% for loc in search_results %}
+        <li>
+          {{ loc.location_name }}
+          <form method="POST" action="{{ url_for('location_search') }}" style="display:inline;">
+            <input type="hidden" name="selected_location_id" value="{{ loc.location_id }}" />
+            <button type="submit" id="select-location-button-{{ loc.location_id }}">Select</button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No results found.</p>
+      {% endif %}
+    </div>
+    <div id="saved-locations-list">
+      <h2>Saved Locations</h2>
+      <ul>
+        {% for saved_loc in saved_locations %}
+        <li>{{ saved_loc.location_name }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

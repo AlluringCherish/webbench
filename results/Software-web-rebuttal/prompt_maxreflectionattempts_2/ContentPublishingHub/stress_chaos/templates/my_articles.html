@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Articles - ContentPublishingHub</title>
+</head>
+<body>
+    <h1>My Articles</h1>
+    <nav id="my-articles-navigation">
+        <button onclick="location.href='{{ url_for('create_article') }}'" id="create-article-button">Create Article</button>
+        <button onclick="location.href='{{ url_for('dashboard') }}'" id="back-to-dashboard-button">Back to Dashboard</button>
+    </nav>
+
+    <section id="articles-list">
+        <table id="my-articles-table" cellspacing="0" border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Last Modified</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if articles %}
+                    {% for article in articles %}
+                    <tr>
+                        <td>{{ article.title }}</td>
+                        <td>{{ article.category }}</td>
+                        <td>{{ article.status }}</td>
+                        <td>{{ article.last_modified_date }}</td>
+                        <td>
+                            <button onclick="location.href='{{ url_for('edit_article', article_id=article.id) }}'">Edit</button>
+                            <button onclick="location.href='{{ url_for('article_version_history', article_id=article.id) }}'">Version History</button>
+                            <button onclick="location.href='{{ url_for('article_analytics', article_id=article.id) }}'">Analytics</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="5">No articles found.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>

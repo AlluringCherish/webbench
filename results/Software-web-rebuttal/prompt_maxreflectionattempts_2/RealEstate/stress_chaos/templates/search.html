@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Search</title>
+</head>
+<body>
+<div id="search-page">
+
+    <h1>Property Search</h1>
+
+    <form method="POST" action="{{ url_for('property_search') }}">
+        <label for="location-input">Location:</label>
+        <input type="text" id="location-input" name="location" value="{{ filters.location }}">
+
+        <label for="price-range-min">Price Min:</label>
+        <input type="number" id="price-range-min" name="price_min" value="{{ filters.price_min }}" step="1000" min="0">
+
+        <label for="price-range-max">Price Max:</label>
+        <input type="number" id="price-range-max" name="price_max" value="{{ filters.price_max }}" step="1000" min="0">
+
+        <label for="property-type-filter">Property Type:</label>
+        <select id="property-type-filter" name="property_type">
+            <option value="">Any</option>
+            <option value="House" {% if filters.property_type == 'House' %}selected{% endif %}>House</option>
+            <option value="Apartment" {% if filters.property_type == 'Apartment' %}selected{% endif %}>Apartment</option>
+            <option value="Condo" {% if filters.property_type == 'Condo' %}selected{% endif %}>Condo</option>
+        </select>
+
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="properties-grid">
+        {% for property in properties %}
+        <div class="property" id="property-{{ property.property_id }}">
+            <span>{{ property.address }}</span> |
+            <span>${{ "{:,}".format(property.price) }}</span>
+            <a href="{{ url_for('property_details', property_id=property.property_id) }}" id="view-property-button-{{ property.property_id }}">View</a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+</body>
+</html>

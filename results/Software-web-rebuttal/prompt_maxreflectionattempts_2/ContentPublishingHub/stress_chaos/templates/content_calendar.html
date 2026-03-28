@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Calendar - ContentPublishingHub</title>
+</head>
+<body>
+    <h1>Content Calendar</h1>
+    <nav id="calendar-navigation">
+        <button onclick="location.href='{{ url_for('dashboard') }}'" id="back-to-dashboard-button">Back to Dashboard</button>
+        <button onclick="location.href='{{ url_for('create_article') }}'" id="create-article-button">Create Article</button>
+    </nav>
+    {% if status_message %}
+    <p id="status-msg">{{ status_message }}</p>
+    {% endif %}
+    {% if validation_errors %}
+    <ul id="validation-errors">
+        {% for err in validation_errors %}
+            <li>{{ err }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if calendar_data %}
+    <section id="calendar-view">
+        {% for date, articles_on_date in calendar_data|groupby('scheduled_date') %}
+        <h2>{{ date }}</h2>
+        <ul>
+            {% for article in articles_on_date %}
+            <li>
+                <strong>{{ article.title }}</strong> (Scheduled Date: {{ article.scheduled_date }})
+                <form method="post" action="{{ url_for('content_calendar') }}" id="schedule-form-{{ article.article_id }}">
+                    <input type="hidden" name="article_id" value="{{ article.article_id }}" id="schedule-article-id-{{ article.article_id }}">
+                    <input type="date" name="new_date" id="schedule-date-{{ article.article_id }}" value="{{ article.scheduled_date }}" required>
+                    <button type="submit" id="schedule-article-button-{{ article.article_id }}">Reschedule</button>
+                </form>
+                <button onclick="location.href='{{ url_for('edit_article', article_id=article.article_id) }}'">Edit</button>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+    </section>
+    {% else %}
+    <p>No content scheduled.</p>
+    {% endif %}
+</body>
+</html>

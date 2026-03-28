@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Resumes</title>
+</head>
+<body>
+<div id="resume-page">
+    <h1>My Resumes</h1>
+    <div id="resumes-list">
+        {% for resume in resumes %}
+        <div class="resume-card" id="resume-{{ resume.resume_id }}">
+            <p>Name: {{ resume.applicant_name }}</p>
+            <p>Email: {{ resume.applicant_email }}</p>
+            <p>Filename: {{ resume.filename }}</p>
+            <p>Upload Date: {{ resume.upload_date }}</p>
+            <form method="post" action="{{ url_for('delete_resume', resume_id=resume.resume_id) }}">
+                <button id="delete-resume-button-{{ resume.resume_id }}" type="submit">Delete Resume</button>
+            </form>
+        </div>
+        {% else %}
+        <p id="no-resumes-message">No resumes uploaded.</p>
+        {% endfor %}
+    </div>
+    <form id="upload-resume-form" method="post" action="{{ url_for('upload_resume') }}" enctype="multipart/form-data">
+        <input type="file" id="resume-file-input" name="resume_file" style="display:none;" />
+        <button id="upload-resume-button" type="button" onclick="document.getElementById('resume-file-input').click();">Upload Resume</button>
+    </form>
+    <a href="{{ url_for('dashboard') }}"><button id="back-to-dashboard">Back to Dashboard</button></a>
+</div>
+<script>
+    document.getElementById('resume-file-input').addEventListener('change', function() {
+        document.getElementById('upload-resume-form').submit();
+    });
+</script>
+</body>
+</html>
