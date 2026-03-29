@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Destinations</title>
+</head>
+<body>
+    <div id="destinations-page">
+        <h1>Travel Destinations</h1>
+
+        <form method="GET" action="{{ url_for('destinations_view') }}">
+            <input type="text" id="search-destination" name="search" value="{{ search_query }}" placeholder="Search destinations..." />
+            <select id="region-filter" name="region" onchange="this.form.submit()">
+                <option value="">All Regions</option>
+                <option value="Europe" {% if selected_region == 'Europe' %}selected{% endif %}>Europe</option>
+                <option value="Asia" {% if selected_region == 'Asia' %}selected{% endif %}>Asia</option>
+                <option value="Americas" {% if selected_region == 'Americas' %}selected{% endif %}>Americas</option>
+                <option value="Africa" {% if selected_region == 'Africa' %}selected{% endif %}>Africa</option>
+                <option value="Oceania" {% if selected_region == 'Oceania' %}selected{% endif %}>Oceania</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="destinations-grid">
+            {% for dest in destinations %}
+            <div class="destination-item">
+                <img src="{{ dest.image_url }}" alt="{{ dest.name }} image" />
+                <div>{{ dest.name }}, {{ dest.country }}</div>
+                <button id="view-destination-button-{{ dest.dest_id }}" onclick="location.href='{{ url_for('destination_detail_view', dest_id=dest.dest_id) }}'">View Details</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

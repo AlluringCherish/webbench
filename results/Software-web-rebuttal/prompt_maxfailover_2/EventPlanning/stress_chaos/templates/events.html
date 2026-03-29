@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ page_title }}</title>
+</head>
+<body>
+<div id="events-page">
+  <h1 id="events-page">{{ page_title }}</h1>
+  <form method="POST" action="{{ url_for('filter_events') }}">
+    <input type="text" id="event-search-input" name="search" placeholder="Search events..." value="{{ request.form.get('search', '') }}">
+    <select id="event-category-filter" name="category">
+      <option value="">All Categories</option>
+      {% for category in category_options %}
+      <option value="{{ category }}" {% if request.form.get('category') == category %}selected{% endif %}>{{ category }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+  </form>
+  <div id="events-grid">
+    {% for event in events %}
+    <div class="event-card">
+      <h3>{{ event.event_name }}</h3>
+      <p>{{ event.category }} | {{ event.date }} {{ event.time }} | {{ event.location }}</p>
+      <button id="view-event-button-{{ event.event_id }}" onclick="window.location.href='{{ url_for('event_details', event_id=event.event_id) }}'">View Details</button>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+</body>
+</html>

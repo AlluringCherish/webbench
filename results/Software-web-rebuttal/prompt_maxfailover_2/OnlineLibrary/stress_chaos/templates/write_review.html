@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Write Review</title>
+</head>
+<body>
+    <div id="write-review-page">
+        <form method="POST" action="">
+            <div id="book-info-display">
+                <h2>{{ book.title }}</h2>
+                <div>Author: {{ book.author }}</div>
+                <div>Status: {{ book.status }}</div>
+                <div>Description: {{ book.description }}</div>
+                <div>Average Rating: {{ '%.1f' % book.avg_rating if book.avg_rating is not none else 'N/A' }}</div>
+            </div>
+
+            <label for="rating-input">Rating:</label>
+            <select id="rating-input" name="rating" required>
+                {% for r in range(1,6) %}
+                    <option value="{{ r }}" {% if existing_review and existing_review.rating == r %}selected{% endif %}>{{ r }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="review-text">Review:</label>
+            <textarea id="review-text" name="review_text" required>{{ existing_review.review_text if existing_review else '' }}</textarea>
+
+            <button id="submit-review-button" type="submit">Submit Review</button>
+            <button id="back-to-book" type="button" onclick="location.href='{{ url_for('book_details', book_id=book.book_id) }}'">Back</button>
+        </form>
+    </div>
+</body>
+</html>

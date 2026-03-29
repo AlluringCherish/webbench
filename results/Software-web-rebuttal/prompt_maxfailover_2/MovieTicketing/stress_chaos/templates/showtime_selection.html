@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Select Showtime</title>
+</head>
+<body>
+    <h1>Select Showtime</h1>
+    <div id="showtime-page">
+        <form method="get" action="{{ url_for('showtime_selection') }}">
+            <label for="theater-filter">Filter by Theater:</label>
+            <select id="theater-filter" name="filter_theater_id" onchange="this.form.submit()">
+                <option value="">All Theaters</option>
+                {% for theater in theaters %}
+                  <option value="{{ theater.theater_id }}" {% if filter_theater_id == theater.theater_id %}selected{% endif %}>{{ theater.theater_name }}</option>
+                {% endfor %}
+            </select>
+            <label for="date-filter">Filter by Date:</label>
+            <input type="date" id="date-filter" name="filter_date" value="{{ filter_date }}" onchange="this.form.submit()" />
+        </form>
+        <div id="showtimes-list">
+            {% for showtime in showtimes %}
+            <div id="showtime-{{ showtime.showtime_id }}">
+                <div>Theater: {{ showtime.theater_name }}</div>
+                <div>Date: {{ showtime.date }}</div>
+                <div>Time: {{ showtime.time }}</div>
+                <div>Price: ${{ showtime.price }}</div>
+                <form method="post" action="{{ url_for('select_showtime', showtime_id=showtime.showtime_id) }}">
+                    <button id="select-showtime-button-{{ showtime.showtime_id }}" type="submit">Select Showtime</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+</body>
+</html>

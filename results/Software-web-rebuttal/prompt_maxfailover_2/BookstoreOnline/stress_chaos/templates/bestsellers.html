@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bestsellers</title>
+</head>
+<body>
+    <div id="bestsellers-page">
+        <h1>Bestsellers</h1>
+
+        <label for="time-period-filter">Filter by Time Period:</label>
+        <select id="time-period-filter" name="period" onchange="window.location.href='{{ url_for('bestsellers') }}?period=' + this.value">
+            {% for period in period_options %}
+            <option value="{{ period }}" {% if period == selected_period %}selected{% endif %}>{{ period }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="bestsellers-list">
+            {% for book in bestsellers %}
+            <div class="bestseller-item">
+                <h3>{{ book.title }}</h3>
+                <p>Sales Count: {{ book.sales_count }}</p>
+                <button id="view-book-button-{{ book.book_id }}" onclick="window.location.href='{{ url_for('book_details', book_id=book.book_id) }}'">View Details</button>
+            </div>
+            {% else %}
+            <p>No bestsellers found.</p>
+            {% endfor %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

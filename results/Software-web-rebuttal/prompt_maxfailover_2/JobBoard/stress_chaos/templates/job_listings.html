@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Listings</title>
+</head>
+<body>
+    <div id="listings-page">
+        <form method="GET" action="{{ url_for('job_listings') }}">
+            <input type="text" id="search-input" name="search_query" placeholder="Search jobs by title, company, or location" value="{{ search_query|default('') }}">
+            <select id="category-filter" name="category_filter">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category.category_name }}" {% if selected_category==category.category_name %}selected{% endif %}>{{ category.category_name }}</option>
+                {% endfor %}
+            </select>
+            <select id="location-filter" name="location_filter">
+                <option value="">All Locations</option>
+                {% for location in locations %}
+                <option value="{{ location }}" {% if selected_location==location %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="jobs-grid">
+            {% for job in jobs %}
+            <div class="job-card" id="job-{{ job.job_id }}">
+                <p><strong>{{ job.title }}</strong> at {{ job.company_name }}</p>
+                <p>{{ job.location }}</p>
+                <p>Salary: ${{ job.salary_min }} - ${{ job.salary_max }}</p>
+                <button id="view-job-button-{{ job.job_id }}" onclick="location.href='{{ url_for('job_details', job_id=job.job_id) }}'">View Details</button>
+            </div>
+            {% else %}
+            <p id="no-results-message">No job listings found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

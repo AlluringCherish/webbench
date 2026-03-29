@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ page_title }}</title>
+</head>
+<body>
+<div id="schedules-page">
+  <h1 id="schedules-page">{{ page_title }}</h1>
+  <form method="POST" action="{{ url_for('filter_schedules') }}">
+    <input type="date" id="schedule-filter-date" name="date" value="{{ request.form.get('date', '') }}">
+    <select id="schedule-filter-event" name="event_id">
+      <option value="">All Events</option>
+      {% for event in events %}
+      <option value="{{ event.event_id }}" {% if request.form.get('event_id') == event.event_id|string %}selected{% endif %}>{{ event.event_name }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+  </form>
+  <div id="schedules-timeline">
+    {% for session in schedules %}
+    <div class="schedule-session">
+      <h3>{{ session.session_title }}</h3>
+      <p>{{ session.session_time }} ({{ session.duration_minutes }} mins)</p>
+      <p>Speaker: {{ session.speaker }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  <button id="export-schedule-button">Export Schedule</button>
+</div>
+</body>
+</html>

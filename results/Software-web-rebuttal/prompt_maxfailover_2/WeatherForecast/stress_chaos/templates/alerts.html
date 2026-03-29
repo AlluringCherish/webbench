@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alerts</title>
+</head>
+<body>
+    <h1>Alerts</h1>
+    <ul id="alerts-list">
+        {% for alert in alerts %}
+        <li class="alert-entry">
+            <h3>{{ alert.alert_type }} for {{ alert.location_name }}</h3>
+            <p>Severity: {{ alert.severity }}</p>
+            <p>Description: {{ alert.description }}</p>
+            <p>Start: {{ alert.start_time }}, End: {{ alert.end_time }}</p>
+            <p>Acknowledged: {{ 'Yes' if alert.is_acknowledged else 'No' }}</p>
+            {% if not alert.is_acknowledged %}
+            <form action="{{ url_for('acknowledge_alert', alert_id=alert.alert_id) }}" method="post">
+                <button id="acknowledge-alert-button-{{ alert.alert_id }}" type="submit">Acknowledge</button>
+            </form>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

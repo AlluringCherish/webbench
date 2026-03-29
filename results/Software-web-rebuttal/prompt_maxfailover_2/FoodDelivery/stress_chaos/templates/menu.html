@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu</title>
+</head>
+<body>
+    <div id="menu-page">
+        <h1 id="restaurant-name">{{ restaurant.name }}</h1>
+        <div id="restaurant-info">
+            <p>Cuisine: {{ restaurant.cuisine }}</p>
+            <p>Address: {{ restaurant.address }}</p>
+            <p>Phone: {{ restaurant.phone }}</p>
+            <p>Rating: {{ restaurant.rating }}</p>
+            <p>Delivery Time: {{ restaurant.delivery_time }} minutes</p>
+        </div>
+
+        <div id="menu-items-grid">
+            {% for item in menu_items %}
+                <div class="menu-item">
+                    <h2>{{ item.item_name }}</h2>
+                    <p>{{ item.category }}</p>
+                    <p>{{ item.description }}</p>
+                    <p>Price: ${{ '%.2f'|format(item.price) }}</p>
+
+                    <form method="POST" action="{{ url_for('add_to_cart') }}">
+                        <input type="hidden" name="item_id" value="{{ item.item_id }}">
+                        <label for="quantity-{{ item.item_id }}">Quantity:</label>
+                        <input type="number" id="quantity-{{ item.item_id }}" name="quantity" value="1" min="1">
+                        <button type="submit" id="add-to-cart-button-{{ item.item_id }}">Add to Cart</button>
+                    </form>
+                    <a href="{{ url_for('item_details', item_id=item.item_id) }}">
+                        <button id="view-item-details-{{ item.item_id }}">View Details</button>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('restaurants') }}"><button id="back-to-restaurants-button">Back to Restaurants</button></a>
+    </div>
+</body>
+</html>

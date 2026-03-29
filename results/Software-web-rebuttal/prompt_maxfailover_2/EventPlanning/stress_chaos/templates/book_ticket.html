@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ page_title }}</title>
+</head>
+<body>
+<div id="ticket-booking-page">
+  <h1 id="ticket-booking-page">{{ page_title }}</h1>
+  <form method="POST" action="{{ url_for('book_ticket') }}">
+    <label for="select-event-dropdown">Select Event:</label>
+    <select name="event_id" id="select-event-dropdown">
+      {% for event in events %}
+      <option value="{{ event.event_id }}" {% if event.event_id == selected_event_id %}selected{% endif %}>{{ event.event_name }}</option>
+      {% endfor %}
+    </select>
+    <label for="ticket-quantity-input">Number of Tickets:</label>
+    <input type="number" id="ticket-quantity-input" name="ticket_count" min="1" required value="{{ request.form.get('ticket_count', 1) }}">
+    <label for="ticket-type-select">Ticket Type:</label>
+    <select name="ticket_type" id="ticket-type-select">
+      <option value="General" {% if request.form.get('ticket_type') == 'General' %}selected{% endif %}>General</option>
+      <option value="VIP" {% if request.form.get('ticket_type') == 'VIP' %}selected{% endif %}>VIP</option>
+      <option value="Early Bird" {% if request.form.get('ticket_type') == 'Early Bird' %}selected{% endif %}>Early Bird</option>
+    </select>
+    <button type="submit" id="book-now-button">Book Now</button>
+  </form>
+  <div id="booking-confirmation">
+    {% if booking_confirmation %}
+      {% if booking_confirmation.success %}
+        <p style="color: green;">{{ booking_confirmation.message }}</p>
+      {% else %}
+        <p style="color: red;">{{ booking_confirmation.message }}</p>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+</body>
+</html>

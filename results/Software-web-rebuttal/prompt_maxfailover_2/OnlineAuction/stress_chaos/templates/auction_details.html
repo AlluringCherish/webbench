@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Details</title>
+</head>
+<body id="auction-details-page">
+    <h1 id="auction-title">{{ auction.title }}</h1>
+
+    <nav>
+        <a href="{{ url_for('place_bid', auction_id=auction.id) }}" id="place-bid">Place Bid</a>
+        <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+    </nav>
+
+    <section id="bid-history">
+        <h2>Bid History</h2>
+        <table id="bid-history-table">
+            <thead>
+                <tr>
+                    <th>Bidder</th>
+                    <th>Amount</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bid in auction.bid_history %}
+                <tr>
+                    <td>{{ bid.bidder }}</td>
+                    <td>{{ bid.amount }}</td>
+                    <td>{{ bid.time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section id="status-filter">
+        <label for="filter-status">Status:</label>
+        <select id="filter-status" name="status">
+            {% for status in statuses %}
+            <option value="{{ status }}" {% if status == selected_status %}selected{% endif %}>{{ status }}</option>
+            {% endfor %}
+        </select>
+    </section>
+
+    <button id="dashboard-button" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</body>
+</html>

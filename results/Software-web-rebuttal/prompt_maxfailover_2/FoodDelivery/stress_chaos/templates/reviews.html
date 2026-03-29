@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reviews</title>
+</head>
+<body>
+    <div id="reviews-page">
+        <h1>Reviews</h1>
+        <label for="filter-by-rating">Filter by Rating:</label>
+        <select id="filter-by-rating" name="rating_filter" onchange="location = this.options[this.selectedIndex].value;">
+            <option value="{{ url_for('reviews', rating_filter='All') }}" {% if selected_rating_filter == 'All' %}selected{% endif %}>All Ratings</option>
+            {% for rating_option in rating_filter_options %}
+                <option value="{{ url_for('reviews', rating_filter=rating_option) }}" {% if selected_rating_filter == rating_option %}selected{% endif %}>{{ rating_option }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="reviews-list">
+            {% for review in reviews %}
+                <div class="review-card">
+                    <p>Restaurant ID: {{ review.restaurant_id }}</p>
+                    <p>Customer: {{ review.customer_name }}</p>
+                    <p>Rating: {{ review.rating }}</p>
+                    <p>Review: {{ review.review_text }}</p>
+                    <p>Date: {{ review.review_date }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

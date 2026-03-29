@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <p>Default Location: {{ default_location.location_name if default_location else 'None' }}</p>
+    <h2>Current Weather</h2>
+    {% if current_weather %}
+    <p>Temperature: {{ current_weather.temperature }}&deg;{{ current_weather.temperature_unit }}</p>
+    <p>Condition: {{ current_weather.condition }}</p>
+    <p>Humidity: {{ current_weather.humidity }}%</p>
+    <p>Wind Speed: {{ current_weather.wind_speed }} mph</p>
+    <p>Last Updated: {{ current_weather.last_updated }}</p>
+    {% else %}
+    <p>No weather data available.</p>
+    {% endif %}
+
+    <h2>Saved Locations</h2>
+    <ul>
+        {% for location in saved_locations %}
+        <li>{{ location.location_name }} {% if location.is_default %}(Default){% endif %}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Alerts</h2>
+    <ul>
+        {% for alert in alerts %}
+        <li>{{ alert.alert_type }} in {{ alert.location_name }} - Severity: {{ alert.severity }}{% if alert.is_acknowledged %} (Acknowledged){% endif %}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('saved_locations_page') }}">Saved Locations</a> |
+    <a href="{{ url_for('search_locations_page') }}">Search Locations</a> |
+    <a href="{{ url_for('weather_alerts_page') }}">Alerts</a> |
+    <a href="{{ url_for('settings_page') }}">Settings</a>
+</body>
+</html>

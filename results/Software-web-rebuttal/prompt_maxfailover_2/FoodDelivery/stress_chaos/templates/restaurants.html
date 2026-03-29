@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurants</title>
+</head>
+<body>
+    <div id="restaurants-page">
+        <h1>Restaurants</h1>
+        <form method="GET" action="{{ url_for('restaurants') }}">
+            <input type="text" id="search-input" name="search_query" placeholder="Search" value="{{ search_query }}">
+            <select id="cuisine-filter" name="cuisine">
+                <option value="">All Cuisines</option>
+                {% for cuisine in cuisine_options %}
+                    <option value="{{ cuisine }}" {% if selected_cuisine == cuisine %}selected{% endif %}>{{ cuisine }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="restaurants-list">
+            {% for restaurant in restaurants %}
+                <div class="restaurant-card">
+                    <p>{{ restaurant.name }} - {{ restaurant.cuisine }}</p>
+                    <p>Address: {{ restaurant.address }}</p>
+                    <p>Phone: {{ restaurant.phone }}</p>
+                    <p>Rating: {{ restaurant.rating }}</p>
+                    <p>Delivery Time: {{ restaurant.delivery_time }} minutes</p>
+                    <p>Min Order: ${{ '%.2f'|format(restaurant.min_order) }}</p>
+                    <a href="{{ url_for('restaurant_menu', restaurant_id=restaurant.restaurant_id) }}"><button id="view-restaurant-button-{{ restaurant.restaurant_id }}">View Menu</button></a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard') }}"><button id="back-to-dashboard">Back to Dashboard</button></a>
+    </div>
+</body>
+</html>

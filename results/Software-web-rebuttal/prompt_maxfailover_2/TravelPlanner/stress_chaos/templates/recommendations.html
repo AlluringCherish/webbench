@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Recommendations</title>
+</head>
+<body>
+    <div id="recommendations-page">
+        <h1>Travel Recommendations</h1>
+
+        <form method="GET" action="{{ url_for('recommendations_view') }}">
+            <label for="recommendation-season-filter">Season:</label>
+            <select id="recommendation-season-filter" name="season" onchange="this.form.submit()">
+                <option value="">All Seasons</option>
+                <option value="Spring" {% if filters.season == 'Spring' %}selected{% endif %}>Spring</option>
+                <option value="Summer" {% if filters.season == 'Summer' %}selected{% endif %}>Summer</option>
+                <option value="Fall" {% if filters.season == 'Fall' %}selected{% endif %}>Fall</option>
+                <option value="Winter" {% if filters.season == 'Winter' %}selected{% endif %}>Winter</option>
+            </select>
+
+            <label for="budget-filter">Budget:</label>
+            <select id="budget-filter" name="budget" onchange="this.form.submit()">
+                <option value="">All Budgets</option>
+                <option value="low" {% if filters.budget == 'low' %}selected{% endif %}>Low</option>
+                <option value="medium" {% if filters.budget == 'medium' %}selected{% endif %}>Medium</option>
+                <option value="high" {% if filters.budget == 'high' %}selected{% endif %}>High</option>
+            </select>
+        </form>
+
+        <div id="trending-destinations">
+            <ul>
+                {% for rec in recommendations %}
+                <li>
+                    <strong>{{ rec.destination }}</strong> - {{ rec.package_name if rec.package_name else '' }} - {{ rec.description if rec.description else '' }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_view') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

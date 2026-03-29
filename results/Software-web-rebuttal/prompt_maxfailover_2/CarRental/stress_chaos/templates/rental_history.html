@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rental History</title>
+</head>
+<body>
+    <div id="main-container">
+        <h1>Rental History</h1>
+        <div id="history-page">
+            <form method="GET" action="">
+                <label for="status-filter">Filter by Status:</label>
+                <select id="status-filter" name="status">
+                    {% for status_option in status_filter_options %}
+                        <option value="{{ status_option }}" {% if status_option == selected_status %}selected{% endif %}>{{ status_option }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Apply Filter</button>
+            </form>
+            <table id="rentals-table" border="1">
+                <thead>
+                    <tr>
+                        <th>Rental ID</th>
+                        <th>Vehicle ID</th>
+                        <th>Customer ID</th>
+                        <th>Pickup Date</th>
+                        <th>Dropoff Date</th>
+                        <th>Pickup Location</th>
+                        <th>Dropoff Location</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for rental in rentals %}
+                    <tr>
+                        <td>{{ rental.rental_id }}</td>
+                        <td>{{ rental.vehicle_id }}</td>
+                        <td>{{ rental.customer_id }}</td>
+                        <td>{{ rental.pickup_date }}</td>
+                        <td>{{ rental.dropoff_date }}</td>
+                        <td>{{ rental.pickup_location }}</td>
+                        <td>{{ rental.dropoff_location }}</td>
+                        <td>${{ '%.2f'|format(rental.total_price) }}</td>
+                        <td>{{ rental.status }}</td>
+                        <td><button id="view-rental-details-{{ rental.rental_id }}">View Details</button></td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="10">No rentals found.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+        </div>
+    </div>
+</body>
+</html>

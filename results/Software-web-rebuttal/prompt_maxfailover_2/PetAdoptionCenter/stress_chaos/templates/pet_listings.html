@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Pets</title>
+</head>
+<body>
+    <div id="pet-listings-page">
+        <h1>Available Pets</h1>
+
+        <form method="post" action="{{ url_for('pet_search') }}" id="search-form">
+            <input type="text" id="search-input" name="search" placeholder="Search pets by name or breed">
+            <select id="filter-species" name="species">
+                <option value="All" {% if filter_species == 'All' %}selected{% endif %}>All</option>
+                <option value="Dog" {% if filter_species == 'Dog' %}selected{% endif %}>Dog</option>
+                <option value="Cat" {% if filter_species == 'Cat' %}selected{% endif %}>Cat</option>
+                <option value="Bird" {% if filter_species == 'Bird' %}selected{% endif %}>Bird</option>
+                <option value="Rabbit" {% if filter_species == 'Rabbit' %}selected{% endif %}>Rabbit</option>
+                <option value="Other" {% if filter_species == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="pet-grid">
+            {% if pets %}
+                {% for pet in pets %}
+                    <div class="pet-card" id="pet-{{ pet.pet_id }}">
+                        <a href="{{ url_for('pet_details', pet_id=pet.pet_id) }}">
+                            <h2>{{ pet.name }}</h2>
+                            <p>Species: {{ pet.species }}</p>
+                            <p>Breed: {{ pet.breed }}</p>
+                            <p>Age: {{ pet.age }}</p>
+                            {% if pet.photo_url %}
+                                <img src="{{ pet.photo_url }}" alt="Photo of {{ pet.name }}">
+                            {% endif %}
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No pets found matching the criteria.</p>
+            {% endif %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Bookmarks</title>
+</head>
+<body>
+<div id="bookmarks-page">
+    <h1>My Bookmarks</h1>
+
+    <div id="bookmarks-list">
+        {% if bookmarks %}
+            <ul>
+            {% for bookmark in bookmarks %}
+                <li id="bookmark-{{ bookmark.bookmark_id }}">
+                    <div>{{ bookmark.article_title }}</div>
+                    <div id="article-date">Bookmarked on: {{ bookmark.bookmarked_date }}</div>
+                    <button id="read-bookmark-button-{{ bookmark.bookmark_id }}" onclick="location.href='{{ url_for('article_details', article_id=bookmark.article_id) }}'">Read Article</button>
+                    <form method="POST" action="{{ url_for('remove_bookmark', bookmark_id=bookmark.bookmark_id) }}" style="display:inline;">
+                        <button type="submit" id="remove-bookmark-button-{{ bookmark.bookmark_id }}">Remove Bookmark</button>
+                    </form>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <div id="no-results-message">You have no bookmarks.</div>
+        {% endif %}
+    </div>
+
+    <div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</div>
+</body>
+</html>

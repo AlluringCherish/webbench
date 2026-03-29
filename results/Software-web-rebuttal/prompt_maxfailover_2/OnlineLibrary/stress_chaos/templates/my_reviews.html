@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reviews</title>
+</head>
+<body>
+    <div id="reviews-page">
+        <h1>My Reviews</h1>
+
+        <div id="reviews-list">
+            {% if reviews|length == 0 %}
+                <p>No reviews found.</p>
+            {% else %}
+                <ul>
+                {% for review in reviews %}
+                    <li>
+                        <strong>{{ review.book_title }}</strong> - Rating: {{ review.rating }}/5
+                        <br>
+                        {{ review.review_text }}
+                        <br>
+                        <button id="edit-review-button-{{ review.review_id }}" onclick="location.href='{{ url_for('write_review', book_id=review.book_id) }}'">Edit</button>
+                        <form method="POST" action="{{ url_for('delete_review', review_id=review.review_id) }}" style="display:inline;">
+                            <button id="delete-review-button-{{ review.review_id }}" type="submit">Delete</button>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

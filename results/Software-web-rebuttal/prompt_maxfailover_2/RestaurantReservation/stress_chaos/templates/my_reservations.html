@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+</head>
+<body>
+    <h1 id="my-reservations-page">My Reservations</h1>
+    <table id="reservations-table" border="1">
+        <thead>
+            <tr>
+                <th>Guest Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Party Size</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Special Requests</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+            <tr id="reservation-{{ reservation.reservation_id }}">
+                <td>{{ reservation.guest_name }}</td>
+                <td>{{ reservation.phone }}</td>
+                <td>{{ reservation.email }}</td>
+                <td>{{ reservation.party_size }}</td>
+                <td>{{ reservation.date }}</td>
+                <td>{{ reservation.time }}</td>
+                <td>{{ reservation.special_requests }}</td>
+                <td>{{ reservation.status }}</td>
+                <td>
+                    {% if reservation.status == 'Upcoming' %}
+                    <form action="/cancel_reservation/{{ reservation.reservation_id }}" method="POST" style="display:inline;">
+                        <button type="submit" id="cancel-reservation-button-{{ reservation.reservation_id }}">Cancel</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button onclick="location.href='{{ url_for('dashboard') }}'" id="back-to-dashboard">Back</button>
+</body>
+</html>

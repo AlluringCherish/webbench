@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan Your Itinerary</title>
+</head>
+<body>
+    <div id="itinerary-page">
+        <h1>Plan Your Itinerary</h1>
+
+        <form method="POST" action="{{ url_for('itinerary_view') }}">
+            <label for="itinerary-name-input">Itinerary Name:</label>
+            <input type="text" id="itinerary-name-input" name="itinerary_name" />
+            {% if form_errors.itinerary_name %}
+                <div class="error">{{ form_errors.itinerary_name }}</div>
+            {% endif %}
+
+            <label for="start-date-input">Start Date:</label>
+            <input type="date" id="start-date-input" name="start_date" />
+            {% if form_errors.start_date %}
+                <div class="error">{{ form_errors.start_date }}</div>
+            {% endif %}
+
+            <label for="end-date-input">End Date:</label>
+            <input type="date" id="end-date-input" name="end_date" />
+            {% if form_errors.end_date %}
+                <div class="error">{{ form_errors.end_date }}</div>
+            {% endif %}
+
+            <button type="button" id="add-activity-button">Add Activity</button>
+            <div id="activity-list">
+                <!-- Activities added dynamically by JavaScript -->
+            </div>
+
+            <button type="submit">Save Itinerary</button>
+        </form>
+
+        <div id="itinerary-list">
+            <h2>Your Itineraries</h2>
+            <ul>
+                {% for itinerary in itineraries %}
+                <li>
+                    <div>{{ itinerary.itinerary_name }} - {{ itinerary.destination }} - {{ itinerary.start_date }} to {{ itinerary.end_date }} - Status: {{ itinerary.status }}</div>
+                    <a href="{{ url_for('edit_trip', trip_id=itinerary.itinerary_id) }}">Edit</a>
+                    <a href="{{ url_for('delete_trip', trip_id=itinerary.itinerary_id) }}">Delete</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+</body>
+</html>

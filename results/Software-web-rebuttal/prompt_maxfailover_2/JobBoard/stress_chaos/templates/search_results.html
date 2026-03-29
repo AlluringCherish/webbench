@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+</head>
+<body>
+    <div id="search-results-page">
+        <h1>Search Results</h1>
+        <div id="search-query-display">Search Query: {{ query }}</div>
+        <div id="results-tabs">
+            <div id="job-results">
+                {% if job_results %}
+                {% for job in job_results %}
+                <div class="job-entry" id="job-{{ job.job_id }}">
+                    <p><strong>{{ job.title }}</strong> at {{ job.company_name }}</p>
+                    <p>{{ job.location }}</p>
+                    <p>Salary: ${{ job.salary_min }} - ${{ job.salary_max }}</p>
+                    <button id="view-job-button-{{ job.job_id }}" onclick="location.href='{{ url_for('job_details', job_id=job.job_id) }}'">View Job</button>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div id="no-results-message">No job results found.</div>
+                {% endif %}
+            </div>
+            <div id="company-results">
+                {% if company_results %}
+                {% for company in company_results %}
+                <div class="company-entry" id="company-{{ company.company_id }}">
+                    <p><strong>{{ company.company_name }}</strong></p>
+                    <p>Industry: {{ company.industry }}</p>
+                    <p>Location: {{ company.location }}</p>
+                    <button id="view-company-button-{{ company.company_id }}" onclick="location.href='{{ url_for('company_profile', company_id=company.company_id) }}'">View Company</button>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div id="no-results-message">No company results found.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

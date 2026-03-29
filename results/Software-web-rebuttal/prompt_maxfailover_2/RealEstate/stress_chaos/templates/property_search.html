@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Search</title>
+</head>
+<body>
+    <h1>Property Search</h1>
+    <div id="search-page">
+        <form method="GET" action="{{ url_for('property_search_page') }}">
+            <label for="location-input">Location:</label>
+            <input type="text" id="location-input" name="location" value="{{ filter_options.location }}">
+
+            <label for="price-range-min">Price Min:</label>
+            <input type="number" id="price-range-min" name="price_min" value="{{ filter_options.price_min }}">
+
+            <label for="price-range-max">Price Max:</label>
+            <input type="number" id="price-range-max" name="price_max" value="{{ filter_options.price_max }}">
+
+            <label for="property-type-filter">Property Type:</label>
+            <select id="property-type-filter" name="property_type">
+                <option value="" {% if filter_options.property_type == '' %}selected{% endif %}>All</option>
+                <option value="House" {% if filter_options.property_type == 'House' %}selected{% endif %}>House</option>
+                <option value="Apartment" {% if filter_options.property_type == 'Apartment' %}selected{% endif %}>Apartment</option>
+                <option value="Condo" {% if filter_options.property_type == 'Condo' %}selected{% endif %}>Condo</option>
+                <option value="Land" {% if filter_options.property_type == 'Land' %}selected{% endif %}>Land</option>
+            </select>
+
+            <button id="search-properties-button" type="submit">Search Properties</button>
+        </form>
+
+        <div id="properties-grid">
+            {% for property in properties %}
+            <div id="property-card-{{ property.property_id }}">
+                <p>{{ property.address }}</p>
+                <p>${{ property.price }}</p>
+                <button id="view-property-button-{{ property.property_id }}" onclick="location.href='{{ url_for('property_details_page', property_id=property.property_id) }}'">View</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

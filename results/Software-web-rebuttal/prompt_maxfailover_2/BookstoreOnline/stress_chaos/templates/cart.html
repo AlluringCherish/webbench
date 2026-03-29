@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+</head>
+<body>
+    <div id="cart-page">
+        <h1>Shopping Cart</h1>
+
+        <form method="post" action="{{ url_for('cart') }}">
+            <table id="cart-items-table" border="1">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.book.title }}</td>
+                        <td>
+                            <input id="update-quantity-{{ item.item_id }}" type="number" name="quantity" value="{{ item.quantity }}" min="1">
+                            <input type="hidden" name="item_id" value="{{ item.item_id }}">
+                        </td>
+                        <td>${{ "%.2f" | format(item.subtotal) }}</td>
+                        <td>
+                            <button id="remove-item-button-{{ item.item_id }}" type="submit" name="remove_item_id" value="{{ item.item_id }}">Remove</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4">Your cart is empty.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+
+        <div id="total-amount">
+            Total: ${{ "%.2f" | format(total_amount) }}
+        </div>
+
+        <button id="proceed-checkout-button" onclick="window.location.href='{{ url_for('checkout') }}'">Proceed to Checkout</button>
+    </div>
+</body>
+</html>

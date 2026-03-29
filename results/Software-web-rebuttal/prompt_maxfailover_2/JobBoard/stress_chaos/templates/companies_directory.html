@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Company Directory</title>
+</head>
+<body>
+    <div id="companies-page">
+        <h1>Company Directory</h1>
+        <form method="GET" action="{{ url_for('companies_directory') }}">
+            <input type="text" id="search-company-input" name="search_company_query" placeholder="Search companies by name or industry" value="{{ search_company_query|default('') }}">
+            <button type="submit">Search</button>
+        </form>
+        <div id="companies-list">
+            {% for company in companies %}
+            <div class="company-card" id="company-{{ company.company_id }}">
+                <p><strong>{{ company.company_name }}</strong></p>
+                <p>Industry: {{ company.industry }}</p>
+                <p>Employees: {{ company.employee_count }}</p>
+                <button id="view-company-button-{{ company.company_id }}" onclick="location.href='{{ url_for('company_profile', company_id=company.company_id) }}'">View Profile</button>
+            </div>
+            {% else %}
+            <p id="no-results-message">No companies found.</p>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

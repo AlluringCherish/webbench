@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Artist Profiles</title>
+</head>
+<body id="artists-page">
+    <h1>Artist Profiles</h1>
+
+    <form method="get" action="">
+        <input id="search-artists" name="search" type="text" value="{{ search_query }}" placeholder="Search artists..." />
+        <select id="artists-sort" name="sort">
+            <option value="By Name" {% if sort_option == 'By Name' %}selected{% endif %}>By Name</option>
+            <option value="By Genre" {% if sort_option == 'By Genre' %}selected{% endif %}>By Genre</option>
+        </select>
+        <button type="submit">Search & Sort</button>
+    </form>
+
+    <div id="artists-grid">
+        {% for artist in artists %}
+        <div class="artist-item" id="artist-{{ artist.artist_id }}">
+            <div>{{ artist.name }} ({{ artist.genre }}, {{ artist.country }})</div>
+            <a href="{{ url_for('artist_profile', artist_id=artist.artist_id) }}">
+                <button id="view-artist-button-{{ artist.artist_id }}" type="button">View</button>
+            </a>
+        </div>
+        {% else %}
+        <p id="no-artists-message">No artists found.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

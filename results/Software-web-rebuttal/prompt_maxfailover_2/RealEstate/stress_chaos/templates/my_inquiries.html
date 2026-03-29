@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Inquiries</title>
+</head>
+<body>
+    <h1>My Inquiries</h1>
+    <div id="inquiries-page">
+        <form id="status-filter-form" method="GET" action="{{ url_for('my_inquiries_page') }}">
+            <label for="inquiry-status-filter">Filter by Status:</label>
+            <select id="inquiry-status-filter" name="status">
+                {% for status_opt in status_filter_options %}
+                <option value="{{ status_opt }}" {% if status_opt == request.args.get('status', 'All') %}selected{% endif %}>{{ status_opt }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <table id="inquiries-table" border="1">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Contact Info</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inquiry in inquiries %}
+                <tr id="inquiry-row-{{ inquiry.inquiry_id }}">
+                    <td>{{ inquiry.property_address }}</td>
+                    <td>{{ inquiry.inquiry_date }}</td>
+                    <td>{{ inquiry.status }}</td>
+                    <td>
+                        {{ inquiry.customer_name }}<br>
+                        {{ inquiry.customer_email }}<br>
+                        {{ inquiry.customer_phone }}
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_inquiry', inquiry_id=inquiry.inquiry_id) }}" style="display:inline;">
+                            <button type="submit" id="delete-inquiry-button-{{ inquiry.inquiry_id }}">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('dashboard_page') }}"><button id="back-to-dashboard">Back to Dashboard</button></a>
+    </div>
+</body>
+</html>

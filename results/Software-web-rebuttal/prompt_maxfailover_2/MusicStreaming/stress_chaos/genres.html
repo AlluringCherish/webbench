@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Genres</title>
+</head>
+<body id="genres-page">
+    <h1>Genres</h1>
+    <select id="genre-filter" name="genre_id" onchange="this.form.submit()">
+        <option value="">All Genres</option>
+        {% for genre in genres %}
+            <option value="{{ genre.genre_id }}" {% if genre.genre_id == selected_genre_id %}selected{% endif %} title="{{ genre.description }}">{{ genre.genre_name }}</option>
+        {% endfor %}
+    </select>
+
+    <h2 id="genre-songs">Songs</h2>
+    <ul id="songs-list">
+        {% for song in genre_songs %}
+            <li class="song-item" id="song-{{ song.song_id }}">
+                <a href="{{ url_for('song_details', song_id=song.song_id) }}" id="song-link-{{ song.song_id }}">{{ song.title }}</a> by <a href="{{ url_for('artist_profile', artist_id=song.artist_id) }}" id="song-artist-link-{{ song.song_id }}">{{ song.artist_name }}</a> ({{ song.duration }}s)
+                <button id="add-to-playlist-button-{{ song.song_id }}" class="add-to-playlist-button" data-song-id="{{ song.song_id }}">Add to Playlist</button>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('dashboard_page') }}"><button id="back-to-dashboard">Back to Dashboard</button></a>
+</body>
+</html>

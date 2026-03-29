@@ -1,0 +1,1608 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "FrontendDeveloper"
+    ],
+    "num_all_targets": 1,
+    "agent_chaos_targets": [],
+    "stress_chaos_targets": [
+      "FrontendDeveloper"
+    ],
+    "io_chaos_targets": [],
+    "tool_chaos_targets": []
+  },
+  "agent_chaos": {
+    "enabled": false,
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "log": []
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordOnly",
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 4,
+    "method_selection": "Mode: WordOnly (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": [
+      {
+        "timestamp": 1774698923.0389576,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 195/325 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "You are a Frontend Developer specializing in HTML and Jinja2 templating for Flask web applications.\n\nYour goal is to implement all HTML templates (*.html) for the OnlineCourse application based on the design_spec.md Section 2, ensuring correct page layouts, element IDs, and navigation.\n\nTask Details:\n- Read design_spec.md Section 2 (HTML Templates) only from CONTEXT\n- Implement all HTML templates with required structure, element IDs, and navigation\n- Use Jinja2 syntax for dynamic content, loops, and conditionals as specified\n- Do NOT read or modify backend logic or data handling code\n- Preserve all element IDs exactly as specified, including dynamic IDs like view-course-button-{course_id}\n\nImplementation Guidelines:\n1. **Template Structure**:\n   ```html\n   <!DOCTYPE html>\n   <html lang=\"en\">\n   <head>\n       <meta charset=\"UTF-8\">\n       <title>Page Title from Section 2</title>\n   </head>\n   <body>\n       <div id=\"main-container\">\n           <h1>Page Title from Section 2</h1>\n           <!-- Page content here -->\n       </div>\n   </body>\n   </html>\n   ```\n\n2. **Element IDs**:\n   - Use exact element IDs as specified, including dash-case and dynamic patterns\n   - For repeated dynamic IDs, use Jinja2 syntax, e.g., id=\"view-course-button-{{ course.course_id }}\"\n\n3. **Navigation Links**:\n   - Use url_for with exact function names from Section 2 for all buttons and links\n   - For dynamic navigation, pass required parameters matching route definitions\n\n4. **Forms and Inputs**:\n   - Implement forms for assignment submissions and profile updates with proper method and action attributes\n   - Use required attributes and input types as specified\n\n5. **Conditionals and Loops**:\n   - Use Jinja2 conditionals to handle enrolled status, button disabling, and data presence\n   - Use for-loops to render course lists, assignments, certificates, and lessons\n\nCRITICAL REQUIREMENTS:\n- Use write_text_file tool to save all template files in templates/ directory\n- All element IDs must match design_spec.md Section 2 exactly, including case-sensitive and dynamic patterns\n- Page titles must match Section 2 exactly in both <title> and <h1>\n- Navigation must use exact url_for functions as specified\n- Do NOT implement backend logic or data file handling in templates\n- Do NOT provide partial code in chat; always save complete files\n\nOutput: templates/*.html",
+        "after": "You are Frontend specializing in Jinja2 for Flask applications.\n\ngoal all HTML templates OnlineCourse application on the design_spec.md page element navigation.\n\nDetails:\nRead design_spec.md 2 from CONTEXT\n- Implement all with required element and navigation\n- syntax for\nDo modify or data handling\n- all element as specified, including\n\nGuidelines:\nStructure**:\n\n\n<html\n\n\nTitle Section\n\n\nid=\"main-container\">\nfrom Section\n<!-- Page content -->\n\n</body>\n\n\n\n2.\nUse exact specified, including and\n- repeated Jinja2\n\n**Navigation\n- names 2\nFor pass required definitions\n\n4. and\n- submissions proper method and attributes\n- required attributes\n\n5.\n- enrolled status,\n- to course assignments,\n\nREQUIREMENTS:\n- Use tool template in templates/ directory\nIDs Section exactly,\nPage titles must 2 <title> and\nmust use url_for specified\nNOT implement logic handling\n- Do provide in save files\n\ntemplates/*.html"
+      },
+      {
+        "timestamp": 1774698923.0409853,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 777/1295 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement templates/*.html frontend templates using design_spec.md Section 2 with exact element IDs and navigation\n=== design_spec.md ===\n# OnlineCourse Application Design Specification\n\n---\n\n## Section 1: Flask Routes Specification (For Backend Developer)\n\n| Route Path                           | Function Name           | HTTP Method | Template File           | Context Variables                                                                                                           |\n|------------------------------------|-------------------------|-------------|-------------------------|----------------------------------------------------------------------------------------------------------------------------|\n| /                                  | root                    | GET         | N/A                     | N/A (Redirects to /dashboard)                                                                                              |\n| /dashboard                         | dashboard               | GET         | dashboard.html          | username (str), fullname (str), enrolled_courses (list of dict {course_id (str), title (str), progress (int)})              |\n| /catalog                          | course_catalog          | GET         | catalog.html            | courses (list of dict {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}) |\n| /catalog/search                   | course_catalog_search   | POST        | catalog.html            | courses (list of dict) (filtered as per search)                                                                             |\n| /course/<course_id>               | course_details          | GET         | course_details.html     | course (dict with keys: course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)),\n|                                    |                         |             |                         | is_enrolled (bool)                                                                                                         |\n| /course/<course_id>/enroll        | enroll_course           | POST        | course_details.html     | course (dict), is_enrolled (bool), success_message (str, optional), error_message (str, optional)                            |\n| /my-courses                      | my_courses              | GET         | my_courses.html         | enrolled_courses (list of dict {course_id (str), title (str), progress (int)})                                              |\n| /my-courses/<course_id>/learn    | course_learning         | GET         | course_learning.html    | course (dict: course_id, title, description, etc.), lessons (list of dict {lesson_id (str), title (str), content (str)}), current_lesson (dict), progress (int, 0-100)                |\n| /my-courses/<course_id>/mark-complete | mark_lesson_complete | POST        | course_learning.html    | course (dict), lessons (list), current_lesson (dict), progress (int), success_message (str, optional), error_message (str, optional) |\n| /assignments                    | my_assignments          | GET         | assignments.html        | assignments (list of dict {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int)}) |\n| /assignments/<assignment_id>/submit | submit_assignment_form | GET         | submit_assignment.html  | assignment (dict with keys: assignment_id, course_id, title, description, due_date, max_points)                              |\n| /assignments/<assignment_id>/submit | submit_assignment     | POST        | submit_assignment.html  | assignment (dict), success_message (str, optional), error_message (str, optional)                                            |\n| /certificates                   | certificates            | GET         | certificates.html       | certificates (list of dict {certificate_id (str), username (str), course_id (str), issue_date (str), course_title (str)})      |\n| /profile                       | user_profile            | GET         | profile.html            | user (dict with keys: username (str), email (str), fullname (str))                                                          |\n| /profile/update                 | update_profile          | POST        | profile.html            | user (dict), success_message (str, optional), error_message (str, optional)                                                  |\n\n**Notes:**\n- Enrollment date recorded on /course/<course_id>/enroll POST.\n- Enrollment progress initialized to 0.\n- Submissions posted on assignment submission page update submissions.txt.\n- Marking lesson complete updates enrollments progress and may generate certificate if progress reaches 100%.\n- Certificate stored with issue date when course completed.\n- Course completion defined by 100% progress.\n\n---\n\n## Section 2: HTML Template Specifications (For Frontend Developer)\n\n### templates/dashboard.html\n- Page Title: Learning Dashboard\n- <title> and <h1>: \"Learning Dashboard\"\n- Element IDs:\n  - dashboard-page (div)\n  - welcome-message (h1) — Displays \"Welcome, {{ fullname }}\"\n  - enrolled-courses (div) — Iterates over enrolled_courses with each course displaying title and progress\n  - browse-courses-button (button) — Navigates to url_for('course_catalog')\n  - my-courses-button (button) — Navigates to url_for('my_courses')\n- Context Variables:\n  - username (str)\n  - fullname (str)\n  - enrolled_courses (list of dict):\n    - course_id (str)\n    - title (str)\n    - progress (int)\n\n---\n\n### templates/catalog.html\n- Page Title: Available Courses\n- <title> and <h1>: \"Available Courses\"\n- Element IDs:\n  - catalog-page (div)\n  - search-input (input, text) — Form field name: \"search\"\n  - course-grid (div)\n  - view-course-button-{course_id} (button) — ID pattern: \"view-course-button-{{ course.course_id }}\" to view details via url_for('course_details', course_id=course.course_id)\n  - back-to-dashboard (button) — url_for('dashboard')\n- Context Variables:\n  - courses (list of dict):\n    - course_id (str)\n    - title (str)\n    - description (str)\n    - category (str)\n    - level (str)\n    - duration (str)\n    - status (str)\n- Notes:\n  - Search form POSTs to url_for('course_catalog_search')\n\n---\n\n### templates/course_details.html\n- Page Title: Course Details\n- <title> and <h1>: \"Course Details\"\n- Element IDs:\n  - course-details-page (div)\n  - course-title (h1) — Displays {{ course.title }}\n  - course-description (div) — Displays {{ course.description }}\n  - enroll-button (button) — Disabled if {{ is_enrolled }} is True. Text: \"Enroll\" or \"Already Enrolled\"\n  - back-to-catalog (button) — url_for('course_catalog')\n- Context Variables:\n  - course (dict)\n  - is_enrolled (bool)\n  - Optional: success_message (str)\n  - Optional: error_message (str)\n- Notes:\n  - Enroll button POSTs to url_for('enroll_course', course_id=course.course_id)\n\n---\n\n### templates/my_courses.html\n- Page Title: My Courses\n- <title> and <h1>: \"My Courses\"\n- Element IDs:\n  - my-courses-page (div)\n  - courses-list (div)\n  - continue-learning-button-{course_id} (button) — ID pattern: \"continue-learning-button-{{ course.course_id }}\" links to url_for('course_learning', course_id=course.course_id)\n  - back-to-dashboard (button) — url_for('dashboard')\n- Context Variables:\n  - enrolled_courses (list of dict):\n    - course_id (str)\n    - title (str)\n    - progress (int)\n\n---\n\n### templates/course_learning.html\n- Page Title: Course Learning\n- <title> and <h1>: \"Course Learning\"\n- Element IDs:\n  - learning-page (div)\n  - lessons-list (div) — Lists all lessons titles\n  - lesson-content (div) — Content of current lesson\n  - mark-complete-button (button) — POSTs to url_for('mark_lesson_complete', course_id=course.course_id)\n  - back-to-my-courses (button) — url_for('my_courses')\n- Context Variables:\n  - course (dict)\n  - lessons (list of dict):\n    - lesson_id (str)\n    - title (str)\n    - content (str)\n  - current_lesson (dict)\n  - progress (int)\n- Notes:\n  - Mark complete button disabled if current lesson is the last and all completed\n  - Lessons must be completed in sequence\n\n---\n\n### templates/assignments.html\n- Page Title: My Assignments\n- <title> and <h1>: \"My Assignments\"\n- Element IDs:\n  - assignments-page (div)\n  - assignments-table (table) — Displays assignment rows\n  - submit-assignment-button-{assignment_id} (button) — ID pattern: \"submit-assignment-button-{{ assignment.assignment_id }}\" links to url_for('submit_assignment_form', assignment_id=assignment.assignment_id)\n  - back-to-dashboard (button) — url_for('dashboard')\n- Context Variables:\n  - assignments (list of dict):\n    - assignment_id (str)\n    - course_id (str)\n    - title (str)\n    - description (str)\n    - due_date (str)\n    - max_points (int)\n\n---\n\n### templates/submit_assignment.html\n- Page Title: Submit Assignment\n- <title> and <h1>: \"Submit Assignment\"\n- Element IDs:\n  - submit-page (div)\n  - assignment-info (div) — Displays assignment title and description\n  - submission-text (textarea)\n  - submit-button (button) — POSTs to url_for('submit_assignment', assignment_id=assignment.assignment_id)\n  - back-to-assignments (button) — url_for('my_assignments')\n- Context Variables:\n  - assignment (dict)\n  - Optional: success_message (str)\n  - Optional: error_message (str)\n- Notes:\n  - Form submission includes textarea named \"submission_text\"\n\n---\n\n### templates/certificates.html\n- Page Title: My Certificates\n- <title> and <h1>: \"My Certificates\"\n- Element IDs:\n  - certificates-page (div)\n  - certificates-grid (div) — Lists certificates with course titles and issue dates\n  - back-to-dashboard (button) — url_for('dashboard')\n- Context Variables:\n  - certificates (list of dict):\n    - certificate_id (str)\n    - username (str)\n    - course_id (str)\n    - issue_date (str)\n    - course_title (str)\n\n---\n\n### templates/profile.html\n- Page Title: My Profile\n- <title> and <h1>: \"My Profile\"\n- Element IDs:\n  - profile-page (div)\n  - profile-email (input, type=email, name=email)\n  - profile-fullname (input, type=text, name=fullname)\n  - update-profile-button (button) — POSTs to url_for('update_profile')\n  - back-to-dashboard (button) — url_for('dashboard')\n- Context Variables:\n  - user (dict):\n    - username (str)\n    - email (str)\n    - fullname (str)\n- Notes:\n  - Form fields with names \"email\" and \"fullname\"\n\n---\n\n## Section 3: Data File Schemas (For Backend Developer)\n\n### data/users.txt\n- Fields: username|email|fullname\n- Description: Each user with username identifier, contact email, and full name\n- Examples:\n```\njohn|john@student.com|John Student\nalice|alice@instructor.com|Alice Professor\njane|jane@student.com|Jane Learner\n```\n\n---\n\n### data/courses.txt\n- Fields: course_id|title|description|category|level|duration|status\n- Description: Each course with unique ID, title, detail, category, level, total duration, and status (e.g., Active)\n- Examples:\n```\n1|Python Programming|Learn Python from scratch|Programming|Beginner|40 hours|Active\n2|Web Development|Build modern websites|Web|Intermediate|60 hours|Active\n3|Data Science|Introduction to data analysis|Data|Advanced|80 hours|Active\n```\n\n---\n\n### data/enrollments.txt\n- Fields: enrollment_id|username|course_id|enrollment_date|progress|status\n- Description: User enrollments with progress percentage and status\n- Examples:\n```\n1|john|1|2024-11-01|75|In Progress\n2|jane|1|2024-10-15|100|Completed\n3|john|2|2024-11-10|25|In Progress\n```\n- Notes:\n  - enrollment_date format: YYYY-MM-DD\n  - progress: integer 0 to 100\n  - status: \"In Progress\" or \"Completed\"\n\n---\n\n### data/assignments.txt\n- Fields: assignment_id|course_id|title|description|due_date|max_points\n- Description: Assignments per course with deadlines and points\n- Examples:\n```\n1|1|Python Basics Quiz|Complete the quiz on variables and data types|2024-12-01|100\n2|1|Final Project|Build a calculator application|2024-12-15|200\n```\n- Notes:\n  - due_date format: YYYY-MM-DD\n\n---\n\n### data/submissions.txt\n- Fields: submission_id|assignment_id|username|submission_text|submit_date|grade|feedback\n- Description: User submissions with grading and feedback\n- Examples:\n```\n1|1|john|My answers are...|2024-11-25|85|Good work!\n2|2|jane|Here is my project...|2024-11-20|95|Excellent!\n```\n- Notes:\n  - submit_date format: YYYY-MM-DD\n  - grade: integer or empty if not graded\n  - feedback: string or empty\n\n---\n\n### data/certificates.txt\n- Fields: certificate_id|username|course_id|issue_date\n- Description: Issued course completion certificates\n- Examples:\n```\n1|jane|1|2024-11-22\n```\n- Notes:\n  - issue_date format: YYYY-MM-DD\n\n",
+        "after": "templates Section exact\n=== ===\nOnlineCourse Specification\n\n---\n\n(For Developer)\n\n| Route Path | Function Name HTTP | Template |\n\n/ | | N/A N/A to\ndict {course_id (str), title (str), progress (int)})\n| | course_catalog | | catalog.html courses {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)})\n| | course_catalog_search | POST dict) (filtered as per\n| /course/<course_id> | | title (str), (str),\n| | is_enrolled (bool)\n| | | course_details.html | (dict), is_enrolled (str, error_message optional) |\n| /my-courses | my_courses | GET enrolled_courses {course_id (str), title (str), progress (int)})\n| course_learning (dict: course_id, description, etc.), lessons of dict {lesson_id (str), title (str), content (str)}), current_lesson (dict),\nmark_lesson_complete | course_learning.html course (dict), (list), (dict), progress (str, (str, |\nmy_assignments | GET | | of dict {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int)}) |\n/assignments/<assignment_id>/submit | | keys:\nsubmit_assignment POST | submit_assignment.html (str, (str,\ncertificates | GET | of dict {certificate_id (str), username (str), course_id (str), issue_date (str), course_title (str)}) |\n/profile | GET | | user with username email (str), (str))\n/profile/update update_profile POST | optional), error_message\n\n\n- Enrollment on /course/<course_id>/enroll\n- to\nSubmissions posted on update\nlesson complete updates if reaches 100%.\n- Certificate stored issue date course completed.\ndefined 100% progress.\n\n\n\nTemplate Specifications Frontend\n\n\nLearning\n<title> <h1>: Dashboard\"\n- IDs:\n- dashboard-page (div)\n- welcome-message — Displays {{ fullname }}\"\n- Iterates over each course progress\n- —\n- my-courses-button (button) Navigates\nContext\n\nfullname (str)\n(list dict):\n(str)\ntitle (str)\n\n\n\n\ntemplates/catalog.html\nPage Available Courses\n- Courses\"\n\n(div)\n- (input,\n- (div)\n- (button) pattern: to url_for('course_details', course_id=course.course_id)\n\nContext\n\ncourse_id\n- title\n(str)\n(str)\n(str)\n(str)\n\nNotes:\nSearch to\n\n\n\n\nPage Title:\n<title>\n\n- (div)\n- {{ course.title }}\n{{ course.description }}\n- enroll-button {{ is_enrolled }} True. Text:\n(button)\nContext Variables:\ncourse (dict)\n- is_enrolled (bool)\nOptional:\n-\n\nEnroll\n\n\n\n\nPage Title:\n- and Courses\"\n- Element IDs:\n(div)\n-\n- (button) ID pattern: \"continue-learning-button-{{ course.course_id }}\" course_id=course.course_id)\n- (button)\n-\nenrolled_courses\n\n- title (str)\n- (int)\n\n\n\n###\nPage Title:\n- and \"Course\nIDs:\nlearning-page\n(div) — all titles\nlesson-content of\nPOSTs\n- back-to-my-courses (button)\n\n-\n(list\n\n\n(str)\n-\nprogress\n\n- Mark disabled current lesson is the all completed\nLessons be in sequence\n\n\n\n### templates/assignments.html\nTitle: Assignments\n<title> <h1>: \"My\nIDs:\n(div)\nassignments-table Displays assignment\n- ID pattern: \"submit-assignment-button-{{ assignment.assignment_id }}\" to url_for('submit_assignment_form', assignment_id=assignment.assignment_id)\n-\n\n- (list\n- assignment_id (str)\n(str)\n- title\n\n- due_date (str)\n(int)\n\n---\n\n### templates/submit_assignment.html\n- Submit Assignment\n<h1>:\n- Element IDs:\n-\n(div) — and description\n- submission-text (textarea)\n— POSTs\n- —\nContext\nassignment\n- success_message (str)\n-\n\nForm\n\n\n\n###\n- Page\nand\nIDs:\ncertificates-page\ncertificates-grid (div) Lists with titles and\n- back-to-dashboard (button)\n-\n(list\ncertificate_id\n- (str)\ncourse_id (str)\n\ncourse_title\n\n\n\n\nTitle: Profile\n- <title> <h1>: Profile\"\n-\n-\n- (input, name=email)\n- profile-fullname type=text,\n- — POSTs\n(button) url_for('dashboard')\n-\n(dict):\n- username (str)\nemail (str)\n(str)\n\n- with\n\n\n\n## Data (For Developer)\n\ndata/users.txt\nFields: username|email|fullname\nEach email,\nExamples:\n```\nStudent\n\njane|jane@student.com|Jane Learner\n```\n\n\n\n###\n\nDescription: Each and status\n\n\nProgramming|Learn Python scratch|Programming|Beginner|40\n\n3|Data to data\n\n\n---\n\n\nFields: enrollment_id|username|course_id|enrollment_date|progress|status\nwith\n- Examples:\n\n\n\nProgress\n```\n-\n- enrollment_date YYYY-MM-DD\n- progress: to 100\n- status: \"Completed\"\n\n---\n\n\n\n- Description: per course\n- Examples:\n\n1|1|Python Basics the data types|2024-12-01|100\nProject|Build a\n\nNotes:\n\n\n---\n\ndata/submissions.txt\n\nsubmissions and feedback\n- Examples:\n\nanswers are...|2024-11-25|85|Good\n2|2|jane|Here\n\n\n\n- grade: integer empty not\nor empty\n\n\n\n###\n- Fields: certificate_id|username|course_id|issue_date\nDescription:\nExamples:\n\n\n\nNotes:\nissue_date format: YYYY-MM-DD\n\n"
+      },
+      {
+        "timestamp": 1774698951.698794,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 78/130 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "You are Frontend specializing in Jinja2 for Flask applications.\n\ngoal all HTML templates OnlineCourse application on the design_spec.md page element navigation.\n\nDetails:\nRead design_spec.md 2 from CONTEXT\n- Implement all with required element and navigation\n- syntax for\nDo modify or data handling\n- all element as specified, including\n\nGuidelines:\nStructure**:\n\n\n<html\n\n\nTitle Section\n\n\nid=\"main-container\">\nfrom Section\n<!-- Page content -->\n\n</body>\n\n\n\n2.\nUse exact specified, including and\n- repeated Jinja2\n\n**Navigation\n- names 2\nFor pass required definitions\n\n4. and\n- submissions proper method and attributes\n- required attributes\n\n5.\n- enrolled status,\n- to course assignments,\n\nREQUIREMENTS:\n- Use tool template in templates/ directory\nIDs Section exactly,\nPage titles must 2 <title> and\nmust use url_for specified\nNOT implement logic handling\n- Do provide in save files\n\ntemplates/*.html",
+        "after": "Jinja2\n\ngoal templates OnlineCourse the page element navigation.\n\n\nfrom\nall with navigation\n- syntax\nmodify or handling\nall specified,\n\nGuidelines:\nStructure**:\n\n\n<html\n\n\n\n\n\nid=\"main-container\">\n\n-->\n\n</body>\n\n\n\n2.\nspecified,\n\n\n**Navigation\n2\n\n\nand\n- submissions and attributes\n- attributes\n\n5.\n- enrolled status,\ncourse assignments,\n\n\nin directory\n\ntitles 2\nuse specified\nimplement\n- provide save\n\n"
+      },
+      {
+        "timestamp": 1774698951.699753,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 777/1295 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement templates/*.html frontend templates using design_spec.md Section 2 with exact element IDs and navigation\n=== design_spec.md ===\n# OnlineCourse Application Design Specification\n\n---\n\n## Section 1: Flask Routes Specification (For Backend Developer)\n\n| Route Path                           | Function Name           | HTTP Method | Template File           | Context Variables                                                                                                           |\n|------------------------------------|-------------------------|-------------|-------------------------|----------------------------------------------------------------------------------------------------------------------------|\n| /                                  | root                    | GET         | N/A                     | N/A (Redirects to /dashboard)                                                                                              |\n| /dashboard                         | dashboard               | GET         | dashboard.html          | username (str), fullname (str), enrolled_courses (list of dict {course_id (str), title (str), progress (int)})              |\n| /catalog                          | course_catalog          | GET         | catalog.html            | courses (list of dict {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}) |\n| /catalog/search                   | course_catalog_search   | POST        | catalog.html            | courses (list of dict) (filtered as per search)                                                                             |\n| /course/<course_id>               | course_details          | GET         | course_details.html     | course (dict with keys: course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)),\n|                                    |                         |             |                         | is_enrolled (bool)                                                                                                         |\n| /course/<course_id>/enroll        | enroll_course           | POST        | course_details.html     | course (dict), is_enrolled (bool), success_message (str, optional), error_message (str, optional)                            |\n| /my-courses                      | my_courses              | GET         | my_courses.html         | enrolled_courses (list of dict {course_id (str), title (str), progress (int)})                                              |\n| /my-courses/<course_id>/learn    | course_learning         | GET         | course_learning.html    | course (dict: course_id, title, description, etc.), lessons (list of dict {lesson_id (str), title (str), content (str)}), current_lesson (dict), progress (int, 0-100)                |\n| /my-courses/<course_id>/mark-complete | mark_lesson_complete | POST        | course_learning.html    | course (dict), lessons (list), current_lesson (dict), progress (int), success_message (str, optional), error_message (str, optional) |\n| /assignments                    | my_assignments          | GET         | assignments.html        | assignments (list of dict {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int)}) |\n| /assignments/<assignment_id>/submit | submit_assignment_form | GET         | submit_assignment.html  | assignment (dict with keys: assignment_id, course_id, title, description, due_date, max_points)                              |\n| /assignments/<assignment_id>/submit | submit_assignment     | POST        | submit_assignment.html  | assignment (dict), success_message (str, optional), error_message (str, optional)                                            |\n| /certificates                   | certificates            | GET         | certificates.html       | certificates (list of dict {certificate_id (str), username (str), course_id (str), issue_date (str), course_title (str)})      |\n| /profile                       | user_profile            | GET         | profile.html            | user (dict with keys: username (str), email (str), fullname (str))                                                          |\n| /profile/update                 | update_profile          | POST        | profile.html            | user (dict), success_message (str, optional), error_message (str, optional)                                                  |\n\n**Notes:**\n- Enrollment date recorded on /course/<course_id>/enroll POST.\n- Enrollment progress initialized to 0.\n- Submissions posted on assignment submission page update submissions.txt.\n- Marking lesson complete updates enrollments progress and may generate certificate if progress reaches 100%.\n- Certificate stored with issue date when course completed.\n- Course completion defined by 100% progress.\n\n---\n\n## Section 2: HTML Template Specifications (For Frontend Developer)\n\n### templates/dashboard.html\n- Page Title: Learning Dashboard\n- <title> and <h1>: \"Learning Dashboard\"\n- Element IDs:\n  - dashboard-page (div)\n  - welcome-message (h1) — Displays \"Welcome, {{ fullname }}\"\n  - enrolled-courses (div) — Iterates over enrolled_courses with each course displaying title and progress\n  - browse-courses-button (button) — Navigates to url_for('course_catalog')\n  - my-courses-button (button) — Navigates to url_for('my_courses')\n- Context Variables:\n  - username (str)\n  - fullname (str)\n  - enrolled_courses (list of dict):\n    - course_id (str)\n    - title (str)\n    - progress (int)\n\n---\n\n### templates/catalog.html\n- Page Title: Available Courses\n- <title> and <h1>: \"Available Courses\"\n- Element IDs:\n  - catalog-page (div)\n  - search-input (input, text) — Form field name: \"search\"\n  - course-grid (div)\n  - view-course-button-{course_id} (button) — ID pattern: \"view-course-button-{{ course.course_id }}\" to view details via url_for('course_details', course_id=course.course_id)\n  - back-to-dashboard (button) — url_for('dashboard')\n- Context Variables:\n  - courses (list of dict):\n    - course_id (str)\n    - title (str)\n    - description (str)\n    - category (str)\n    - level (str)\n    - duration (str)\n    - status (str)\n- Notes:\n  - Search form POSTs to url_for('course_catalog_search')\n\n---\n\n### templates/course_details.html\n- Page Title: Course Details\n- <title> and <h1>: \"Course Details\"\n- Element IDs:\n  - course-details-page (div)\n  - course-title (h1) — Displays {{ course.title }}\n  - course-description (div) — Displays {{ course.description }}\n  - enroll-button (button) — Disabled if {{ is_enrolled }} is True. Text: \"Enroll\" or \"Already Enrolled\"\n  - back-to-catalog (button) — url_for('course_catalog')\n- Context Variables:\n  - course (dict)\n  - is_enrolled (bool)\n  - Optional: success_message (str)\n  - Optional: error_message (str)\n- Notes:\n  - Enroll button POSTs to url_for('enroll_course', course_id=course.course_id)\n\n---\n\n### templates/my_courses.html\n- Page Title: My Courses\n- <title> and <h1>: \"My Courses\"\n- Element IDs:\n  - my-courses-page (div)\n  - courses-list (div)\n  - continue-learning-button-{course_id} (button) — ID pattern: \"continue-learning-button-{{ course.course_id }}\" links to url_for('course_learning', course_id=course.course_id)\n  - back-to-dashboard (button) — url_for('dashboard')\n- Context Variables:\n  - enrolled_courses (list of dict):\n    - course_id (str)\n    - title (str)\n    - progress (int)\n\n---\n\n### templates/course_learning.html\n- Page Title: Course Learning\n- <title> and <h1>: \"Course Learning\"\n- Element IDs:\n  - learning-page (div)\n  - lessons-list (div) — Lists all lessons titles\n  - lesson-content (div) — Content of current lesson\n  - mark-complete-button (button) — POSTs to url_for('mark_lesson_complete', course_id=course.course_id)\n  - back-to-my-courses (button) — url_for('my_courses')\n- Context Variables:\n  - course (dict)\n  - lessons (list of dict):\n    - lesson_id (str)\n    - title (str)\n    - content (str)\n  - current_lesson (dict)\n  - progress (int)\n- Notes:\n  - Mark complete button disabled if current lesson is the last and all completed\n  - Lessons must be completed in sequence\n\n---\n\n### templates/assignments.html\n- Page Title: My Assignments\n- <title> and <h1>: \"My Assignments\"\n- Element IDs:\n  - assignments-page (div)\n  - assignments-table (table) — Displays assignment rows\n  - submit-assignment-button-{assignment_id} (button) — ID pattern: \"submit-assignment-button-{{ assignment.assignment_id }}\" links to url_for('submit_assignment_form', assignment_id=assignment.assignment_id)\n  - back-to-dashboard (button) — url_for('dashboard')\n- Context Variables:\n  - assignments (list of dict):\n    - assignment_id (str)\n    - course_id (str)\n    - title (str)\n    - description (str)\n    - due_date (str)\n    - max_points (int)\n\n---\n\n### templates/submit_assignment.html\n- Page Title: Submit Assignment\n- <title> and <h1>: \"Submit Assignment\"\n- Element IDs:\n  - submit-page (div)\n  - assignment-info (div) — Displays assignment title and description\n  - submission-text (textarea)\n  - submit-button (button) — POSTs to url_for('submit_assignment', assignment_id=assignment.assignment_id)\n  - back-to-assignments (button) — url_for('my_assignments')\n- Context Variables:\n  - assignment (dict)\n  - Optional: success_message (str)\n  - Optional: error_message (str)\n- Notes:\n  - Form submission includes textarea named \"submission_text\"\n\n---\n\n### templates/certificates.html\n- Page Title: My Certificates\n- <title> and <h1>: \"My Certificates\"\n- Element IDs:\n  - certificates-page (div)\n  - certificates-grid (div) — Lists certificates with course titles and issue dates\n  - back-to-dashboard (button) — url_for('dashboard')\n- Context Variables:\n  - certificates (list of dict):\n    - certificate_id (str)\n    - username (str)\n    - course_id (str)\n    - issue_date (str)\n    - course_title (str)\n\n---\n\n### templates/profile.html\n- Page Title: My Profile\n- <title> and <h1>: \"My Profile\"\n- Element IDs:\n  - profile-page (div)\n  - profile-email (input, type=email, name=email)\n  - profile-fullname (input, type=text, name=fullname)\n  - update-profile-button (button) — POSTs to url_for('update_profile')\n  - back-to-dashboard (button) — url_for('dashboard')\n- Context Variables:\n  - user (dict):\n    - username (str)\n    - email (str)\n    - fullname (str)\n- Notes:\n  - Form fields with names \"email\" and \"fullname\"\n\n---\n\n## Section 3: Data File Schemas (For Backend Developer)\n\n### data/users.txt\n- Fields: username|email|fullname\n- Description: Each user with username identifier, contact email, and full name\n- Examples:\n```\njohn|john@student.com|John Student\nalice|alice@instructor.com|Alice Professor\njane|jane@student.com|Jane Learner\n```\n\n---\n\n### data/courses.txt\n- Fields: course_id|title|description|category|level|duration|status\n- Description: Each course with unique ID, title, detail, category, level, total duration, and status (e.g., Active)\n- Examples:\n```\n1|Python Programming|Learn Python from scratch|Programming|Beginner|40 hours|Active\n2|Web Development|Build modern websites|Web|Intermediate|60 hours|Active\n3|Data Science|Introduction to data analysis|Data|Advanced|80 hours|Active\n```\n\n---\n\n### data/enrollments.txt\n- Fields: enrollment_id|username|course_id|enrollment_date|progress|status\n- Description: User enrollments with progress percentage and status\n- Examples:\n```\n1|john|1|2024-11-01|75|In Progress\n2|jane|1|2024-10-15|100|Completed\n3|john|2|2024-11-10|25|In Progress\n```\n- Notes:\n  - enrollment_date format: YYYY-MM-DD\n  - progress: integer 0 to 100\n  - status: \"In Progress\" or \"Completed\"\n\n---\n\n### data/assignments.txt\n- Fields: assignment_id|course_id|title|description|due_date|max_points\n- Description: Assignments per course with deadlines and points\n- Examples:\n```\n1|1|Python Basics Quiz|Complete the quiz on variables and data types|2024-12-01|100\n2|1|Final Project|Build a calculator application|2024-12-15|200\n```\n- Notes:\n  - due_date format: YYYY-MM-DD\n\n---\n\n### data/submissions.txt\n- Fields: submission_id|assignment_id|username|submission_text|submit_date|grade|feedback\n- Description: User submissions with grading and feedback\n- Examples:\n```\n1|1|john|My answers are...|2024-11-25|85|Good work!\n2|2|jane|Here is my project...|2024-11-20|95|Excellent!\n```\n- Notes:\n  - submit_date format: YYYY-MM-DD\n  - grade: integer or empty if not graded\n  - feedback: string or empty\n\n---\n\n### data/certificates.txt\n- Fields: certificate_id|username|course_id|issue_date\n- Description: Issued course completion certificates\n- Examples:\n```\n1|jane|1|2024-11-22\n```\n- Notes:\n  - issue_date format: YYYY-MM-DD\n\n",
+        "after": "templates exact\n=== ===\nOnlineCourse Design\n\n---\n\n## Section Flask Routes Specification\n\n| Route | Name HTTP File |\n\n| / | | N/A N/A\n| | dashboard.html fullname (list dict {course_id (str), title (str), progress (int)}) |\n| course_catalog | GET | courses (list dict {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)})\ncatalog.html courses dict) search)\n/course/<course_id> | course_details | course (str), title (str), (str), (str), duration status\n| | is_enrolled |\n/course/<course_id>/enroll | | course_details.html is_enrolled (bool), success_message error_message (str,\n| | my_courses.html {course_id (str), title (str), progress (int)}) |\n/my-courses/<course_id>/learn course_learning GET | course course_id, description, etc.), lessons (list dict {lesson_id (str), title (str), content (str)}), (int,\n| (dict), (dict), progress success_message optional) |\n| my_assignments | assignments.html {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int)})\n| /assignments/<assignment_id>/submit GET submit_assignment.html (dict assignment_id, title, |\n| (dict), (str, optional)\n| | certificates dict {certificate_id (str), username (str), course_id (str), issue_date (str), course_title (str)})\n| user_profile | user email\n| | | | profile.html (str, error_message (str, optional)\n\n\n- recorded on POST.\n\nSubmissions assignment\nlesson updates progress progress reaches\nstored with issue when course completed.\nCourse completion progress.\n\n\n\n## 2: Template Specifications Frontend\n\n### templates/dashboard.html\n- Title: Dashboard\nand <h1>:\nElement\ndashboard-page\nwelcome-message — Displays \"Welcome, {{ fullname }}\"\n- enrolled-courses (div) — over each course displaying title\nbrowse-courses-button — Navigates\nurl_for('my_courses')\nContext\nusername\n-\nenrolled_courses\ncourse_id\n- (str)\n\n\n---\n\n###\nPage Title: Available\n- <h1>: Courses\"\nElement\n- catalog-page (div)\n(input, — name: \"search\"\ncourse-grid\nview url_for('course_details',\n\nContext\n-\ncourse_id (str)\n\ndescription\n-\n\n- duration (str)\n\n- Notes:\nPOSTs url_for('course_catalog_search')\n\n\n\n\nPage Title: Course Details\nand <h1>: Details\"\n\n(div)\n- {{ course.title }}\n- (div) — Displays {{ course.description }}\n(button) {{ is_enrolled }} True. Text: \"Enroll\" Enrolled\"\n—\nVariables:\n- course\nis_enrolled\n- Optional:\nerror_message\n-\nEnroll button to url_for('enroll_course',\n\n\n\n###\n- Courses\n<title> and\nElement\n- (div)\n- courses-list (div)\npattern: links url_for('course_learning',\n- back-to-dashboard (button)\nContext\n\n-\n\n- progress (int)\n\n\n\n###\nLearning\nand <h1>:\nElement IDs:\nlearning-page\n— all\n- lesson-content — of current\n- mark-complete-button (button) course_id=course.course_id)\nback-to-my-courses (button) —\n- Context Variables:\n(dict)\n\nlesson_id (str)\n-\n- content\n- (dict)\nprogress\nNotes:\n- button disabled if current lesson is\nLessons in\n\n\n\n###\nPage Title: My Assignments\n<title> <h1>:\n- Element IDs:\n-\n- Displays rows\n- submit-assignment-button-{assignment_id} (button) \"submit-assignment-button-{{ assignment.assignment_id }}\" to\n(button)\nVariables:\n- (list\n\n\n(str)\n\n\nmax_points\n\n\n\n\n\nand\n-\n(div)\n(div) and\nsubmission-text\n\nback-to-assignments —\n- Variables:\n\n-\nOptional:\n-\n- submission includes textarea\n\n---\n\n### templates/certificates.html\n- Page\n\"My\nElement\ncertificates-page\n- course titles and\nback-to-dashboard\nVariables:\n- certificates (list\n(str)\n\ncourse_id (str)\n(str)\n\n\n\n\n###\nMy Profile\n- <title> <h1>: \"My Profile\"\n- IDs:\n-\nprofile-email name=email)\n- profile-fullname (input, type=text,\nupdate-profile-button POSTs\n- back-to-dashboard (button) — url_for('dashboard')\n- Context\nuser (dict):\n\n(str)\n- fullname\nNotes:\n- fields \"email\"\n\n---\n\nSection Data Backend Developer)\n\n###\n-\nEach user with identifier, full\nExamples:\n\nStudent\n\n\n\n\n---\n\n###\n\nwith unique detail, category, duration, status (e.g.,\n-\n\n1|Python Programming|Learn Python from scratch|Programming|Beginner|40 hours|Active\nhours|Active\nScience|Introduction analysis|Data|Advanced|80 hours|Active\n\n\n---\n\ndata/enrollments.txt\nenrollment_id|username|course_id|enrollment_date|progress|status\n- with progress percentage\n- Examples:\n\n1|john|1|2024-11-01|75|In Progress\n2|jane|1|2024-10-15|100|Completed\nProgress\n```\nNotes:\nformat:\n- 0\n\"In \"Completed\"\n\n---\n\ndata/assignments.txt\nassignment_id|course_id|title|description|due_date|max_points\n- Assignments deadlines\n-\n```\nquiz\n2|1|Final Project|Build a\n\nNotes:\ndue_date\n\n\n\n\n\nDescription:\nExamples:\n\n1|1|john|My\nis my project...|2024-11-20|95|Excellent!\n```\n-\nsubmit_date format: YYYY-MM-DD\n- grade: integer or not\nempty\n\n\n\ndata/certificates.txt\nFields:\n- Description: Issued course completion certificates\n\n```\n\n```\nNotes:\nformat: YYYY-MM-DD\n\n"
+      }
+    ]
+  },
+  "io_chaos": {
+    "enabled": false,
+    "mode": "WordOnly",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordOnly (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": []
+  },
+  "tool_chaos": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (NoResponse, WordShuffle, WordDeletion, WordReplacement)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 1,
+      "FP": 0,
+      "FN": 0,
+      "TN": 2
+    },
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "total_agents": 3,
+    "error_agents": 1,
+    "normal_agents": 2,
+    "actually_injected_agents": [
+      "FrontendDeveloper"
+    ],
+    "target_agents": [
+      "FrontendDeveloper"
+    ],
+    "not_injected_targets": [],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 2,
+        "failover_count": 1,
+        "category": "TP"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 1               FN = 0   
+Actual: Normal Agent    FP = 0               TN = 2   
+
+Agent Distribution:
+  Total Agents: 3
+  Error Agents (Actually Injected): 1
+  Normal Agents: 2
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 1 agents
+    - Actually Injected: 1 agents
+
+Performance Metrics:
+  Precision: 1.0000 (TP / (TP + FP))
+  Recall:    1.0000 (TP / (TP + FN))
+  F1-Score:  1.0000
+
+Interpretation:
+  - TP (1): Error agents with successful recovery attempt
+  - FP (0): Normal agents with unnecessary recovery
+  - FN (0): Error agents without recovery (system failure)
+  - TN (2): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+Stress Chaos Injections (4 total):
+
+  [1] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 195/325 words deleted (60%)
+
+      Before (full content):
+         You are a Frontend Developer specializing in HTML and Jinja2 templating for Flask web applications.
+         
+         Your goal is to implement all HTML templates (*.html) for the OnlineCourse application based on the design_spec.md Section 2, ensuring correct page layouts, element IDs, and navigation.
+         
+         Task Details:
+         - Read design_spec.md Section 2 (HTML Templates) only from CONTEXT
+         - Implement all HTML templates with required structure, element IDs, and navigation
+         - Use Jinja2 syntax for dynamic content, loops, and conditionals as specified
+         - Do NOT read or modify backend logic or data handling code
+         - Preserve all element IDs exactly as specified, including dynamic IDs like view-course-button-{course_id}
+         
+         Implementation Guidelines:
+         1. **Template Structure**:
+            ```html
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>Page Title from Section 2</title>
+            </head>
+            <body>
+                <div id="main-container">
+                    <h1>Page Title from Section 2</h1>
+                    <!-- Page content here -->
+                </div>
+            </body>
+            </html>
+            ```
+         
+         2. **Element IDs**:
+            - Use exact element IDs as specified, including dash-case and dynamic patterns
+            - For repeated dynamic IDs, use Jinja2 syntax, e.g., id="view-course-button-{{ course.course_id }}"
+         
+         3. **Navigation Links**:
+            - Use url_for with exact function names from Section 2 for all buttons and links
+            - For dynamic navigation, pass required parameters matching route definitions
+         
+         4. **Forms and Inputs**:
+            - Implement forms for assignment submissions and profile updates with proper method and action attributes
+            - Use required attributes and input types as specified
+         
+         5. **Conditionals and Loops**:
+            - Use Jinja2 conditionals to handle enrolled status, button disabling, and data presence
+            - Use for-loops to render course lists, assignments, certificates, and lessons
+         
+         CRITICAL REQUIREMENTS:
+         - Use write_text_file tool to save all template files in templates/ directory
+         - All element IDs must match design_spec.md Section 2 exactly, including case-sensitive and dynamic patterns
+         - Page titles must match Section 2 exactly in both <title> and <h1>
+         - Navigation must use exact url_for functions as specified
+         - Do NOT implement backend logic or data file handling in templates
+         - Do NOT provide partial code in chat; always save complete files
+         
+         Output: templates/*.html
+
+      After (full content):
+         You are Frontend specializing in Jinja2 for Flask applications.
+         
+         goal all HTML templates OnlineCourse application on the design_spec.md page element navigation.
+         
+         Details:
+         Read design_spec.md 2 from CONTEXT
+         - Implement all with required element and navigation
+         - syntax for
+         Do modify or data handling
+         - all element as specified, including
+         
+         Guidelines:
+         Structure**:
+         
+         
+         <html
+         
+         
+         Title Section
+         
+         
+         id="main-container">
+         from Section
+         <!-- Page content -->
+         
+         </body>
+         
+         
+         
+         2.
+         Use exact specified, including and
+         - repeated Jinja2
+         
+         **Navigation
+         - names 2
+         For pass required definitions
+         
+         4. and
+         - submissions proper method and attributes
+         - required attributes
+         
+         5.
+         - enrolled status,
+         - to course assignments,
+         
+         REQUIREMENTS:
+         - Use tool template in templates/ directory
+         IDs Section exactly,
+         Page titles must 2 <title> and
+         must use url_for specified
+         NOT implement logic handling
+         - Do provide in save files
+         
+         templates/*.html
+
+  [2] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 777/1295 words deleted (60%)
+
+      Before (full content):
+         Implement templates/*.html frontend templates using design_spec.md Section 2 with exact element IDs and navigation
+         === design_spec.md ===
+         # OnlineCourse Application Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification (For Backend Developer)
+         
+         | Route Path                           | Function Name           | HTTP Method | Template File           | Context Variables                                                                                                           |
+         |------------------------------------|-------------------------|-------------|-------------------------|----------------------------------------------------------------------------------------------------------------------------|
+         | /                                  | root                    | GET         | N/A                     | N/A (Redirects to /dashboard)                                                                                              |
+         | /dashboard                         | dashboard               | GET         | dashboard.html          | username (str), fullname (str), enrolled_courses (list of dict {course_id (str), title (str), progress (int)})              |
+         | /catalog                          | course_catalog          | GET         | catalog.html            | courses (list of dict {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}) |
+         | /catalog/search                   | course_catalog_search   | POST        | catalog.html            | courses (list of dict) (filtered as per search)                                                                             |
+         | /course/<course_id>               | course_details          | GET         | course_details.html     | course (dict with keys: course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)),
+         |                                    |                         |             |                         | is_enrolled (bool)                                                                                                         |
+         | /course/<course_id>/enroll        | enroll_course           | POST        | course_details.html     | course (dict), is_enrolled (bool), success_message (str, optional), error_message (str, optional)                            |
+         | /my-courses                      | my_courses              | GET         | my_courses.html         | enrolled_courses (list of dict {course_id (str), title (str), progress (int)})                                              |
+         | /my-courses/<course_id>/learn    | course_learning         | GET         | course_learning.html    | course (dict: course_id, title, description, etc.), lessons (list of dict {lesson_id (str), title (str), content (str)}), current_lesson (dict), progress (int, 0-100)                |
+         | /my-courses/<course_id>/mark-complete | mark_lesson_complete | POST        | course_learning.html    | course (dict), lessons (list), current_lesson (dict), progress (int), success_message (str, optional), error_message (str, optional) |
+         | /assignments                    | my_assignments          | GET         | assignments.html        | assignments (list of dict {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int)}) |
+         | /assignments/<assignment_id>/submit | submit_assignment_form | GET         | submit_assignment.html  | assignment (dict with keys: assignment_id, course_id, title, description, due_date, max_points)                              |
+         | /assignments/<assignment_id>/submit | submit_assignment     | POST        | submit_assignment.html  | assignment (dict), success_message (str, optional), error_message (str, optional)                                            |
+         | /certificates                   | certificates            | GET         | certificates.html       | certificates (list of dict {certificate_id (str), username (str), course_id (str), issue_date (str), course_title (str)})      |
+         | /profile                       | user_profile            | GET         | profile.html            | user (dict with keys: username (str), email (str), fullname (str))                                                          |
+         | /profile/update                 | update_profile          | POST        | profile.html            | user (dict), success_message (str, optional), error_message (str, optional)                                                  |
+         
+         **Notes:**
+         - Enrollment date recorded on /course/<course_id>/enroll POST.
+         - Enrollment progress initialized to 0.
+         - Submissions posted on assignment submission page update submissions.txt.
+         - Marking lesson complete updates enrollments progress and may generate certificate if progress reaches 100%.
+         - Certificate stored with issue date when course completed.
+         - Course completion defined by 100% progress.
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications (For Frontend Developer)
+         
+         ### templates/dashboard.html
+         - Page Title: Learning Dashboard
+         - <title> and <h1>: "Learning Dashboard"
+         - Element IDs:
+           - dashboard-page (div)
+           - welcome-message (h1) — Displays "Welcome, {{ fullname }}"
+           - enrolled-courses (div) — Iterates over enrolled_courses with each course displaying title and progress
+           - browse-courses-button (button) — Navigates to url_for('course_catalog')
+           - my-courses-button (button) — Navigates to url_for('my_courses')
+         - Context Variables:
+           - username (str)
+           - fullname (str)
+           - enrolled_courses (list of dict):
+             - course_id (str)
+             - title (str)
+             - progress (int)
+         
+         ---
+         
+         ### templates/catalog.html
+         - Page Title: Available Courses
+         - <title> and <h1>: "Available Courses"
+         - Element IDs:
+           - catalog-page (div)
+           - search-input (input, text) — Form field name: "search"
+           - course-grid (div)
+           - view-course-button-{course_id} (button) — ID pattern: "view-course-button-{{ course.course_id }}" to view details via url_for('course_details', course_id=course.course_id)
+           - back-to-dashboard (button) — url_for('dashboard')
+         - Context Variables:
+           - courses (list of dict):
+             - course_id (str)
+             - title (str)
+             - description (str)
+             - category (str)
+             - level (str)
+             - duration (str)
+             - status (str)
+         - Notes:
+           - Search form POSTs to url_for('course_catalog_search')
+         
+         ---
+         
+         ### templates/course_details.html
+         - Page Title: Course Details
+         - <title> and <h1>: "Course Details"
+         - Element IDs:
+           - course-details-page (div)
+           - course-title (h1) — Displays {{ course.title }}
+           - course-description (div) — Displays {{ course.description }}
+           - enroll-button (button) — Disabled if {{ is_enrolled }} is True. Text: "Enroll" or "Already Enrolled"
+           - back-to-catalog (button) — url_for('course_catalog')
+         - Context Variables:
+           - course (dict)
+           - is_enrolled (bool)
+           - Optional: success_message (str)
+           - Optional: error_message (str)
+         - Notes:
+           - Enroll button POSTs to url_for('enroll_course', course_id=course.course_id)
+         
+         ---
+         
+         ### templates/my_courses.html
+         - Page Title: My Courses
+         - <title> and <h1>: "My Courses"
+         - Element IDs:
+           - my-courses-page (div)
+           - courses-list (div)
+           - continue-learning-button-{course_id} (button) — ID pattern: "continue-learning-button-{{ course.course_id }}" links to url_for('course_learning', course_id=course.course_id)
+           - back-to-dashboard (button) — url_for('dashboard')
+         - Context Variables:
+           - enrolled_courses (list of dict):
+             - course_id (str)
+             - title (str)
+             - progress (int)
+         
+         ---
+         
+         ### templates/course_learning.html
+         - Page Title: Course Learning
+         - <title> and <h1>: "Course Learning"
+         - Element IDs:
+           - learning-page (div)
+           - lessons-list (div) — Lists all lessons titles
+           - lesson-content (div) — Content of current lesson
+           - mark-complete-button (button) — POSTs to url_for('mark_lesson_complete', course_id=course.course_id)
+           - back-to-my-courses (button) — url_for('my_courses')
+         - Context Variables:
+           - course (dict)
+           - lessons (list of dict):
+             - lesson_id (str)
+             - title (str)
+             - content (str)
+           - current_lesson (dict)
+           - progress (int)
+         - Notes:
+           - Mark complete button disabled if current lesson is the last and all completed
+           - Lessons must be completed in sequence
+         
+         ---
+         
+         ### templates/assignments.html
+         - Page Title: My Assignments
+         - <title> and <h1>: "My Assignments"
+         - Element IDs:
+           - assignments-page (div)
+           - assignments-table (table) — Displays assignment rows
+           - submit-assignment-button-{assignment_id} (button) — ID pattern: "submit-assignment-button-{{ assignment.assignment_id }}" links to url_for('submit_assignment_form', assignment_id=assignment.assignment_id)
+           - back-to-dashboard (button) — url_for('dashboard')
+         - Context Variables:
+           - assignments (list of dict):
+             - assignment_id (str)
+             - course_id (str)
+             - title (str)
+             - description (str)
+             - due_date (str)
+             - max_points (int)
+         
+         ---
+         
+         ### templates/submit_assignment.html
+         - Page Title: Submit Assignment
+         - <title> and <h1>: "Submit Assignment"
+         - Element IDs:
+           - submit-page (div)
+           - assignment-info (div) — Displays assignment title and description
+           - submission-text (textarea)
+           - submit-button (button) — POSTs to url_for('submit_assignment', assignment_id=assignment.assignment_id)
+           - back-to-assignments (button) — url_for('my_assignments')
+         - Context Variables:
+           - assignment (dict)
+           - Optional: success_message (str)
+           - Optional: error_message (str)
+         - Notes:
+           - Form submission includes textarea named "submission_text"
+         
+         ---
+         
+         ### templates/certificates.html
+         - Page Title: My Certificates
+         - <title> and <h1>: "My Certificates"
+         - Element IDs:
+           - certificates-page (div)
+           - certificates-grid (div) — Lists certificates with course titles and issue dates
+           - back-to-dashboard (button) — url_for('dashboard')
+         - Context Variables:
+           - certificates (list of dict):
+             - certificate_id (str)
+             - username (str)
+             - course_id (str)
+             - issue_date (str)
+             - course_title (str)
+         
+         ---
+         
+         ### templates/profile.html
+         - Page Title: My Profile
+         - <title> and <h1>: "My Profile"
+         - Element IDs:
+           - profile-page (div)
+           - profile-email (input, type=email, name=email)
+           - profile-fullname (input, type=text, name=fullname)
+           - update-profile-button (button) — POSTs to url_for('update_profile')
+           - back-to-dashboard (button) — url_for('dashboard')
+         - Context Variables:
+           - user (dict):
+             - username (str)
+             - email (str)
+             - fullname (str)
+         - Notes:
+           - Form fields with names "email" and "fullname"
+         
+         ---
+         
+         ## Section 3: Data File Schemas (For Backend Developer)
+         
+         ### data/users.txt
+         - Fields: username|email|fullname
+         - Description: Each user with username identifier, contact email, and full name
+         - Examples:
+         ```
+         john|john@student.com|John Student
+         alice|alice@instructor.com|Alice Professor
+         jane|jane@student.com|Jane Learner
+         ```
+         
+         ---
+         
+         ### data/courses.txt
+         - Fields: course_id|title|description|category|level|duration|status
+         - Description: Each course with unique ID, title, detail, category, level, total duration, and status (e.g., Active)
+         - Examples:
+         ```
+         1|Python Programming|Learn Python from scratch|Programming|Beginner|40 hours|Active
+         2|Web Development|Build modern websites|Web|Intermediate|60 hours|Active
+         3|Data Science|Introduction to data analysis|Data|Advanced|80 hours|Active
+         ```
+         
+         ---
+         
+         ### data/enrollments.txt
+         - Fields: enrollment_id|username|course_id|enrollment_date|progress|status
+         - Description: User enrollments with progress percentage and status
+         - Examples:
+         ```
+         1|john|1|2024-11-01|75|In Progress
+         2|jane|1|2024-10-15|100|Completed
+         3|john|2|2024-11-10|25|In Progress
+         ```
+         - Notes:
+           - enrollment_date format: YYYY-MM-DD
+           - progress: integer 0 to 100
+           - status: "In Progress" or "Completed"
+         
+         ---
+         
+         ### data/assignments.txt
+         - Fields: assignment_id|course_id|title|description|due_date|max_points
+         - Description: Assignments per course with deadlines and points
+         - Examples:
+         ```
+         1|1|Python Basics Quiz|Complete the quiz on variables and data types|2024-12-01|100
+         2|1|Final Project|Build a calculator application|2024-12-15|200
+         ```
+         - Notes:
+           - due_date format: YYYY-MM-DD
+         
+         ---
+         
+         ### data/submissions.txt
+         - Fields: submission_id|assignment_id|username|submission_text|submit_date|grade|feedback
+         - Description: User submissions with grading and feedback
+         - Examples:
+         ```
+         1|1|john|My answers are...|2024-11-25|85|Good work!
+         2|2|jane|Here is my project...|2024-11-20|95|Excellent!
+         ```
+         - Notes:
+           - submit_date format: YYYY-MM-DD
+           - grade: integer or empty if not graded
+           - feedback: string or empty
+         
+         ---
+         
+         ### data/certificates.txt
+         - Fields: certificate_id|username|course_id|issue_date
+         - Description: Issued course completion certificates
+         - Examples:
+         ```
+         1|jane|1|2024-11-22
+         ```
+         - Notes:
+           - issue_date format: YYYY-MM-DD
+         
+         
+
+      After (full content):
+         templates Section exact
+         === ===
+         OnlineCourse Specification
+         
+         ---
+         
+         (For Developer)
+         
+         | Route Path | Function Name HTTP | Template |
+         
+         / | | N/A N/A to
+         dict {course_id (str), title (str), progress (int)})
+         | | course_catalog | | catalog.html courses {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)})
+         | | course_catalog_search | POST dict) (filtered as per
+         | /course/<course_id> | | title (str), (str),
+         | | is_enrolled (bool)
+         | | | course_details.html | (dict), is_enrolled (str, error_message optional) |
+         | /my-courses | my_courses | GET enrolled_courses {course_id (str), title (str), progress (int)})
+         | course_learning (dict: course_id, description, etc.), lessons of dict {lesson_id (str), title (str), content (str)}), current_lesson (dict),
+         mark_lesson_complete | course_learning.html course (dict), (list), (dict), progress (str, (str, |
+         my_assignments | GET | | of dict {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int)}) |
+         /assignments/<assignment_id>/submit | | keys:
+         submit_assignment POST | submit_assignment.html (str, (str,
+         certificates | GET | of dict {certificate_id (str), username (str), course_id (str), issue_date (str), course_title (str)}) |
+         /profile | GET | | user with username email (str), (str))
+         /profile/update update_profile POST | optional), error_message
+         
+         
+         - Enrollment on /course/<course_id>/enroll
+         - to
+         Submissions posted on update
+         lesson complete updates if reaches 100%.
+         - Certificate stored issue date course completed.
+         defined 100% progress.
+         
+         
+         
+         Template Specifications Frontend
+         
+         
+         Learning
+         <title> <h1>: Dashboard"
+         - IDs:
+         - dashboard-page (div)
+         - welcome-message — Displays {{ fullname }}"
+         - Iterates over each course progress
+         - —
+         - my-courses-button (button) Navigates
+         Context
+         
+         fullname (str)
+         (list dict):
+         (str)
+         title (str)
+         
+         
+         
+         
+         templates/catalog.html
+         Page Available Courses
+         - Courses"
+         
+         (div)
+         - (input,
+         - (div)
+         - (button) pattern: to url_for('course_details', course_id=course.course_id)
+         
+         Context
+         
+         course_id
+         - title
+         (str)
+         (str)
+         (str)
+         (str)
+         
+         Notes:
+         Search to
+         
+         
+         
+         
+         Page Title:
+         <title>
+         
+         - (div)
+         - {{ course.title }}
+         {{ course.description }}
+         - enroll-button {{ is_enrolled }} True. Text:
+         (button)
+         Context Variables:
+         course (dict)
+         - is_enrolled (bool)
+         Optional:
+         -
+         
+         Enroll
+         
+         
+         
+         
+         Page Title:
+         - and Courses"
+         - Element IDs:
+         (div)
+         -
+         - (button) ID pattern: "continue-learning-button-{{ course.course_id }}" course_id=course.course_id)
+         - (button)
+         -
+         enrolled_courses
+         
+         - title (str)
+         - (int)
+         
+         
+         
+         ###
+         Page Title:
+         - and "Course
+         IDs:
+         learning-page
+         (div) — all titles
+         lesson-content of
+         POSTs
+         - back-to-my-courses (button)
+         
+         -
+         (list
+         
+         
+         (str)
+         -
+         progress
+         
+         - Mark disabled current lesson is the all completed
+         Lessons be in sequence
+         
+         
+         
+         ### templates/assignments.html
+         Title: Assignments
+         <title> <h1>: "My
+         IDs:
+         (div)
+         assignments-table Displays assignment
+         - ID pattern: "submit-assignment-button-{{ assignment.assignment_id }}" to url_for('submit_assignment_form', assignment_id=assignment.assignment_id)
+         -
+         
+         - (list
+         - assignment_id (str)
+         (str)
+         - title
+         
+         - due_date (str)
+         (int)
+         
+         ---
+         
+         ### templates/submit_assignment.html
+         - Submit Assignment
+         <h1>:
+         - Element IDs:
+         -
+         (div) — and description
+         - submission-text (textarea)
+         — POSTs
+         - —
+         Context
+         assignment
+         - success_message (str)
+         -
+         
+         Form
+         
+         
+         
+         ###
+         - Page
+         and
+         IDs:
+         certificates-page
+         certificates-grid (div) Lists with titles and
+         - back-to-dashboard (button)
+         -
+         (list
+         certificate_id
+         - (str)
+         course_id (str)
+         
+         course_title
+         
+         
+         
+         
+         Title: Profile
+         - <title> <h1>: Profile"
+         -
+         -
+         - (input, name=email)
+         - profile-fullname type=text,
+         - — POSTs
+         (button) url_for('dashboard')
+         -
+         (dict):
+         - username (str)
+         email (str)
+         (str)
+         
+         - with
+         
+         
+         
+         ## Data (For Developer)
+         
+         data/users.txt
+         Fields: username|email|fullname
+         Each email,
+         Examples:
+         ```
+         Student
+         
+         jane|jane@student.com|Jane Learner
+         ```
+         
+         
+         
+         ###
+         
+         Description: Each and status
+         
+         
+         Programming|Learn Python scratch|Programming|Beginner|40
+         
+         3|Data to data
+         
+         
+         ---
+         
+         
+         Fields: enrollment_id|username|course_id|enrollment_date|progress|status
+         with
+         - Examples:
+         
+         
+         
+         Progress
+         ```
+         -
+         - enrollment_date YYYY-MM-DD
+         - progress: to 100
+         - status: "Completed"
+         
+         ---
+         
+         
+         
+         - Description: per course
+         - Examples:
+         
+         1|1|Python Basics the data types|2024-12-01|100
+         Project|Build a
+         
+         Notes:
+         
+         
+         ---
+         
+         data/submissions.txt
+         
+         submissions and feedback
+         - Examples:
+         
+         answers are...|2024-11-25|85|Good
+         2|2|jane|Here
+         
+         
+         
+         - grade: integer empty not
+         or empty
+         
+         
+         
+         ###
+         - Fields: certificate_id|username|course_id|issue_date
+         Description:
+         Examples:
+         
+         
+         
+         Notes:
+         issue_date format: YYYY-MM-DD
+         
+         
+
+  [3] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 78/130 words deleted (60%)
+
+      Before (full content):
+         You are Frontend specializing in Jinja2 for Flask applications.
+         
+         goal all HTML templates OnlineCourse application on the design_spec.md page element navigation.
+         
+         Details:
+         Read design_spec.md 2 from CONTEXT
+         - Implement all with required element and navigation
+         - syntax for
+         Do modify or data handling
+         - all element as specified, including
+         
+         Guidelines:
+         Structure**:
+         
+         
+         <html
+         
+         
+         Title Section
+         
+         
+         id="main-container">
+         from Section
+         <!-- Page content -->
+         
+         </body>
+         
+         
+         
+         2.
+         Use exact specified, including and
+         - repeated Jinja2
+         
+         **Navigation
+         - names 2
+         For pass required definitions
+         
+         4. and
+         - submissions proper method and attributes
+         - required attributes
+         
+         5.
+         - enrolled status,
+         - to course assignments,
+         
+         REQUIREMENTS:
+         - Use tool template in templates/ directory
+         IDs Section exactly,
+         Page titles must 2 <title> and
+         must use url_for specified
+         NOT implement logic handling
+         - Do provide in save files
+         
+         templates/*.html
+
+      After (full content):
+         Jinja2
+         
+         goal templates OnlineCourse the page element navigation.
+         
+         
+         from
+         all with navigation
+         - syntax
+         modify or handling
+         all specified,
+         
+         Guidelines:
+         Structure**:
+         
+         
+         <html
+         
+         
+         
+         
+         
+         id="main-container">
+         
+         -->
+         
+         </body>
+         
+         
+         
+         2.
+         specified,
+         
+         
+         **Navigation
+         2
+         
+         
+         and
+         - submissions and attributes
+         - attributes
+         
+         5.
+         - enrolled status,
+         course assignments,
+         
+         
+         in directory
+         
+         titles 2
+         use specified
+         implement
+         - provide save
+         
+         
+
+  [4] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 777/1295 words deleted (60%)
+
+      Before (full content):
+         Implement templates/*.html frontend templates using design_spec.md Section 2 with exact element IDs and navigation
+         === design_spec.md ===
+         # OnlineCourse Application Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification (For Backend Developer)
+         
+         | Route Path                           | Function Name           | HTTP Method | Template File           | Context Variables                                                                                                           |
+         |------------------------------------|-------------------------|-------------|-------------------------|----------------------------------------------------------------------------------------------------------------------------|
+         | /                                  | root                    | GET         | N/A                     | N/A (Redirects to /dashboard)                                                                                              |
+         | /dashboard                         | dashboard               | GET         | dashboard.html          | username (str), fullname (str), enrolled_courses (list of dict {course_id (str), title (str), progress (int)})              |
+         | /catalog                          | course_catalog          | GET         | catalog.html            | courses (list of dict {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}) |
+         | /catalog/search                   | course_catalog_search   | POST        | catalog.html            | courses (list of dict) (filtered as per search)                                                                             |
+         | /course/<course_id>               | course_details          | GET         | course_details.html     | course (dict with keys: course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)),
+         |                                    |                         |             |                         | is_enrolled (bool)                                                                                                         |
+         | /course/<course_id>/enroll        | enroll_course           | POST        | course_details.html     | course (dict), is_enrolled (bool), success_message (str, optional), error_message (str, optional)                            |
+         | /my-courses                      | my_courses              | GET         | my_courses.html         | enrolled_courses (list of dict {course_id (str), title (str), progress (int)})                                              |
+         | /my-courses/<course_id>/learn    | course_learning         | GET         | course_learning.html    | course (dict: course_id, title, description, etc.), lessons (list of dict {lesson_id (str), title (str), content (str)}), current_lesson (dict), progress (int, 0-100)                |
+         | /my-courses/<course_id>/mark-complete | mark_lesson_complete | POST        | course_learning.html    | course (dict), lessons (list), current_lesson (dict), progress (int), success_message (str, optional), error_message (str, optional) |
+         | /assignments                    | my_assignments          | GET         | assignments.html        | assignments (list of dict {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int)}) |
+         | /assignments/<assignment_id>/submit | submit_assignment_form | GET         | submit_assignment.html  | assignment (dict with keys: assignment_id, course_id, title, description, due_date, max_points)                              |
+         | /assignments/<assignment_id>/submit | submit_assignment     | POST        | submit_assignment.html  | assignment (dict), success_message (str, optional), error_message (str, optional)                                            |
+         | /certificates                   | certificates            | GET         | certificates.html       | certificates (list of dict {certificate_id (str), username (str), course_id (str), issue_date (str), course_title (str)})      |
+         | /profile                       | user_profile            | GET         | profile.html            | user (dict with keys: username (str), email (str), fullname (str))                                                          |
+         | /profile/update                 | update_profile          | POST        | profile.html            | user (dict), success_message (str, optional), error_message (str, optional)                                                  |
+         
+         **Notes:**
+         - Enrollment date recorded on /course/<course_id>/enroll POST.
+         - Enrollment progress initialized to 0.
+         - Submissions posted on assignment submission page update submissions.txt.
+         - Marking lesson complete updates enrollments progress and may generate certificate if progress reaches 100%.
+         - Certificate stored with issue date when course completed.
+         - Course completion defined by 100% progress.
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications (For Frontend Developer)
+         
+         ### templates/dashboard.html
+         - Page Title: Learning Dashboard
+         - <title> and <h1>: "Learning Dashboard"
+         - Element IDs:
+           - dashboard-page (div)
+           - welcome-message (h1) — Displays "Welcome, {{ fullname }}"
+           - enrolled-courses (div) — Iterates over enrolled_courses with each course displaying title and progress
+           - browse-courses-button (button) — Navigates to url_for('course_catalog')
+           - my-courses-button (button) — Navigates to url_for('my_courses')
+         - Context Variables:
+           - username (str)
+           - fullname (str)
+           - enrolled_courses (list of dict):
+             - course_id (str)
+             - title (str)
+             - progress (int)
+         
+         ---
+         
+         ### templates/catalog.html
+         - Page Title: Available Courses
+         - <title> and <h1>: "Available Courses"
+         - Element IDs:
+           - catalog-page (div)
+           - search-input (input, text) — Form field name: "search"
+           - course-grid (div)
+           - view-course-button-{course_id} (button) — ID pattern: "view-course-button-{{ course.course_id }}" to view details via url_for('course_details', course_id=course.course_id)
+           - back-to-dashboard (button) — url_for('dashboard')
+         - Context Variables:
+           - courses (list of dict):
+             - course_id (str)
+             - title (str)
+             - description (str)
+             - category (str)
+             - level (str)
+             - duration (str)
+             - status (str)
+         - Notes:
+           - Search form POSTs to url_for('course_catalog_search')
+         
+         ---
+         
+         ### templates/course_details.html
+         - Page Title: Course Details
+         - <title> and <h1>: "Course Details"
+         - Element IDs:
+           - course-details-page (div)
+           - course-title (h1) — Displays {{ course.title }}
+           - course-description (div) — Displays {{ course.description }}
+           - enroll-button (button) — Disabled if {{ is_enrolled }} is True. Text: "Enroll" or "Already Enrolled"
+           - back-to-catalog (button) — url_for('course_catalog')
+         - Context Variables:
+           - course (dict)
+           - is_enrolled (bool)
+           - Optional: success_message (str)
+           - Optional: error_message (str)
+         - Notes:
+           - Enroll button POSTs to url_for('enroll_course', course_id=course.course_id)
+         
+         ---
+         
+         ### templates/my_courses.html
+         - Page Title: My Courses
+         - <title> and <h1>: "My Courses"
+         - Element IDs:
+           - my-courses-page (div)
+           - courses-list (div)
+           - continue-learning-button-{course_id} (button) — ID pattern: "continue-learning-button-{{ course.course_id }}" links to url_for('course_learning', course_id=course.course_id)
+           - back-to-dashboard (button) — url_for('dashboard')
+         - Context Variables:
+           - enrolled_courses (list of dict):
+             - course_id (str)
+             - title (str)
+             - progress (int)
+         
+         ---
+         
+         ### templates/course_learning.html
+         - Page Title: Course Learning
+         - <title> and <h1>: "Course Learning"
+         - Element IDs:
+           - learning-page (div)
+           - lessons-list (div) — Lists all lessons titles
+           - lesson-content (div) — Content of current lesson
+           - mark-complete-button (button) — POSTs to url_for('mark_lesson_complete', course_id=course.course_id)
+           - back-to-my-courses (button) — url_for('my_courses')
+         - Context Variables:
+           - course (dict)
+           - lessons (list of dict):
+             - lesson_id (str)
+             - title (str)
+             - content (str)
+           - current_lesson (dict)
+           - progress (int)
+         - Notes:
+           - Mark complete button disabled if current lesson is the last and all completed
+           - Lessons must be completed in sequence
+         
+         ---
+         
+         ### templates/assignments.html
+         - Page Title: My Assignments
+         - <title> and <h1>: "My Assignments"
+         - Element IDs:
+           - assignments-page (div)
+           - assignments-table (table) — Displays assignment rows
+           - submit-assignment-button-{assignment_id} (button) — ID pattern: "submit-assignment-button-{{ assignment.assignment_id }}" links to url_for('submit_assignment_form', assignment_id=assignment.assignment_id)
+           - back-to-dashboard (button) — url_for('dashboard')
+         - Context Variables:
+           - assignments (list of dict):
+             - assignment_id (str)
+             - course_id (str)
+             - title (str)
+             - description (str)
+             - due_date (str)
+             - max_points (int)
+         
+         ---
+         
+         ### templates/submit_assignment.html
+         - Page Title: Submit Assignment
+         - <title> and <h1>: "Submit Assignment"
+         - Element IDs:
+           - submit-page (div)
+           - assignment-info (div) — Displays assignment title and description
+           - submission-text (textarea)
+           - submit-button (button) — POSTs to url_for('submit_assignment', assignment_id=assignment.assignment_id)
+           - back-to-assignments (button) — url_for('my_assignments')
+         - Context Variables:
+           - assignment (dict)
+           - Optional: success_message (str)
+           - Optional: error_message (str)
+         - Notes:
+           - Form submission includes textarea named "submission_text"
+         
+         ---
+         
+         ### templates/certificates.html
+         - Page Title: My Certificates
+         - <title> and <h1>: "My Certificates"
+         - Element IDs:
+           - certificates-page (div)
+           - certificates-grid (div) — Lists certificates with course titles and issue dates
+           - back-to-dashboard (button) — url_for('dashboard')
+         - Context Variables:
+           - certificates (list of dict):
+             - certificate_id (str)
+             - username (str)
+             - course_id (str)
+             - issue_date (str)
+             - course_title (str)
+         
+         ---
+         
+         ### templates/profile.html
+         - Page Title: My Profile
+         - <title> and <h1>: "My Profile"
+         - Element IDs:
+           - profile-page (div)
+           - profile-email (input, type=email, name=email)
+           - profile-fullname (input, type=text, name=fullname)
+           - update-profile-button (button) — POSTs to url_for('update_profile')
+           - back-to-dashboard (button) — url_for('dashboard')
+         - Context Variables:
+           - user (dict):
+             - username (str)
+             - email (str)
+             - fullname (str)
+         - Notes:
+           - Form fields with names "email" and "fullname"
+         
+         ---
+         
+         ## Section 3: Data File Schemas (For Backend Developer)
+         
+         ### data/users.txt
+         - Fields: username|email|fullname
+         - Description: Each user with username identifier, contact email, and full name
+         - Examples:
+         ```
+         john|john@student.com|John Student
+         alice|alice@instructor.com|Alice Professor
+         jane|jane@student.com|Jane Learner
+         ```
+         
+         ---
+         
+         ### data/courses.txt
+         - Fields: course_id|title|description|category|level|duration|status
+         - Description: Each course with unique ID, title, detail, category, level, total duration, and status (e.g., Active)
+         - Examples:
+         ```
+         1|Python Programming|Learn Python from scratch|Programming|Beginner|40 hours|Active
+         2|Web Development|Build modern websites|Web|Intermediate|60 hours|Active
+         3|Data Science|Introduction to data analysis|Data|Advanced|80 hours|Active
+         ```
+         
+         ---
+         
+         ### data/enrollments.txt
+         - Fields: enrollment_id|username|course_id|enrollment_date|progress|status
+         - Description: User enrollments with progress percentage and status
+         - Examples:
+         ```
+         1|john|1|2024-11-01|75|In Progress
+         2|jane|1|2024-10-15|100|Completed
+         3|john|2|2024-11-10|25|In Progress
+         ```
+         - Notes:
+           - enrollment_date format: YYYY-MM-DD
+           - progress: integer 0 to 100
+           - status: "In Progress" or "Completed"
+         
+         ---
+         
+         ### data/assignments.txt
+         - Fields: assignment_id|course_id|title|description|due_date|max_points
+         - Description: Assignments per course with deadlines and points
+         - Examples:
+         ```
+         1|1|Python Basics Quiz|Complete the quiz on variables and data types|2024-12-01|100
+         2|1|Final Project|Build a calculator application|2024-12-15|200
+         ```
+         - Notes:
+           - due_date format: YYYY-MM-DD
+         
+         ---
+         
+         ### data/submissions.txt
+         - Fields: submission_id|assignment_id|username|submission_text|submit_date|grade|feedback
+         - Description: User submissions with grading and feedback
+         - Examples:
+         ```
+         1|1|john|My answers are...|2024-11-25|85|Good work!
+         2|2|jane|Here is my project...|2024-11-20|95|Excellent!
+         ```
+         - Notes:
+           - submit_date format: YYYY-MM-DD
+           - grade: integer or empty if not graded
+           - feedback: string or empty
+         
+         ---
+         
+         ### data/certificates.txt
+         - Fields: certificate_id|username|course_id|issue_date
+         - Description: Issued course completion certificates
+         - Examples:
+         ```
+         1|jane|1|2024-11-22
+         ```
+         - Notes:
+           - issue_date format: YYYY-MM-DD
+         
+         
+
+      After (full content):
+         templates exact
+         === ===
+         OnlineCourse Design
+         
+         ---
+         
+         ## Section Flask Routes Specification
+         
+         | Route | Name HTTP File |
+         
+         | / | | N/A N/A
+         | | dashboard.html fullname (list dict {course_id (str), title (str), progress (int)}) |
+         | course_catalog | GET | courses (list dict {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)})
+         catalog.html courses dict) search)
+         /course/<course_id> | course_details | course (str), title (str), (str), (str), duration status
+         | | is_enrolled |
+         /course/<course_id>/enroll | | course_details.html is_enrolled (bool), success_message error_message (str,
+         | | my_courses.html {course_id (str), title (str), progress (int)}) |
+         /my-courses/<course_id>/learn course_learning GET | course course_id, description, etc.), lessons (list dict {lesson_id (str), title (str), content (str)}), (int,
+         | (dict), (dict), progress success_message optional) |
+         | my_assignments | assignments.html {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int)})
+         | /assignments/<assignment_id>/submit GET submit_assignment.html (dict assignment_id, title, |
+         | (dict), (str, optional)
+         | | certificates dict {certificate_id (str), username (str), course_id (str), issue_date (str), course_title (str)})
+         | user_profile | user email
+         | | | | profile.html (str, error_message (str, optional)
+         
+         
+         - recorded on POST.
+         
+         Submissions assignment
+         lesson updates progress progress reaches
+         stored with issue when course completed.
+         Course completion progress.
+         
+         
+         
+         ## 2: Template Specifications Frontend
+         
+         ### templates/dashboard.html
+         - Title: Dashboard
+         and <h1>:
+         Element
+         dashboard-page
+         welcome-message — Displays "Welcome, {{ fullname }}"
+         - enrolled-courses (div) — over each course displaying title
+         browse-courses-button — Navigates
+         url_for('my_courses')
+         Context
+         username
+         -
+         enrolled_courses
+         course_id
+         - (str)
+         
+         
+         ---
+         
+         ###
+         Page Title: Available
+         - <h1>: Courses"
+         Element
+         - catalog-page (div)
+         (input, — name: "search"
+         course-grid
+         view url_for('course_details',
+         
+         Context
+         -
+         course_id (str)
+         
+         description
+         -
+         
+         - duration (str)
+         
+         - Notes:
+         POSTs url_for('course_catalog_search')
+         
+         
+         
+         
+         Page Title: Course Details
+         and <h1>: Details"
+         
+         (div)
+         - {{ course.title }}
+         - (div) — Displays {{ course.description }}
+         (button) {{ is_enrolled }} True. Text: "Enroll" Enrolled"
+         —
+         Variables:
+         - course
+         is_enrolled
+         - Optional:
+         error_message
+         -
+         Enroll button to url_for('enroll_course',
+         
+         
+         
+         ###
+         - Courses
+         <title> and
+         Element
+         - (div)
+         - courses-list (div)
+         pattern: links url_for('course_learning',
+         - back-to-dashboard (button)
+         Context
+         
+         -
+         
+         - progress (int)
+         
+         
+         
+         ###
+         Learning
+         and <h1>:
+         Element IDs:
+         learning-page
+         — all
+         - lesson-content — of current
+         - mark-complete-button (button) course_id=course.course_id)
+         back-to-my-courses (button) —
+         - Context Variables:
+         (dict)
+         
+         lesson_id (str)
+         -
+         - content
+         - (dict)
+         progress
+         Notes:
+         - button disabled if current lesson is
+         Lessons in
+         
+         
+         
+         ###
+         Page Title: My Assignments
+         <title> <h1>:
+         - Element IDs:
+         -
+         - Displays rows
+         - submit-assignment-button-{assignment_id} (button) "submit-assignment-button-{{ assignment.assignment_id }}" to
+         (button)
+         Variables:
+         - (list
+         
+         
+         (str)
+         
+         
+         max_points
+         
+         
+         
+         
+         
+         and
+         -
+         (div)
+         (div) and
+         submission-text
+         
+         back-to-assignments —
+         - Variables:
+         
+         -
+         Optional:
+         -
+         - submission includes textarea
+         
+         ---
+         
+         ### templates/certificates.html
+         - Page
+         "My
+         Element
+         certificates-page
+         - course titles and
+         back-to-dashboard
+         Variables:
+         - certificates (list
+         (str)
+         
+         course_id (str)
+         (str)
+         
+         
+         
+         
+         ###
+         My Profile
+         - <title> <h1>: "My Profile"
+         - IDs:
+         -
+         profile-email name=email)
+         - profile-fullname (input, type=text,
+         update-profile-button POSTs
+         - back-to-dashboard (button) — url_for('dashboard')
+         - Context
+         user (dict):
+         
+         (str)
+         - fullname
+         Notes:
+         - fields "email"
+         
+         ---
+         
+         Section Data Backend Developer)
+         
+         ###
+         -
+         Each user with identifier, full
+         Examples:
+         
+         Student
+         
+         
+         
+         
+         ---
+         
+         ###
+         
+         with unique detail, category, duration, status (e.g.,
+         -
+         
+         1|Python Programming|Learn Python from scratch|Programming|Beginner|40 hours|Active
+         hours|Active
+         Science|Introduction analysis|Data|Advanced|80 hours|Active
+         
+         
+         ---
+         
+         data/enrollments.txt
+         enrollment_id|username|course_id|enrollment_date|progress|status
+         - with progress percentage
+         - Examples:
+         
+         1|john|1|2024-11-01|75|In Progress
+         2|jane|1|2024-10-15|100|Completed
+         Progress
+         ```
+         Notes:
+         format:
+         - 0
+         "In "Completed"
+         
+         ---
+         
+         data/assignments.txt
+         assignment_id|course_id|title|description|due_date|max_points
+         - Assignments deadlines
+         -
+         ```
+         quiz
+         2|1|Final Project|Build a
+         
+         Notes:
+         due_date
+         
+         
+         
+         
+         
+         Description:
+         Examples:
+         
+         1|1|john|My
+         is my project...|2024-11-20|95|Excellent!
+         ```
+         -
+         submit_date format: YYYY-MM-DD
+         - grade: integer or not
+         empty
+         
+         
+         
+         data/certificates.txt
+         Fields:
+         - Description: Issued course completion certificates
+         
+         ```
+         
+         ```
+         Notes:
+         format: YYYY-MM-DD
+         
+         
+
+================================================================================
+

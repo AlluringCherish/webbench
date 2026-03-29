@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Special Requests</title>
+</head>
+<body>
+    <div id="main-container">
+        <h1>Special Requests</h1>
+        <div id="requests-page">
+            <form method="POST" action="">
+                <label for="select-reservation">Select Reservation:</label>
+                <select id="select-reservation" name="selected_reservation_id" required>
+                    <option value="">-- Select a reservation --</option>
+                    {% for res in reservations %}
+                        <option value="{{ res.reservation_id }}" {% if res.reservation_id == selected_reservation_id %}selected{% endif %}>Reservation #{{ res.reservation_id }} - Status: {{ res.status }}</option>
+                    {% endfor %}
+                </select>
+
+                <label><input type="checkbox" id="driver-assistance-checkbox" name="driver_assistance" {% if special_requests_data.driver_assistance %}checked{% endif %}> Driver Assistance</label><br>
+                <label><input type="checkbox" id="gps-option-checkbox" name="gps_option" {% if special_requests_data.gps_option %}checked{% endif %}> GPS Option</label><br>
+                <label for="child-seat-quantity">Child Seat Quantity:</label>
+                <input type="number" id="child-seat-quantity" name="child_seat_quantity" min="0" value="{{ special_requests_data.child_seat_quantity|default(0) }}">
+
+                <label for="special-notes">Additional Notes:</label><br>
+                <textarea id="special-notes" name="special_notes">{{ special_requests_data.special_notes|default('') }}</textarea>
+
+                <button type="submit" id="submit-requests-button">Submit Requests</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

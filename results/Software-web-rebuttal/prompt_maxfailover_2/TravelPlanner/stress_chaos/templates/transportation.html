@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Flights</title>
+</head>
+<body>
+    <div id="transportation-page">
+        <h1>Book Flights</h1>
+
+        <form method="GET" action="{{ url_for('transportation_view') }}">
+            <label for="departure-city">Departure City:</label>
+            <input type="text" id="departure-city" name="departure" value="{{ filters.departure if filters.departure else '' }}" />
+
+            <label for="arrival-city">Arrival City:</label>
+            <input type="text" id="arrival-city" name="arrival" value="{{ filters.arrival if filters.arrival else '' }}" />
+
+            <label for="departure-date">Departure Date:</label>
+            <input type="date" id="departure-date" name="departure_date" value="{{ filters.departure_date if filters.departure_date else '' }}" />
+
+            <label for="flight-class-filter">Flight Class:</label>
+            <select id="flight-class-filter" name="class" onchange="this.form.submit()">
+                <option value="">All Classes</option>
+                <option value="Economy" {% if filters.class == 'Economy' %}selected{% endif %}>Economy</option>
+                <option value="Business" {% if filters.class == 'Business' %}selected{% endif %}>Business</option>
+                <option value="First" {% if filters.class == 'First' %}selected{% endif %}>First</option>
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="available-flights">
+            <ul>
+                {% for flight in flights %}
+                <li>
+                    <div><strong>{{ flight.airline }}</strong> from {{ flight.departure_city }} to {{ flight.arrival_city }}</div>
+                    <div>Departure: {{ flight.departure_time }}, Arrival: {{ flight.arrival_time }}</div>
+                    <div>Duration: {{ flight.duration }}, Class: {{ flight.class_type }}</div>
+                    <div>Price: ${{ flight.price }}</div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
