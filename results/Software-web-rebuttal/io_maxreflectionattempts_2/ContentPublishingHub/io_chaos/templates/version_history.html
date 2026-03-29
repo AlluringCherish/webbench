@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version History - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="version-history-page">
+        <h1>Article Version History</h1>
+        <h2>Versions for Article ID: {{ article_id }}</h2>
+
+        <div id="versions-list">
+            <ul>
+            {% for version in versions %}
+                <li id="version-{{ version.version_number }}">
+                    <strong>Version {{ version.version_number }}</strong> by {{ version.author }} on {{ version.created_date }}<br>
+                    Summary: {{ version.change_summary }}
+                    <button id="btn-view-version-{{ version.version_number }}" onclick="location.href='{{ url_for('article_version_history', article_id=article_id) }}?version={{ version.version_number }}'">View</button>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+
+        <div id="version-comparison">
+            <h3>Version Comparison</h3>
+            {% if comparison %}
+                <p>Comparing Version {{ current_version }} with previous version:</p>
+                <pre id="comparison-text">{{ comparison.diff_text }}</pre>
+            {% else %}
+                <p>No comparison available.</p>
+            {% endif %}
+        </div>
+
+        <button id="btn-back-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

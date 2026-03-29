@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Applications</title>
+</head>
+<body>
+    <div id="tracking-page">
+        <h1>My Applications</h1>
+
+        <form method="get" action="{{ url_for('application_tracking_page') }}">
+            <select id="status-filter" name="status_filter">
+                <option value="" {% if not status_filter %}selected{% endif %}>All Statuses</option>
+                <option value="Applied" {% if status_filter == 'Applied' %}selected{% endif %}>Applied</option>
+                <option value="Under Review" {% if status_filter == 'Under Review' %}selected{% endif %}>Under Review</option>
+                <option value="Interview" {% if status_filter == 'Interview' %}selected{% endif %}>Interview</option>
+                <option value="Rejected" {% if status_filter == 'Rejected' %}selected{% endif %}>Rejected</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <table id="applications-table" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Applied Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                <tr>
+                    <td>{{ application.job_title }}</td>
+                    <td>{{ application.company_name }}</td>
+                    <td>{{ application.status }}</td>
+                    <td>{{ application.applied_date }}</td>
+                    <td>
+                        <a href="{{ url_for('application_detail_page', application_id=application.application_id) }}">
+                            <button id="view-application-button-{{ application.application_id }}">View Details</button>
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5">No applications found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('dashboard_page') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

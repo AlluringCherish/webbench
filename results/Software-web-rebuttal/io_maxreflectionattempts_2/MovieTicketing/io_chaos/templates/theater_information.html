@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Theater Information</title>
+</head>
+<body>
+    <div id="theater-page">
+        <h1>Theater Information</h1>
+        <form method="get">
+            <label for="theater-location-filter">Filter by Location:</label>
+            <select id="theater-location-filter" name="location">
+                <option value="">All Locations</option>
+                {% set locations = theaters | map(attribute='location') | unique | list %}
+                {% for loc in locations %}
+                <option value="{{ loc }}" {% if loc == location_filter %}selected{% endif %}>{{ loc }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Apply Filter</button>
+        </form>
+        <div id="theaters-list">
+            {% for theater in theaters %}
+            <div class="theater-entry">
+                <h2>{{ theater.theater_name }}</h2>
+                <div>Location: {{ theater.location }}</div>
+                <div>City: {{ theater.city }}</div>
+                <div>Screens: {{ theater.screens }}</div>
+                <div id="facilities-display">Facilities: {{ theater.facilities }}</div>
+            </div>
+            {% else %}
+            <div>No theaters found.</div>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

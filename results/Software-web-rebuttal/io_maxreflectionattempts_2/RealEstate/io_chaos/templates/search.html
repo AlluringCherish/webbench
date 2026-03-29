@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Search</title>
+</head>
+<body>
+    <div id="search-page">
+        <h1>Property Search</h1>
+
+        <form method="POST" action="{{ url_for('property_search') }}">
+            <label for="location-input">Location:</label>
+            <input type="text" id="location-input" name="location_input" value="{{ location_filter }}" />
+
+            <label for="price-range-min">Price Min:</label>
+            <input type="number" id="price-range-min" name="price_range_min" step="any" value="{{ price_min }}" />
+
+            <label for="price-range-max">Price Max:</label>
+            <input type="number" id="price-range-max" name="price_range_max" step="any" value="{{ price_max }}" />
+
+            <label for="property-type-filter">Property Type:</label>
+            <select id="property-type-filter" name="property_type_filter">
+                <option value="" {% if property_type_filter == '' %}selected{% endif %}>All</option>
+                <option value="House" {% if property_type_filter == 'House' %}selected{% endif %}>House</option>
+                <option value="Apartment" {% if property_type_filter == 'Apartment' %}selected{% endif %}>Apartment</option>
+                <option value="Condo" {% if property_type_filter == 'Condo' %}selected{% endif %}>Condo</option>
+            </select>
+
+            <button type="submit">Search</button>
+        </form>
+
+        <section id="properties-grid">
+            <h2>Properties</h2>
+            <ul>
+                {% for property in properties %}
+                <li>
+                    {{ property.address }} - ${{ property.price }} - {{ property.property_type }}
+                    <a href="{{ url_for('property_details', property_id=property.property_id) }}">
+                        <button id="view-property-button-{{ property.property_id }}">View</button>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+
+    </div>
+</body>
+</html>

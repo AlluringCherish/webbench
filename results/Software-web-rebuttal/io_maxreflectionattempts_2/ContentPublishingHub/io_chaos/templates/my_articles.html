@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Articles - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="my-articles-page">
+        <h1>My Articles</h1>
+
+        <form id="filter-form" method="GET" action="{{ url_for('my_articles') }}">
+            <label for="filter-status">Filter by Status:</label>
+            <select id="filter-status" name="filter_status">
+                <option value="" {% if not filter_status %}selected{% endif %}>All</option>
+                <option value="draft" {% if filter_status == 'draft' %}selected{% endif %}>Draft</option>
+                <option value="pending_review" {% if filter_status == 'pending_review' %}selected{% endif %}>Pending Review</option>
+                <option value="published" {% if filter_status == 'published' %}selected{% endif %}>Published</option>
+            </select>
+            <button type="submit" id="btn-filter">Filter</button>
+        </form>
+
+        <table id="articles-table" border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Last Modified</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for article in articles %}
+                <tr id="article-{{ article.article_id }}">
+                    <td>{{ article.article_id }}</td>
+                    <td>{{ article.title }}</td>
+                    <td>{{ article.status }}</td>
+                    <td>{{ article.last_modified }}</td>
+                    <td>
+                        <button id="btn-edit-article-{{ article.article_id }}" onclick="location.href='{{ url_for('edit_article', article_id=article.article_id) }}'">Edit</button>
+                        <button id="btn-view-versions-{{ article.article_id }}" onclick="location.href='{{ url_for('article_version_history', article_id=article.article_id) }}'">Versions</button>
+                        <button id="btn-view-analytics-{{ article.article_id }}" onclick="location.href='{{ url_for('article_analytics', article_id=article.article_id) }}'">Analytics</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <button id="btn-back-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

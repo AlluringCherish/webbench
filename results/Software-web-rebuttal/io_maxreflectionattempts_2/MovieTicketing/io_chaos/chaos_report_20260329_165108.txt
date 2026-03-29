@@ -1,0 +1,1504 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "SystemArchitect"
+    ],
+    "num_all_targets": 1,
+    "agent_chaos_targets": [],
+    "stress_chaos_targets": [],
+    "io_chaos_targets": [
+      "SystemArchitect"
+    ],
+    "tool_chaos_targets": []
+  },
+  "agent_chaos": {
+    "enabled": false,
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "log": []
+  },
+  "stress_chaos": {
+    "enabled": false,
+    "mode": "WordOnly",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordOnly (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": []
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "WordOnly",
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 4,
+    "method_selection": "Mode: WordOnly (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": [
+      {
+        "timestamp": 1774770568.623595,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_WORD_REPLACEMENT",
+        "details": "WordReplacement: 590/984 words replaced (60%)",
+        "category": "noise",
+        "method": "WordReplacement",
+        "before": "# MovieTicketing Application Design Specification\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Route Path                      | Function Name          | HTTP Method | Template Rendered          | Context Variables Passed to Template                                 |\n|--------------------------------|------------------------|-------------|----------------------------|----------------------------------------------------------------------|\n| `/`                            | `root_redirect`         | GET         | Redirect to `dashboard`    | None                                                                 |\n| `/dashboard`                  | `dashboard`             | GET         | `dashboard.html`           | `featured_movies` (list of dict with keys: movie_id:int, title:str, rating:float) |\n| `/movies`                    | `movie_catalog`         | GET         | `movie_catalog.html`       | `movies` (list of dict: movie_id:int, title:str, genre:str, rating:float, duration:int), `genres` (list of dict: genre_name:str) |\n| `/movies/<int:movie_id>`      | `movie_details`         | GET         | `movie_details.html`       | `movie` (dict: movie_id:int, title:str, director:str, genre:str, rating:float, duration:int, description:str, release_date:str) |\n| `/movies/<int:movie_id>/showtimes` | `select_showtime`    | GET         | `select_showtime.html`     | `movie` (as above), `showtimes` (list of dict: showtime_id:int, theater_name:str, showtime_date:str, showtime_time:str, price:float), `theaters` (list of dict: theater_id:int, theater_name:str), `selected_theater_filter` (str), `selected_date_filter` (str) |\n| `/showtimes/<int:showtime_id>/seats` | `seat_selection`  | GET         | `seat_selection.html`      | `showtime` (dict: showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str, price:float), `seats` (list of dict: seat_id:int, row:str, column:int, seat_type:str, status:str), `selected_seats` (list of str) |\n| `/showtimes/<int:showtime_id>/seats` | `seat_selection_post` | POST        | Redirect to `booking_confirmation` (after processing seat selections) | Form data: `selected_seats` (list of seat IDs as str) |\n| `/booking/confirm`            | `booking_confirmation_get` | GET      | `booking_confirmation.html` | `booking_details` (dict: movie_title:str, showtime_date:str, showtime_time:str, seats:list of str, total_price:float) |\n| `/booking/confirm`            | `booking_confirmation_post` | POST     | Redirect to `booking_history` (after booking created) | Form data: `customer_name` (str), `customer_email` (str), `selected_seats` (list of str), `showtime_id` (int) |\n| `/bookings`                  | `booking_history`       | GET         | `booking_history.html`      | `bookings` (list of dict: booking_id:int, movie_title:str, showtime_date:str, seats:list of str, status:str), `status_filter` (str) |\n| `/bookings/<int:booking_id>`  | `view_booking`          | GET         | `booking_details.html`      | `booking` (dict: booking_id:int, movie_title:str, showtime_date:str, seats:list of str, customer_name:str, customer_email:str, total_price:float, status:str) |\n| `/theaters`                  | `theater_information`   | GET         | `theater_information.html` | `theaters` (list of dict: theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str), `location_filter` (str) |\n\n---\n\n## Section 2: HTML Template Specifications\n\n### 1. templates/dashboard.html\n- **Page Title**: Movie Ticketing Dashboard\n- **Header <h1>**: Movie Ticketing Dashboard\n- **Element IDs and Types:**\n  - `dashboard-page`: Div, Container for dashboard page\n  - `featured-movies`: Div, Displays featured movie recommendations\n  - `browse-movies-button`: Button, Navigates to `movie_catalog` route\n  - `view-bookings-button`: Button, Navigates to `booking_history` route\n  - `showtimes-button`: Button, Navigates to `select_showtime` route general or possibly dashboard link to showtimes\n\n### 2. templates/movie_catalog.html\n- **Page Title**: Movie Catalog\n- **Header <h1>**: Movie Catalog\n- **Element IDs and Types:**\n  - `catalog-page`: Div, Container for catalog page\n  - `search-input`: Input, Search movies by title or genre\n  - `genre-filter`: Dropdown, Filter movies by genre\n  - `movies-grid`: Div, Grid to display movie cards\n  - `view-movie-button-{movie_id}`: Button, To view movie detail page for given `movie_id`\n\n### 3. templates/movie_details.html\n- **Page Title**: Movie Details\n- **Header <h1>**: Movie Details\n- **Element IDs and Types:**\n  - `movie-details-page`: Div, Container for movie details page\n  - `movie-title`: H1, Displays movie's title\n  - `movie-director`: Div, Displays movie director\n  - `movie-rating`: Div, Displays movie rating\n  - `movie-description`: Div, Displays movie description\n  - `select-showtime-button`: Button, Navigates to `select_showtime` route for this movie\n\n### 4. templates/select_showtime.html\n- **Page Title**: Select Showtime\n- **Header <h1>**: Select Showtime\n- **Element IDs and Types:**\n  - `showtime-page`: Div, Container for showtime selection\n  - `showtimes-list`: Div, List of showtimes\n  - `theater-filter`: Dropdown, Filter showtimes by theater\n  - `date-filter`: Input, Filter showtimes by date\n  - `select-showtime-button-{showtime_id}`: Button, Select specific showtime\n\n### 5. templates/seat_selection.html\n- **Page Title**: Select Seats\n- **Header <h1>**: Select Seats\n- **Element IDs and Types:**\n  - `seat-selection-page`: Div, Container for seat selection\n  - `seat-map`: Div, Interactive seat map\n  - `selected-seats-display`: Div, Displays currently selected seats\n  - `seat-{row}{col}`: Button, Individual seats e.g. seat-A1\n  - `proceed-booking-button`: Button, Proceeds to booking confirmation\n\n### 6. templates/booking_confirmation.html\n- **Page Title**: Booking Confirmation\n- **Header <h1>**: Booking Confirmation\n- **Element IDs and Types:**\n  - `confirmation-page`: Div, Container for booking confirmation\n  - `booking-summary`: Div, Booking details summary\n  - `customer-name`: Input, Field for customer name\n  - `customer-email`: Input, Field for customer email\n  - `confirm-booking-button`: Button, Confirms booking and submits\n\n### 7. templates/booking_history.html\n- **Page Title**: Booking History\n- **Header <h1>**: Booking History\n- **Element IDs and Types:**\n  - `bookings-page`: Div, Container for bookings page\n  - `bookings-table`: Table, Displays booking records\n  - `view-booking-button-{booking_id}`: Button, View details for each booking\n  - `status-filter`: Dropdown, Filter bookings by status\n  - `back-to-dashboard`: Button, Navigates back to dashboard\n\n### 8. templates/theater_information.html\n- **Page Title**: Theater Information\n- **Header <h1>**: Theater Information\n- **Element IDs and Types:**\n  - `theater-page`: Div, Container for theater info page\n  - `theaters-list`: Div, List of theaters\n  - `theater-location-filter`: Dropdown, Filter theaters by location\n  - `facilities-display`: Div, Displays facilities and amenities\n  - `back-to-dashboard`: Button, Navigates back to dashboard\n\n---\n\n## Section 3: Data File Schemas\n\n### data/movies.txt\n- Fields: `movie_id|title|director|genre|rating|duration|description|release_date`\n- Description: Contains all movie information\n- Examples:\n  - `1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31`\n  - `2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16`\n  - `3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23`\n\n### data/theaters.txt\n- Fields: `theater_id|theater_name|location|city|screens|facilities`\n- Description: Stores theater details\n- Examples:\n  - `1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access`\n  - `2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking`\n  - `3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge`\n\n### data/showtimes.txt\n- Fields: `showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats`\n- Description: Showtimes scheduling data\n- Examples:\n  - `1|1|1|2025-02-01|19:00|12.99|85`\n  - `2|1|1|2025-02-01|22:30|12.99|40`\n  - `3|2|2|2025-02-01|18:00|14.99|95`\n\n### data/seats.txt\n- Fields: `seat_id|theater_id|screen_id|row|column|seat_type|status`\n- Description: Seat inventory and status\n- Examples:\n  - `1|1|1|A|1|Standard|Available`\n  - `2|1|1|A|2|Standard|Available`\n  - `3|1|1|B|5|Premium|Booked`\n\n### data/bookings.txt\n- Fields: `booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked`\n- Description: Records of bookings\n- Examples:\n  - `1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`\n  - `2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10`\n  - `3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`\n\n### data/genres.txt\n- Fields: `genre_id|genre_name|description`\n- Description: Movie genres catalog\n- Examples:\n  - `1|Action|Fast-paced movies with exciting sequences and combat`\n  - `2|Drama|Character-driven stories exploring complex themes`\n  - `3|Sci-Fi|Science fiction with futuristic technology and concepts`\n\n---\n\n*End of MovieTicketing Design Specification*",
+        "after": "# 7i6ey5f457xh5c Application nusze0 eodlu62yonfa4\n\nczq\n\nba r7qm6bw 1: Flask h4w9wf Specification\n\n| 9s219 rctw | ihmsx61x zibm | HTTP Method x t3yus4my 5k02c6yd | zkiuxfc rv1gf5ls9 bfagm6 k0 m1t8dp8r |\nbgowuzqr85xok4xks9mmjjuf1t9z5oqmcbl70l2eeu1kbqdqg6gdjsxvk33v80o58y1xf11ay6v3tcxu5595ffaznke9ob0uhks363qrszic21bmteyicsrgazljy9sszx4x9g3ku4r70593iq0jl7ibbe0geixi4mgs7ozk08948\na tve s zpye5z0hxnjhi4k | GET 8 3n0i8qhn to 7ncssrx017f | None x\n| po6bidgaruag 0 1p6gqhdrasx b 6sy | 83kjofhuno1ced5a p 7f14f96m2nl5fw7dw 6p6jy of dict 3f4h keys: 7gzni42lvrwu7 title:str, rating:float) j\n| `/movies` 3 p6buc36aebni3cu | tnm a n8xiruc1f27rf63wctq4 | `movies` (list pb 3n40s movie_id:int, l0a5ad9ikk qj48cfm9bx 0rokcmevplk4p duration:int), `genres` b81bk kn dict: aogokir2onuravu |\nv `/movies/<int:movie_id>` g e7gq6sgm7v31agz | GET e `movie_details.html` | eayrz6t (dict: movie_id:int, ioqhxjfqby qsp1tg2cvge9x dv64mlmkih rating:float, 9d1k0bn05sl7v description:str, release_date:str) j\n| ejmhx70kjidz057q02iejkbdnfmh7gqc2j l li4tc61uf61av8ir5 | ib5 | cqii98zpsru1hy8i59dmwf h kyil4at (as z5vuh7h ixoq2elq052 (list op dict: showtime_id:int, 17w6w7g3fx6g6sho7 krptpw29h0x8v9lg75 showtime_time:str, price:float), `theaters` (list 04 lmdmt theater_id:int, theater_name:str), 6d054kf40p3mlkcwpna7epxhc (str), uv7rsqq6j9q3er6wdzt55g bhb9c |\nd 4c1nwtpdbirn19ng0zlsrh5fmgc31ufigfat 2 `seat_selection` k GET y `seat_selection.html` c yv3tssedhw (dict: showtime_id:int, movie_title:str, ix7loupncwv2f5n05 omnqjc55p14ygozafc showtime_time:str, 0wza0aq5w7vm3 `seats` xiuop 2y nlezv seat_id:int, row:str, 5oq06mw2mzv otbw2dy5jcmi86 dwdso4pw4vso qa92ju1kl17dn8gc hfvqf 6r rgk8 |\nf `/showtimes/<int:showtime_id>/seats` u yphqlcjt0y2crecxyf29c | POST s Redirect pj hd7xl11tx8xhl8e19opng7 j5m9zw tg3waw3ly9 seat ubygejm9opi 6 Form data: y7o1sdvhz4kt81yw xz51d ph seat IDs nr str) d\na `/booking/confirm` | aqqrnerak3zzthr55a6rbwrt6k v GET | t6eidyvly7ia646t0ya28t20acd | uui3zbmfm7xhlwn7r (dict: ga3lmemsy65jeeud 6udfr1paihfkjaizvq showtime_time:str, jsadkbyj6d ul str, zuqxmined54e4y7l4p |\ni `/booking/confirm` h 2702ze9h0dene40fcxcfuls87qv l POST l 9y2ps4ss to `booking_history` 861i6j lpeofhs created) | ljmi 6dk7o `customer_name` cocrg2 eiwkf8m7zdbmb97t g93zs6 `selected_seats` stnjw of str), 137818uvj8172 l9dli j\ns `/bookings` z 7jyoilc1gp7h3a0s3 | GET | fj36uciacnsm8swmkg3ioo | `bookings` uhmdr ji 1apyc booking_id:int, e84v6joa50tgc8r5 8ki4dpcgito86hy1bt 5a1twlbok5 of str, i73kesly3vrd opf9e1zf069xhqp (str) |\na 6tupabvjdqsbx89ksa7phzeksz72 o `view_booking` y GET z `booking_details.html` | `booking` xis8qk booking_id:int, movie_title:str, showtime_date:str, g7643qaqpx hw ynw1 customer_name:str, o0utgpkj7fzz147ozz2 6u18k6aeucphi5snf6 status:str) |\n9 jxdvnkh6t0h 3 `theater_information` b e9j 5 `theater_information.html` x ahazje8sxg qae4t jl dict: w7hz439gqn4xfd0 iiao3lyrgdb5j63nm location:str, 0v4rs0hh6 qe7r81wp3049 facilities:str), bqclvg98xxuo0ei7s 0c7ok 3\n\n---\n\n6i Section 2: HTML 85rquak6 lgidi08jegxnz4\n\n9qy 1. templates/dashboard.html\n- **Page Title**: Movie ybb7nv27k Dashboard\ng jddbm0ja <h1>**: Movie 4isjcoh28 5nq9re6yv\n3 jyhgju5k7 qfv and Types:**\na wnxjjgsvvzwrtd9kx 5ea8 4cjt4x9lp g9z zx6acu4ot k2px\n- mxj7zxfwg8s4u0etoq ts93 nofxkx3b hf9w2l0x movie dwoq34kle4i8hke\n- 0u8vcomuvqam0baist5karf 5vwbdsc Navigates to k1xiroth0k4exou route\n- `view-bookings-button`: xqa01lv Navigates tc `booking_history` tbwq0\ns s7lkwh02md4wh7zxdor Button, Navigates xi psdevfxzantgwdel5 route general ld possibly jn0czlyfv link to cziq7esx9\n\n### b9 r0v4pwje5pwjladyy0or3pfync1y\no 15sdjf fl031nc6 fstav sgf2daf\n8 **Header uu6y3c0 Movie y6rstpt\nq uyj6v87c6 IDs and Types:**\n- uphpss0ul8c6rzk hhz5 0sabwtf8x yl7 e7kib43 page\nc 1s8blv4cu2z2fv4 oqk860 Search yfwmyf 2u title or izgds\n- 5luymtucgmzm6a4 Dropdown, Filter movies y4 it1xl\n- hjvaptzghtscti yogg Grid to display movie du70t\nk nh23l4fiscwnapygf9iz6wdvxya6r476tnr66g Button, To view movie ctlsmk aj9t for y9cba z19ozjrtgp\n\ntpm 3. templates/movie_details.html\n- **Page 4uekz7eo Movie wla3e6o\n3 **Header ebdyxc9 lqe2p 7io107w\n- zj0d3yu8k IDs oh6 d0j911ak\nk `movie-details-page`: Div, pyyg6jja0 for movie qsx5sek qg1s\nm un7d8454c8gqzo id5 wbz5tncr rp324h1 title\nd `movie-director`: Div, 94l3wego movie director\nc 0eun545ydpc8z97 Div, Displays ql2lp rating\n2 `movie-description`: Div, zqe3yj7y mgsjf description\n- igv92f76tezw0j8wboc8dd1cq 941pe5f cgn7z9dbt on `select_showtime` z7drh bmf 7k45 0gyyv\n\nul3 ih cwrad1q1mn37z9gw51lfez3kkz2nix\n3 **Page 7pe8r689 7ge01y omws9eaa\n- 562siscx q2tmo9x 9ouhwe dhkygn4v\nj **Element IDs dcy 7e2u9kcr\nj `showtime-page`: Div, Container am4 3flynbx1 0gt73o2kx\n- vc43w6rtitgx25rah Div, List of sa4s84z99\n- atawglam3y2s08sd4 Dropdown, 7nex9q nlch6fcci 0v owyhffe\n7 2otsgnyqug0gqi pqjdo2 Filter showtimes by date\n- r0aqy74yfeqcupvq3fx9dr0v0mwl25kow5hpe7sbr2r ajmbjon Select g160tu8q showtime\n\n27m zv qiktn0pu7kto3sdxkpqchoajysglq\ny twvk24 Title**: Select x6f9l\ns b8qte4z4 wo3j3a0 jopm92 8naqj\n- ivsbzk3bq IDs and p9jw4svl\n- `seat-selection-page`: Div, Container v2a seat ng77y9qke\n7 hwui2o19q4f 0j6p mnq77q23pr1 xpzp map\n2 `selected-seats-display`: Div, Displays 7e75n366y jyy29k9e seats\np xbx752mtu5ysipsgbd3z948g7g3tdbeabzwnuxmoy7 d29sdbs Individual seats e.g. 1tlndqn\n- on1mv16lr0x8qsnwn37ml0hos Button, Proceeds to booking confirmation\n\n### r5 n6y8hfhe2t4575ethefzsmpfk6g2vu81j8c\ne vm1n6x Title**: Booking f190w684syvq\n3 1ghk6qa5 fm59i6d q90zlif avug45ab8hjd\n- 4b2v1wt1p 6d8 l18 mvimrv3v\ny `confirmation-page`: 9wwj d995vx3e0 1p5 booking azf1rleibkr6\n4 xgdec5fm0jii2eqs0y w2in Booking z8jpu6q x8bb995\n- b0fxom0q2upn0g7x Input, esoqw 912 customer name\nj 2lo8s5h9g8jur7ewy 4257u6 cwneu for customer zaaji\nz mg9uf1pvvan06rr00ks12jbnl moqhcu3 Confirms zpgk6ax and e3dw2pi\n\n### 7. du2u1hs8z6bgrhumaxbm6fq7polded\n9 ukqrid 8mi42jsk Booking dek9g4h\nn x1e3vvqh <h1>**: Booking j5idvak\ni 31hlz9up4 j2s st7 60ejy66m\nt `bookings-page`: 86om Container for r98l3nfu page\n- `bookings-table`: gz4l1l Displays 7585s7w zv9ekry\n- zd7k6svkslzh0nfla8ivo5z4eqiy8vwiwi3fh7zf lsicsdu og33 8b1zifh wx9 each xgaipwa\n0 prh5t4wvxa74sl5s Dropdown, Filter e7uhgyqn tw jug2w5\nh `back-to-dashboard`: Button, as2mqhhns or2z xw 2prtb1na8\n\nwa6 uo dvrmkwp5piaft70y6wbb6q3ndjlztf8ihi\n4 adwtq2 5cod05mc Theater Information\n- vcqj9gjw mvl0ukx Theater Information\np **Element u2o gvm 430av6d9\nq `theater-page`: Div, ewx99x2vw gt9 3ysj32a info page\nu `theaters-list`: elns fxvw 2c ecnawpv4\nl 94w9kieea8spfbogrr1e1vtyio Dropdown, 35x7ss theaters sy location\nu foicmoui8k2nl15zih04a cvuw ugppucjn facilities 1ex v80ss0fpp\n- `back-to-dashboard`: gby3si9 Navigates pr7h j0 bqv3yiqd9\n\n---\n\n4z 3e21evh j9 pyh9 File 5sam3yx\n\nvib didkhc0c2iv6ijh\n- Fields: `movie_id|title|director|genre|rating|duration|description|release_date`\nl kb4szbq2aal3 Contains uot movie information\n7 Examples:\n6 fifpa4 Matrix|Lana r6qu0tbmgtoro7c4cac63idxwg computer o4t0kh xkqnat about ej2 hq2i akrwqg of 2w27jns b8k c03 e9yz 2q 0b1 k2o ezsaudh its controllers.|1999-03-31`\nx `2|Inception|Christopher ltf72p7g0gf5k2mawjz980 w6y4skw thief who bgz1fv corporate secrets k594oiv 6rd 8uq of dream-sharing g71cq7dgc8 5m 2a0rn r10 dcgm09v 9p6k tm planting an idea.|2010-07-16`\nw j5yoya Shawshank Redemption|Frank mgwh9d1zngmjkujiotwawghyxw 2s696cj9pn nlg zwm1 pfid 8 number of u6qmdr finding solace and eventual oiatuxe0iq through erpv of yup7cb decency.|1994-09-23`\n\n### v0sacgglobb25xkic\nw Fields: `theater_id|theater_name|location|city|screens|facilities`\ne r33il8yinc0b fjqd1j kwh2mpe qf37amj\np 7ojj1xlvs\n4 9gz9ldw1w Max|123 dlia bx6dt0 jflvuv0odvb6q Dolby, 2jn8y43a15 Access`\nz c4rggv1qb mplqgqsce7l Broadway|Los Angeles|8|3D, Premium qwj0dq ck3s2n16\ng 80lv9xkmzg6q Theater|789 Park 8o0fqu9dor9m0x1i3i45 p6t4c623 nw3dmw7noks mjx phup488\n\n### 5jtrb4gnwr45gifl01\n- Fields: pg34atskdne9q4lvx2x1er7f7abftqtm9yl5f70e6fwflxxsv0obkld8pdkigk2m80q6dxfnhw8iejdhhqh\nz Description: Showtimes 1aqvdssuqn data\n- ysx78tm6y\n2 t850bz9pq8qg5sf0nskxg77ituegkivnu\n- `2|1|1|2025-02-01|22:30|12.99|40`\n- dxkv4jtpnj09uvo7478d4s3vzbn84o4t8\n\n4b3 vhcj9hy1udncy1\ng Fields: x3a8104lqal98sli2niqqc5b9yvnmwa6ogespu0zaj125cc11h0y8edwif\nf 9fe8fv8g1a8g 5zf1 inventory 08f oz6erc\n- 98k3qjd2t\ns `1|1|1|A|1|Standard|Available`\n- iv4vuecrjdcegxxy3ewx56zqsp6h8e\nc itkllzjvvyzdowc7bsmrxy66fd\n\n0w4 data/bookings.txt\n5 eozm1f6 `booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked`\ny Description: Records 5d bookings\nn kt1kr5fpt\n- 874qc7sav Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`\nd r1esjif1r Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10`\nf msk9k1sxrb1 Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`\n\niqr data/genres.txt\n- 25dk0nf `genre_id|genre_name|description`\n- Description: t637b genres 9q6aghp\n0 Examples:\na y2d7cv14dccn8nhdt0t6 vhtxc1 with 179w4237 sequences 4ie combat`\n- `2|Drama|Character-driven y11rwky d7pctbt43 bvsjkqa themes`\n5 2gq9oiwggpr8ho46p wcnnven with futuristic qbsd1bfrsg pqc concepts`\n\n---\n\n0uig 43 MovieTicketing exmlpu Specification*"
+      },
+      {
+        "timestamp": 1774770568.6238286,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/CaMP_0327_backup/results/Software-web-rebuttal/io_maxreflectionattempts_2/MovieTicketing/io_chaos/design_spec.md",
+        "before": "# MovieTicketing Application Design Specification\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Route Path                      | Function Name          | HTTP Method | Template Rendered          | Context Variables Passed to Template                                 |\n|--------------------------------|------------------------|-------------|----------------------------|----------------------------------------------------------------------|\n| `/`                            | `root_redirect`         | GET         | Redirect to `dashboard`    | None                                                                 |\n| `/dashboard`                  | `dashboard`             | GET         | `dashboard.html`           | `featured_movies` (list of dict with keys: movie_id:int, title:str, rating:float) |\n| `/movies`                    | `movie_catalog`         | GET         | `movie_catalog.html`       | `movies` (list of dict: movie_id:int, title:str, genre:str, rating:float, duration:int), `genres` (list of dict: genre_name:str) |\n| `/movies/<int:movie_id>`      | `movie_details`         | GET         | `movie_details.html`       | `movie` (dict: movie_id:int, title:str, director:str, genre:str, rating:float, duration:int, description:str, release_date:str) |\n| `/movies/<int:movie_id>/showtimes` | `select_showtime`    | GET         | `select_showtime.html`     | `movie` (as above), `showtimes` (list of dict: showtime_id:int, theater_name:str, showtime_date:str, showtime_time:str, price:float), `theaters` (list of dict: theater_id:int, theater_name:str), `selected_theater_filter` (str), `selected_date_filter` (str) |\n| `/showtimes/<int:showtime_id>/seats` | `seat_selection`  | GET         | `seat_selection.html`      | `showtime` (dict: showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str, price:float), `seats` (list of dict: seat_id:int, row:str, column:int, seat_type:str, status:str), `selected_seats` (list of str) |\n| `/showtimes/<int:showtime_id>/seats` | `seat_selection_post` | POST        | Redirect to `booking_confirmation` (after processing seat selections) | Form data: `selected_seats` (list of seat IDs as str) |\n| `/booking/confirm`            | `booking_confirmation_get` | GET      | `booking_confirmation.html` | `booking_details` (dict: movie_title:str, showtime_date:str, showtime_time:str, seats:list of str, total_price:float) |\n| `/booking/confirm`            | `booking_confirmation_post` | POST     | Redirect to `booking_history` (after booking created) | Form data: `customer_name` (str), `customer_email` (str), `selected_seats` (list of str), `showtime_id` (int) |\n| `/bookings`                  | `booking_history`       | GET         | `booking_history.html`      | `bookings` (list of dict: booking_id:int, movie_title:str, showtime_date:str, seats:list of str, status:str), `status_filter` (str) |\n| `/bookings/<int:booking_id>`  | `view_booking`          | GET         | `booking_details.html`      | `booking` (dict: booking_id:int, movie_title:str, showtime_date:str, seats:list of str, customer_name:str, customer_email:str, total_price:float, status:str) |\n| `/theaters`                  | `theater_information`   | GET         | `theater_information.html` | `theaters` (list of dict: theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str), `location_filter` (str) |\n\n---\n\n## Section 2: HTML Template Specifications\n\n### 1. templates/dashboard.html\n- **Page Title**: Movie Ticketing Dashboard\n- **Header <h1>**: Movie Ticketing Dashboard\n- **Element IDs and Types:**\n  - `dashboard-page`: Div, Container for dashboard page\n  - `featured-movies`: Div, Displays featured movie recommendations\n  - `browse-movies-button`: Button, Navigates to `movie_catalog` route\n  - `view-bookings-button`: Button, Navigates to `booking_history` route\n  - `showtimes-button`: Button, Navigates to `select_showtime` route general or possibly dashboard link to showtimes\n\n### 2. templates/movie_catalog.html\n- **Page Title**: Movie Catalog\n- **Header <h1>**: Movie Catalog\n- **Element IDs and Types:**\n  - `catalog-page`: Div, Container for catalog page\n  - `search-input`: Input, Search movies by title or genre\n  - `genre-filter`: Dropdown, Filter movies by genre\n  - `movies-grid`: Div, Grid to display movie cards\n  - `view-movie-button-{movie_id}`: Button, To view movie detail page for given `movie_id`\n\n### 3. templates/movie_details.html\n- **Page Title**: Movie Details\n- **Header <h1>**: Movie Details\n- **Element IDs and Types:**\n  - `movie-details-page`: Div, Container for movie details page\n  - `movie-title`: H1, Displays movie's title\n  - `movie-director`: Div, Displays movie director\n  - `movie-rating`: Div, Displays movie rating\n  - `movie-description`: Div, Displays movie description\n  - `select-showtime-button`: Button, Navigates to `select_showtime` route for this movie\n\n### 4. templates/select_showtime.html\n- **Page Title**: Select Showtime\n- **Header <h1>**: Select Showtime\n- **Element IDs and Types:**\n  - `showtime-page`: Div, Container for showtime selection\n  - `showtimes-list`: Div, List of showtimes\n  - `theater-filter`: Dropdown, Filter showtimes by theater\n  - `date-filter`: Input, Filter showtimes by date\n  - `select-showtime-button-{showtime_id}`: Button, Select specific showtime\n\n### 5. templates/seat_selection.html\n- **Page Title**: Select Seats\n- **Header <h1>**: Select Seats\n- **Element IDs and Types:**\n  - `seat-selection-page`: Div, Container for seat selection\n  - `seat-map`: Div, Interactive seat map\n  - `selected-seats-display`: Div, Displays currently selected seats\n  - `seat-{row}{col}`: Button, Individual seats e.g. seat-A1\n  - `proceed-booking-button`: Button, Proceeds to booking confirmation\n\n### 6. templates/booking_confirmation.html\n- **Page Title**: Booking Confirmation\n- **Header <h1>**: Booking Confirmation\n- **Element IDs and Types:**\n  - `confirmation-page`: Div, Container for booking confirmation\n  - `booking-summary`: Div, Booking details summary\n  - `customer-name`: Input, Field for customer name\n  - `customer-email`: Input, Field for customer email\n  - `confirm-booking-button`: Button, Confirms booking and submits\n\n### 7. templates/booking_history.html\n- **Page Title**: Booking History\n- **Header <h1>**: Booking History\n- **Element IDs and Types:**\n  - `bookings-page`: Div, Container for bookings page\n  - `bookings-table`: Table, Displays booking records\n  - `view-booking-button-{booking_id}`: Button, View details for each booking\n  - `status-filter`: Dropdown, Filter bookings by status\n  - `back-to-dashboard`: Button, Navigates back to dashboard\n\n### 8. templates/theater_information.html\n- **Page Title**: Theater Information\n- **Header <h1>**: Theater Information\n- **Element IDs and Types:**\n  - `theater-page`: Div, Container for theater info page\n  - `theaters-list`: Div, List of theaters\n  - `theater-location-filter`: Dropdown, Filter theaters by location\n  - `facilities-display`: Div, Displays facilities and amenities\n  - `back-to-dashboard`: Button, Navigates back to dashboard\n\n---\n\n## Section 3: Data File Schemas\n\n### data/movies.txt\n- Fields: `movie_id|title|director|genre|rating|duration|description|release_date`\n- Description: Contains all movie information\n- Examples:\n  - `1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31`\n  - `2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16`\n  - `3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23`\n\n### data/theaters.txt\n- Fields: `theater_id|theater_name|location|city|screens|facilities`\n- Description: Stores theater details\n- Examples:\n  - `1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access`\n  - `2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking`\n  - `3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge`\n\n### data/showtimes.txt\n- Fields: `showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats`\n- Description: Showtimes scheduling data\n- Examples:\n  - `1|1|1|2025-02-01|19:00|12.99|85`\n  - `2|1|1|2025-02-01|22:30|12.99|40`\n  - `3|2|2|2025-02-01|18:00|14.99|95`\n\n### data/seats.txt\n- Fields: `seat_id|theater_id|screen_id|row|column|seat_type|status`\n- Description: Seat inventory and status\n- Examples:\n  - `1|1|1|A|1|Standard|Available`\n  - `2|1|1|A|2|Standard|Available`\n  - `3|1|1|B|5|Premium|Booked`\n\n### data/bookings.txt\n- Fields: `booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked`\n- Description: Records of bookings\n- Examples:\n  - `1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`\n  - `2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10`\n  - `3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`\n\n### data/genres.txt\n- Fields: `genre_id|genre_name|description`\n- Description: Movie genres catalog\n- Examples:\n  - `1|Action|Fast-paced movies with exciting sequences and combat`\n  - `2|Drama|Character-driven stories exploring complex themes`\n  - `3|Sci-Fi|Science fiction with futuristic technology and concepts`\n\n---\n\n*End of MovieTicketing Design Specification*",
+        "after": "# 7i6ey5f457xh5c Application nusze0 eodlu62yonfa4\n\nczq\n\nba r7qm6bw 1: Flask h4w9wf Specification\n\n| 9s219 rctw | ihmsx61x zibm | HTTP Method x t3yus4my 5k02c6yd | zkiuxfc rv1gf5ls9 bfagm6 k0 m1t8dp8r |\nbgowuzqr85xok4xks9mmjjuf1t9z5oqmcbl70l2eeu1kbqdqg6gdjsxvk33v80o58y1xf11ay6v3tcxu5595ffaznke9ob0uhks363qrszic21bmteyicsrgazljy9sszx4x9g3ku4r70593iq0jl7ibbe0geixi4mgs7ozk08948\na tve s zpye5z0hxnjhi4k | GET 8 3n0i8qhn to 7ncssrx017f | None x\n| po6bidgaruag 0 1p6gqhdrasx b 6sy | 83kjofhuno1ced5a p 7f14f96m2nl5fw7dw 6p6jy of dict 3f4h keys: 7gzni42lvrwu7 title:str, rating:float) j\n| `/movies` 3 p6buc36aebni3cu | tnm a n8xiruc1f27rf63wctq4 | `movies` (list pb 3n40s movie_id:int, l0a5ad9ikk qj48cfm9bx 0rokcmevplk4p duration:int), `genres` b81bk kn dict: aogokir2onuravu |\nv `/movies/<int:movie_id>` g e7gq6sgm7v31agz | GET e `movie_details.html` | eayrz6t (dict: movie_id:int, ioqhxjfqby qsp1tg2cvge9x dv64mlmkih rating:float, 9d1k0bn05sl7v description:str, release_date:str) j\n| ejmhx70kjidz057q02iejkbdnfmh7gqc2j l li4tc61uf61av8ir5 | ib5 | cqii98zpsru1hy8i59dmwf h kyil4at (as z5vuh7h ixoq2elq052 (list op dict: showtime_id:int, 17w6w7g3fx6g6sho7 krptpw29h0x8v9lg75 showtime_time:str, price:float), `theaters` (list 04 lmdmt theater_id:int, theater_name:str), 6d054kf40p3mlkcwpna7epxhc (str), uv7rsqq6j9q3er6wdzt55g bhb9c |\nd 4c1nwtpdbirn19ng0zlsrh5fmgc31ufigfat 2 `seat_selection` k GET y `seat_selection.html` c yv3tssedhw (dict: showtime_id:int, movie_title:str, ix7loupncwv2f5n05 omnqjc55p14ygozafc showtime_time:str, 0wza0aq5w7vm3 `seats` xiuop 2y nlezv seat_id:int, row:str, 5oq06mw2mzv otbw2dy5jcmi86 dwdso4pw4vso qa92ju1kl17dn8gc hfvqf 6r rgk8 |\nf `/showtimes/<int:showtime_id>/seats` u yphqlcjt0y2crecxyf29c | POST s Redirect pj hd7xl11tx8xhl8e19opng7 j5m9zw tg3waw3ly9 seat ubygejm9opi 6 Form data: y7o1sdvhz4kt81yw xz51d ph seat IDs nr str) d\na `/booking/confirm` | aqqrnerak3zzthr55a6rbwrt6k v GET | t6eidyvly7ia646t0ya28t20acd | uui3zbmfm7xhlwn7r (dict: ga3lmemsy65jeeud 6udfr1paihfkjaizvq showtime_time:str, jsadkbyj6d ul str, zuqxmined54e4y7l4p |\ni `/booking/confirm` h 2702ze9h0dene40fcxcfuls87qv l POST l 9y2ps4ss to `booking_history` 861i6j lpeofhs created) | ljmi 6dk7o `customer_name` cocrg2 eiwkf8m7zdbmb97t g93zs6 `selected_seats` stnjw of str), 137818uvj8172 l9dli j\ns `/bookings` z 7jyoilc1gp7h3a0s3 | GET | fj36uciacnsm8swmkg3ioo | `bookings` uhmdr ji 1apyc booking_id:int, e84v6joa50tgc8r5 8ki4dpcgito86hy1bt 5a1twlbok5 of str, i73kesly3vrd opf9e1zf069xhqp (str) |\na 6tupabvjdqsbx89ksa7phzeksz72 o `view_booking` y GET z `booking_details.html` | `booking` xis8qk booking_id:int, movie_title:str, showtime_date:str, g7643qaqpx hw ynw1 customer_name:str, o0utgpkj7fzz147ozz2 6u18k6aeucphi5snf6 status:str) |\n9 jxdvnkh6t0h 3 `theater_information` b e9j 5 `theater_information.html` x ahazje8sxg qae4t jl dict: w7hz439gqn4xfd0 iiao3lyrgdb5j63nm location:str, 0v4rs0hh6 qe7r81wp3049 facilities:str), bqclvg98xxuo0ei7s 0c7ok 3\n\n---\n\n6i Section 2: HTML 85rquak6 lgidi08jegxnz4\n\n9qy 1. templates/dashboard.html\n- **Page Title**: Movie ybb7nv27k Dashboard\ng jddbm0ja <h1>**: Movie 4isjcoh28 5nq9re6yv\n3 jyhgju5k7 qfv and Types:**\na wnxjjgsvvzwrtd9kx 5ea8 4cjt4x9lp g9z zx6acu4ot k2px\n- mxj7zxfwg8s4u0etoq ts93 nofxkx3b hf9w2l0x movie dwoq34kle4i8hke\n- 0u8vcomuvqam0baist5karf 5vwbdsc Navigates to k1xiroth0k4exou route\n- `view-bookings-button`: xqa01lv Navigates tc `booking_history` tbwq0\ns s7lkwh02md4wh7zxdor Button, Navigates xi psdevfxzantgwdel5 route general ld possibly jn0czlyfv link to cziq7esx9\n\n### b9 r0v4pwje5pwjladyy0or3pfync1y\no 15sdjf fl031nc6 fstav sgf2daf\n8 **Header uu6y3c0 Movie y6rstpt\nq uyj6v87c6 IDs and Types:**\n- uphpss0ul8c6rzk hhz5 0sabwtf8x yl7 e7kib43 page\nc 1s8blv4cu2z2fv4 oqk860 Search yfwmyf 2u title or izgds\n- 5luymtucgmzm6a4 Dropdown, Filter movies y4 it1xl\n- hjvaptzghtscti yogg Grid to display movie du70t\nk nh23l4fiscwnapygf9iz6wdvxya6r476tnr66g Button, To view movie ctlsmk aj9t for y9cba z19ozjrtgp\n\ntpm 3. templates/movie_details.html\n- **Page 4uekz7eo Movie wla3e6o\n3 **Header ebdyxc9 lqe2p 7io107w\n- zj0d3yu8k IDs oh6 d0j911ak\nk `movie-details-page`: Div, pyyg6jja0 for movie qsx5sek qg1s\nm un7d8454c8gqzo id5 wbz5tncr rp324h1 title\nd `movie-director`: Div, 94l3wego movie director\nc 0eun545ydpc8z97 Div, Displays ql2lp rating\n2 `movie-description`: Div, zqe3yj7y mgsjf description\n- igv92f76tezw0j8wboc8dd1cq 941pe5f cgn7z9dbt on `select_showtime` z7drh bmf 7k45 0gyyv\n\nul3 ih cwrad1q1mn37z9gw51lfez3kkz2nix\n3 **Page 7pe8r689 7ge01y omws9eaa\n- 562siscx q2tmo9x 9ouhwe dhkygn4v\nj **Element IDs dcy 7e2u9kcr\nj `showtime-page`: Div, Container am4 3flynbx1 0gt73o2kx\n- vc43w6rtitgx25rah Div, List of sa4s84z99\n- atawglam3y2s08sd4 Dropdown, 7nex9q nlch6fcci 0v owyhffe\n7 2otsgnyqug0gqi pqjdo2 Filter showtimes by date\n- r0aqy74yfeqcupvq3fx9dr0v0mwl25kow5hpe7sbr2r ajmbjon Select g160tu8q showtime\n\n27m zv qiktn0pu7kto3sdxkpqchoajysglq\ny twvk24 Title**: Select x6f9l\ns b8qte4z4 wo3j3a0 jopm92 8naqj\n- ivsbzk3bq IDs and p9jw4svl\n- `seat-selection-page`: Div, Container v2a seat ng77y9qke\n7 hwui2o19q4f 0j6p mnq77q23pr1 xpzp map\n2 `selected-seats-display`: Div, Displays 7e75n366y jyy29k9e seats\np xbx752mtu5ysipsgbd3z948g7g3tdbeabzwnuxmoy7 d29sdbs Individual seats e.g. 1tlndqn\n- on1mv16lr0x8qsnwn37ml0hos Button, Proceeds to booking confirmation\n\n### r5 n6y8hfhe2t4575ethefzsmpfk6g2vu81j8c\ne vm1n6x Title**: Booking f190w684syvq\n3 1ghk6qa5 fm59i6d q90zlif avug45ab8hjd\n- 4b2v1wt1p 6d8 l18 mvimrv3v\ny `confirmation-page`: 9wwj d995vx3e0 1p5 booking azf1rleibkr6\n4 xgdec5fm0jii2eqs0y w2in Booking z8jpu6q x8bb995\n- b0fxom0q2upn0g7x Input, esoqw 912 customer name\nj 2lo8s5h9g8jur7ewy 4257u6 cwneu for customer zaaji\nz mg9uf1pvvan06rr00ks12jbnl moqhcu3 Confirms zpgk6ax and e3dw2pi\n\n### 7. du2u1hs8z6bgrhumaxbm6fq7polded\n9 ukqrid 8mi42jsk Booking dek9g4h\nn x1e3vvqh <h1>**: Booking j5idvak\ni 31hlz9up4 j2s st7 60ejy66m\nt `bookings-page`: 86om Container for r98l3nfu page\n- `bookings-table`: gz4l1l Displays 7585s7w zv9ekry\n- zd7k6svkslzh0nfla8ivo5z4eqiy8vwiwi3fh7zf lsicsdu og33 8b1zifh wx9 each xgaipwa\n0 prh5t4wvxa74sl5s Dropdown, Filter e7uhgyqn tw jug2w5\nh `back-to-dashboard`: Button, as2mqhhns or2z xw 2prtb1na8\n\nwa6 uo dvrmkwp5piaft70y6wbb6q3ndjlztf8ihi\n4 adwtq2 5cod05mc Theater Information\n- vcqj9gjw mvl0ukx Theater Information\np **Element u2o gvm 430av6d9\nq `theater-page`: Div, ewx99x2vw gt9 3ysj32a info page\nu `theaters-list`: elns fxvw 2c ecnawpv4\nl 94w9kieea8spfbogrr1e1vtyio Dropdown, 35x7ss theaters sy location\nu foicmoui8k2nl15zih04a cvuw ugppucjn facilities 1ex v80ss0fpp\n- `back-to-dashboard`: gby3si9 Navigates pr7h j0 bqv3yiqd9\n\n---\n\n4z 3e21evh j9 pyh9 File 5sam3yx\n\nvib didkhc0c2iv6ijh\n- Fields: `movie_id|title|director|genre|rating|duration|description|release_date`\nl kb4szbq2aal3 Contains uot movie information\n7 Examples:\n6 fifpa4 Matrix|Lana r6qu0tbmgtoro7c4cac63idxwg computer o4t0kh xkqnat about ej2 hq2i akrwqg of 2w27jns b8k c03 e9yz 2q 0b1 k2o ezsaudh its controllers.|1999-03-31`\nx `2|Inception|Christopher ltf72p7g0gf5k2mawjz980 w6y4skw thief who bgz1fv corporate secrets k594oiv 6rd 8uq of dream-sharing g71cq7dgc8 5m 2a0rn r10 dcgm09v 9p6k tm planting an idea.|2010-07-16`\nw j5yoya Shawshank Redemption|Frank mgwh9d1zngmjkujiotwawghyxw 2s696cj9pn nlg zwm1 pfid 8 number of u6qmdr finding solace and eventual oiatuxe0iq through erpv of yup7cb decency.|1994-09-23`\n\n### v0sacgglobb25xkic\nw Fields: `theater_id|theater_name|location|city|screens|facilities`\ne r33il8yinc0b fjqd1j kwh2mpe qf37amj\np 7ojj1xlvs\n4 9gz9ldw1w Max|123 dlia bx6dt0 jflvuv0odvb6q Dolby, 2jn8y43a15 Access`\nz c4rggv1qb mplqgqsce7l Broadway|Los Angeles|8|3D, Premium qwj0dq ck3s2n16\ng 80lv9xkmzg6q Theater|789 Park 8o0fqu9dor9m0x1i3i45 p6t4c623 nw3dmw7noks mjx phup488\n\n### 5jtrb4gnwr45gifl01\n- Fields: pg34atskdne9q4lvx2x1er7f7abftqtm9yl5f70e6fwflxxsv0obkld8pdkigk2m80q6dxfnhw8iejdhhqh\nz Description: Showtimes 1aqvdssuqn data\n- ysx78tm6y\n2 t850bz9pq8qg5sf0nskxg77ituegkivnu\n- `2|1|1|2025-02-01|22:30|12.99|40`\n- dxkv4jtpnj09uvo7478d4s3vzbn84o4t8\n\n4b3 vhcj9hy1udncy1\ng Fields: x3a8104lqal98sli2niqqc5b9yvnmwa6ogespu0zaj125cc11h0y8edwif\nf 9fe8fv8g1a8g 5zf1 inventory 08f oz6erc\n- 98k3qjd2t\ns `1|1|1|A|1|Standard|Available`\n- iv4vuecrjdcegxxy3ewx56zqsp6h8e\nc itkllzjvvyzdowc7bsmrxy66fd\n\n0w4 data/bookings.txt\n5 eozm1f6 `booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked`\ny Description: Records 5d bookings\nn kt1kr5fpt\n- 874qc7sav Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`\nd r1esjif1r Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10`\nf msk9k1sxrb1 Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`\n\niqr data/genres.txt\n- 25dk0nf `genre_id|genre_name|description`\n- Description: t637b genres 9q6aghp\n0 Examples:\na y2d7cv14dccn8nhdt0t6 vhtxc1 with 179w4237 sequences 4ie combat`\n- `2|Drama|Character-driven y11rwky d7pctbt43 bvsjkqa themes`\n5 2gq9oiwggpr8ho46p wcnnven with futuristic qbsd1bfrsg pqc concepts`\n\n---\n\n0uig 43 MovieTicketing exmlpu Specification*"
+      },
+      {
+        "timestamp": 1774770591.4185903,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_WORD_REPLACEMENT",
+        "details": "WordReplacement: 579/965 words replaced (60%)",
+        "category": "noise",
+        "method": "WordReplacement",
+        "before": "# MovieTicketing Application Design Specification\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Route Path                               | Function Name               | HTTP Method | Template Rendered           | Context Variables Passed to Template                                                |\n|-----------------------------------------|-----------------------------|-------------|-----------------------------|-------------------------------------------------------------------------------------|\n| `/`                                     | `root_redirect`              | GET         | Redirect to `/dashboard`     | None                                                                                |\n| `/dashboard`                            | `dashboard`                 | GET         | `dashboard.html`             | `featured_movies` (list of dict: `{movie_id:int, title:str, rating:float}`)         |\n| `/movies`                              | `movie_catalog`             | GET         | `movie_catalog.html`         | `movies` (list of dict: `{movie_id:int, title:str, genre:str, rating:float, duration:int}`), `genres` (list of dict: `{genre_name:str}`) |\n| `/movies/<int:movie_id>`                | `movie_details`             | GET         | `movie_details.html`         | `movie` (dict: `{movie_id:int, title:str, director:str, genre:str, rating:float, duration:int, description:str, release_date:str}`)          |\n| `/movies/<int:movie_id>/showtimes`     | `select_showtime`           | GET         | `select_showtime.html`       | `movie` (as above), `showtimes` (list of dict: `{showtime_id:int, theater_name:str, showtime_date:str, showtime_time:str, price:float}`), `theaters` (list of dict: `{theater_id:int, theater_name:str}`), `selected_theater_filter` (str), `selected_date_filter` (str) |\n| `/showtimes/<int:showtime_id>/seats`  | `seat_selection_get`        | GET         | `seat_selection.html`        | `showtime` (dict: `{showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str, price:float}`), `seats` (list of dict: `{seat_id:int, row:str, column:int, seat_type:str, status:str}`), `selected_seats` (list of str) |\n| `/showtimes/<int:showtime_id>/seats`  | `seat_selection_post`       | POST        | Redirect to `/booking/confirm` | Form data: `selected_seats` (list of str)                                           |\n| `/booking/confirm`                     | `booking_confirmation_get`  | GET         | `booking_confirmation.html`  | `booking_details` (dict: `{movie_title:str, showtime_date:str, showtime_time:str, seats:list of str, total_price:float}`)                       |\n| `/booking/confirm`                     | `booking_confirmation_post` | POST        | Redirect to `/bookings`      | Form data: `customer_name` (str), `customer_email` (str), `selected_seats` (list of str), `showtime_id` (int)    |\n| `/bookings`                           | `booking_history`           | GET         | `booking_history.html`       | `bookings` (list of dict: `{booking_id:int, movie_title:str, showtime_date:str, seats:list of str, status:str}`), `status_filter` (str)          |\n| `/bookings/<int:booking_id>`           | `view_booking`              | GET         | `booking_details.html`       | `booking` (dict: `{booking_id:int, movie_title:str, showtime_date:str, seats:list of str, customer_name:str, customer_email:str, total_price:float, status:str}`) |\n| `/theaters`                           | `theater_information`       | GET         | `theater_information.html`  | `theaters` (list of dict: `{theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}`), `location_filter` (str)  |\n\n---\n\n## Section 2: HTML Template Specifications\n\n### 1. templates/dashboard.html\n- **Page Title**: Movie Ticketing Dashboard\n- **Header <h1>**: Movie Ticketing Dashboard\n- **Element IDs and Types:**\n  - `dashboard-page`: Div - Container for the dashboard page\n  - `featured-movies`: Div - Displays featured movie recommendations\n  - `browse-movies-button`: Button - Navigates to `movie_catalog` function\n  - `view-bookings-button`: Button - Navigates to `booking_history` function\n  - `showtimes-button`: Button - Navigates to `select_showtime` function (general or movie-centered)\n\n### 2. templates/movie_catalog.html\n- **Page Title**: Movie Catalog\n- **Header <h1>**: Movie Catalog\n- **Element IDs and Types:**\n  - `catalog-page`: Div - Container for movie catalog\n  - `search-input`: Input - Search movies by title or genre\n  - `genre-filter`: Dropdown - Filter movies by genre\n  - `movies-grid`: Div - Movie cards grid\n  - `view-movie-button-{movie_id}`: Button - View details of movie with given `movie_id`\n\n### 3. templates/movie_details.html\n- **Page Title**: Movie Details\n- **Header <h1>**: Movie Details\n- **Element IDs and Types:**\n  - `movie-details-page`: Div - Movie details container\n  - `movie-title`: H1 - Displays movie title\n  - `movie-director`: Div - Displays movie director\n  - `movie-rating`: Div - Displays movie rating\n  - `movie-description`: Div - Displays movie description\n  - `select-showtime-button`: Button - To proceed to showtime selection for this movie\n\n### 4. templates/select_showtime.html\n- **Page Title**: Select Showtime\n- **Header <h1>**: Select Showtime\n- **Element IDs and Types:**\n  - `showtime-page`: Div - Container for showtime selection\n  - `showtimes-list`: Div - Lists available showtimes\n  - `theater-filter`: Dropdown - Filter showtimes by theater\n  - `date-filter`: Input - Filter showtimes by date\n  - `select-showtime-button-{showtime_id}`: Button - Select given showtime\n\n### 5. templates/seat_selection.html\n- **Page Title**: Select Seats\n- **Header <h1>**: Select Seats\n- **Element IDs and Types:**\n  - `seat-selection-page`: Div - Seat selection container\n  - `seat-map`: Div - Interactive seat map\n  - `selected-seats-display`: Div - Displays currently selected seats\n  - `seat-{row}{col}`: Button - Seat button by row/column, e.g. seat-A1\n  - `proceed-booking-button`: Button - To proceed to booking confirmation\n\n### 6. templates/booking_confirmation.html\n- **Page Title**: Booking Confirmation\n- **Header <h1>**: Booking Confirmation\n- **Element IDs and Types:**\n  - `confirmation-page`: Div - Container for booking confirmation\n  - `booking-summary`: Div - Summary of booking details (movie, showtime, seats, total)\n  - `customer-name`: Input - Customer name field\n  - `customer-email`: Input - Customer email field\n  - `confirm-booking-button`: Button - Confirm and complete booking\n\n### 7. templates/booking_history.html\n- **Page Title**: Booking History\n- **Header <h1>**: Booking History\n- **Element IDs and Types:**\n  - `bookings-page`: Div - Container for bookings list\n  - `bookings-table`: Table - Displays booking records\n  - `view-booking-button-{booking_id}`: Button - View booking details for given booking\n  - `status-filter`: Dropdown - Filter bookings by status\n  - `back-to-dashboard`: Button - Navigate back to dashboard\n\n### 8. templates/theater_information.html\n- **Page Title**: Theater Information\n- **Header <h1>**: Theater Information\n- **Element IDs and Types:**\n  - `theater-page`: Div - Container for theater info\n  - `theaters-list`: Div - List of theaters with details\n  - `theater-location-filter`: Dropdown - Filter theaters by location\n  - `facilities-display`: Div - Displays facilities and amenities\n  - `back-to-dashboard`: Button - Navigate back to dashboard\n\n---\n\n## Section 3: Data File Schemas\n\n### data/movies.txt\n- Fields: `movie_id|title|director|genre|rating|duration|description|release_date`\n- Description: Contains all movies with details\n- Examples:\n  - `1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31`\n  - `2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16`\n  - `3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23`\n\n### data/theaters.txt\n- Fields: `theater_id|theater_name|location|city|screens|facilities`\n- Description: Details about theaters\n- Examples:\n  - `1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access`\n  - `2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking`\n  - `3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge`\n\n### data/showtimes.txt\n- Fields: `showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats`\n- Description: Showtimes for movies in theaters\n- Examples:\n  - `1|1|1|2025-02-01|19:00|12.99|85`\n  - `2|1|1|2025-02-01|22:30|12.99|40`\n  - `3|2|2|2025-02-01|18:00|14.99|95`\n\n### data/seats.txt\n- Fields: `seat_id|theater_id|screen_id|row|column|seat_type|status`\n- Description: Seat information (location, type, status)\n- Examples:\n  - `1|1|1|A|1|Standard|Available`\n  - `2|1|1|A|2|Standard|Available`\n  - `3|1|1|B|5|Premium|Booked`\n\n### data/bookings.txt\n- Fields: `booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked`\n- Description: Bookings records with details\n- Examples:\n  - `1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`\n  - `2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10`\n  - `3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`\n\n### data/genres.txt\n- Fields: `genre_id|genre_name|description`\n- Description: Movie genres catalog\n- Examples:\n  - `1|Action|Fast-paced movies with exciting sequences and combat`\n  - `2|Drama|Character-driven stories exploring complex themes`\n  - `3|Sci-Fi|Science fiction with futuristic technology and concepts`\n\n---\n\n*End of MovieTicketing Design Specification*",
+        "after": "y MovieTicketing f27or6wwjj7 Design Specification\n\nllj\n\n## Section mz Flask Routes d8helg721h37t\n\nl a0igr zyvh r u0bc24qq Name | y5gq Method c v1g9iu8a 1p4q9r6k | st50h34 wq1qb16ce Passed yl q1lfsidm |\nirs4bng0hmffstptf5wq2n1f79f51pwfb5v5w11q3jjeqzziabllmrpb81phnfmcl9ed3y6bn7y7d9ow9fqc398kebhpnc9pnyzvn0k6pxyhtciidtmh6fzxqc0xr1wbo3kl90bod7aweusm6ej2soa2o6a5z5mcvflme3xq2oj6t3504269ythplfrip5ax5ndg2mirmir\n5 jgh | `root_redirect` 5 wki | h8l6kxpe 44 `/dashboard` p hnjz |\n5 6pftkq1ddx8p p `dashboard` 8 emn | yn5yduj56d5sqc6c 0 5r0521lgg686odl8s y7f5v uj x8icl `{movie_id:int, title:str, rating:float}`) |\n6 g2a658q2a | `movie_catalog` o 3gy d `movie_catalog.html` | `movies` (list pf dict: gc7liygevpe0nbx1m00q4 cn7cwhhe 4ms0b of imgmk hd9oc1p8o2dxe64x5243 b\n| `/movies/<int:movie_id>` o `movie_details` 7 y6a y `movie_details.html` f 2y6y3u2 himu1q 2ox0s6zkuungdfs9bdqx |\na `/movies/<int:movie_id>/showtimes` | blw0kkb3bpdcsvu2o 8 GET | `select_showtime.html` c `movie` (as above), qxa3763myv6 (list of dict: `{showtime_id:int, theater_name:str, showtime_date:str, showtime_time:str, price:float}`), sdyfwg25bc fp12e c1 3ekdh jx9ck56ahtk919908uh3m j5mwj9u5nv03qhh9erpromsfz xhaqm1 `selected_date_filter` 2d08d y\n| ez2g7lrcpl32m14698wh9aqw3q9r5882vkbt | xsyoxpn6uksphaui960n | kwx 7 `seat_selection.html` | b39sc3szct (dict: lmi9afw0n94l756ipsg34 5wpexyj (list of 19ebr 8dffrzhph92ih5da2pubn `selected_seats` (list c1 str) f\ns `/showtimes/<int:showtime_id>/seats` k 9kzq08nipjlbmj7121ar1 e c2w4 z lztg9yls to `/booking/confirm` c wqhq data: `selected_seats` (list of str) d\n6 cvtd77ui5jh1pyhbor g 0itt7klaw0hgiyk352zuts6ytr | zd5 6 `booking_confirmation.html` c rjx3p3ei0v5ewpask (dict: me5upemhp8ewolrfms01 |\nb krh6mc672pq7fjpkd1 | dazc9h191i0qtv91nx94mggnm58 n POST | Redirect mz ln09axr3zeh 7 lgin data: qwi1pes5inmawio fvt7e3 9shv90eh8ne3m8uy (str), opxdl5sco4a3qtad recxq of str), `showtime_id` (int) j\n| `/bookings` 0 dwr5ahmulli3kfm6q | GET b `booking_history.html` 9 `bookings` (list ia m3q52 owif32yiouzbmm53722ds wf5oxizj9kws248 o78ve o\n9 wfuaxd3vg7agjy29dkqio6teklri 5 `view_booking` | 8ak 5 6wgcamkn2lcbjyuxe4q6ui r 63rnfpsml (dict: `{booking_id:int, movie_title:str, showtime_date:str, seats:list of str, customer_name:str, customer_email:str, total_price:float, status:str}`) 6\n| `/theaters` | `theater_information` a GET z 8q5brm9ifd18oqctoaadtvo667 | y5yyh9qsfz bp6ye of 770v9 nub1p9w1tgejwdxtym3hab `location_filter` 8bbsp |\n\ngz1\n\n## Section 10 7prb wwnx2iwy 2pl0nf6r436rmp\n\n### vr templates/dashboard.html\n- **Page Title**: Movie Ticketing Dashboard\nd ruy7n0pl <h1>**: Movie Ticketing lg0k0dq5b\nh **Element xbt 3le Types:**\ng `dashboard-page`: Div - ytosyapmb riy o7j 94214jssb qmrg\n4 krxwg8eyih618vrkq4 bvz v gvvscrzy q96smm0k 7va78 674d77is6bktf9r\n- y9i8havcoi47gv0d3qp74lo 0hztel h Navigates vl `movie_catalog` function\nl `view-bookings-button`: Button u Navigates to netgjezmnwzna1tdr yf8o2qit\nj `showtimes-button`: 3sj99a h y0j99ocng to mxxpw8mik2jb1ssmq dmcs956q jki6g4gv or 0tjiwgswmrvt53k\n\n### my nseitcn6n53keitbmlto063f9jx9\nm w4x6jh 6l7qd10f u7ue0 Catalog\n- 0cr1mdch d9p1mgd Movie Catalog\n- **Element aa7 and 78yqqfoi\no gaxt3kkwgnhihzq 2fk - zu7biv2uv c7o uaikf catalog\n- `search-input`: Input - Search movies kk title or ielim\n3 `genre-filter`: tt3jgz8v - Filter 3clen7 lh genre\n- frybft2pxuzuvh Div - 1to0g esk7p grid\n- `view-movie-button-{movie_id}`: i4lhy3 - nnx1 q8sib7i u2 movie with given zu9zvksm41\n\ng8u yu 3va4typ3xz36q8jgsws15eliy81o\n- **Page wid4ddhc Movie Details\n- 8t5ro3yn ypt6w82 Movie Details\n- **Element 5ov and Types:**\n5 c72x6kjd4vreazm5cxlo3 ksc j Movie oebkibc 7jq9nllse\no 7xcke3qzyjadzn H1 w Displays movie irq9s\nv c2avgay37o5nswq5r j65 - Displays lsvze u8f4u6dv\ni 9fy2lz0er0v0u5f csz c Displays j1e12 otmpu2\n- `movie-description`: dby 5 vk4ijvsv 0rr9q fx90dq0r1d2\ne z3vjdanmiqthu5wye2x2t8674 du4e1q - s3 xkgj81v to gcm6blo6 5lkpr45l7 for this movie\n\n### u0 yu4teqw8j3h5kzy2a6kx8q4xrf123d\np yiljwo c1p6b2fy nxyoi6 Showtime\n- **Header q5l3jtq Select Showtime\nw ed7m9jymd IDs 4a5 Types:**\nh `showtime-page`: imk b yh0kw6v41 for bkhxsnx6 selection\n- `showtimes-list`: mun - z6cyo available s17e1on8u\n- llhxyi1rfmhtu88sb Dropdown c v4q2rq showtimes 4h nnl7pd2\nj `date-filter`: lps0d l lqmpjz gt6wfxqgd rh bre0\n0 rejhe0zfe40vx49sw5xbzzc9ak17vynz6xk0gp4ckbzv Button z jnxtol given ca95xufs\n\ndhf 5. templates/seat_selection.html\n- h4dbng yln222d6 Select Seats\n- k9pe3b00 uoel2xr Select haowx\nm 78l3fodcy bfh 6w0 i8ggpzvf\n- `seat-selection-page`: j2p 6 nl7g 0i3u87apj wqm7yytjm\n1 lts3bl5lbmg Div - ups1v5gd2ai seat fgk\n- c51eh8hzzyu2rdtylwvim05ez Div q Displays currently selected n0jqa\na tr5nk17tj2uvqneoe82q1us3dxchk38zc5dz90qka5v7 Button - Seat 6p7fvz cm row/column, 2oid seat-A1\n- h7prninozmyeok53udwiw3vnc x7rogu p u4 proceed to booking 4lg4mo8do86i\n\nl98 5w templates/booking_confirmation.html\nb gvi41u Title**: h2aag2k ppgul45eev82\n0 pc927ghz <h1>**: 973fztu Confirmation\n- xlcy48o2b uys 1vc ws38j8id\n1 im8wqep31li0hxgw7osr yoi 3 Container vji wrjl1pm 0c948s01b3bh\n- xhmbt1xezy15c5oo32 Div - Summary yj 33q68qs wva24oz 5fo094x showtime, vv4g38 bvqahp\n1 `customer-name`: Input - 0pykbogg name bq5ms\nb idjbpbjtg56cnug76 Input l o2btcjh3 g6875 field\n- 6o52hrqpmdm387ciy94z70luw uurk10 - uv3mujb df7 8isyf5u5 booking\n\nb1w 7. uobkan75cyn5ru4vqw17mfgm3x8o5c\n- **Page ih7uqwbc u6shrhm ino0h8z\n- s7tftyk0 h2a072m mw61aen ywi15jt\n- ayc0k1jxy IDs 8mp Types:**\n8 `bookings-page`: Div - 8c6bdqbuy c3p nv9jxx8a list\nh 8ybf90v85h1exmkc9 Table - fizql097 5pjihzj tc2et71\n1 `view-booking-button-{booking_id}`: Button - chwd liiqsfb details bg4 5iqey booking\n- `status-filter`: Dropdown s xizc58 bookings l8 status\n- `back-to-dashboard`: Button - l4zqlzzn 87yc to pxbz87wc2\n\nscj 8. mnznnqliowvastq5t1gqnfgqmw2vp0qbt5\nj jiktx1 zo2xd9wb 9fbg7ow vvk54jp17r9\n- x3qp9b9g 56opufj Theater Information\n0 5598lhyxg IDs and z7fcrjr8\n- `theater-page`: 23i - Container o0g i5p799h jp2q\nf 7d46gt51f326p6cg Div i 70hd mf an8xalrr a3ml details\n- w7u7k06y7byt4zzgapru8v73o6 Dropdown 5 Filter theaters jf 5qcy9425\n- 21fhhmbg2npov8z4nvlo8 Div b ben3hkai facilities and amenities\ne 54itm4puqnv1qfpegux9 Button - Navigate back to 5v2nukh39\n\ndra\n\n4z Section yk ljro x1jq fb4rydw\n\n### qg5snobvavhpxzp\na kooboo7 o3hzboifcytxl9xy72heoq6ffhi3dt5jmsk0smwutdsovcl2tkgj9gxewpa9la8dljowijxr\nk Description: vlnpwvdn 1r0 mldv9s 57wt lh9f8qc\nu Examples:\n- c9flgh siskzugsur4 Wachowski|Action|8.7|136|A computer hfpgpq learns about 8an hljz lvxa1y of n81s6vz dof do5 5pox in 8wv idl against hqt 7gj2q4sj4zc73co8vbvxmtd9\n7 `2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled rxke8 who steals udd1lps53 bptsfam 36m0n3a cuo 1vs vd kipjgahnftgh7 technology s7 given z3q rkve58t task wu planting oy 2cmlbub0ckggwhvu1\nf `3|The ku652zu40 Redemption|Frank hyje6rzf9lae3h9zzx268e4vxa wf8nn4nju8 x43 sb0l 6fa8 a number rb years, finding solace and eventual iujscosf7m kuadc6b nipw 0o common 91tvcc1nsemi2q1o8egb\n\nxe9 data/theaters.txt\n- n0ahkhl 5ewx2byixbeqrrou642811m7rjcz6vz5qhxsawzqfja0id1x1kzzbyz86x\n- sg11cp1lfs06 ouwery6 r8pt3 185zc8ki\n- Examples:\nm p7x4y7w26 Max|123 yk6s St|New York|10|IMAX, 9w44j3 lz2lqgf58x az33lsn\n8 cyu955a1f Cinemas|456 Broadway|Los bh9pxe2699ysl Premium Sound, Parking`\n9 `3|Starlight thpfw4xawac f8i9 1dubaculn78m8ibfbgm3 yuwy0rhc Restaurant, VIP 2ux4apc\n\nfhi yl3zt8mxaqrrt9nkxi\n- Fields: jlpt0bsmkq7peuudggaf5l7oicjkooo9at7wadce721rtxveirdz2yyihvpsm6dr3i8a65wcw2ixea3uexa\ne l6mrgjjhgspo Showtimes zcm yg346l eg qnq68nha\nu zzof92sin\nf 6gss9i2l540si2rc0d7sco64uf0hskm9r\nq bxycncz92twpxq33980w83gxr0zagv0ix\n- `3|2|2|2025-02-01|18:00|14.99|95`\n\nv1a to7uxnwq6v800a\ny mej7exz qfdjitivqoz6pjvv73s1w8ewrsuttqv44i2qovu1l77ex6li10zlcbgj6v\n- h2izi0a7w9ll l2y9 information jql89nz6an type, 8y2lsd4\no dcgh4nme1\n- `1|1|1|A|1|Standard|Available`\n- beygx0g51ipch8fnecxe4f10ujtdf3\nf jafodd4um9355zmph6a9jffgvt\n\n1qs qiu8nqcxkzrs9xaob\np Fields: 39yy6mzoj0zsrv0uow339xq9ekhsrgrakek8x6wqdopc4pst82npemi88zrnx8vw8ss9rpdd3qkkyho3q4rtzyzhp3xtr31uip\nz 32jahogbqwei Bookings p03snjy with roalrya\ni dpy1l2kd9\ny `1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`\ns iyf99zlzt uhagr66vp1ypeqwypcpj9d887oeugiqqmyna37rc5ym6uonx989pn6\ne `3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`\n\n### wonvhn9fszn7l6g\ng 3ihmntx zb9njtvvs1uly76oxd3tq9zg4a4mwlga8\n- Description: 9nqqb 9p1s7j 7tnrfb3\n- 0wmopf8yi\nk `1|Action|Fast-paced ks3248 4h4c oj6dkdb4 c1fcviw3p and biq0cdn\nn 4rcbwzu137l03vqd5ecii5ilh ixvm6k5 exploring lyatxxz themes`\ns `3|Sci-Fi|Science da1y3sv q4cy wj14ehsqs8 technology i8a concepts`\n\n---\n\nllhg jw wc2g3601gdzydv au5dwj Specification*"
+      },
+      {
+        "timestamp": 1774770591.425698,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/CaMP_0327_backup/results/Software-web-rebuttal/io_maxreflectionattempts_2/MovieTicketing/io_chaos/design_spec.md",
+        "before": "# MovieTicketing Application Design Specification\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Route Path                               | Function Name               | HTTP Method | Template Rendered           | Context Variables Passed to Template                                                |\n|-----------------------------------------|-----------------------------|-------------|-----------------------------|-------------------------------------------------------------------------------------|\n| `/`                                     | `root_redirect`              | GET         | Redirect to `/dashboard`     | None                                                                                |\n| `/dashboard`                            | `dashboard`                 | GET         | `dashboard.html`             | `featured_movies` (list of dict: `{movie_id:int, title:str, rating:float}`)         |\n| `/movies`                              | `movie_catalog`             | GET         | `movie_catalog.html`         | `movies` (list of dict: `{movie_id:int, title:str, genre:str, rating:float, duration:int}`), `genres` (list of dict: `{genre_name:str}`) |\n| `/movies/<int:movie_id>`                | `movie_details`             | GET         | `movie_details.html`         | `movie` (dict: `{movie_id:int, title:str, director:str, genre:str, rating:float, duration:int, description:str, release_date:str}`)          |\n| `/movies/<int:movie_id>/showtimes`     | `select_showtime`           | GET         | `select_showtime.html`       | `movie` (as above), `showtimes` (list of dict: `{showtime_id:int, theater_name:str, showtime_date:str, showtime_time:str, price:float}`), `theaters` (list of dict: `{theater_id:int, theater_name:str}`), `selected_theater_filter` (str), `selected_date_filter` (str) |\n| `/showtimes/<int:showtime_id>/seats`  | `seat_selection_get`        | GET         | `seat_selection.html`        | `showtime` (dict: `{showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str, price:float}`), `seats` (list of dict: `{seat_id:int, row:str, column:int, seat_type:str, status:str}`), `selected_seats` (list of str) |\n| `/showtimes/<int:showtime_id>/seats`  | `seat_selection_post`       | POST        | Redirect to `/booking/confirm` | Form data: `selected_seats` (list of str)                                           |\n| `/booking/confirm`                     | `booking_confirmation_get`  | GET         | `booking_confirmation.html`  | `booking_details` (dict: `{movie_title:str, showtime_date:str, showtime_time:str, seats:list of str, total_price:float}`)                       |\n| `/booking/confirm`                     | `booking_confirmation_post` | POST        | Redirect to `/bookings`      | Form data: `customer_name` (str), `customer_email` (str), `selected_seats` (list of str), `showtime_id` (int)    |\n| `/bookings`                           | `booking_history`           | GET         | `booking_history.html`       | `bookings` (list of dict: `{booking_id:int, movie_title:str, showtime_date:str, seats:list of str, status:str}`), `status_filter` (str)          |\n| `/bookings/<int:booking_id>`           | `view_booking`              | GET         | `booking_details.html`       | `booking` (dict: `{booking_id:int, movie_title:str, showtime_date:str, seats:list of str, customer_name:str, customer_email:str, total_price:float, status:str}`) |\n| `/theaters`                           | `theater_information`       | GET         | `theater_information.html`  | `theaters` (list of dict: `{theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}`), `location_filter` (str)  |\n\n---\n\n## Section 2: HTML Template Specifications\n\n### 1. templates/dashboard.html\n- **Page Title**: Movie Ticketing Dashboard\n- **Header <h1>**: Movie Ticketing Dashboard\n- **Element IDs and Types:**\n  - `dashboard-page`: Div - Container for the dashboard page\n  - `featured-movies`: Div - Displays featured movie recommendations\n  - `browse-movies-button`: Button - Navigates to `movie_catalog` function\n  - `view-bookings-button`: Button - Navigates to `booking_history` function\n  - `showtimes-button`: Button - Navigates to `select_showtime` function (general or movie-centered)\n\n### 2. templates/movie_catalog.html\n- **Page Title**: Movie Catalog\n- **Header <h1>**: Movie Catalog\n- **Element IDs and Types:**\n  - `catalog-page`: Div - Container for movie catalog\n  - `search-input`: Input - Search movies by title or genre\n  - `genre-filter`: Dropdown - Filter movies by genre\n  - `movies-grid`: Div - Movie cards grid\n  - `view-movie-button-{movie_id}`: Button - View details of movie with given `movie_id`\n\n### 3. templates/movie_details.html\n- **Page Title**: Movie Details\n- **Header <h1>**: Movie Details\n- **Element IDs and Types:**\n  - `movie-details-page`: Div - Movie details container\n  - `movie-title`: H1 - Displays movie title\n  - `movie-director`: Div - Displays movie director\n  - `movie-rating`: Div - Displays movie rating\n  - `movie-description`: Div - Displays movie description\n  - `select-showtime-button`: Button - To proceed to showtime selection for this movie\n\n### 4. templates/select_showtime.html\n- **Page Title**: Select Showtime\n- **Header <h1>**: Select Showtime\n- **Element IDs and Types:**\n  - `showtime-page`: Div - Container for showtime selection\n  - `showtimes-list`: Div - Lists available showtimes\n  - `theater-filter`: Dropdown - Filter showtimes by theater\n  - `date-filter`: Input - Filter showtimes by date\n  - `select-showtime-button-{showtime_id}`: Button - Select given showtime\n\n### 5. templates/seat_selection.html\n- **Page Title**: Select Seats\n- **Header <h1>**: Select Seats\n- **Element IDs and Types:**\n  - `seat-selection-page`: Div - Seat selection container\n  - `seat-map`: Div - Interactive seat map\n  - `selected-seats-display`: Div - Displays currently selected seats\n  - `seat-{row}{col}`: Button - Seat button by row/column, e.g. seat-A1\n  - `proceed-booking-button`: Button - To proceed to booking confirmation\n\n### 6. templates/booking_confirmation.html\n- **Page Title**: Booking Confirmation\n- **Header <h1>**: Booking Confirmation\n- **Element IDs and Types:**\n  - `confirmation-page`: Div - Container for booking confirmation\n  - `booking-summary`: Div - Summary of booking details (movie, showtime, seats, total)\n  - `customer-name`: Input - Customer name field\n  - `customer-email`: Input - Customer email field\n  - `confirm-booking-button`: Button - Confirm and complete booking\n\n### 7. templates/booking_history.html\n- **Page Title**: Booking History\n- **Header <h1>**: Booking History\n- **Element IDs and Types:**\n  - `bookings-page`: Div - Container for bookings list\n  - `bookings-table`: Table - Displays booking records\n  - `view-booking-button-{booking_id}`: Button - View booking details for given booking\n  - `status-filter`: Dropdown - Filter bookings by status\n  - `back-to-dashboard`: Button - Navigate back to dashboard\n\n### 8. templates/theater_information.html\n- **Page Title**: Theater Information\n- **Header <h1>**: Theater Information\n- **Element IDs and Types:**\n  - `theater-page`: Div - Container for theater info\n  - `theaters-list`: Div - List of theaters with details\n  - `theater-location-filter`: Dropdown - Filter theaters by location\n  - `facilities-display`: Div - Displays facilities and amenities\n  - `back-to-dashboard`: Button - Navigate back to dashboard\n\n---\n\n## Section 3: Data File Schemas\n\n### data/movies.txt\n- Fields: `movie_id|title|director|genre|rating|duration|description|release_date`\n- Description: Contains all movies with details\n- Examples:\n  - `1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31`\n  - `2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16`\n  - `3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23`\n\n### data/theaters.txt\n- Fields: `theater_id|theater_name|location|city|screens|facilities`\n- Description: Details about theaters\n- Examples:\n  - `1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access`\n  - `2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking`\n  - `3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge`\n\n### data/showtimes.txt\n- Fields: `showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats`\n- Description: Showtimes for movies in theaters\n- Examples:\n  - `1|1|1|2025-02-01|19:00|12.99|85`\n  - `2|1|1|2025-02-01|22:30|12.99|40`\n  - `3|2|2|2025-02-01|18:00|14.99|95`\n\n### data/seats.txt\n- Fields: `seat_id|theater_id|screen_id|row|column|seat_type|status`\n- Description: Seat information (location, type, status)\n- Examples:\n  - `1|1|1|A|1|Standard|Available`\n  - `2|1|1|A|2|Standard|Available`\n  - `3|1|1|B|5|Premium|Booked`\n\n### data/bookings.txt\n- Fields: `booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked`\n- Description: Bookings records with details\n- Examples:\n  - `1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`\n  - `2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10`\n  - `3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`\n\n### data/genres.txt\n- Fields: `genre_id|genre_name|description`\n- Description: Movie genres catalog\n- Examples:\n  - `1|Action|Fast-paced movies with exciting sequences and combat`\n  - `2|Drama|Character-driven stories exploring complex themes`\n  - `3|Sci-Fi|Science fiction with futuristic technology and concepts`\n\n---\n\n*End of MovieTicketing Design Specification*",
+        "after": "y MovieTicketing f27or6wwjj7 Design Specification\n\nllj\n\n## Section mz Flask Routes d8helg721h37t\n\nl a0igr zyvh r u0bc24qq Name | y5gq Method c v1g9iu8a 1p4q9r6k | st50h34 wq1qb16ce Passed yl q1lfsidm |\nirs4bng0hmffstptf5wq2n1f79f51pwfb5v5w11q3jjeqzziabllmrpb81phnfmcl9ed3y6bn7y7d9ow9fqc398kebhpnc9pnyzvn0k6pxyhtciidtmh6fzxqc0xr1wbo3kl90bod7aweusm6ej2soa2o6a5z5mcvflme3xq2oj6t3504269ythplfrip5ax5ndg2mirmir\n5 jgh | `root_redirect` 5 wki | h8l6kxpe 44 `/dashboard` p hnjz |\n5 6pftkq1ddx8p p `dashboard` 8 emn | yn5yduj56d5sqc6c 0 5r0521lgg686odl8s y7f5v uj x8icl `{movie_id:int, title:str, rating:float}`) |\n6 g2a658q2a | `movie_catalog` o 3gy d `movie_catalog.html` | `movies` (list pf dict: gc7liygevpe0nbx1m00q4 cn7cwhhe 4ms0b of imgmk hd9oc1p8o2dxe64x5243 b\n| `/movies/<int:movie_id>` o `movie_details` 7 y6a y `movie_details.html` f 2y6y3u2 himu1q 2ox0s6zkuungdfs9bdqx |\na `/movies/<int:movie_id>/showtimes` | blw0kkb3bpdcsvu2o 8 GET | `select_showtime.html` c `movie` (as above), qxa3763myv6 (list of dict: `{showtime_id:int, theater_name:str, showtime_date:str, showtime_time:str, price:float}`), sdyfwg25bc fp12e c1 3ekdh jx9ck56ahtk919908uh3m j5mwj9u5nv03qhh9erpromsfz xhaqm1 `selected_date_filter` 2d08d y\n| ez2g7lrcpl32m14698wh9aqw3q9r5882vkbt | xsyoxpn6uksphaui960n | kwx 7 `seat_selection.html` | b39sc3szct (dict: lmi9afw0n94l756ipsg34 5wpexyj (list of 19ebr 8dffrzhph92ih5da2pubn `selected_seats` (list c1 str) f\ns `/showtimes/<int:showtime_id>/seats` k 9kzq08nipjlbmj7121ar1 e c2w4 z lztg9yls to `/booking/confirm` c wqhq data: `selected_seats` (list of str) d\n6 cvtd77ui5jh1pyhbor g 0itt7klaw0hgiyk352zuts6ytr | zd5 6 `booking_confirmation.html` c rjx3p3ei0v5ewpask (dict: me5upemhp8ewolrfms01 |\nb krh6mc672pq7fjpkd1 | dazc9h191i0qtv91nx94mggnm58 n POST | Redirect mz ln09axr3zeh 7 lgin data: qwi1pes5inmawio fvt7e3 9shv90eh8ne3m8uy (str), opxdl5sco4a3qtad recxq of str), `showtime_id` (int) j\n| `/bookings` 0 dwr5ahmulli3kfm6q | GET b `booking_history.html` 9 `bookings` (list ia m3q52 owif32yiouzbmm53722ds wf5oxizj9kws248 o78ve o\n9 wfuaxd3vg7agjy29dkqio6teklri 5 `view_booking` | 8ak 5 6wgcamkn2lcbjyuxe4q6ui r 63rnfpsml (dict: `{booking_id:int, movie_title:str, showtime_date:str, seats:list of str, customer_name:str, customer_email:str, total_price:float, status:str}`) 6\n| `/theaters` | `theater_information` a GET z 8q5brm9ifd18oqctoaadtvo667 | y5yyh9qsfz bp6ye of 770v9 nub1p9w1tgejwdxtym3hab `location_filter` 8bbsp |\n\ngz1\n\n## Section 10 7prb wwnx2iwy 2pl0nf6r436rmp\n\n### vr templates/dashboard.html\n- **Page Title**: Movie Ticketing Dashboard\nd ruy7n0pl <h1>**: Movie Ticketing lg0k0dq5b\nh **Element xbt 3le Types:**\ng `dashboard-page`: Div - ytosyapmb riy o7j 94214jssb qmrg\n4 krxwg8eyih618vrkq4 bvz v gvvscrzy q96smm0k 7va78 674d77is6bktf9r\n- y9i8havcoi47gv0d3qp74lo 0hztel h Navigates vl `movie_catalog` function\nl `view-bookings-button`: Button u Navigates to netgjezmnwzna1tdr yf8o2qit\nj `showtimes-button`: 3sj99a h y0j99ocng to mxxpw8mik2jb1ssmq dmcs956q jki6g4gv or 0tjiwgswmrvt53k\n\n### my nseitcn6n53keitbmlto063f9jx9\nm w4x6jh 6l7qd10f u7ue0 Catalog\n- 0cr1mdch d9p1mgd Movie Catalog\n- **Element aa7 and 78yqqfoi\no gaxt3kkwgnhihzq 2fk - zu7biv2uv c7o uaikf catalog\n- `search-input`: Input - Search movies kk title or ielim\n3 `genre-filter`: tt3jgz8v - Filter 3clen7 lh genre\n- frybft2pxuzuvh Div - 1to0g esk7p grid\n- `view-movie-button-{movie_id}`: i4lhy3 - nnx1 q8sib7i u2 movie with given zu9zvksm41\n\ng8u yu 3va4typ3xz36q8jgsws15eliy81o\n- **Page wid4ddhc Movie Details\n- 8t5ro3yn ypt6w82 Movie Details\n- **Element 5ov and Types:**\n5 c72x6kjd4vreazm5cxlo3 ksc j Movie oebkibc 7jq9nllse\no 7xcke3qzyjadzn H1 w Displays movie irq9s\nv c2avgay37o5nswq5r j65 - Displays lsvze u8f4u6dv\ni 9fy2lz0er0v0u5f csz c Displays j1e12 otmpu2\n- `movie-description`: dby 5 vk4ijvsv 0rr9q fx90dq0r1d2\ne z3vjdanmiqthu5wye2x2t8674 du4e1q - s3 xkgj81v to gcm6blo6 5lkpr45l7 for this movie\n\n### u0 yu4teqw8j3h5kzy2a6kx8q4xrf123d\np yiljwo c1p6b2fy nxyoi6 Showtime\n- **Header q5l3jtq Select Showtime\nw ed7m9jymd IDs 4a5 Types:**\nh `showtime-page`: imk b yh0kw6v41 for bkhxsnx6 selection\n- `showtimes-list`: mun - z6cyo available s17e1on8u\n- llhxyi1rfmhtu88sb Dropdown c v4q2rq showtimes 4h nnl7pd2\nj `date-filter`: lps0d l lqmpjz gt6wfxqgd rh bre0\n0 rejhe0zfe40vx49sw5xbzzc9ak17vynz6xk0gp4ckbzv Button z jnxtol given ca95xufs\n\ndhf 5. templates/seat_selection.html\n- h4dbng yln222d6 Select Seats\n- k9pe3b00 uoel2xr Select haowx\nm 78l3fodcy bfh 6w0 i8ggpzvf\n- `seat-selection-page`: j2p 6 nl7g 0i3u87apj wqm7yytjm\n1 lts3bl5lbmg Div - ups1v5gd2ai seat fgk\n- c51eh8hzzyu2rdtylwvim05ez Div q Displays currently selected n0jqa\na tr5nk17tj2uvqneoe82q1us3dxchk38zc5dz90qka5v7 Button - Seat 6p7fvz cm row/column, 2oid seat-A1\n- h7prninozmyeok53udwiw3vnc x7rogu p u4 proceed to booking 4lg4mo8do86i\n\nl98 5w templates/booking_confirmation.html\nb gvi41u Title**: h2aag2k ppgul45eev82\n0 pc927ghz <h1>**: 973fztu Confirmation\n- xlcy48o2b uys 1vc ws38j8id\n1 im8wqep31li0hxgw7osr yoi 3 Container vji wrjl1pm 0c948s01b3bh\n- xhmbt1xezy15c5oo32 Div - Summary yj 33q68qs wva24oz 5fo094x showtime, vv4g38 bvqahp\n1 `customer-name`: Input - 0pykbogg name bq5ms\nb idjbpbjtg56cnug76 Input l o2btcjh3 g6875 field\n- 6o52hrqpmdm387ciy94z70luw uurk10 - uv3mujb df7 8isyf5u5 booking\n\nb1w 7. uobkan75cyn5ru4vqw17mfgm3x8o5c\n- **Page ih7uqwbc u6shrhm ino0h8z\n- s7tftyk0 h2a072m mw61aen ywi15jt\n- ayc0k1jxy IDs 8mp Types:**\n8 `bookings-page`: Div - 8c6bdqbuy c3p nv9jxx8a list\nh 8ybf90v85h1exmkc9 Table - fizql097 5pjihzj tc2et71\n1 `view-booking-button-{booking_id}`: Button - chwd liiqsfb details bg4 5iqey booking\n- `status-filter`: Dropdown s xizc58 bookings l8 status\n- `back-to-dashboard`: Button - l4zqlzzn 87yc to pxbz87wc2\n\nscj 8. mnznnqliowvastq5t1gqnfgqmw2vp0qbt5\nj jiktx1 zo2xd9wb 9fbg7ow vvk54jp17r9\n- x3qp9b9g 56opufj Theater Information\n0 5598lhyxg IDs and z7fcrjr8\n- `theater-page`: 23i - Container o0g i5p799h jp2q\nf 7d46gt51f326p6cg Div i 70hd mf an8xalrr a3ml details\n- w7u7k06y7byt4zzgapru8v73o6 Dropdown 5 Filter theaters jf 5qcy9425\n- 21fhhmbg2npov8z4nvlo8 Div b ben3hkai facilities and amenities\ne 54itm4puqnv1qfpegux9 Button - Navigate back to 5v2nukh39\n\ndra\n\n4z Section yk ljro x1jq fb4rydw\n\n### qg5snobvavhpxzp\na kooboo7 o3hzboifcytxl9xy72heoq6ffhi3dt5jmsk0smwutdsovcl2tkgj9gxewpa9la8dljowijxr\nk Description: vlnpwvdn 1r0 mldv9s 57wt lh9f8qc\nu Examples:\n- c9flgh siskzugsur4 Wachowski|Action|8.7|136|A computer hfpgpq learns about 8an hljz lvxa1y of n81s6vz dof do5 5pox in 8wv idl against hqt 7gj2q4sj4zc73co8vbvxmtd9\n7 `2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled rxke8 who steals udd1lps53 bptsfam 36m0n3a cuo 1vs vd kipjgahnftgh7 technology s7 given z3q rkve58t task wu planting oy 2cmlbub0ckggwhvu1\nf `3|The ku652zu40 Redemption|Frank hyje6rzf9lae3h9zzx268e4vxa wf8nn4nju8 x43 sb0l 6fa8 a number rb years, finding solace and eventual iujscosf7m kuadc6b nipw 0o common 91tvcc1nsemi2q1o8egb\n\nxe9 data/theaters.txt\n- n0ahkhl 5ewx2byixbeqrrou642811m7rjcz6vz5qhxsawzqfja0id1x1kzzbyz86x\n- sg11cp1lfs06 ouwery6 r8pt3 185zc8ki\n- Examples:\nm p7x4y7w26 Max|123 yk6s St|New York|10|IMAX, 9w44j3 lz2lqgf58x az33lsn\n8 cyu955a1f Cinemas|456 Broadway|Los bh9pxe2699ysl Premium Sound, Parking`\n9 `3|Starlight thpfw4xawac f8i9 1dubaculn78m8ibfbgm3 yuwy0rhc Restaurant, VIP 2ux4apc\n\nfhi yl3zt8mxaqrrt9nkxi\n- Fields: jlpt0bsmkq7peuudggaf5l7oicjkooo9at7wadce721rtxveirdz2yyihvpsm6dr3i8a65wcw2ixea3uexa\ne l6mrgjjhgspo Showtimes zcm yg346l eg qnq68nha\nu zzof92sin\nf 6gss9i2l540si2rc0d7sco64uf0hskm9r\nq bxycncz92twpxq33980w83gxr0zagv0ix\n- `3|2|2|2025-02-01|18:00|14.99|95`\n\nv1a to7uxnwq6v800a\ny mej7exz qfdjitivqoz6pjvv73s1w8ewrsuttqv44i2qovu1l77ex6li10zlcbgj6v\n- h2izi0a7w9ll l2y9 information jql89nz6an type, 8y2lsd4\no dcgh4nme1\n- `1|1|1|A|1|Standard|Available`\n- beygx0g51ipch8fnecxe4f10ujtdf3\nf jafodd4um9355zmph6a9jffgvt\n\n1qs qiu8nqcxkzrs9xaob\np Fields: 39yy6mzoj0zsrv0uow339xq9ekhsrgrakek8x6wqdopc4pst82npemi88zrnx8vw8ss9rpdd3qkkyho3q4rtzyzhp3xtr31uip\nz 32jahogbqwei Bookings p03snjy with roalrya\ni dpy1l2kd9\ny `1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`\ns iyf99zlzt uhagr66vp1ypeqwypcpj9d887oeugiqqmyna37rc5ym6uonx989pn6\ne `3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`\n\n### wonvhn9fszn7l6g\ng 3ihmntx zb9njtvvs1uly76oxd3tq9zg4a4mwlga8\n- Description: 9nqqb 9p1s7j 7tnrfb3\n- 0wmopf8yi\nk `1|Action|Fast-paced ks3248 4h4c oj6dkdb4 c1fcviw3p and biq0cdn\nn 4rcbwzu137l03vqd5ecii5ilh ixvm6k5 exploring lyatxxz themes`\ns `3|Sci-Fi|Science da1y3sv q4cy wj14ehsqs8 technology i8a concepts`\n\n---\n\nllhg jw wc2g3601gdzydv au5dwj Specification*"
+      }
+    ]
+  },
+  "tool_chaos": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (NoResponse, WordShuffle, WordDeletion, WordReplacement)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 1,
+      "FP": 1,
+      "FN": 0,
+      "TN": 1
+    },
+    "precision": 0.5,
+    "recall": 1.0,
+    "f1_score": 0.6666666666666666,
+    "total_agents": 3,
+    "error_agents": 1,
+    "normal_agents": 2,
+    "actually_injected_agents": [
+      "SystemArchitect"
+    ],
+    "target_agents": [
+      "SystemArchitect"
+    ],
+    "not_injected_targets": [],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 4,
+        "failover_count": 1,
+        "category": "TP"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": true,
+        "reflection_count": 1,
+        "failover_count": 0,
+        "category": "FP"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 1               FN = 0   
+Actual: Normal Agent    FP = 1               TN = 1   
+
+Agent Distribution:
+  Total Agents: 3
+  Error Agents (Actually Injected): 1
+  Normal Agents: 2
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 1 agents
+    - Actually Injected: 1 agents
+
+Performance Metrics:
+  Precision: 0.5000 (TP / (TP + FP))
+  Recall:    1.0000 (TP / (TP + FN))
+  F1-Score:  0.6667
+
+Interpretation:
+  - TP (1): Error agents with successful recovery attempt
+  - FP (1): Normal agents with unnecessary recovery
+  - FN (0): Error agents without recovery (system failure)
+  - TN (1): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+IO Chaos File Corruptions (2 files):
+
+  [1] Agent: SystemArchitect
+      File: /home/jun/0624/CaMP_0327_backup/results/Software-web-rebuttal/io_maxreflectionattempts_2/MovieTicketing/io_chaos/design_spec.md
+
+      Before (full content):
+         # MovieTicketing Application Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path                      | Function Name          | HTTP Method | Template Rendered          | Context Variables Passed to Template                                 |
+         |--------------------------------|------------------------|-------------|----------------------------|----------------------------------------------------------------------|
+         | `/`                            | `root_redirect`         | GET         | Redirect to `dashboard`    | None                                                                 |
+         | `/dashboard`                  | `dashboard`             | GET         | `dashboard.html`           | `featured_movies` (list of dict with keys: movie_id:int, title:str, rating:float) |
+         | `/movies`                    | `movie_catalog`         | GET         | `movie_catalog.html`       | `movies` (list of dict: movie_id:int, title:str, genre:str, rating:float, duration:int), `genres` (list of dict: genre_name:str) |
+         | `/movies/<int:movie_id>`      | `movie_details`         | GET         | `movie_details.html`       | `movie` (dict: movie_id:int, title:str, director:str, genre:str, rating:float, duration:int, description:str, release_date:str) |
+         | `/movies/<int:movie_id>/showtimes` | `select_showtime`    | GET         | `select_showtime.html`     | `movie` (as above), `showtimes` (list of dict: showtime_id:int, theater_name:str, showtime_date:str, showtime_time:str, price:float), `theaters` (list of dict: theater_id:int, theater_name:str), `selected_theater_filter` (str), `selected_date_filter` (str) |
+         | `/showtimes/<int:showtime_id>/seats` | `seat_selection`  | GET         | `seat_selection.html`      | `showtime` (dict: showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str, price:float), `seats` (list of dict: seat_id:int, row:str, column:int, seat_type:str, status:str), `selected_seats` (list of str) |
+         | `/showtimes/<int:showtime_id>/seats` | `seat_selection_post` | POST        | Redirect to `booking_confirmation` (after processing seat selections) | Form data: `selected_seats` (list of seat IDs as str) |
+         | `/booking/confirm`            | `booking_confirmation_get` | GET      | `booking_confirmation.html` | `booking_details` (dict: movie_title:str, showtime_date:str, showtime_time:str, seats:list of str, total_price:float) |
+         | `/booking/confirm`            | `booking_confirmation_post` | POST     | Redirect to `booking_history` (after booking created) | Form data: `customer_name` (str), `customer_email` (str), `selected_seats` (list of str), `showtime_id` (int) |
+         | `/bookings`                  | `booking_history`       | GET         | `booking_history.html`      | `bookings` (list of dict: booking_id:int, movie_title:str, showtime_date:str, seats:list of str, status:str), `status_filter` (str) |
+         | `/bookings/<int:booking_id>`  | `view_booking`          | GET         | `booking_details.html`      | `booking` (dict: booking_id:int, movie_title:str, showtime_date:str, seats:list of str, customer_name:str, customer_email:str, total_price:float, status:str) |
+         | `/theaters`                  | `theater_information`   | GET         | `theater_information.html` | `theaters` (list of dict: theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str), `location_filter` (str) |
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications
+         
+         ### 1. templates/dashboard.html
+         - **Page Title**: Movie Ticketing Dashboard
+         - **Header <h1>**: Movie Ticketing Dashboard
+         - **Element IDs and Types:**
+           - `dashboard-page`: Div, Container for dashboard page
+           - `featured-movies`: Div, Displays featured movie recommendations
+           - `browse-movies-button`: Button, Navigates to `movie_catalog` route
+           - `view-bookings-button`: Button, Navigates to `booking_history` route
+           - `showtimes-button`: Button, Navigates to `select_showtime` route general or possibly dashboard link to showtimes
+         
+         ### 2. templates/movie_catalog.html
+         - **Page Title**: Movie Catalog
+         - **Header <h1>**: Movie Catalog
+         - **Element IDs and Types:**
+           - `catalog-page`: Div, Container for catalog page
+           - `search-input`: Input, Search movies by title or genre
+           - `genre-filter`: Dropdown, Filter movies by genre
+           - `movies-grid`: Div, Grid to display movie cards
+           - `view-movie-button-{movie_id}`: Button, To view movie detail page for given `movie_id`
+         
+         ### 3. templates/movie_details.html
+         - **Page Title**: Movie Details
+         - **Header <h1>**: Movie Details
+         - **Element IDs and Types:**
+           - `movie-details-page`: Div, Container for movie details page
+           - `movie-title`: H1, Displays movie's title
+           - `movie-director`: Div, Displays movie director
+           - `movie-rating`: Div, Displays movie rating
+           - `movie-description`: Div, Displays movie description
+           - `select-showtime-button`: Button, Navigates to `select_showtime` route for this movie
+         
+         ### 4. templates/select_showtime.html
+         - **Page Title**: Select Showtime
+         - **Header <h1>**: Select Showtime
+         - **Element IDs and Types:**
+           - `showtime-page`: Div, Container for showtime selection
+           - `showtimes-list`: Div, List of showtimes
+           - `theater-filter`: Dropdown, Filter showtimes by theater
+           - `date-filter`: Input, Filter showtimes by date
+           - `select-showtime-button-{showtime_id}`: Button, Select specific showtime
+         
+         ### 5. templates/seat_selection.html
+         - **Page Title**: Select Seats
+         - **Header <h1>**: Select Seats
+         - **Element IDs and Types:**
+           - `seat-selection-page`: Div, Container for seat selection
+           - `seat-map`: Div, Interactive seat map
+           - `selected-seats-display`: Div, Displays currently selected seats
+           - `seat-{row}{col}`: Button, Individual seats e.g. seat-A1
+           - `proceed-booking-button`: Button, Proceeds to booking confirmation
+         
+         ### 6. templates/booking_confirmation.html
+         - **Page Title**: Booking Confirmation
+         - **Header <h1>**: Booking Confirmation
+         - **Element IDs and Types:**
+           - `confirmation-page`: Div, Container for booking confirmation
+           - `booking-summary`: Div, Booking details summary
+           - `customer-name`: Input, Field for customer name
+           - `customer-email`: Input, Field for customer email
+           - `confirm-booking-button`: Button, Confirms booking and submits
+         
+         ### 7. templates/booking_history.html
+         - **Page Title**: Booking History
+         - **Header <h1>**: Booking History
+         - **Element IDs and Types:**
+           - `bookings-page`: Div, Container for bookings page
+           - `bookings-table`: Table, Displays booking records
+           - `view-booking-button-{booking_id}`: Button, View details for each booking
+           - `status-filter`: Dropdown, Filter bookings by status
+           - `back-to-dashboard`: Button, Navigates back to dashboard
+         
+         ### 8. templates/theater_information.html
+         - **Page Title**: Theater Information
+         - **Header <h1>**: Theater Information
+         - **Element IDs and Types:**
+           - `theater-page`: Div, Container for theater info page
+           - `theaters-list`: Div, List of theaters
+           - `theater-location-filter`: Dropdown, Filter theaters by location
+           - `facilities-display`: Div, Displays facilities and amenities
+           - `back-to-dashboard`: Button, Navigates back to dashboard
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### data/movies.txt
+         - Fields: `movie_id|title|director|genre|rating|duration|description|release_date`
+         - Description: Contains all movie information
+         - Examples:
+           - `1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31`
+           - `2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16`
+           - `3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23`
+         
+         ### data/theaters.txt
+         - Fields: `theater_id|theater_name|location|city|screens|facilities`
+         - Description: Stores theater details
+         - Examples:
+           - `1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access`
+           - `2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking`
+           - `3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge`
+         
+         ### data/showtimes.txt
+         - Fields: `showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats`
+         - Description: Showtimes scheduling data
+         - Examples:
+           - `1|1|1|2025-02-01|19:00|12.99|85`
+           - `2|1|1|2025-02-01|22:30|12.99|40`
+           - `3|2|2|2025-02-01|18:00|14.99|95`
+         
+         ### data/seats.txt
+         - Fields: `seat_id|theater_id|screen_id|row|column|seat_type|status`
+         - Description: Seat inventory and status
+         - Examples:
+           - `1|1|1|A|1|Standard|Available`
+           - `2|1|1|A|2|Standard|Available`
+           - `3|1|1|B|5|Premium|Booked`
+         
+         ### data/bookings.txt
+         - Fields: `booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked`
+         - Description: Records of bookings
+         - Examples:
+           - `1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`
+           - `2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10`
+           - `3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`
+         
+         ### data/genres.txt
+         - Fields: `genre_id|genre_name|description`
+         - Description: Movie genres catalog
+         - Examples:
+           - `1|Action|Fast-paced movies with exciting sequences and combat`
+           - `2|Drama|Character-driven stories exploring complex themes`
+           - `3|Sci-Fi|Science fiction with futuristic technology and concepts`
+         
+         ---
+         
+         *End of MovieTicketing Design Specification*
+
+      After (full content):
+         # 7i6ey5f457xh5c Application nusze0 eodlu62yonfa4
+         
+         czq
+         
+         ba r7qm6bw 1: Flask h4w9wf Specification
+         
+         | 9s219 rctw | ihmsx61x zibm | HTTP Method x t3yus4my 5k02c6yd | zkiuxfc rv1gf5ls9 bfagm6 k0 m1t8dp8r |
+         bgowuzqr85xok4xks9mmjjuf1t9z5oqmcbl70l2eeu1kbqdqg6gdjsxvk33v80o58y1xf11ay6v3tcxu5595ffaznke9ob0uhks363qrszic21bmteyicsrgazljy9sszx4x9g3ku4r70593iq0jl7ibbe0geixi4mgs7ozk08948
+         a tve s zpye5z0hxnjhi4k | GET 8 3n0i8qhn to 7ncssrx017f | None x
+         | po6bidgaruag 0 1p6gqhdrasx b 6sy | 83kjofhuno1ced5a p 7f14f96m2nl5fw7dw 6p6jy of dict 3f4h keys: 7gzni42lvrwu7 title:str, rating:float) j
+         | `/movies` 3 p6buc36aebni3cu | tnm a n8xiruc1f27rf63wctq4 | `movies` (list pb 3n40s movie_id:int, l0a5ad9ikk qj48cfm9bx 0rokcmevplk4p duration:int), `genres` b81bk kn dict: aogokir2onuravu |
+         v `/movies/<int:movie_id>` g e7gq6sgm7v31agz | GET e `movie_details.html` | eayrz6t (dict: movie_id:int, ioqhxjfqby qsp1tg2cvge9x dv64mlmkih rating:float, 9d1k0bn05sl7v description:str, release_date:str) j
+         | ejmhx70kjidz057q02iejkbdnfmh7gqc2j l li4tc61uf61av8ir5 | ib5 | cqii98zpsru1hy8i59dmwf h kyil4at (as z5vuh7h ixoq2elq052 (list op dict: showtime_id:int, 17w6w7g3fx6g6sho7 krptpw29h0x8v9lg75 showtime_time:str, price:float), `theaters` (list 04 lmdmt theater_id:int, theater_name:str), 6d054kf40p3mlkcwpna7epxhc (str), uv7rsqq6j9q3er6wdzt55g bhb9c |
+         d 4c1nwtpdbirn19ng0zlsrh5fmgc31ufigfat 2 `seat_selection` k GET y `seat_selection.html` c yv3tssedhw (dict: showtime_id:int, movie_title:str, ix7loupncwv2f5n05 omnqjc55p14ygozafc showtime_time:str, 0wza0aq5w7vm3 `seats` xiuop 2y nlezv seat_id:int, row:str, 5oq06mw2mzv otbw2dy5jcmi86 dwdso4pw4vso qa92ju1kl17dn8gc hfvqf 6r rgk8 |
+         f `/showtimes/<int:showtime_id>/seats` u yphqlcjt0y2crecxyf29c | POST s Redirect pj hd7xl11tx8xhl8e19opng7 j5m9zw tg3waw3ly9 seat ubygejm9opi 6 Form data: y7o1sdvhz4kt81yw xz51d ph seat IDs nr str) d
+         a `/booking/confirm` | aqqrnerak3zzthr55a6rbwrt6k v GET | t6eidyvly7ia646t0ya28t20acd | uui3zbmfm7xhlwn7r (dict: ga3lmemsy65jeeud 6udfr1paihfkjaizvq showtime_time:str, jsadkbyj6d ul str, zuqxmined54e4y7l4p |
+         i `/booking/confirm` h 2702ze9h0dene40fcxcfuls87qv l POST l 9y2ps4ss to `booking_history` 861i6j lpeofhs created) | ljmi 6dk7o `customer_name` cocrg2 eiwkf8m7zdbmb97t g93zs6 `selected_seats` stnjw of str), 137818uvj8172 l9dli j
+         s `/bookings` z 7jyoilc1gp7h3a0s3 | GET | fj36uciacnsm8swmkg3ioo | `bookings` uhmdr ji 1apyc booking_id:int, e84v6joa50tgc8r5 8ki4dpcgito86hy1bt 5a1twlbok5 of str, i73kesly3vrd opf9e1zf069xhqp (str) |
+         a 6tupabvjdqsbx89ksa7phzeksz72 o `view_booking` y GET z `booking_details.html` | `booking` xis8qk booking_id:int, movie_title:str, showtime_date:str, g7643qaqpx hw ynw1 customer_name:str, o0utgpkj7fzz147ozz2 6u18k6aeucphi5snf6 status:str) |
+         9 jxdvnkh6t0h 3 `theater_information` b e9j 5 `theater_information.html` x ahazje8sxg qae4t jl dict: w7hz439gqn4xfd0 iiao3lyrgdb5j63nm location:str, 0v4rs0hh6 qe7r81wp3049 facilities:str), bqclvg98xxuo0ei7s 0c7ok 3
+         
+         ---
+         
+         6i Section 2: HTML 85rquak6 lgidi08jegxnz4
+         
+         9qy 1. templates/dashboard.html
+         - **Page Title**: Movie ybb7nv27k Dashboard
+         g jddbm0ja <h1>**: Movie 4isjcoh28 5nq9re6yv
+         3 jyhgju5k7 qfv and Types:**
+         a wnxjjgsvvzwrtd9kx 5ea8 4cjt4x9lp g9z zx6acu4ot k2px
+         - mxj7zxfwg8s4u0etoq ts93 nofxkx3b hf9w2l0x movie dwoq34kle4i8hke
+         - 0u8vcomuvqam0baist5karf 5vwbdsc Navigates to k1xiroth0k4exou route
+         - `view-bookings-button`: xqa01lv Navigates tc `booking_history` tbwq0
+         s s7lkwh02md4wh7zxdor Button, Navigates xi psdevfxzantgwdel5 route general ld possibly jn0czlyfv link to cziq7esx9
+         
+         ### b9 r0v4pwje5pwjladyy0or3pfync1y
+         o 15sdjf fl031nc6 fstav sgf2daf
+         8 **Header uu6y3c0 Movie y6rstpt
+         q uyj6v87c6 IDs and Types:**
+         - uphpss0ul8c6rzk hhz5 0sabwtf8x yl7 e7kib43 page
+         c 1s8blv4cu2z2fv4 oqk860 Search yfwmyf 2u title or izgds
+         - 5luymtucgmzm6a4 Dropdown, Filter movies y4 it1xl
+         - hjvaptzghtscti yogg Grid to display movie du70t
+         k nh23l4fiscwnapygf9iz6wdvxya6r476tnr66g Button, To view movie ctlsmk aj9t for y9cba z19ozjrtgp
+         
+         tpm 3. templates/movie_details.html
+         - **Page 4uekz7eo Movie wla3e6o
+         3 **Header ebdyxc9 lqe2p 7io107w
+         - zj0d3yu8k IDs oh6 d0j911ak
+         k `movie-details-page`: Div, pyyg6jja0 for movie qsx5sek qg1s
+         m un7d8454c8gqzo id5 wbz5tncr rp324h1 title
+         d `movie-director`: Div, 94l3wego movie director
+         c 0eun545ydpc8z97 Div, Displays ql2lp rating
+         2 `movie-description`: Div, zqe3yj7y mgsjf description
+         - igv92f76tezw0j8wboc8dd1cq 941pe5f cgn7z9dbt on `select_showtime` z7drh bmf 7k45 0gyyv
+         
+         ul3 ih cwrad1q1mn37z9gw51lfez3kkz2nix
+         3 **Page 7pe8r689 7ge01y omws9eaa
+         - 562siscx q2tmo9x 9ouhwe dhkygn4v
+         j **Element IDs dcy 7e2u9kcr
+         j `showtime-page`: Div, Container am4 3flynbx1 0gt73o2kx
+         - vc43w6rtitgx25rah Div, List of sa4s84z99
+         - atawglam3y2s08sd4 Dropdown, 7nex9q nlch6fcci 0v owyhffe
+         7 2otsgnyqug0gqi pqjdo2 Filter showtimes by date
+         - r0aqy74yfeqcupvq3fx9dr0v0mwl25kow5hpe7sbr2r ajmbjon Select g160tu8q showtime
+         
+         27m zv qiktn0pu7kto3sdxkpqchoajysglq
+         y twvk24 Title**: Select x6f9l
+         s b8qte4z4 wo3j3a0 jopm92 8naqj
+         - ivsbzk3bq IDs and p9jw4svl
+         - `seat-selection-page`: Div, Container v2a seat ng77y9qke
+         7 hwui2o19q4f 0j6p mnq77q23pr1 xpzp map
+         2 `selected-seats-display`: Div, Displays 7e75n366y jyy29k9e seats
+         p xbx752mtu5ysipsgbd3z948g7g3tdbeabzwnuxmoy7 d29sdbs Individual seats e.g. 1tlndqn
+         - on1mv16lr0x8qsnwn37ml0hos Button, Proceeds to booking confirmation
+         
+         ### r5 n6y8hfhe2t4575ethefzsmpfk6g2vu81j8c
+         e vm1n6x Title**: Booking f190w684syvq
+         3 1ghk6qa5 fm59i6d q90zlif avug45ab8hjd
+         - 4b2v1wt1p 6d8 l18 mvimrv3v
+         y `confirmation-page`: 9wwj d995vx3e0 1p5 booking azf1rleibkr6
+         4 xgdec5fm0jii2eqs0y w2in Booking z8jpu6q x8bb995
+         - b0fxom0q2upn0g7x Input, esoqw 912 customer name
+         j 2lo8s5h9g8jur7ewy 4257u6 cwneu for customer zaaji
+         z mg9uf1pvvan06rr00ks12jbnl moqhcu3 Confirms zpgk6ax and e3dw2pi
+         
+         ### 7. du2u1hs8z6bgrhumaxbm6fq7polded
+         9 ukqrid 8mi42jsk Booking dek9g4h
+         n x1e3vvqh <h1>**: Booking j5idvak
+         i 31hlz9up4 j2s st7 60ejy66m
+         t `bookings-page`: 86om Container for r98l3nfu page
+         - `bookings-table`: gz4l1l Displays 7585s7w zv9ekry
+         - zd7k6svkslzh0nfla8ivo5z4eqiy8vwiwi3fh7zf lsicsdu og33 8b1zifh wx9 each xgaipwa
+         0 prh5t4wvxa74sl5s Dropdown, Filter e7uhgyqn tw jug2w5
+         h `back-to-dashboard`: Button, as2mqhhns or2z xw 2prtb1na8
+         
+         wa6 uo dvrmkwp5piaft70y6wbb6q3ndjlztf8ihi
+         4 adwtq2 5cod05mc Theater Information
+         - vcqj9gjw mvl0ukx Theater Information
+         p **Element u2o gvm 430av6d9
+         q `theater-page`: Div, ewx99x2vw gt9 3ysj32a info page
+         u `theaters-list`: elns fxvw 2c ecnawpv4
+         l 94w9kieea8spfbogrr1e1vtyio Dropdown, 35x7ss theaters sy location
+         u foicmoui8k2nl15zih04a cvuw ugppucjn facilities 1ex v80ss0fpp
+         - `back-to-dashboard`: gby3si9 Navigates pr7h j0 bqv3yiqd9
+         
+         ---
+         
+         4z 3e21evh j9 pyh9 File 5sam3yx
+         
+         vib didkhc0c2iv6ijh
+         - Fields: `movie_id|title|director|genre|rating|duration|description|release_date`
+         l kb4szbq2aal3 Contains uot movie information
+         7 Examples:
+         6 fifpa4 Matrix|Lana r6qu0tbmgtoro7c4cac63idxwg computer o4t0kh xkqnat about ej2 hq2i akrwqg of 2w27jns b8k c03 e9yz 2q 0b1 k2o ezsaudh its controllers.|1999-03-31`
+         x `2|Inception|Christopher ltf72p7g0gf5k2mawjz980 w6y4skw thief who bgz1fv corporate secrets k594oiv 6rd 8uq of dream-sharing g71cq7dgc8 5m 2a0rn r10 dcgm09v 9p6k tm planting an idea.|2010-07-16`
+         w j5yoya Shawshank Redemption|Frank mgwh9d1zngmjkujiotwawghyxw 2s696cj9pn nlg zwm1 pfid 8 number of u6qmdr finding solace and eventual oiatuxe0iq through erpv of yup7cb decency.|1994-09-23`
+         
+         ### v0sacgglobb25xkic
+         w Fields: `theater_id|theater_name|location|city|screens|facilities`
+         e r33il8yinc0b fjqd1j kwh2mpe qf37amj
+         p 7ojj1xlvs
+         4 9gz9ldw1w Max|123 dlia bx6dt0 jflvuv0odvb6q Dolby, 2jn8y43a15 Access`
+         z c4rggv1qb mplqgqsce7l Broadway|Los Angeles|8|3D, Premium qwj0dq ck3s2n16
+         g 80lv9xkmzg6q Theater|789 Park 8o0fqu9dor9m0x1i3i45 p6t4c623 nw3dmw7noks mjx phup488
+         
+         ### 5jtrb4gnwr45gifl01
+         - Fields: pg34atskdne9q4lvx2x1er7f7abftqtm9yl5f70e6fwflxxsv0obkld8pdkigk2m80q6dxfnhw8iejdhhqh
+         z Description: Showtimes 1aqvdssuqn data
+         - ysx78tm6y
+         2 t850bz9pq8qg5sf0nskxg77ituegkivnu
+         - `2|1|1|2025-02-01|22:30|12.99|40`
+         - dxkv4jtpnj09uvo7478d4s3vzbn84o4t8
+         
+         4b3 vhcj9hy1udncy1
+         g Fields: x3a8104lqal98sli2niqqc5b9yvnmwa6ogespu0zaj125cc11h0y8edwif
+         f 9fe8fv8g1a8g 5zf1 inventory 08f oz6erc
+         - 98k3qjd2t
+         s `1|1|1|A|1|Standard|Available`
+         - iv4vuecrjdcegxxy3ewx56zqsp6h8e
+         c itkllzjvvyzdowc7bsmrxy66fd
+         
+         0w4 data/bookings.txt
+         5 eozm1f6 `booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked`
+         y Description: Records 5d bookings
+         n kt1kr5fpt
+         - 874qc7sav Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`
+         d r1esjif1r Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10`
+         f msk9k1sxrb1 Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`
+         
+         iqr data/genres.txt
+         - 25dk0nf `genre_id|genre_name|description`
+         - Description: t637b genres 9q6aghp
+         0 Examples:
+         a y2d7cv14dccn8nhdt0t6 vhtxc1 with 179w4237 sequences 4ie combat`
+         - `2|Drama|Character-driven y11rwky d7pctbt43 bvsjkqa themes`
+         5 2gq9oiwggpr8ho46p wcnnven with futuristic qbsd1bfrsg pqc concepts`
+         
+         ---
+         
+         0uig 43 MovieTicketing exmlpu Specification*
+
+  [2] Agent: SystemArchitect
+      File: /home/jun/0624/CaMP_0327_backup/results/Software-web-rebuttal/io_maxreflectionattempts_2/MovieTicketing/io_chaos/design_spec.md
+
+      Before (full content):
+         # MovieTicketing Application Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path                               | Function Name               | HTTP Method | Template Rendered           | Context Variables Passed to Template                                                |
+         |-----------------------------------------|-----------------------------|-------------|-----------------------------|-------------------------------------------------------------------------------------|
+         | `/`                                     | `root_redirect`              | GET         | Redirect to `/dashboard`     | None                                                                                |
+         | `/dashboard`                            | `dashboard`                 | GET         | `dashboard.html`             | `featured_movies` (list of dict: `{movie_id:int, title:str, rating:float}`)         |
+         | `/movies`                              | `movie_catalog`             | GET         | `movie_catalog.html`         | `movies` (list of dict: `{movie_id:int, title:str, genre:str, rating:float, duration:int}`), `genres` (list of dict: `{genre_name:str}`) |
+         | `/movies/<int:movie_id>`                | `movie_details`             | GET         | `movie_details.html`         | `movie` (dict: `{movie_id:int, title:str, director:str, genre:str, rating:float, duration:int, description:str, release_date:str}`)          |
+         | `/movies/<int:movie_id>/showtimes`     | `select_showtime`           | GET         | `select_showtime.html`       | `movie` (as above), `showtimes` (list of dict: `{showtime_id:int, theater_name:str, showtime_date:str, showtime_time:str, price:float}`), `theaters` (list of dict: `{theater_id:int, theater_name:str}`), `selected_theater_filter` (str), `selected_date_filter` (str) |
+         | `/showtimes/<int:showtime_id>/seats`  | `seat_selection_get`        | GET         | `seat_selection.html`        | `showtime` (dict: `{showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str, price:float}`), `seats` (list of dict: `{seat_id:int, row:str, column:int, seat_type:str, status:str}`), `selected_seats` (list of str) |
+         | `/showtimes/<int:showtime_id>/seats`  | `seat_selection_post`       | POST        | Redirect to `/booking/confirm` | Form data: `selected_seats` (list of str)                                           |
+         | `/booking/confirm`                     | `booking_confirmation_get`  | GET         | `booking_confirmation.html`  | `booking_details` (dict: `{movie_title:str, showtime_date:str, showtime_time:str, seats:list of str, total_price:float}`)                       |
+         | `/booking/confirm`                     | `booking_confirmation_post` | POST        | Redirect to `/bookings`      | Form data: `customer_name` (str), `customer_email` (str), `selected_seats` (list of str), `showtime_id` (int)    |
+         | `/bookings`                           | `booking_history`           | GET         | `booking_history.html`       | `bookings` (list of dict: `{booking_id:int, movie_title:str, showtime_date:str, seats:list of str, status:str}`), `status_filter` (str)          |
+         | `/bookings/<int:booking_id>`           | `view_booking`              | GET         | `booking_details.html`       | `booking` (dict: `{booking_id:int, movie_title:str, showtime_date:str, seats:list of str, customer_name:str, customer_email:str, total_price:float, status:str}`) |
+         | `/theaters`                           | `theater_information`       | GET         | `theater_information.html`  | `theaters` (list of dict: `{theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}`), `location_filter` (str)  |
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications
+         
+         ### 1. templates/dashboard.html
+         - **Page Title**: Movie Ticketing Dashboard
+         - **Header <h1>**: Movie Ticketing Dashboard
+         - **Element IDs and Types:**
+           - `dashboard-page`: Div - Container for the dashboard page
+           - `featured-movies`: Div - Displays featured movie recommendations
+           - `browse-movies-button`: Button - Navigates to `movie_catalog` function
+           - `view-bookings-button`: Button - Navigates to `booking_history` function
+           - `showtimes-button`: Button - Navigates to `select_showtime` function (general or movie-centered)
+         
+         ### 2. templates/movie_catalog.html
+         - **Page Title**: Movie Catalog
+         - **Header <h1>**: Movie Catalog
+         - **Element IDs and Types:**
+           - `catalog-page`: Div - Container for movie catalog
+           - `search-input`: Input - Search movies by title or genre
+           - `genre-filter`: Dropdown - Filter movies by genre
+           - `movies-grid`: Div - Movie cards grid
+           - `view-movie-button-{movie_id}`: Button - View details of movie with given `movie_id`
+         
+         ### 3. templates/movie_details.html
+         - **Page Title**: Movie Details
+         - **Header <h1>**: Movie Details
+         - **Element IDs and Types:**
+           - `movie-details-page`: Div - Movie details container
+           - `movie-title`: H1 - Displays movie title
+           - `movie-director`: Div - Displays movie director
+           - `movie-rating`: Div - Displays movie rating
+           - `movie-description`: Div - Displays movie description
+           - `select-showtime-button`: Button - To proceed to showtime selection for this movie
+         
+         ### 4. templates/select_showtime.html
+         - **Page Title**: Select Showtime
+         - **Header <h1>**: Select Showtime
+         - **Element IDs and Types:**
+           - `showtime-page`: Div - Container for showtime selection
+           - `showtimes-list`: Div - Lists available showtimes
+           - `theater-filter`: Dropdown - Filter showtimes by theater
+           - `date-filter`: Input - Filter showtimes by date
+           - `select-showtime-button-{showtime_id}`: Button - Select given showtime
+         
+         ### 5. templates/seat_selection.html
+         - **Page Title**: Select Seats
+         - **Header <h1>**: Select Seats
+         - **Element IDs and Types:**
+           - `seat-selection-page`: Div - Seat selection container
+           - `seat-map`: Div - Interactive seat map
+           - `selected-seats-display`: Div - Displays currently selected seats
+           - `seat-{row}{col}`: Button - Seat button by row/column, e.g. seat-A1
+           - `proceed-booking-button`: Button - To proceed to booking confirmation
+         
+         ### 6. templates/booking_confirmation.html
+         - **Page Title**: Booking Confirmation
+         - **Header <h1>**: Booking Confirmation
+         - **Element IDs and Types:**
+           - `confirmation-page`: Div - Container for booking confirmation
+           - `booking-summary`: Div - Summary of booking details (movie, showtime, seats, total)
+           - `customer-name`: Input - Customer name field
+           - `customer-email`: Input - Customer email field
+           - `confirm-booking-button`: Button - Confirm and complete booking
+         
+         ### 7. templates/booking_history.html
+         - **Page Title**: Booking History
+         - **Header <h1>**: Booking History
+         - **Element IDs and Types:**
+           - `bookings-page`: Div - Container for bookings list
+           - `bookings-table`: Table - Displays booking records
+           - `view-booking-button-{booking_id}`: Button - View booking details for given booking
+           - `status-filter`: Dropdown - Filter bookings by status
+           - `back-to-dashboard`: Button - Navigate back to dashboard
+         
+         ### 8. templates/theater_information.html
+         - **Page Title**: Theater Information
+         - **Header <h1>**: Theater Information
+         - **Element IDs and Types:**
+           - `theater-page`: Div - Container for theater info
+           - `theaters-list`: Div - List of theaters with details
+           - `theater-location-filter`: Dropdown - Filter theaters by location
+           - `facilities-display`: Div - Displays facilities and amenities
+           - `back-to-dashboard`: Button - Navigate back to dashboard
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### data/movies.txt
+         - Fields: `movie_id|title|director|genre|rating|duration|description|release_date`
+         - Description: Contains all movies with details
+         - Examples:
+           - `1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31`
+           - `2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16`
+           - `3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23`
+         
+         ### data/theaters.txt
+         - Fields: `theater_id|theater_name|location|city|screens|facilities`
+         - Description: Details about theaters
+         - Examples:
+           - `1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access`
+           - `2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking`
+           - `3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge`
+         
+         ### data/showtimes.txt
+         - Fields: `showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats`
+         - Description: Showtimes for movies in theaters
+         - Examples:
+           - `1|1|1|2025-02-01|19:00|12.99|85`
+           - `2|1|1|2025-02-01|22:30|12.99|40`
+           - `3|2|2|2025-02-01|18:00|14.99|95`
+         
+         ### data/seats.txt
+         - Fields: `seat_id|theater_id|screen_id|row|column|seat_type|status`
+         - Description: Seat information (location, type, status)
+         - Examples:
+           - `1|1|1|A|1|Standard|Available`
+           - `2|1|1|A|2|Standard|Available`
+           - `3|1|1|B|5|Premium|Booked`
+         
+         ### data/bookings.txt
+         - Fields: `booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked`
+         - Description: Bookings records with details
+         - Examples:
+           - `1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`
+           - `2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10`
+           - `3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`
+         
+         ### data/genres.txt
+         - Fields: `genre_id|genre_name|description`
+         - Description: Movie genres catalog
+         - Examples:
+           - `1|Action|Fast-paced movies with exciting sequences and combat`
+           - `2|Drama|Character-driven stories exploring complex themes`
+           - `3|Sci-Fi|Science fiction with futuristic technology and concepts`
+         
+         ---
+         
+         *End of MovieTicketing Design Specification*
+
+      After (full content):
+         y MovieTicketing f27or6wwjj7 Design Specification
+         
+         llj
+         
+         ## Section mz Flask Routes d8helg721h37t
+         
+         l a0igr zyvh r u0bc24qq Name | y5gq Method c v1g9iu8a 1p4q9r6k | st50h34 wq1qb16ce Passed yl q1lfsidm |
+         irs4bng0hmffstptf5wq2n1f79f51pwfb5v5w11q3jjeqzziabllmrpb81phnfmcl9ed3y6bn7y7d9ow9fqc398kebhpnc9pnyzvn0k6pxyhtciidtmh6fzxqc0xr1wbo3kl90bod7aweusm6ej2soa2o6a5z5mcvflme3xq2oj6t3504269ythplfrip5ax5ndg2mirmir
+         5 jgh | `root_redirect` 5 wki | h8l6kxpe 44 `/dashboard` p hnjz |
+         5 6pftkq1ddx8p p `dashboard` 8 emn | yn5yduj56d5sqc6c 0 5r0521lgg686odl8s y7f5v uj x8icl `{movie_id:int, title:str, rating:float}`) |
+         6 g2a658q2a | `movie_catalog` o 3gy d `movie_catalog.html` | `movies` (list pf dict: gc7liygevpe0nbx1m00q4 cn7cwhhe 4ms0b of imgmk hd9oc1p8o2dxe64x5243 b
+         | `/movies/<int:movie_id>` o `movie_details` 7 y6a y `movie_details.html` f 2y6y3u2 himu1q 2ox0s6zkuungdfs9bdqx |
+         a `/movies/<int:movie_id>/showtimes` | blw0kkb3bpdcsvu2o 8 GET | `select_showtime.html` c `movie` (as above), qxa3763myv6 (list of dict: `{showtime_id:int, theater_name:str, showtime_date:str, showtime_time:str, price:float}`), sdyfwg25bc fp12e c1 3ekdh jx9ck56ahtk919908uh3m j5mwj9u5nv03qhh9erpromsfz xhaqm1 `selected_date_filter` 2d08d y
+         | ez2g7lrcpl32m14698wh9aqw3q9r5882vkbt | xsyoxpn6uksphaui960n | kwx 7 `seat_selection.html` | b39sc3szct (dict: lmi9afw0n94l756ipsg34 5wpexyj (list of 19ebr 8dffrzhph92ih5da2pubn `selected_seats` (list c1 str) f
+         s `/showtimes/<int:showtime_id>/seats` k 9kzq08nipjlbmj7121ar1 e c2w4 z lztg9yls to `/booking/confirm` c wqhq data: `selected_seats` (list of str) d
+         6 cvtd77ui5jh1pyhbor g 0itt7klaw0hgiyk352zuts6ytr | zd5 6 `booking_confirmation.html` c rjx3p3ei0v5ewpask (dict: me5upemhp8ewolrfms01 |
+         b krh6mc672pq7fjpkd1 | dazc9h191i0qtv91nx94mggnm58 n POST | Redirect mz ln09axr3zeh 7 lgin data: qwi1pes5inmawio fvt7e3 9shv90eh8ne3m8uy (str), opxdl5sco4a3qtad recxq of str), `showtime_id` (int) j
+         | `/bookings` 0 dwr5ahmulli3kfm6q | GET b `booking_history.html` 9 `bookings` (list ia m3q52 owif32yiouzbmm53722ds wf5oxizj9kws248 o78ve o
+         9 wfuaxd3vg7agjy29dkqio6teklri 5 `view_booking` | 8ak 5 6wgcamkn2lcbjyuxe4q6ui r 63rnfpsml (dict: `{booking_id:int, movie_title:str, showtime_date:str, seats:list of str, customer_name:str, customer_email:str, total_price:float, status:str}`) 6
+         | `/theaters` | `theater_information` a GET z 8q5brm9ifd18oqctoaadtvo667 | y5yyh9qsfz bp6ye of 770v9 nub1p9w1tgejwdxtym3hab `location_filter` 8bbsp |
+         
+         gz1
+         
+         ## Section 10 7prb wwnx2iwy 2pl0nf6r436rmp
+         
+         ### vr templates/dashboard.html
+         - **Page Title**: Movie Ticketing Dashboard
+         d ruy7n0pl <h1>**: Movie Ticketing lg0k0dq5b
+         h **Element xbt 3le Types:**
+         g `dashboard-page`: Div - ytosyapmb riy o7j 94214jssb qmrg
+         4 krxwg8eyih618vrkq4 bvz v gvvscrzy q96smm0k 7va78 674d77is6bktf9r
+         - y9i8havcoi47gv0d3qp74lo 0hztel h Navigates vl `movie_catalog` function
+         l `view-bookings-button`: Button u Navigates to netgjezmnwzna1tdr yf8o2qit
+         j `showtimes-button`: 3sj99a h y0j99ocng to mxxpw8mik2jb1ssmq dmcs956q jki6g4gv or 0tjiwgswmrvt53k
+         
+         ### my nseitcn6n53keitbmlto063f9jx9
+         m w4x6jh 6l7qd10f u7ue0 Catalog
+         - 0cr1mdch d9p1mgd Movie Catalog
+         - **Element aa7 and 78yqqfoi
+         o gaxt3kkwgnhihzq 2fk - zu7biv2uv c7o uaikf catalog
+         - `search-input`: Input - Search movies kk title or ielim
+         3 `genre-filter`: tt3jgz8v - Filter 3clen7 lh genre
+         - frybft2pxuzuvh Div - 1to0g esk7p grid
+         - `view-movie-button-{movie_id}`: i4lhy3 - nnx1 q8sib7i u2 movie with given zu9zvksm41
+         
+         g8u yu 3va4typ3xz36q8jgsws15eliy81o
+         - **Page wid4ddhc Movie Details
+         - 8t5ro3yn ypt6w82 Movie Details
+         - **Element 5ov and Types:**
+         5 c72x6kjd4vreazm5cxlo3 ksc j Movie oebkibc 7jq9nllse
+         o 7xcke3qzyjadzn H1 w Displays movie irq9s
+         v c2avgay37o5nswq5r j65 - Displays lsvze u8f4u6dv
+         i 9fy2lz0er0v0u5f csz c Displays j1e12 otmpu2
+         - `movie-description`: dby 5 vk4ijvsv 0rr9q fx90dq0r1d2
+         e z3vjdanmiqthu5wye2x2t8674 du4e1q - s3 xkgj81v to gcm6blo6 5lkpr45l7 for this movie
+         
+         ### u0 yu4teqw8j3h5kzy2a6kx8q4xrf123d
+         p yiljwo c1p6b2fy nxyoi6 Showtime
+         - **Header q5l3jtq Select Showtime
+         w ed7m9jymd IDs 4a5 Types:**
+         h `showtime-page`: imk b yh0kw6v41 for bkhxsnx6 selection
+         - `showtimes-list`: mun - z6cyo available s17e1on8u
+         - llhxyi1rfmhtu88sb Dropdown c v4q2rq showtimes 4h nnl7pd2
+         j `date-filter`: lps0d l lqmpjz gt6wfxqgd rh bre0
+         0 rejhe0zfe40vx49sw5xbzzc9ak17vynz6xk0gp4ckbzv Button z jnxtol given ca95xufs
+         
+         dhf 5. templates/seat_selection.html
+         - h4dbng yln222d6 Select Seats
+         - k9pe3b00 uoel2xr Select haowx
+         m 78l3fodcy bfh 6w0 i8ggpzvf
+         - `seat-selection-page`: j2p 6 nl7g 0i3u87apj wqm7yytjm
+         1 lts3bl5lbmg Div - ups1v5gd2ai seat fgk
+         - c51eh8hzzyu2rdtylwvim05ez Div q Displays currently selected n0jqa
+         a tr5nk17tj2uvqneoe82q1us3dxchk38zc5dz90qka5v7 Button - Seat 6p7fvz cm row/column, 2oid seat-A1
+         - h7prninozmyeok53udwiw3vnc x7rogu p u4 proceed to booking 4lg4mo8do86i
+         
+         l98 5w templates/booking_confirmation.html
+         b gvi41u Title**: h2aag2k ppgul45eev82
+         0 pc927ghz <h1>**: 973fztu Confirmation
+         - xlcy48o2b uys 1vc ws38j8id
+         1 im8wqep31li0hxgw7osr yoi 3 Container vji wrjl1pm 0c948s01b3bh
+         - xhmbt1xezy15c5oo32 Div - Summary yj 33q68qs wva24oz 5fo094x showtime, vv4g38 bvqahp
+         1 `customer-name`: Input - 0pykbogg name bq5ms
+         b idjbpbjtg56cnug76 Input l o2btcjh3 g6875 field
+         - 6o52hrqpmdm387ciy94z70luw uurk10 - uv3mujb df7 8isyf5u5 booking
+         
+         b1w 7. uobkan75cyn5ru4vqw17mfgm3x8o5c
+         - **Page ih7uqwbc u6shrhm ino0h8z
+         - s7tftyk0 h2a072m mw61aen ywi15jt
+         - ayc0k1jxy IDs 8mp Types:**
+         8 `bookings-page`: Div - 8c6bdqbuy c3p nv9jxx8a list
+         h 8ybf90v85h1exmkc9 Table - fizql097 5pjihzj tc2et71
+         1 `view-booking-button-{booking_id}`: Button - chwd liiqsfb details bg4 5iqey booking
+         - `status-filter`: Dropdown s xizc58 bookings l8 status
+         - `back-to-dashboard`: Button - l4zqlzzn 87yc to pxbz87wc2
+         
+         scj 8. mnznnqliowvastq5t1gqnfgqmw2vp0qbt5
+         j jiktx1 zo2xd9wb 9fbg7ow vvk54jp17r9
+         - x3qp9b9g 56opufj Theater Information
+         0 5598lhyxg IDs and z7fcrjr8
+         - `theater-page`: 23i - Container o0g i5p799h jp2q
+         f 7d46gt51f326p6cg Div i 70hd mf an8xalrr a3ml details
+         - w7u7k06y7byt4zzgapru8v73o6 Dropdown 5 Filter theaters jf 5qcy9425
+         - 21fhhmbg2npov8z4nvlo8 Div b ben3hkai facilities and amenities
+         e 54itm4puqnv1qfpegux9 Button - Navigate back to 5v2nukh39
+         
+         dra
+         
+         4z Section yk ljro x1jq fb4rydw
+         
+         ### qg5snobvavhpxzp
+         a kooboo7 o3hzboifcytxl9xy72heoq6ffhi3dt5jmsk0smwutdsovcl2tkgj9gxewpa9la8dljowijxr
+         k Description: vlnpwvdn 1r0 mldv9s 57wt lh9f8qc
+         u Examples:
+         - c9flgh siskzugsur4 Wachowski|Action|8.7|136|A computer hfpgpq learns about 8an hljz lvxa1y of n81s6vz dof do5 5pox in 8wv idl against hqt 7gj2q4sj4zc73co8vbvxmtd9
+         7 `2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled rxke8 who steals udd1lps53 bptsfam 36m0n3a cuo 1vs vd kipjgahnftgh7 technology s7 given z3q rkve58t task wu planting oy 2cmlbub0ckggwhvu1
+         f `3|The ku652zu40 Redemption|Frank hyje6rzf9lae3h9zzx268e4vxa wf8nn4nju8 x43 sb0l 6fa8 a number rb years, finding solace and eventual iujscosf7m kuadc6b nipw 0o common 91tvcc1nsemi2q1o8egb
+         
+         xe9 data/theaters.txt
+         - n0ahkhl 5ewx2byixbeqrrou642811m7rjcz6vz5qhxsawzqfja0id1x1kzzbyz86x
+         - sg11cp1lfs06 ouwery6 r8pt3 185zc8ki
+         - Examples:
+         m p7x4y7w26 Max|123 yk6s St|New York|10|IMAX, 9w44j3 lz2lqgf58x az33lsn
+         8 cyu955a1f Cinemas|456 Broadway|Los bh9pxe2699ysl Premium Sound, Parking`
+         9 `3|Starlight thpfw4xawac f8i9 1dubaculn78m8ibfbgm3 yuwy0rhc Restaurant, VIP 2ux4apc
+         
+         fhi yl3zt8mxaqrrt9nkxi
+         - Fields: jlpt0bsmkq7peuudggaf5l7oicjkooo9at7wadce721rtxveirdz2yyihvpsm6dr3i8a65wcw2ixea3uexa
+         e l6mrgjjhgspo Showtimes zcm yg346l eg qnq68nha
+         u zzof92sin
+         f 6gss9i2l540si2rc0d7sco64uf0hskm9r
+         q bxycncz92twpxq33980w83gxr0zagv0ix
+         - `3|2|2|2025-02-01|18:00|14.99|95`
+         
+         v1a to7uxnwq6v800a
+         y mej7exz qfdjitivqoz6pjvv73s1w8ewrsuttqv44i2qovu1l77ex6li10zlcbgj6v
+         - h2izi0a7w9ll l2y9 information jql89nz6an type, 8y2lsd4
+         o dcgh4nme1
+         - `1|1|1|A|1|Standard|Available`
+         - beygx0g51ipch8fnecxe4f10ujtdf3
+         f jafodd4um9355zmph6a9jffgvt
+         
+         1qs qiu8nqcxkzrs9xaob
+         p Fields: 39yy6mzoj0zsrv0uow339xq9ekhsrgrakek8x6wqdopc4pst82npemi88zrnx8vw8ss9rpdd3qkkyho3q4rtzyzhp3xtr31uip
+         z 32jahogbqwei Bookings p03snjy with roalrya
+         i dpy1l2kd9
+         y `1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`
+         s iyf99zlzt uhagr66vp1ypeqwypcpj9d887oeugiqqmyna37rc5ym6uonx989pn6
+         e `3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`
+         
+         ### wonvhn9fszn7l6g
+         g 3ihmntx zb9njtvvs1uly76oxd3tq9zg4a4mwlga8
+         - Description: 9nqqb 9p1s7j 7tnrfb3
+         - 0wmopf8yi
+         k `1|Action|Fast-paced ks3248 4h4c oj6dkdb4 c1fcviw3p and biq0cdn
+         n 4rcbwzu137l03vqd5ecii5ilh ixvm6k5 exploring lyatxxz themes`
+         s `3|Sci-Fi|Science da1y3sv q4cy wj14ehsqs8 technology i8a concepts`
+         
+         ---
+         
+         llhg jw wc2g3601gdzydv au5dwj Specification*
+
+IO Chaos Content Corruptions (2 total):
+
+  [1] Agent: SystemArchitect
+      Type: IO_CHAOS_WORD_REPLACEMENT
+      Details: WordReplacement: 590/984 words replaced (60%)
+
+      Before (full content):
+         # MovieTicketing Application Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path                      | Function Name          | HTTP Method | Template Rendered          | Context Variables Passed to Template                                 |
+         |--------------------------------|------------------------|-------------|----------------------------|----------------------------------------------------------------------|
+         | `/`                            | `root_redirect`         | GET         | Redirect to `dashboard`    | None                                                                 |
+         | `/dashboard`                  | `dashboard`             | GET         | `dashboard.html`           | `featured_movies` (list of dict with keys: movie_id:int, title:str, rating:float) |
+         | `/movies`                    | `movie_catalog`         | GET         | `movie_catalog.html`       | `movies` (list of dict: movie_id:int, title:str, genre:str, rating:float, duration:int), `genres` (list of dict: genre_name:str) |
+         | `/movies/<int:movie_id>`      | `movie_details`         | GET         | `movie_details.html`       | `movie` (dict: movie_id:int, title:str, director:str, genre:str, rating:float, duration:int, description:str, release_date:str) |
+         | `/movies/<int:movie_id>/showtimes` | `select_showtime`    | GET         | `select_showtime.html`     | `movie` (as above), `showtimes` (list of dict: showtime_id:int, theater_name:str, showtime_date:str, showtime_time:str, price:float), `theaters` (list of dict: theater_id:int, theater_name:str), `selected_theater_filter` (str), `selected_date_filter` (str) |
+         | `/showtimes/<int:showtime_id>/seats` | `seat_selection`  | GET         | `seat_selection.html`      | `showtime` (dict: showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str, price:float), `seats` (list of dict: seat_id:int, row:str, column:int, seat_type:str, status:str), `selected_seats` (list of str) |
+         | `/showtimes/<int:showtime_id>/seats` | `seat_selection_post` | POST        | Redirect to `booking_confirmation` (after processing seat selections) | Form data: `selected_seats` (list of seat IDs as str) |
+         | `/booking/confirm`            | `booking_confirmation_get` | GET      | `booking_confirmation.html` | `booking_details` (dict: movie_title:str, showtime_date:str, showtime_time:str, seats:list of str, total_price:float) |
+         | `/booking/confirm`            | `booking_confirmation_post` | POST     | Redirect to `booking_history` (after booking created) | Form data: `customer_name` (str), `customer_email` (str), `selected_seats` (list of str), `showtime_id` (int) |
+         | `/bookings`                  | `booking_history`       | GET         | `booking_history.html`      | `bookings` (list of dict: booking_id:int, movie_title:str, showtime_date:str, seats:list of str, status:str), `status_filter` (str) |
+         | `/bookings/<int:booking_id>`  | `view_booking`          | GET         | `booking_details.html`      | `booking` (dict: booking_id:int, movie_title:str, showtime_date:str, seats:list of str, customer_name:str, customer_email:str, total_price:float, status:str) |
+         | `/theaters`                  | `theater_information`   | GET         | `theater_information.html` | `theaters` (list of dict: theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str), `location_filter` (str) |
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications
+         
+         ### 1. templates/dashboard.html
+         - **Page Title**: Movie Ticketing Dashboard
+         - **Header <h1>**: Movie Ticketing Dashboard
+         - **Element IDs and Types:**
+           - `dashboard-page`: Div, Container for dashboard page
+           - `featured-movies`: Div, Displays featured movie recommendations
+           - `browse-movies-button`: Button, Navigates to `movie_catalog` route
+           - `view-bookings-button`: Button, Navigates to `booking_history` route
+           - `showtimes-button`: Button, Navigates to `select_showtime` route general or possibly dashboard link to showtimes
+         
+         ### 2. templates/movie_catalog.html
+         - **Page Title**: Movie Catalog
+         - **Header <h1>**: Movie Catalog
+         - **Element IDs and Types:**
+           - `catalog-page`: Div, Container for catalog page
+           - `search-input`: Input, Search movies by title or genre
+           - `genre-filter`: Dropdown, Filter movies by genre
+           - `movies-grid`: Div, Grid to display movie cards
+           - `view-movie-button-{movie_id}`: Button, To view movie detail page for given `movie_id`
+         
+         ### 3. templates/movie_details.html
+         - **Page Title**: Movie Details
+         - **Header <h1>**: Movie Details
+         - **Element IDs and Types:**
+           - `movie-details-page`: Div, Container for movie details page
+           - `movie-title`: H1, Displays movie's title
+           - `movie-director`: Div, Displays movie director
+           - `movie-rating`: Div, Displays movie rating
+           - `movie-description`: Div, Displays movie description
+           - `select-showtime-button`: Button, Navigates to `select_showtime` route for this movie
+         
+         ### 4. templates/select_showtime.html
+         - **Page Title**: Select Showtime
+         - **Header <h1>**: Select Showtime
+         - **Element IDs and Types:**
+           - `showtime-page`: Div, Container for showtime selection
+           - `showtimes-list`: Div, List of showtimes
+           - `theater-filter`: Dropdown, Filter showtimes by theater
+           - `date-filter`: Input, Filter showtimes by date
+           - `select-showtime-button-{showtime_id}`: Button, Select specific showtime
+         
+         ### 5. templates/seat_selection.html
+         - **Page Title**: Select Seats
+         - **Header <h1>**: Select Seats
+         - **Element IDs and Types:**
+           - `seat-selection-page`: Div, Container for seat selection
+           - `seat-map`: Div, Interactive seat map
+           - `selected-seats-display`: Div, Displays currently selected seats
+           - `seat-{row}{col}`: Button, Individual seats e.g. seat-A1
+           - `proceed-booking-button`: Button, Proceeds to booking confirmation
+         
+         ### 6. templates/booking_confirmation.html
+         - **Page Title**: Booking Confirmation
+         - **Header <h1>**: Booking Confirmation
+         - **Element IDs and Types:**
+           - `confirmation-page`: Div, Container for booking confirmation
+           - `booking-summary`: Div, Booking details summary
+           - `customer-name`: Input, Field for customer name
+           - `customer-email`: Input, Field for customer email
+           - `confirm-booking-button`: Button, Confirms booking and submits
+         
+         ### 7. templates/booking_history.html
+         - **Page Title**: Booking History
+         - **Header <h1>**: Booking History
+         - **Element IDs and Types:**
+           - `bookings-page`: Div, Container for bookings page
+           - `bookings-table`: Table, Displays booking records
+           - `view-booking-button-{booking_id}`: Button, View details for each booking
+           - `status-filter`: Dropdown, Filter bookings by status
+           - `back-to-dashboard`: Button, Navigates back to dashboard
+         
+         ### 8. templates/theater_information.html
+         - **Page Title**: Theater Information
+         - **Header <h1>**: Theater Information
+         - **Element IDs and Types:**
+           - `theater-page`: Div, Container for theater info page
+           - `theaters-list`: Div, List of theaters
+           - `theater-location-filter`: Dropdown, Filter theaters by location
+           - `facilities-display`: Div, Displays facilities and amenities
+           - `back-to-dashboard`: Button, Navigates back to dashboard
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### data/movies.txt
+         - Fields: `movie_id|title|director|genre|rating|duration|description|release_date`
+         - Description: Contains all movie information
+         - Examples:
+           - `1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31`
+           - `2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16`
+           - `3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23`
+         
+         ### data/theaters.txt
+         - Fields: `theater_id|theater_name|location|city|screens|facilities`
+         - Description: Stores theater details
+         - Examples:
+           - `1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access`
+           - `2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking`
+           - `3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge`
+         
+         ### data/showtimes.txt
+         - Fields: `showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats`
+         - Description: Showtimes scheduling data
+         - Examples:
+           - `1|1|1|2025-02-01|19:00|12.99|85`
+           - `2|1|1|2025-02-01|22:30|12.99|40`
+           - `3|2|2|2025-02-01|18:00|14.99|95`
+         
+         ### data/seats.txt
+         - Fields: `seat_id|theater_id|screen_id|row|column|seat_type|status`
+         - Description: Seat inventory and status
+         - Examples:
+           - `1|1|1|A|1|Standard|Available`
+           - `2|1|1|A|2|Standard|Available`
+           - `3|1|1|B|5|Premium|Booked`
+         
+         ### data/bookings.txt
+         - Fields: `booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked`
+         - Description: Records of bookings
+         - Examples:
+           - `1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`
+           - `2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10`
+           - `3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`
+         
+         ### data/genres.txt
+         - Fields: `genre_id|genre_name|description`
+         - Description: Movie genres catalog
+         - Examples:
+           - `1|Action|Fast-paced movies with exciting sequences and combat`
+           - `2|Drama|Character-driven stories exploring complex themes`
+           - `3|Sci-Fi|Science fiction with futuristic technology and concepts`
+         
+         ---
+         
+         *End of MovieTicketing Design Specification*
+
+      After (full content):
+         # 7i6ey5f457xh5c Application nusze0 eodlu62yonfa4
+         
+         czq
+         
+         ba r7qm6bw 1: Flask h4w9wf Specification
+         
+         | 9s219 rctw | ihmsx61x zibm | HTTP Method x t3yus4my 5k02c6yd | zkiuxfc rv1gf5ls9 bfagm6 k0 m1t8dp8r |
+         bgowuzqr85xok4xks9mmjjuf1t9z5oqmcbl70l2eeu1kbqdqg6gdjsxvk33v80o58y1xf11ay6v3tcxu5595ffaznke9ob0uhks363qrszic21bmteyicsrgazljy9sszx4x9g3ku4r70593iq0jl7ibbe0geixi4mgs7ozk08948
+         a tve s zpye5z0hxnjhi4k | GET 8 3n0i8qhn to 7ncssrx017f | None x
+         | po6bidgaruag 0 1p6gqhdrasx b 6sy | 83kjofhuno1ced5a p 7f14f96m2nl5fw7dw 6p6jy of dict 3f4h keys: 7gzni42lvrwu7 title:str, rating:float) j
+         | `/movies` 3 p6buc36aebni3cu | tnm a n8xiruc1f27rf63wctq4 | `movies` (list pb 3n40s movie_id:int, l0a5ad9ikk qj48cfm9bx 0rokcmevplk4p duration:int), `genres` b81bk kn dict: aogokir2onuravu |
+         v `/movies/<int:movie_id>` g e7gq6sgm7v31agz | GET e `movie_details.html` | eayrz6t (dict: movie_id:int, ioqhxjfqby qsp1tg2cvge9x dv64mlmkih rating:float, 9d1k0bn05sl7v description:str, release_date:str) j
+         | ejmhx70kjidz057q02iejkbdnfmh7gqc2j l li4tc61uf61av8ir5 | ib5 | cqii98zpsru1hy8i59dmwf h kyil4at (as z5vuh7h ixoq2elq052 (list op dict: showtime_id:int, 17w6w7g3fx6g6sho7 krptpw29h0x8v9lg75 showtime_time:str, price:float), `theaters` (list 04 lmdmt theater_id:int, theater_name:str), 6d054kf40p3mlkcwpna7epxhc (str), uv7rsqq6j9q3er6wdzt55g bhb9c |
+         d 4c1nwtpdbirn19ng0zlsrh5fmgc31ufigfat 2 `seat_selection` k GET y `seat_selection.html` c yv3tssedhw (dict: showtime_id:int, movie_title:str, ix7loupncwv2f5n05 omnqjc55p14ygozafc showtime_time:str, 0wza0aq5w7vm3 `seats` xiuop 2y nlezv seat_id:int, row:str, 5oq06mw2mzv otbw2dy5jcmi86 dwdso4pw4vso qa92ju1kl17dn8gc hfvqf 6r rgk8 |
+         f `/showtimes/<int:showtime_id>/seats` u yphqlcjt0y2crecxyf29c | POST s Redirect pj hd7xl11tx8xhl8e19opng7 j5m9zw tg3waw3ly9 seat ubygejm9opi 6 Form data: y7o1sdvhz4kt81yw xz51d ph seat IDs nr str) d
+         a `/booking/confirm` | aqqrnerak3zzthr55a6rbwrt6k v GET | t6eidyvly7ia646t0ya28t20acd | uui3zbmfm7xhlwn7r (dict: ga3lmemsy65jeeud 6udfr1paihfkjaizvq showtime_time:str, jsadkbyj6d ul str, zuqxmined54e4y7l4p |
+         i `/booking/confirm` h 2702ze9h0dene40fcxcfuls87qv l POST l 9y2ps4ss to `booking_history` 861i6j lpeofhs created) | ljmi 6dk7o `customer_name` cocrg2 eiwkf8m7zdbmb97t g93zs6 `selected_seats` stnjw of str), 137818uvj8172 l9dli j
+         s `/bookings` z 7jyoilc1gp7h3a0s3 | GET | fj36uciacnsm8swmkg3ioo | `bookings` uhmdr ji 1apyc booking_id:int, e84v6joa50tgc8r5 8ki4dpcgito86hy1bt 5a1twlbok5 of str, i73kesly3vrd opf9e1zf069xhqp (str) |
+         a 6tupabvjdqsbx89ksa7phzeksz72 o `view_booking` y GET z `booking_details.html` | `booking` xis8qk booking_id:int, movie_title:str, showtime_date:str, g7643qaqpx hw ynw1 customer_name:str, o0utgpkj7fzz147ozz2 6u18k6aeucphi5snf6 status:str) |
+         9 jxdvnkh6t0h 3 `theater_information` b e9j 5 `theater_information.html` x ahazje8sxg qae4t jl dict: w7hz439gqn4xfd0 iiao3lyrgdb5j63nm location:str, 0v4rs0hh6 qe7r81wp3049 facilities:str), bqclvg98xxuo0ei7s 0c7ok 3
+         
+         ---
+         
+         6i Section 2: HTML 85rquak6 lgidi08jegxnz4
+         
+         9qy 1. templates/dashboard.html
+         - **Page Title**: Movie ybb7nv27k Dashboard
+         g jddbm0ja <h1>**: Movie 4isjcoh28 5nq9re6yv
+         3 jyhgju5k7 qfv and Types:**
+         a wnxjjgsvvzwrtd9kx 5ea8 4cjt4x9lp g9z zx6acu4ot k2px
+         - mxj7zxfwg8s4u0etoq ts93 nofxkx3b hf9w2l0x movie dwoq34kle4i8hke
+         - 0u8vcomuvqam0baist5karf 5vwbdsc Navigates to k1xiroth0k4exou route
+         - `view-bookings-button`: xqa01lv Navigates tc `booking_history` tbwq0
+         s s7lkwh02md4wh7zxdor Button, Navigates xi psdevfxzantgwdel5 route general ld possibly jn0czlyfv link to cziq7esx9
+         
+         ### b9 r0v4pwje5pwjladyy0or3pfync1y
+         o 15sdjf fl031nc6 fstav sgf2daf
+         8 **Header uu6y3c0 Movie y6rstpt
+         q uyj6v87c6 IDs and Types:**
+         - uphpss0ul8c6rzk hhz5 0sabwtf8x yl7 e7kib43 page
+         c 1s8blv4cu2z2fv4 oqk860 Search yfwmyf 2u title or izgds
+         - 5luymtucgmzm6a4 Dropdown, Filter movies y4 it1xl
+         - hjvaptzghtscti yogg Grid to display movie du70t
+         k nh23l4fiscwnapygf9iz6wdvxya6r476tnr66g Button, To view movie ctlsmk aj9t for y9cba z19ozjrtgp
+         
+         tpm 3. templates/movie_details.html
+         - **Page 4uekz7eo Movie wla3e6o
+         3 **Header ebdyxc9 lqe2p 7io107w
+         - zj0d3yu8k IDs oh6 d0j911ak
+         k `movie-details-page`: Div, pyyg6jja0 for movie qsx5sek qg1s
+         m un7d8454c8gqzo id5 wbz5tncr rp324h1 title
+         d `movie-director`: Div, 94l3wego movie director
+         c 0eun545ydpc8z97 Div, Displays ql2lp rating
+         2 `movie-description`: Div, zqe3yj7y mgsjf description
+         - igv92f76tezw0j8wboc8dd1cq 941pe5f cgn7z9dbt on `select_showtime` z7drh bmf 7k45 0gyyv
+         
+         ul3 ih cwrad1q1mn37z9gw51lfez3kkz2nix
+         3 **Page 7pe8r689 7ge01y omws9eaa
+         - 562siscx q2tmo9x 9ouhwe dhkygn4v
+         j **Element IDs dcy 7e2u9kcr
+         j `showtime-page`: Div, Container am4 3flynbx1 0gt73o2kx
+         - vc43w6rtitgx25rah Div, List of sa4s84z99
+         - atawglam3y2s08sd4 Dropdown, 7nex9q nlch6fcci 0v owyhffe
+         7 2otsgnyqug0gqi pqjdo2 Filter showtimes by date
+         - r0aqy74yfeqcupvq3fx9dr0v0mwl25kow5hpe7sbr2r ajmbjon Select g160tu8q showtime
+         
+         27m zv qiktn0pu7kto3sdxkpqchoajysglq
+         y twvk24 Title**: Select x6f9l
+         s b8qte4z4 wo3j3a0 jopm92 8naqj
+         - ivsbzk3bq IDs and p9jw4svl
+         - `seat-selection-page`: Div, Container v2a seat ng77y9qke
+         7 hwui2o19q4f 0j6p mnq77q23pr1 xpzp map
+         2 `selected-seats-display`: Div, Displays 7e75n366y jyy29k9e seats
+         p xbx752mtu5ysipsgbd3z948g7g3tdbeabzwnuxmoy7 d29sdbs Individual seats e.g. 1tlndqn
+         - on1mv16lr0x8qsnwn37ml0hos Button, Proceeds to booking confirmation
+         
+         ### r5 n6y8hfhe2t4575ethefzsmpfk6g2vu81j8c
+         e vm1n6x Title**: Booking f190w684syvq
+         3 1ghk6qa5 fm59i6d q90zlif avug45ab8hjd
+         - 4b2v1wt1p 6d8 l18 mvimrv3v
+         y `confirmation-page`: 9wwj d995vx3e0 1p5 booking azf1rleibkr6
+         4 xgdec5fm0jii2eqs0y w2in Booking z8jpu6q x8bb995
+         - b0fxom0q2upn0g7x Input, esoqw 912 customer name
+         j 2lo8s5h9g8jur7ewy 4257u6 cwneu for customer zaaji
+         z mg9uf1pvvan06rr00ks12jbnl moqhcu3 Confirms zpgk6ax and e3dw2pi
+         
+         ### 7. du2u1hs8z6bgrhumaxbm6fq7polded
+         9 ukqrid 8mi42jsk Booking dek9g4h
+         n x1e3vvqh <h1>**: Booking j5idvak
+         i 31hlz9up4 j2s st7 60ejy66m
+         t `bookings-page`: 86om Container for r98l3nfu page
+         - `bookings-table`: gz4l1l Displays 7585s7w zv9ekry
+         - zd7k6svkslzh0nfla8ivo5z4eqiy8vwiwi3fh7zf lsicsdu og33 8b1zifh wx9 each xgaipwa
+         0 prh5t4wvxa74sl5s Dropdown, Filter e7uhgyqn tw jug2w5
+         h `back-to-dashboard`: Button, as2mqhhns or2z xw 2prtb1na8
+         
+         wa6 uo dvrmkwp5piaft70y6wbb6q3ndjlztf8ihi
+         4 adwtq2 5cod05mc Theater Information
+         - vcqj9gjw mvl0ukx Theater Information
+         p **Element u2o gvm 430av6d9
+         q `theater-page`: Div, ewx99x2vw gt9 3ysj32a info page
+         u `theaters-list`: elns fxvw 2c ecnawpv4
+         l 94w9kieea8spfbogrr1e1vtyio Dropdown, 35x7ss theaters sy location
+         u foicmoui8k2nl15zih04a cvuw ugppucjn facilities 1ex v80ss0fpp
+         - `back-to-dashboard`: gby3si9 Navigates pr7h j0 bqv3yiqd9
+         
+         ---
+         
+         4z 3e21evh j9 pyh9 File 5sam3yx
+         
+         vib didkhc0c2iv6ijh
+         - Fields: `movie_id|title|director|genre|rating|duration|description|release_date`
+         l kb4szbq2aal3 Contains uot movie information
+         7 Examples:
+         6 fifpa4 Matrix|Lana r6qu0tbmgtoro7c4cac63idxwg computer o4t0kh xkqnat about ej2 hq2i akrwqg of 2w27jns b8k c03 e9yz 2q 0b1 k2o ezsaudh its controllers.|1999-03-31`
+         x `2|Inception|Christopher ltf72p7g0gf5k2mawjz980 w6y4skw thief who bgz1fv corporate secrets k594oiv 6rd 8uq of dream-sharing g71cq7dgc8 5m 2a0rn r10 dcgm09v 9p6k tm planting an idea.|2010-07-16`
+         w j5yoya Shawshank Redemption|Frank mgwh9d1zngmjkujiotwawghyxw 2s696cj9pn nlg zwm1 pfid 8 number of u6qmdr finding solace and eventual oiatuxe0iq through erpv of yup7cb decency.|1994-09-23`
+         
+         ### v0sacgglobb25xkic
+         w Fields: `theater_id|theater_name|location|city|screens|facilities`
+         e r33il8yinc0b fjqd1j kwh2mpe qf37amj
+         p 7ojj1xlvs
+         4 9gz9ldw1w Max|123 dlia bx6dt0 jflvuv0odvb6q Dolby, 2jn8y43a15 Access`
+         z c4rggv1qb mplqgqsce7l Broadway|Los Angeles|8|3D, Premium qwj0dq ck3s2n16
+         g 80lv9xkmzg6q Theater|789 Park 8o0fqu9dor9m0x1i3i45 p6t4c623 nw3dmw7noks mjx phup488
+         
+         ### 5jtrb4gnwr45gifl01
+         - Fields: pg34atskdne9q4lvx2x1er7f7abftqtm9yl5f70e6fwflxxsv0obkld8pdkigk2m80q6dxfnhw8iejdhhqh
+         z Description: Showtimes 1aqvdssuqn data
+         - ysx78tm6y
+         2 t850bz9pq8qg5sf0nskxg77ituegkivnu
+         - `2|1|1|2025-02-01|22:30|12.99|40`
+         - dxkv4jtpnj09uvo7478d4s3vzbn84o4t8
+         
+         4b3 vhcj9hy1udncy1
+         g Fields: x3a8104lqal98sli2niqqc5b9yvnmwa6ogespu0zaj125cc11h0y8edwif
+         f 9fe8fv8g1a8g 5zf1 inventory 08f oz6erc
+         - 98k3qjd2t
+         s `1|1|1|A|1|Standard|Available`
+         - iv4vuecrjdcegxxy3ewx56zqsp6h8e
+         c itkllzjvvyzdowc7bsmrxy66fd
+         
+         0w4 data/bookings.txt
+         5 eozm1f6 `booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked`
+         y Description: Records 5d bookings
+         n kt1kr5fpt
+         - 874qc7sav Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`
+         d r1esjif1r Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10`
+         f msk9k1sxrb1 Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`
+         
+         iqr data/genres.txt
+         - 25dk0nf `genre_id|genre_name|description`
+         - Description: t637b genres 9q6aghp
+         0 Examples:
+         a y2d7cv14dccn8nhdt0t6 vhtxc1 with 179w4237 sequences 4ie combat`
+         - `2|Drama|Character-driven y11rwky d7pctbt43 bvsjkqa themes`
+         5 2gq9oiwggpr8ho46p wcnnven with futuristic qbsd1bfrsg pqc concepts`
+         
+         ---
+         
+         0uig 43 MovieTicketing exmlpu Specification*
+
+  [2] Agent: SystemArchitect
+      Type: IO_CHAOS_WORD_REPLACEMENT
+      Details: WordReplacement: 579/965 words replaced (60%)
+
+      Before (full content):
+         # MovieTicketing Application Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path                               | Function Name               | HTTP Method | Template Rendered           | Context Variables Passed to Template                                                |
+         |-----------------------------------------|-----------------------------|-------------|-----------------------------|-------------------------------------------------------------------------------------|
+         | `/`                                     | `root_redirect`              | GET         | Redirect to `/dashboard`     | None                                                                                |
+         | `/dashboard`                            | `dashboard`                 | GET         | `dashboard.html`             | `featured_movies` (list of dict: `{movie_id:int, title:str, rating:float}`)         |
+         | `/movies`                              | `movie_catalog`             | GET         | `movie_catalog.html`         | `movies` (list of dict: `{movie_id:int, title:str, genre:str, rating:float, duration:int}`), `genres` (list of dict: `{genre_name:str}`) |
+         | `/movies/<int:movie_id>`                | `movie_details`             | GET         | `movie_details.html`         | `movie` (dict: `{movie_id:int, title:str, director:str, genre:str, rating:float, duration:int, description:str, release_date:str}`)          |
+         | `/movies/<int:movie_id>/showtimes`     | `select_showtime`           | GET         | `select_showtime.html`       | `movie` (as above), `showtimes` (list of dict: `{showtime_id:int, theater_name:str, showtime_date:str, showtime_time:str, price:float}`), `theaters` (list of dict: `{theater_id:int, theater_name:str}`), `selected_theater_filter` (str), `selected_date_filter` (str) |
+         | `/showtimes/<int:showtime_id>/seats`  | `seat_selection_get`        | GET         | `seat_selection.html`        | `showtime` (dict: `{showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str, price:float}`), `seats` (list of dict: `{seat_id:int, row:str, column:int, seat_type:str, status:str}`), `selected_seats` (list of str) |
+         | `/showtimes/<int:showtime_id>/seats`  | `seat_selection_post`       | POST        | Redirect to `/booking/confirm` | Form data: `selected_seats` (list of str)                                           |
+         | `/booking/confirm`                     | `booking_confirmation_get`  | GET         | `booking_confirmation.html`  | `booking_details` (dict: `{movie_title:str, showtime_date:str, showtime_time:str, seats:list of str, total_price:float}`)                       |
+         | `/booking/confirm`                     | `booking_confirmation_post` | POST        | Redirect to `/bookings`      | Form data: `customer_name` (str), `customer_email` (str), `selected_seats` (list of str), `showtime_id` (int)    |
+         | `/bookings`                           | `booking_history`           | GET         | `booking_history.html`       | `bookings` (list of dict: `{booking_id:int, movie_title:str, showtime_date:str, seats:list of str, status:str}`), `status_filter` (str)          |
+         | `/bookings/<int:booking_id>`           | `view_booking`              | GET         | `booking_details.html`       | `booking` (dict: `{booking_id:int, movie_title:str, showtime_date:str, seats:list of str, customer_name:str, customer_email:str, total_price:float, status:str}`) |
+         | `/theaters`                           | `theater_information`       | GET         | `theater_information.html`  | `theaters` (list of dict: `{theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}`), `location_filter` (str)  |
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications
+         
+         ### 1. templates/dashboard.html
+         - **Page Title**: Movie Ticketing Dashboard
+         - **Header <h1>**: Movie Ticketing Dashboard
+         - **Element IDs and Types:**
+           - `dashboard-page`: Div - Container for the dashboard page
+           - `featured-movies`: Div - Displays featured movie recommendations
+           - `browse-movies-button`: Button - Navigates to `movie_catalog` function
+           - `view-bookings-button`: Button - Navigates to `booking_history` function
+           - `showtimes-button`: Button - Navigates to `select_showtime` function (general or movie-centered)
+         
+         ### 2. templates/movie_catalog.html
+         - **Page Title**: Movie Catalog
+         - **Header <h1>**: Movie Catalog
+         - **Element IDs and Types:**
+           - `catalog-page`: Div - Container for movie catalog
+           - `search-input`: Input - Search movies by title or genre
+           - `genre-filter`: Dropdown - Filter movies by genre
+           - `movies-grid`: Div - Movie cards grid
+           - `view-movie-button-{movie_id}`: Button - View details of movie with given `movie_id`
+         
+         ### 3. templates/movie_details.html
+         - **Page Title**: Movie Details
+         - **Header <h1>**: Movie Details
+         - **Element IDs and Types:**
+           - `movie-details-page`: Div - Movie details container
+           - `movie-title`: H1 - Displays movie title
+           - `movie-director`: Div - Displays movie director
+           - `movie-rating`: Div - Displays movie rating
+           - `movie-description`: Div - Displays movie description
+           - `select-showtime-button`: Button - To proceed to showtime selection for this movie
+         
+         ### 4. templates/select_showtime.html
+         - **Page Title**: Select Showtime
+         - **Header <h1>**: Select Showtime
+         - **Element IDs and Types:**
+           - `showtime-page`: Div - Container for showtime selection
+           - `showtimes-list`: Div - Lists available showtimes
+           - `theater-filter`: Dropdown - Filter showtimes by theater
+           - `date-filter`: Input - Filter showtimes by date
+           - `select-showtime-button-{showtime_id}`: Button - Select given showtime
+         
+         ### 5. templates/seat_selection.html
+         - **Page Title**: Select Seats
+         - **Header <h1>**: Select Seats
+         - **Element IDs and Types:**
+           - `seat-selection-page`: Div - Seat selection container
+           - `seat-map`: Div - Interactive seat map
+           - `selected-seats-display`: Div - Displays currently selected seats
+           - `seat-{row}{col}`: Button - Seat button by row/column, e.g. seat-A1
+           - `proceed-booking-button`: Button - To proceed to booking confirmation
+         
+         ### 6. templates/booking_confirmation.html
+         - **Page Title**: Booking Confirmation
+         - **Header <h1>**: Booking Confirmation
+         - **Element IDs and Types:**
+           - `confirmation-page`: Div - Container for booking confirmation
+           - `booking-summary`: Div - Summary of booking details (movie, showtime, seats, total)
+           - `customer-name`: Input - Customer name field
+           - `customer-email`: Input - Customer email field
+           - `confirm-booking-button`: Button - Confirm and complete booking
+         
+         ### 7. templates/booking_history.html
+         - **Page Title**: Booking History
+         - **Header <h1>**: Booking History
+         - **Element IDs and Types:**
+           - `bookings-page`: Div - Container for bookings list
+           - `bookings-table`: Table - Displays booking records
+           - `view-booking-button-{booking_id}`: Button - View booking details for given booking
+           - `status-filter`: Dropdown - Filter bookings by status
+           - `back-to-dashboard`: Button - Navigate back to dashboard
+         
+         ### 8. templates/theater_information.html
+         - **Page Title**: Theater Information
+         - **Header <h1>**: Theater Information
+         - **Element IDs and Types:**
+           - `theater-page`: Div - Container for theater info
+           - `theaters-list`: Div - List of theaters with details
+           - `theater-location-filter`: Dropdown - Filter theaters by location
+           - `facilities-display`: Div - Displays facilities and amenities
+           - `back-to-dashboard`: Button - Navigate back to dashboard
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### data/movies.txt
+         - Fields: `movie_id|title|director|genre|rating|duration|description|release_date`
+         - Description: Contains all movies with details
+         - Examples:
+           - `1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31`
+           - `2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16`
+           - `3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23`
+         
+         ### data/theaters.txt
+         - Fields: `theater_id|theater_name|location|city|screens|facilities`
+         - Description: Details about theaters
+         - Examples:
+           - `1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access`
+           - `2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking`
+           - `3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge`
+         
+         ### data/showtimes.txt
+         - Fields: `showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats`
+         - Description: Showtimes for movies in theaters
+         - Examples:
+           - `1|1|1|2025-02-01|19:00|12.99|85`
+           - `2|1|1|2025-02-01|22:30|12.99|40`
+           - `3|2|2|2025-02-01|18:00|14.99|95`
+         
+         ### data/seats.txt
+         - Fields: `seat_id|theater_id|screen_id|row|column|seat_type|status`
+         - Description: Seat information (location, type, status)
+         - Examples:
+           - `1|1|1|A|1|Standard|Available`
+           - `2|1|1|A|2|Standard|Available`
+           - `3|1|1|B|5|Premium|Booked`
+         
+         ### data/bookings.txt
+         - Fields: `booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked`
+         - Description: Bookings records with details
+         - Examples:
+           - `1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`
+           - `2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10`
+           - `3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`
+         
+         ### data/genres.txt
+         - Fields: `genre_id|genre_name|description`
+         - Description: Movie genres catalog
+         - Examples:
+           - `1|Action|Fast-paced movies with exciting sequences and combat`
+           - `2|Drama|Character-driven stories exploring complex themes`
+           - `3|Sci-Fi|Science fiction with futuristic technology and concepts`
+         
+         ---
+         
+         *End of MovieTicketing Design Specification*
+
+      After (full content):
+         y MovieTicketing f27or6wwjj7 Design Specification
+         
+         llj
+         
+         ## Section mz Flask Routes d8helg721h37t
+         
+         l a0igr zyvh r u0bc24qq Name | y5gq Method c v1g9iu8a 1p4q9r6k | st50h34 wq1qb16ce Passed yl q1lfsidm |
+         irs4bng0hmffstptf5wq2n1f79f51pwfb5v5w11q3jjeqzziabllmrpb81phnfmcl9ed3y6bn7y7d9ow9fqc398kebhpnc9pnyzvn0k6pxyhtciidtmh6fzxqc0xr1wbo3kl90bod7aweusm6ej2soa2o6a5z5mcvflme3xq2oj6t3504269ythplfrip5ax5ndg2mirmir
+         5 jgh | `root_redirect` 5 wki | h8l6kxpe 44 `/dashboard` p hnjz |
+         5 6pftkq1ddx8p p `dashboard` 8 emn | yn5yduj56d5sqc6c 0 5r0521lgg686odl8s y7f5v uj x8icl `{movie_id:int, title:str, rating:float}`) |
+         6 g2a658q2a | `movie_catalog` o 3gy d `movie_catalog.html` | `movies` (list pf dict: gc7liygevpe0nbx1m00q4 cn7cwhhe 4ms0b of imgmk hd9oc1p8o2dxe64x5243 b
+         | `/movies/<int:movie_id>` o `movie_details` 7 y6a y `movie_details.html` f 2y6y3u2 himu1q 2ox0s6zkuungdfs9bdqx |
+         a `/movies/<int:movie_id>/showtimes` | blw0kkb3bpdcsvu2o 8 GET | `select_showtime.html` c `movie` (as above), qxa3763myv6 (list of dict: `{showtime_id:int, theater_name:str, showtime_date:str, showtime_time:str, price:float}`), sdyfwg25bc fp12e c1 3ekdh jx9ck56ahtk919908uh3m j5mwj9u5nv03qhh9erpromsfz xhaqm1 `selected_date_filter` 2d08d y
+         | ez2g7lrcpl32m14698wh9aqw3q9r5882vkbt | xsyoxpn6uksphaui960n | kwx 7 `seat_selection.html` | b39sc3szct (dict: lmi9afw0n94l756ipsg34 5wpexyj (list of 19ebr 8dffrzhph92ih5da2pubn `selected_seats` (list c1 str) f
+         s `/showtimes/<int:showtime_id>/seats` k 9kzq08nipjlbmj7121ar1 e c2w4 z lztg9yls to `/booking/confirm` c wqhq data: `selected_seats` (list of str) d
+         6 cvtd77ui5jh1pyhbor g 0itt7klaw0hgiyk352zuts6ytr | zd5 6 `booking_confirmation.html` c rjx3p3ei0v5ewpask (dict: me5upemhp8ewolrfms01 |
+         b krh6mc672pq7fjpkd1 | dazc9h191i0qtv91nx94mggnm58 n POST | Redirect mz ln09axr3zeh 7 lgin data: qwi1pes5inmawio fvt7e3 9shv90eh8ne3m8uy (str), opxdl5sco4a3qtad recxq of str), `showtime_id` (int) j
+         | `/bookings` 0 dwr5ahmulli3kfm6q | GET b `booking_history.html` 9 `bookings` (list ia m3q52 owif32yiouzbmm53722ds wf5oxizj9kws248 o78ve o
+         9 wfuaxd3vg7agjy29dkqio6teklri 5 `view_booking` | 8ak 5 6wgcamkn2lcbjyuxe4q6ui r 63rnfpsml (dict: `{booking_id:int, movie_title:str, showtime_date:str, seats:list of str, customer_name:str, customer_email:str, total_price:float, status:str}`) 6
+         | `/theaters` | `theater_information` a GET z 8q5brm9ifd18oqctoaadtvo667 | y5yyh9qsfz bp6ye of 770v9 nub1p9w1tgejwdxtym3hab `location_filter` 8bbsp |
+         
+         gz1
+         
+         ## Section 10 7prb wwnx2iwy 2pl0nf6r436rmp
+         
+         ### vr templates/dashboard.html
+         - **Page Title**: Movie Ticketing Dashboard
+         d ruy7n0pl <h1>**: Movie Ticketing lg0k0dq5b
+         h **Element xbt 3le Types:**
+         g `dashboard-page`: Div - ytosyapmb riy o7j 94214jssb qmrg
+         4 krxwg8eyih618vrkq4 bvz v gvvscrzy q96smm0k 7va78 674d77is6bktf9r
+         - y9i8havcoi47gv0d3qp74lo 0hztel h Navigates vl `movie_catalog` function
+         l `view-bookings-button`: Button u Navigates to netgjezmnwzna1tdr yf8o2qit
+         j `showtimes-button`: 3sj99a h y0j99ocng to mxxpw8mik2jb1ssmq dmcs956q jki6g4gv or 0tjiwgswmrvt53k
+         
+         ### my nseitcn6n53keitbmlto063f9jx9
+         m w4x6jh 6l7qd10f u7ue0 Catalog
+         - 0cr1mdch d9p1mgd Movie Catalog
+         - **Element aa7 and 78yqqfoi
+         o gaxt3kkwgnhihzq 2fk - zu7biv2uv c7o uaikf catalog
+         - `search-input`: Input - Search movies kk title or ielim
+         3 `genre-filter`: tt3jgz8v - Filter 3clen7 lh genre
+         - frybft2pxuzuvh Div - 1to0g esk7p grid
+         - `view-movie-button-{movie_id}`: i4lhy3 - nnx1 q8sib7i u2 movie with given zu9zvksm41
+         
+         g8u yu 3va4typ3xz36q8jgsws15eliy81o
+         - **Page wid4ddhc Movie Details
+         - 8t5ro3yn ypt6w82 Movie Details
+         - **Element 5ov and Types:**
+         5 c72x6kjd4vreazm5cxlo3 ksc j Movie oebkibc 7jq9nllse
+         o 7xcke3qzyjadzn H1 w Displays movie irq9s
+         v c2avgay37o5nswq5r j65 - Displays lsvze u8f4u6dv
+         i 9fy2lz0er0v0u5f csz c Displays j1e12 otmpu2
+         - `movie-description`: dby 5 vk4ijvsv 0rr9q fx90dq0r1d2
+         e z3vjdanmiqthu5wye2x2t8674 du4e1q - s3 xkgj81v to gcm6blo6 5lkpr45l7 for this movie
+         
+         ### u0 yu4teqw8j3h5kzy2a6kx8q4xrf123d
+         p yiljwo c1p6b2fy nxyoi6 Showtime
+         - **Header q5l3jtq Select Showtime
+         w ed7m9jymd IDs 4a5 Types:**
+         h `showtime-page`: imk b yh0kw6v41 for bkhxsnx6 selection
+         - `showtimes-list`: mun - z6cyo available s17e1on8u
+         - llhxyi1rfmhtu88sb Dropdown c v4q2rq showtimes 4h nnl7pd2
+         j `date-filter`: lps0d l lqmpjz gt6wfxqgd rh bre0
+         0 rejhe0zfe40vx49sw5xbzzc9ak17vynz6xk0gp4ckbzv Button z jnxtol given ca95xufs
+         
+         dhf 5. templates/seat_selection.html
+         - h4dbng yln222d6 Select Seats
+         - k9pe3b00 uoel2xr Select haowx
+         m 78l3fodcy bfh 6w0 i8ggpzvf
+         - `seat-selection-page`: j2p 6 nl7g 0i3u87apj wqm7yytjm
+         1 lts3bl5lbmg Div - ups1v5gd2ai seat fgk
+         - c51eh8hzzyu2rdtylwvim05ez Div q Displays currently selected n0jqa
+         a tr5nk17tj2uvqneoe82q1us3dxchk38zc5dz90qka5v7 Button - Seat 6p7fvz cm row/column, 2oid seat-A1
+         - h7prninozmyeok53udwiw3vnc x7rogu p u4 proceed to booking 4lg4mo8do86i
+         
+         l98 5w templates/booking_confirmation.html
+         b gvi41u Title**: h2aag2k ppgul45eev82
+         0 pc927ghz <h1>**: 973fztu Confirmation
+         - xlcy48o2b uys 1vc ws38j8id
+         1 im8wqep31li0hxgw7osr yoi 3 Container vji wrjl1pm 0c948s01b3bh
+         - xhmbt1xezy15c5oo32 Div - Summary yj 33q68qs wva24oz 5fo094x showtime, vv4g38 bvqahp
+         1 `customer-name`: Input - 0pykbogg name bq5ms
+         b idjbpbjtg56cnug76 Input l o2btcjh3 g6875 field
+         - 6o52hrqpmdm387ciy94z70luw uurk10 - uv3mujb df7 8isyf5u5 booking
+         
+         b1w 7. uobkan75cyn5ru4vqw17mfgm3x8o5c
+         - **Page ih7uqwbc u6shrhm ino0h8z
+         - s7tftyk0 h2a072m mw61aen ywi15jt
+         - ayc0k1jxy IDs 8mp Types:**
+         8 `bookings-page`: Div - 8c6bdqbuy c3p nv9jxx8a list
+         h 8ybf90v85h1exmkc9 Table - fizql097 5pjihzj tc2et71
+         1 `view-booking-button-{booking_id}`: Button - chwd liiqsfb details bg4 5iqey booking
+         - `status-filter`: Dropdown s xizc58 bookings l8 status
+         - `back-to-dashboard`: Button - l4zqlzzn 87yc to pxbz87wc2
+         
+         scj 8. mnznnqliowvastq5t1gqnfgqmw2vp0qbt5
+         j jiktx1 zo2xd9wb 9fbg7ow vvk54jp17r9
+         - x3qp9b9g 56opufj Theater Information
+         0 5598lhyxg IDs and z7fcrjr8
+         - `theater-page`: 23i - Container o0g i5p799h jp2q
+         f 7d46gt51f326p6cg Div i 70hd mf an8xalrr a3ml details
+         - w7u7k06y7byt4zzgapru8v73o6 Dropdown 5 Filter theaters jf 5qcy9425
+         - 21fhhmbg2npov8z4nvlo8 Div b ben3hkai facilities and amenities
+         e 54itm4puqnv1qfpegux9 Button - Navigate back to 5v2nukh39
+         
+         dra
+         
+         4z Section yk ljro x1jq fb4rydw
+         
+         ### qg5snobvavhpxzp
+         a kooboo7 o3hzboifcytxl9xy72heoq6ffhi3dt5jmsk0smwutdsovcl2tkgj9gxewpa9la8dljowijxr
+         k Description: vlnpwvdn 1r0 mldv9s 57wt lh9f8qc
+         u Examples:
+         - c9flgh siskzugsur4 Wachowski|Action|8.7|136|A computer hfpgpq learns about 8an hljz lvxa1y of n81s6vz dof do5 5pox in 8wv idl against hqt 7gj2q4sj4zc73co8vbvxmtd9
+         7 `2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled rxke8 who steals udd1lps53 bptsfam 36m0n3a cuo 1vs vd kipjgahnftgh7 technology s7 given z3q rkve58t task wu planting oy 2cmlbub0ckggwhvu1
+         f `3|The ku652zu40 Redemption|Frank hyje6rzf9lae3h9zzx268e4vxa wf8nn4nju8 x43 sb0l 6fa8 a number rb years, finding solace and eventual iujscosf7m kuadc6b nipw 0o common 91tvcc1nsemi2q1o8egb
+         
+         xe9 data/theaters.txt
+         - n0ahkhl 5ewx2byixbeqrrou642811m7rjcz6vz5qhxsawzqfja0id1x1kzzbyz86x
+         - sg11cp1lfs06 ouwery6 r8pt3 185zc8ki
+         - Examples:
+         m p7x4y7w26 Max|123 yk6s St|New York|10|IMAX, 9w44j3 lz2lqgf58x az33lsn
+         8 cyu955a1f Cinemas|456 Broadway|Los bh9pxe2699ysl Premium Sound, Parking`
+         9 `3|Starlight thpfw4xawac f8i9 1dubaculn78m8ibfbgm3 yuwy0rhc Restaurant, VIP 2ux4apc
+         
+         fhi yl3zt8mxaqrrt9nkxi
+         - Fields: jlpt0bsmkq7peuudggaf5l7oicjkooo9at7wadce721rtxveirdz2yyihvpsm6dr3i8a65wcw2ixea3uexa
+         e l6mrgjjhgspo Showtimes zcm yg346l eg qnq68nha
+         u zzof92sin
+         f 6gss9i2l540si2rc0d7sco64uf0hskm9r
+         q bxycncz92twpxq33980w83gxr0zagv0ix
+         - `3|2|2|2025-02-01|18:00|14.99|95`
+         
+         v1a to7uxnwq6v800a
+         y mej7exz qfdjitivqoz6pjvv73s1w8ewrsuttqv44i2qovu1l77ex6li10zlcbgj6v
+         - h2izi0a7w9ll l2y9 information jql89nz6an type, 8y2lsd4
+         o dcgh4nme1
+         - `1|1|1|A|1|Standard|Available`
+         - beygx0g51ipch8fnecxe4f10ujtdf3
+         f jafodd4um9355zmph6a9jffgvt
+         
+         1qs qiu8nqcxkzrs9xaob
+         p Fields: 39yy6mzoj0zsrv0uow339xq9ekhsrgrakek8x6wqdopc4pst82npemi88zrnx8vw8ss9rpdd3qkkyho3q4rtzyzhp3xtr31uip
+         z 32jahogbqwei Bookings p03snjy with roalrya
+         i dpy1l2kd9
+         y `1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2`
+         s iyf99zlzt uhagr66vp1ypeqwypcpj9d887oeugiqqmyna37rc5ym6uonx989pn6
+         e `3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4`
+         
+         ### wonvhn9fszn7l6g
+         g 3ihmntx zb9njtvvs1uly76oxd3tq9zg4a4mwlga8
+         - Description: 9nqqb 9p1s7j 7tnrfb3
+         - 0wmopf8yi
+         k `1|Action|Fast-paced ks3248 4h4c oj6dkdb4 c1fcviw3p and biq0cdn
+         n 4rcbwzu137l03vqd5ecii5ilh ixvm6k5 exploring lyatxxz themes`
+         s `3|Sci-Fi|Science da1y3sv q4cy wj14ehsqs8 technology i8a concepts`
+         
+         ---
+         
+         llhg jw wc2g3601gdzydv au5dwj Specification*
+
+================================================================================
+

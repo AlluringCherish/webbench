@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rental History</title>
+</head>
+<body>
+    <div id="main-container">
+        <h1>Rental History</h1>
+        <div id="history-page">
+            <form method="GET" action="">
+                <label for="status-filter">Filter by Status:</label>
+                <select id="status-filter" name="filter_status" onchange="this.form.submit()">
+                    <option value="All" {% if filter_status == 'All' %}selected{% endif %}>All</option>
+                    <option value="Active" {% if filter_status == 'Active' %}selected{% endif %}>Active</option>
+                    <option value="Completed" {% if filter_status == 'Completed' %}selected{% endif %}>Completed</option>
+                    <option value="Cancelled" {% if filter_status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                </select>
+            </form>
+            <table id="rentals-table" border="1">
+                <thead>
+                    <tr>
+                        <th>Rental ID</th>
+                        <th>Vehicle</th>
+                        <th>Pickup Date</th>
+                        <th>Dropoff Date</th>
+                        <th>Pickup Location</th>
+                        <th>Dropoff Location</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rental in rentals %}
+                    <tr>
+                        <td>{{ rental.rental_id }}</td>
+                        <td>{{ rental.vehicle.make }} {{ rental.vehicle.model }}</td>
+                        <td>{{ rental.pickup_date }}</td>
+                        <td>{{ rental.dropoff_date }}</td>
+                        <td>{{ rental.pickup_location }}</td>
+                        <td>{{ rental.dropoff_location }}</td>
+                        <td>{{ rental.status }}</td>
+                        <td><button id="view-rental-details-{{ rental.rental_id }}">View Details</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </div>
+    </div>
+</body>
+</html>

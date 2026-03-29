@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visitor Tickets</title>
+</head>
+<body>
+    <div id="visitor-tickets-page">
+        <h1>Visitor Tickets</h1>
+        {% if purchase_message %}
+        <p>{{ purchase_message }}</p>
+        {% endif %}
+        <form method="post" action="{{ url_for('visitor_tickets') }}">
+            <label for="ticket-type">Ticket Type:</label>
+            <select id="ticket-type" name="ticket_type">
+                {% for ttype in ticket_types %}
+                <option value="{{ ttype }}" >{{ ttype }}</option>
+                {% endfor %}
+            </select>
+            <label for="number-of-tickets">Number of Tickets:</label>
+            <input id="number-of-tickets" name="number_of_tickets" type="number" min="1" value="1" required />
+            <button id="purchase-ticket-button" type="submit">Purchase Ticket</button>
+        </form>
+        <table id="my-tickets-table" border="1">
+            <thead>
+                <tr>
+                    <th>Ticket Type</th>
+                    <th>Visit Date</th>
+                    <th>Visit Time</th>
+                    <th>Number of Tickets</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in purchased_tickets %}
+                <tr>
+                    <td>{{ ticket.ticket_type }}</td>
+                    <td>{{ ticket.visit_date }}</td>
+                    <td>{{ ticket.visit_time }}</td>
+                    <td>{{ ticket.number_of_tickets }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

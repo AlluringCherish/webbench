@@ -1,0 +1,88 @@
+Integration Testing Feedback for FoodDelivery Web Application
+
+1. Setup and Launch
+- The application backend (app.py) was successfully deployed with all necessary data files created as per specification.
+- The Flask server started properly with no exceptions.
+
+2. Dashboard Page
+- The main container #dashboard-page exists.
+- Featured restaurants (#featured-restaurants) correctly display the top 3 restaurants by rating.
+- Popular cuisines (#cuisines) are listed accurately.
+- Navigation buttons (#browse-restaurants-button, #view-cart-button, #active-orders-button) are present and route correctly:
+  - Browse Restaurants button navigates to /restaurants page.
+  - View Cart button navigates to /cart page.
+  - Active Orders button navigates to /orders/active page.
+
+3. Restaurant Listing Page
+- The container #restaurants-page is present.
+- Search input (#search-input) and cuisine filter dropdown (#cuisine-filter) appear visually but backend functionality for filtering/search is not implemented.
+- Restaurants rendered in #restaurants-grid, showing detailed info.
+- View menu buttons (#view-restaurant-button-{restaurant_id}) exist on each restaurant card and route correctly to menu page.
+
+4. Restaurant Menu Page
+- The menu page container (#menu-page) and restaurant info (#restaurant-name, #restaurant-info) display correctly.
+- Menu items are listed in #menu-items-grid with all required details.
+- Each menu item has functional buttons:
+  - Add to cart button (#add-to-cart-button-{item_id}) confirms item added to cart.
+  - View details button (#view-item-details-{item_id}) routes to item details page.
+
+5. Item Details Page
+- Container #item-details-page loaded.
+- Item name (#item-name), description (#item-description), and price (#item-price) display properly.
+- Quantity input (#quantity-input) enforces min value 1 and resets invalid or zero input to 1.
+- Add to Cart button (#add-to-cart-button) correctly adds selected quantity to cart and redirects to cart page.
+
+6. Shopping Cart Page
+- Container #cart-page and table #cart-items-table properly display items in cart.
+- Quantity inputs have IDs (#update-quantity-{item_id}) but names differ from backend expectations; backend expects 'update_quantity-{cart_id}' but frontend sends 'quantity_{item_id}', causing update functionality to fail.
+- Remove buttons have IDs (#remove-item-button-{item_id}) but the form uses "remove_item_id" instead of expected "remove_item-{cart_id}", causing removal to fail.
+- Total amount (#total-amount) is calculated and displayed correctly.
+- Proceed to Checkout button (#proceed-checkout-button) routes to checkout page.
+
+7. Checkout Page
+- The container #checkout-page and all input fields (#customer-name, #delivery-address, #phone-number, #payment-method) are present.
+- Validation occurs on required input and valid payment method.
+- Checkout prohibits orders from multiple restaurants in one cart.
+- Successful order placement saves order and order items, clears the cart, and redirects to active orders page.
+
+8. Active Orders Page
+- Container #active-orders-page present.
+- Status filter dropdown (#status-filter) includes correct options and filters orders accordingly.
+- Orders list (#orders-list) displays orders but lacks restaurant names because backend does not enrich order objects with restaurant_name.
+- Track order buttons (#track-order-button-{order_id}) are present and route to tracking page.
+- Back to Dashboard button (#back-to-dashboard) routes correctly.
+
+9. Order Tracking Page
+- Container #tracking-page present.
+- Displays order details (#order-details), driver info (#delivery-driver-info), estimated time (#estimated-time), and order items list (#order-items-list) correctly.
+- Back to Orders button (#back-to-orders) functions properly.
+
+10. Reviews Page
+- Container #reviews-page present.
+- Reviews list (#reviews-list) displays reviews with customer name, rating, and text.
+- Filter dropdown (#filter-by-rating) filters reviews correctly.
+- Write Review button (#write-review-button) routes to write review page.
+- Back to dashboard button (#back-to-dashboard) routes correctly.
+
+11. Write Review Page
+- Form submission is functional with validation for customer name, rating (1-5), review text, and date format.
+- Successful submission adds review and redirects to reviews page.
+- Invalid input returns HTTP 400 error.
+
+Summary:
+- Core application features and user workflows are implemented and functional.
+- UI element IDs generally present as per specification.
+- The Shopping Cart page has notable issues: the form input "name" attributes for quantity updates and item removals do not align with backend expectations, causing these updates to fail.
+- Active Orders page lacks restaurant names in listing due to missing linkage in backend data passed to template.
+- Search input in Restaurant Listing page is a UI placeholder with no backend filtering functionality.
+
+Recommendations:
+- Update shopping cart template inputs to use 'update_quantity-{cart_id}' and 'remove_item-{cart_id}' names for proper backend handling.
+- Enhance backend for Active Orders page to join orders with restaurant names before rendering.
+- Implement backend filtering for Restaurants page search and cuisine filter for completeness.
+
+Overall, despite minor issues, the application meets most requirements but requires fixes to shopping cart functionality and improvements to active orders display.
+
+Overall Status: NEED_MODIFY
+
+End of integration_feedback.txt

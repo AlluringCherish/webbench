@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Confirmation</title>
+</head>
+<body>
+    <div id="confirmation-page">
+        <h1>Booking Confirmation</h1>
+        <div id="booking-summary">
+            <p>Movie: {{ booking_details.movie_title }}</p>
+            <p>Date: {{ booking_details.showtime_date }}</p>
+            <p>Time: {{ booking_details.showtime_time }}</p>
+            <p>Seats: {{ booking_details.seats | join(', ') }}</p>
+            <p>Total Price: ${{ '%.2f'|format(booking_details.total_price) }}</p>
+        </div>
+        <form method="post">
+            <label for="customer-name">Name:</label>
+            <input type="text" id="customer-name" name="customer_name" required>
+            <br>
+            <label for="customer-email">Email:</label>
+            <input type="email" id="customer-email" name="customer_email" required>
+            <br>
+            {% for seat in booking_details.seats %}
+            <input type="hidden" name="selected_seats" value="{{ seat }}">
+            {% endfor %}
+            <input type="hidden" name="showtime_id" value="{{ booking_details.showtime_id if booking_details.showtime_id is defined else '' }}">
+            <button type="submit" id="confirm-booking-button">Confirm Booking</button>
+        </form>
+    </div>
+</body>
+</html>

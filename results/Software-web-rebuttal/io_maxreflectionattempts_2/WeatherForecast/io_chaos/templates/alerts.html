@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Alerts</title>
+</head>
+<body>
+    <div id="alerts-page">
+        <h1>Weather Alerts</h1>
+
+        <label for="severity-filter">Filter by Severity:</label>
+        <select id="severity-filter" name="severity-filter" onchange="window.location.href='{{ url_for('alerts') }}?severity_filter=' + this.value + '&location_filter=' + document.getElementById('location-filter-alerts').value">
+            <option value="">All Severities</option>
+            {% for severity_option in ['Critical', 'High', 'Medium', 'Low'] %}
+                <option value="{{ severity_option }}" {% if severity_filter == severity_option %}selected{% endif %}>{{ severity_option }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="location-filter-alerts">Filter by Location:</label>
+        <select id="location-filter-alerts" name="location-filter-alerts" onchange="window.location.href='{{ url_for('alerts') }}?severity_filter=' + document.getElementById('severity-filter').value + '&location_filter=' + this.value">
+            <option value="">All Locations</option>
+            {% for location in locations %}
+                <option value="{{ location.location_id }}" {% if location_filter == location.location_id %}selected{% endif %}>{{ location.location_name }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="alerts-list">
+            {% for alert in alerts_list %}
+                <div class="alert-item" style="border:1px solid black; margin:5px; padding:5px;">
+                    <p><strong>Type:</strong> {{ alert.alert_type }}</p>
+                    <p><strong>Severity:</strong> {{ alert.severity }}</p>
+                    <p><strong>Description:</strong> {{ alert.description }}</p>
+                    <p><strong>Start Time:</strong> {{ alert.start_time }}</p>
+                    <p><strong>End Time:</strong> {{ alert.end_time }}</p>
+                    <p><strong>Acknowledged:</strong> {{ 'Yes' if alert.is_acknowledged else 'No' }}</p>
+                    <button id="acknowledge-alert-button-{{ alert.alert_id }}" {% if alert.is_acknowledged %}disabled{% endif %} onclick="acknowledgeAlert({{ alert.alert_id }})">Acknowledge</button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+<script>
+function acknowledgeAlert(alertId) {
+    fetch('/alerts/acknowledge/' + alertId, {
+        method: 'POST'
+    }).then(response => {
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            alert('Failed to acknowledge alert.');
+        }
+    });
+}
+</script>
+
+</body>
+</html>

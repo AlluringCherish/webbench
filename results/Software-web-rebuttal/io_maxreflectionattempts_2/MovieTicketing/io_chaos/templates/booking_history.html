@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking History</title>
+</head>
+<body>
+    <div id="bookings-page">
+        <h1>Booking History</h1>
+        <form method="get">
+            <label for="status-filter">Filter by Status:</label>
+            <select id="status-filter" name="status">
+                <option value="">All</option>
+                <option value="Confirmed" {% if status_filter == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                <option value="Cancelled" {% if status_filter == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                <option value="Completed" {% if status_filter == 'Completed' %}selected{% endif %}>Completed</option>
+            </select>
+            <button type="submit">Apply Filter</button>
+        </form>
+        <table id="bookings-table" border="1">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Movie</th>
+                    <th>Date</th>
+                    <th>Seats</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.booking_id }}</td>
+                    <td>{{ booking.movie_title }}</td>
+                    <td>{{ booking.showtime_date }}</td>
+                    <td>{{ booking.seats | join(', ') }}</td>
+                    <td>{{ booking.status }}</td>
+                    <td><button id="view-booking-button-{{ booking.booking_id }}" onclick="location.href='{{ url_for('view_booking', booking_id=booking.booking_id) }}'">View Details</button></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6">No bookings found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

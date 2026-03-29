@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Forecast</title>
+</head>
+<body>
+    <div id="forecast-page">
+        <h1>Weekly Forecast</h1>
+
+        <label for="location-filter">Select Location:</label>
+        <select id="location-filter" name="location-filter" onchange="window.location.href = this.value">
+            <option value="">All Locations</option>
+            {% for location in locations %}
+                <option value="{{ url_for('weekly_forecast') }}?location_id={{ location.location_id }}" {% if selected_location_id == location.location_id %}selected{% endif %}>
+                    {{ location.location_name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <table id="forecast-table" border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>High Temp</th>
+                    <th>Low Temp</th>
+                    <th>Condition</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for forecast in forecast_list %}
+                <tr>
+                    <td>{{ forecast.date }}</td>
+                    <td>{{ forecast.high_temp }}</td>
+                    <td>{{ forecast.low_temp }}</td>
+                    <td>{{ forecast.condition }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div id="forecast-list">
+            {% for forecast in forecast_list %}
+            <div class="forecast-card">
+                <p>Date: {{ forecast.date }}</p>
+                <p>High: {{ forecast.high_temp }}</p>
+                <p>Low: {{ forecast.low_temp }}</p>
+                <p>Condition: {{ forecast.condition }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

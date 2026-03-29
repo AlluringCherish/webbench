@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Assignments</title>
+</head>
+<body>
+    <div id="assignments-page">
+        <table id="assignments-table" border="1" cellspacing="0" cellpadding="5">
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Due Date</th>
+                <th>Max Points</th>
+                <th>Action</th>
+            </tr>
+            {% for assignment in assignments %}
+            <tr>
+                <td>{{ assignment.title }}</td>
+                <td>{{ assignment.description }}</td>
+                <td>{{ assignment.due_date }}</td>
+                <td>{{ assignment.max_points }}</td>
+                <td>
+                    {% set submitted = false %}
+                    {% for submission in submissions %}
+                        {% if submission.assignment_id == assignment.assignment_id %}
+                            {% set submitted = true %}
+                            {% break %}
+                        {% endif %}
+                    {% endfor %}
+                    <button id="submit-assignment-button-{{ assignment.assignment_id }}" onclick="location.href='{{ url_for('submit_assignment', assignment_id=assignment.assignment_id) }}'" {% if submitted %}disabled{% endif %}>
+                        {% if submitted %}Submitted{% else %}Submit Assignment{% endif %}
+                    </button>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No assignments available.</td></tr>
+            {% endfor %}
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Learning</title>
+</head>
+<body>
+    <div id="learning-page">
+        <div id="lessons-list">
+            <ul>
+                {% for lesson in lessons %}
+                <li {% if loop.index0 == current_lesson_index %}style="font-weight:bold;"{% endif %}>
+                    {{ lesson.title }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div id="lesson-content">
+            {% if lessons and current_lesson_index < lessons|length %}
+            <h2>{{ lessons[current_lesson_index].title }}</h2>
+            <div>{{ lessons[current_lesson_index].content|safe }}</div>
+            {% else %}
+            <p>No lesson content available.</p>
+            {% endif %}
+        </div>
+
+        <form method="POST" action="{{ url_for('mark_lesson_complete', course_id=course.course_id) }}">
+            <button type="submit" id="mark-complete-button">Mark Complete</button>
+        </form>
+
+        <button id="back-to-my-courses" onclick="location.href='{{ url_for('my_courses') }}'">Back to My Courses</button>
+    </div>
+</body>
+</html>

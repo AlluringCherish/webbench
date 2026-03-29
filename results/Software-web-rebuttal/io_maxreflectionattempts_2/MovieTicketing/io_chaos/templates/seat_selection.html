@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Seats</title>
+</head>
+<body>
+    <div id="seat-selection-page">
+        <h1>Select Seats</h1>
+        <form id="seat-selection-form" method="post" action="">
+            <div id="seat-map">
+                {% for seat in seats %}
+                <button type="button" id="seat-{{ seat.row }}{{ seat.column }}" class="seat-button {% if seat.status == 'Booked' %}booked{% else %}available{% endif %}" data-seat-id="{{ seat.row }}{{ seat.column }}" {% if seat.status == 'Booked' %}disabled{% endif %}>{{ seat.row }}{{ seat.column }} ({{ seat.seat_type }})</button>
+                {% endfor %}
+            </div>
+            <div id="selected-seats-display">
+                Selected Seats: <span id="selected-seats-list"></span>
+            </div>
+            <input type="hidden" name="selected_seats" id="selected-seats-input" value="" />
+            <button type="submit" id="proceed-booking-button">Proceed to Booking</button>
+        </form>
+        <script>
+            const seatButtons = document.querySelectorAll('.seat-button.available');
+            const selectedSeatsInput = document.getElementById('selected-seats-input');
+            const selectedSeatsList = document.getElementById('selected-seats-list');
+            let selectedSeats = [];
+
+            seatButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const seatId = button.getAttribute('data-seat-id');
+                    const index = selectedSeats.indexOf(seatId);
+                    if (index === -1) {
+                        selectedSeats.push(seatId);
+                        button.classList.add('selected');
+                    } else {
+                        selectedSeats.splice(index, 1);
+                        button.classList.remove('selected');
+                    }
+                    selectedSeatsInput.value = selectedSeats.join(',');
+                    selectedSeatsList.textContent = selectedSeats.join(', ');
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>

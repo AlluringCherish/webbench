@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="bookings-page">
+        <h1>My Bookings</h1>
+
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+
+        <form method="GET" action="{{ url_for('bookings_summary_page') }}">
+            <input type="text" id="booking-search-input" name="search" placeholder="Search bookings">
+            <button type="submit">Search</button>
+        </form>
+
+        <table id="bookings-table" border="1">
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Ticket Count</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.event_name }}</td>
+                    <td>{{ booking.date }}</td>
+                    <td>{{ booking.ticket_count }}</td>
+                    <td>{{ booking.status }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('cancel_booking_action', booking_id=booking.booking_id) }}" style="display:inline;">
+                            <button type="submit" id="cancel-booking-button-{{ booking.booking_id }}">Cancel Booking</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

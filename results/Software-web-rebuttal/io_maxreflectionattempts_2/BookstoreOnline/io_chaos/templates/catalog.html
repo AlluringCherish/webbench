@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Catalog</title>
+</head>
+<body>
+    <div id="catalog-page">
+        <h1>Book Catalog</h1>
+
+        <form method="get" action="">
+            <input type="text" id="search-input" name="search_query" placeholder="Search by title, author, or ISBN" value="{{ search_query }}" />
+
+            <select id="category-filter" name="selected_category">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category.category_name }}" {% if category.category_name == selected_category %}selected{% endif %}>{{ category.category_name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="books-grid">
+            {% for book in books %}
+            <div class="book-card">
+                <h3>{{ book.title }}</h3>
+                <p>Author: {{ book.author }}</p>
+                <p>ISBN: {{ book.isbn }}</p>
+                <p>Category: {{ book.category }}</p>
+                <p>Price: ${{ "%.2f" | format(book.price) }}</p>
+                <button id="view-book-button-{{ book.book_id }}" onclick="window.location.href='{{ url_for('book_details_page', book_id=book.book_id) }}'">View Details</button>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</body>
+</html>

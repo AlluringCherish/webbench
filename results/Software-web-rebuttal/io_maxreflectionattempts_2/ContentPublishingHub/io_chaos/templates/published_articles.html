@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Published Articles - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="published-articles-page">
+        <h1>Published Articles</h1>
+
+        <form id="filter-form" method="GET" action="{{ url_for('published_articles') }}">
+            <label for="filter-category">Filter by Category:</label>
+            <select id="filter-category" name="filter_category">
+                <option value="" {% if not filter_category %}selected{% endif %}>All</option>
+                <option value="news" {% if filter_category == 'news' %}selected{% endif %}>News</option>
+                <option value="tech" {% if filter_category == 'tech' %}selected{% endif %}>Tech</option>
+                <option value="lifestyle" {% if filter_category == 'lifestyle' %}selected{% endif %}>Lifestyle</option>
+            </select>
+
+            <label for="sort-option">Sort by:</label>
+            <select id="sort-option" name="sort_option">
+                <option value="date_desc" {% if sort_option == 'date_desc' %}selected{% endif %}>Date Descending</option>
+                <option value="date_asc" {% if sort_option == 'date_asc' %}selected{% endif %}>Date Ascending</option>
+                <option value="title_asc" {% if sort_option == 'title_asc' %}selected{% endif %}>Title A-Z</option>
+                <option value="title_desc" {% if sort_option == 'title_desc' %}selected{% endif %}>Title Z-A</option>
+            </select>
+            
+            <button type="submit" id="btn-filter">Filter</button>
+        </form>
+
+        <table id="articles-table" border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Published Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for article in articles %}
+                <tr id="article-{{ article.article_id }}">
+                    <td>{{ article.article_id }}</td>
+                    <td>{{ article.title }}</td>
+                    <td>{{ article.category }}</td>
+                    <td>{{ article.created_date }}</td>
+                    <td>
+                        <button id="btn-view-versions-{{ article.article_id }}" onclick="location.href='{{ url_for('article_version_history', article_id=article.article_id) }}'">Versions</button>
+                        <button id="btn-view-analytics-{{ article.article_id }}" onclick="location.href='{{ url_for('article_analytics', article_id=article.article_id) }}'">Analytics</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <button id="btn-back-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

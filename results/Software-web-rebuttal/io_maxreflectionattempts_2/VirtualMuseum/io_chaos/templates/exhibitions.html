@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exhibitions</title>
+</head>
+<body>
+    <div id="exhibitions-page">
+        <h1>Exhibitions</h1>
+        <form method="post" action="{{ url_for('exhibitions') }}">
+            <select id="filter-exhibition-type" name="selected_type">
+                <option value="">-- Select Type --</option>
+                {% for etype in exhibition_types %}
+                    <option value="{{ etype }}" {% if selected_type == etype %}selected{% endif %}>{{ etype }}</option>
+                {% endfor %}
+            </select>
+            <button id="apply-exhibition-filter" type="submit">Apply Filter</button>
+        </form>
+        <table id="exhibition-list" border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Dates</th>
+                    <th>Gallery</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exhibition in exhibitions %}
+                <tr>
+                    <td>{{ exhibition.title }}</td>
+                    <td>{{ exhibition.exhibition_type }}</td>
+                    <td>{{ exhibition.start_date }} to {{ exhibition.end_date }}</td>
+                    <td>{{ exhibition.gallery }}</td>
+                    <td>{{ exhibition.status }}</td>
+                    <td>
+                        <button id="view-exhibition-button-{{ exhibition.exhibition_id }}" onclick="location.href='{{ url_for('exhibition_details', exhibition_id=exhibition.exhibition_id) }}'">View</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>
