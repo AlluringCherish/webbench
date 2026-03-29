@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+</head>
+<body>
+    <div id="search-results-page">
+        <h1>Search Results</h1>
+        <div id="search-query-display">Search Query: {{ query }}</div>
+
+        <div id="results-tabs">
+            <button onclick="document.getElementById('job-results').style.display='block'; document.getElementById('company-results').style.display='none';">Jobs</button>
+            <button onclick="document.getElementById('company-results').style.display='block'; document.getElementById('job-results').style.display='none';">Companies</button>
+        </div>
+
+        {% if job_results or company_results %}
+
+        <div id="job-results" style="display:block;">
+            {% if job_results %}
+                {% for job in job_results %}
+                <div class="job-result">
+                    <h3>{{ job.title }}</h3>
+                    <p>Company: {{ job.company_name if job.company_name is defined else "" }}</p>
+                    <p>Location: {{ job.location }}</p>
+                    <a href="{{ url_for('job_details_page', job_id=job.job_id) }}">
+                        <button>View Job</button>
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div id="no-results-message">No job results found.</div>
+            {% endif %}
+        </div>
+
+        <div id="company-results" style="display:none;">
+            {% if company_results %}
+                {% for company in company_results %}
+                <div class="company-result">
+                    <h3>{{ company.company_name }}</h3>
+                    <p>Industry: {{ company.industry }}</p>
+                    <a href="{{ url_for('company_profile_page', company_id=company.company_id) }}">
+                        <button>View Company</button>
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div id="no-results-message">No company results found.</div>
+            {% endif %}
+        </div>
+
+        {% else %}
+            <div id="no-results-message">No results found.</div>
+        {% endif %}
+    </div>
+</body>
+</html>

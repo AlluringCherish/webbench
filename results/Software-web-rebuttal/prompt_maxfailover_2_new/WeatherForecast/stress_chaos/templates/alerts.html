@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Weather Alerts</title>
+</head>
+<body>
+<div id="alerts-page">
+    <h1>Weather Alerts</h1>
+    <select id="severity-filter" name="severity-filter">
+        <option value="All" {% if severity_filter == 'All' %}selected{% endif %}>All</option>
+        <option value="Critical" {% if severity_filter == 'Critical' %}selected{% endif %}>Critical</option>
+        <option value="High" {% if severity_filter == 'High' %}selected{% endif %}>High</option>
+        <option value="Medium" {% if severity_filter == 'Medium' %}selected{% endif %}>Medium</option>
+        <option value="Low" {% if severity_filter == 'Low' %}selected{% endif %}>Low</option>
+    </select>
+    <select id="location-filter-alerts" name="location-filter-alerts">
+        <option value="" {% if not location_filter %}selected{% endif %}>All Locations</option>
+        {% for loc in locations %}
+        <option value="{{ loc.location_id }}" {% if loc.location_id == location_filter %}selected{% endif %}>{{ loc.location_name }}</option>
+        {% endfor %}
+    </select>
+    <div id="alerts-list">
+        {% for alert in alerts %}
+        <div class="alert-item">
+            <h3>{{ alert.alert_type }} - {{ alert.severity }}</h3>
+            <p>{{ alert.description }}</p>
+            <p>Start: {{ alert.start_time }}</p>
+            <p>End: {{ alert.end_time }}</p>
+            <button id="acknowledge-alert-button-{{ alert.alert_id }}">Acknowledge</button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automation Rules</title>
+</head>
+<body>
+    <div id="automation-page">
+        <h1>Automation Rules</h1>
+
+        <table id="rules-table" border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Trigger</th>
+                    <th>Action</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rule in rules %}
+                <tr>
+                    <td>{{ rule.rule_name }}</td>
+                    <td>{{ rule.trigger_type }}: {{ rule.trigger_value }}</td>
+                    <td>{{ rule.action_type }}{% if rule.action_value %} ({{ rule.action_value }}){% endif %}</td>
+                    <td>{{ 'Enabled' if rule.enabled == 'true' else 'Disabled' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <form method="POST" action="{{ url_for('automation_rules') }}">
+            <label for="rule-name">Rule Name:</label>
+            <input type="text" id="rule-name" name="rule_name" required><br><br>
+
+            <label for="trigger-type">Trigger Type:</label>
+            <select id="trigger-type" name="trigger_type" required>
+                <option value="Time">Time</option>
+                <option value="Motion">Motion</option>
+                <option value="Temperature">Temperature</option>
+            </select><br><br>
+
+            <label for="trigger-value">Trigger Value:</label>
+            <input type="text" id="trigger-value" name="trigger_value" required><br><br>
+
+            <label for="action-device">Action Device:</label>
+            <select id="action-device" name="action_device" required>
+                {% for device in devices %}
+                <option value="{{ device.device_id }}">{{ device.device_name }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label for="action-type">Action Type:</label>
+            <select id="action-type" name="action_type" required>
+                <option value="Turn On">Turn On</option>
+                <option value="Turn Off">Turn Off</option>
+                <option value="Set Brightness">Set Brightness</option>
+                <option value="Set Temperature">Set Temperature</option>
+            </select><br><br>
+
+            <button type="submit" id="add-rule-button">Add Rule</button>
+        </form>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

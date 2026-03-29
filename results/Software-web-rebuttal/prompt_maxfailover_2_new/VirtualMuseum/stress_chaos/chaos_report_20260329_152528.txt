@@ -1,0 +1,2176 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "FrontendDeveloper"
+    ],
+    "num_all_targets": 1,
+    "agent_chaos_targets": [],
+    "stress_chaos_targets": [
+      "FrontendDeveloper"
+    ],
+    "io_chaos_targets": [],
+    "tool_chaos_targets": []
+  },
+  "agent_chaos": {
+    "enabled": false,
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "log": []
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordOnly",
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 6,
+    "method_selection": "Mode: WordOnly (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": [
+      {
+        "timestamp": 1774765407.9693744,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 210/350 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "You are a Frontend Developer specializing in HTML and Jinja2 templating for Flask applications.\n\nYour goal is to develop all HTML templates for the application based on the provided design specifications.\n\nTask Details:\n- Read design_spec.md Section 2 (HTML Templates) only from CONTEXT\n- Implement all required HTML templates with exact element IDs, page titles, and navigation button mappings\n- Use context variables as specified with correct Jinja2 syntax and variable names\n- Do NOT read or modify backend code or Section 1 and 3 content\n- Do NOT add templates not specified in design_spec.md or add extra UI features\n\nImplementation Requirements:\n1. **Template Structure:**\n   ```html\n   <!DOCTYPE html>\n   <html lang=\"en\">\n   <head>\n       <meta charset=\"UTF-8\">\n       <title>Exact Page Title</title>\n   </head>\n   <body>\n       <div id=\"container-id\">\n           <h1>Exact Page Title</h1>\n           <!-- Content and controls as specified -->\n       </div>\n   </body>\n   </html>\n   ```\n\n2. **File Naming and Location:**\n   - Save all template files in the 'templates/' directory\n   - Follow exact filenames provided in Section 2 (e.g. templates/dashboard.html)\n\n3. **Element IDs:**\n   - Implement ALL required element IDs with exact casing and spelling\n   - For dynamic IDs (e.g., view-exhibition-button-{exhibition_id}) use Jinja2 syntax, e.g. id=\"view-exhibition-button-{{ exhibition.exhibition_id }}\"\n\n4. **Context Variables:**\n   - Use context variables exactly as described, respecting types and structures\n   - Loop over lists and access dict fields properly with Jinja2 syntax\n\n5. **Navigation Buttons:**\n   - Implement buttons and links that navigate using url_for calls exactly matching function names in the design spec\n   - Use static links and dynamic links with parameters as specified\n\n6. **Forms:**\n   - Implement forms with correct method (POST/GET) and action using url_for\n   - Input elements must have matching name attributes and IDs for correct backend integration\n\nCRITICAL REQUIREMENTS:\n- Use write_text_file tool to save all HTML template files\n- Element IDs, page titles, and navigation button url_for calls must match design_spec.md Section 2 exactly\n- Do NOT modify or read backend code or data schemas\n- Do NOT add extra UI elements or templates beyond spec\n- Do NOT provide code snippets solely in chat; all output must be saved via write_text_file\n- Each template must be saved as a separate file (e.g., templates/dashboard.html, templates/exhibitions.html, etc.)\n\nOutput: templates/*.html",
+        "after": "You are in Flask\n\nHTML for application based design\n\nTask Details:\n- Read design_spec.md Templates)\n- Implement all required HTML templates with exact element page navigation button mappings\n- as specified Jinja2 syntax variable names\nDo or modify code 3 content\nDo not specified design_spec.md extra\n\n\n**Template\n```html\n<!DOCTYPE\n<html\n\ncharset=\"UTF-8\">\n\n\n<body>\n\nTitle</h1>\nContent and as\n\n\n\n\n\n\nSave all files directory\n- provided (e.g.\n\n3. **Element\nALL element IDs with casing and spelling\nuse Jinja2 syntax, id=\"view-exhibition-button-{{ exhibition.exhibition_id }}\"\n\n4. Variables:**\n- Use described, respecting and\n- properly with syntax\n\n5. Buttons:**\nImplement buttons that navigate using in design\nUse links with as specified\n\n6.\nforms with correct method action using\n- have matching name and backend\n\n\n- tool save template\nElement page and url_for match design_spec.md Section\n- NOT or or data\nUI templates spec\nsnippets solely all output\n- a\n\ntemplates/*.html"
+      },
+      {
+        "timestamp": 1774765407.9738796,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 711/1186 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement all HTML templates from design_spec.md Section 2 with exact element IDs and navigation\n=== design_spec.md ===\n# VirtualMuseum Design Specification Document\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Route Path | Function Name | HTTP Method | Template Filename | Context Variables |\n|---|---|---|---|---|\n| / | root_redirect | GET | None (Redirect to /dashboard) | None |\n| /dashboard | dashboard | GET | dashboard.html | exhibition_summary (dict: total_exhibitions:int, active_exhibitions:int), username (str), other_overview_data (dict) |\n| /artifacts | artifact_catalog | GET, POST | artifact_catalog.html | artifacts (list of dict), search_query (str), filters (dict) |\n| /exhibitions | exhibitions | GET, POST | exhibitions.html | exhibitions (list of dict), filter_type (str) |\n| /exhibition/<int:exhibition_id> | exhibition_details | GET | exhibition_details.html | exhibition (dict), artifacts (list of dict) |\n| /tickets | visitor_tickets | GET, POST | visitor_tickets.html | tickets (list of dict), ticket_types (list of str) |\n| /events | virtual_events | GET, POST | virtual_events.html | events (list of dict), registrations (list of dict), user_registrations (list of dict) |\n| /register_event/<int:event_id> | register_event | POST | None (Redirect) | None |\n| /cancel_registration/<int:registration_id> | cancel_registration | POST | None (Redirect) | None |\n| /audio_guides | audio_guides | GET, POST | audio_guides.html | audio_guides (list of dict), filter_language (str) |\n\n**Notes on HTTP Methods:**\n- GET for all pages for initial rendering.\n- POST for form submissions such as filtering, purchasing tickets, event registration.\n\n\n---\n\n## Section 2: HTML Templates Specification\n\n### 1. Template: dashboard.html\n- Filename: dashboard.html\n- Page Title: Museum Dashboard\n- Main Heading (H1): Museum Dashboard\n- Element IDs:\n  - dashboard-page (Div container)\n  - exhibition-summary (Div showing total and active exhibitions)\n  - artifact-catalog-button (Button) - navigates to artifact_catalog\n  - exhibitions-button (Button) - navigates to exhibitions\n  - visitor-tickets-button (Button) - navigates to visitor_tickets\n  - virtual-events-button (Button) - navigates to virtual_events\n  - audio-guides-button (Button) - navigates to audio_guides\n- Navigation button url_for mappings:\n  - artifact-catalog-button → url_for('artifact_catalog')\n  - exhibitions-button → url_for('exhibitions')\n  - visitor-tickets-button → url_for('visitor_tickets')\n  - virtual-events-button → url_for('virtual_events')\n  - audio-guides-button → url_for('audio_guides')\n- Context Variables:\n  - exhibition_summary (dict: total_exhibitions:int, active_exhibitions:int)\n  - username (str)\n\n### 2. Template: artifact_catalog.html\n- Filename: artifact_catalog.html\n- Page Title: Artifact Catalog\n- Main Heading (H1): Artifact Catalog\n- Element IDs:\n  - artifact-catalog-page (Div container)\n  - artifact-table (Table) showing artifact columns: ID, name, period, origin, exhibition, actions\n  - search-artifact (Input text) for searching by name or ID\n  - apply-artifact-filter (Button) to submit filters\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - artifacts (list of dict)\n  - search_query (str)\n  - filters (dict)\n\n### 3. Template: exhibitions.html\n- Filename: exhibitions.html\n- Page Title: Exhibitions\n- Main Heading (H1): Exhibitions\n- Element IDs:\n  - exhibitions-page (Div container)\n  - exhibition-list (Table) with columns: title, type, dates, gallery, status\n  - filter-exhibition-type (Dropdown) options: Permanent, Temporary, Virtual\n  - apply-exhibition-filter (Button)\n  - view-exhibition-button-{{ exhibition.exhibition_id }} (Button) one per exhibition row\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - view-exhibition-button-{{ exhibition.exhibition_id }} → url_for('exhibition_details', exhibition_id=exhibition.exhibition_id)\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - exhibitions (list of dict)\n  - filter_type (str)\n\n### 4. Template: exhibition_details.html\n- Filename: exhibition_details.html\n- Page Title: Exhibition Details\n- Main Heading (H1): exhibition.title\n- Element IDs:\n  - exhibition-details-page (Div container)\n  - exhibition-title (H1)\n  - exhibition-description (Div)\n  - exhibition-dates (Div) showing start and end dates\n  - exhibition-artifacts (Table) listing artifacts for this exhibition\n  - back-to-exhibitions (Button) navigates back to exhibitions\n- Navigation button url_for mappings:\n  - back-to-exhibitions → url_for('exhibitions')\n- Context Variables:\n  - exhibition (dict)\n  - artifacts (list of dict)\n\n### 5. Template: visitor_tickets.html\n- Filename: visitor_tickets.html\n- Page Title: Visitor Tickets\n- Main Heading (H1): Visitor Tickets\n- Element IDs:\n  - visitor-tickets-page (Div container)\n  - ticket-type (Dropdown) options: Standard, Student, Senior, Family, VIP\n  - number-of-tickets (Input number)\n  - purchase-ticket-button (Button)\n  - my-tickets-table (Table) showing user's tickets\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - tickets (list of dict)\n  - ticket_types (list of str)\n\n### 6. Template: virtual_events.html\n- Filename: virtual_events.html\n- Page Title: Virtual Events\n- Main Heading (H1): Virtual Events\n- Element IDs:\n  - virtual-events-page (Div container)\n  - event-list (Table) with columns: title, date, time, type, registration status\n  - register-event-button-{{ event.event_id }} (Button) to register for event\n  - cancel-registration-button-{{ registration.registration_id }} (Button) to cancel registration\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - register-event-button-{{ event.event_id }} → url_for('register_event', event_id=event.event_id)\n  - cancel-registration-button-{{ registration.registration_id }} → url_for('cancel_registration', registration_id=registration.registration_id)\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - events (list of dict)\n  - registrations (list of dict)\n  - user_registrations (list of dict)\n\n### 7. Template: audio_guides.html\n- Filename: audio_guides.html\n- Page Title: Audio Guides\n- Main Heading (H1): Audio Guides\n- Element IDs:\n  - audio-guides-page (Div container)\n  - audio-guide-list (Table) columns: exhibit number, title, language, duration\n  - filter-language (Dropdown) options: English, Spanish, French\n  - apply-language-filter (Button)\n  - play-guide-button-{{ guide.guide_id }} (Button) to play audio guide\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - play-guide-button-{{ guide.guide_id }} → url_for('audio_guides_play', guide_id=guide.guide_id)\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - audio_guides (list of dict)\n  - filter_language (str)\n\n---\n\n## Section 3: Data File Schemas\n\n### 1. users.txt\n- Filename: data/users.txt\n- Purpose: Stores usernames for user authentication\n- Format (pipe-delimited fields):\n  username\n- Example Data:\n  curator_john\n  visitor_mary\n  curator_sarah\n\n### 2. galleries.txt\n- Filename: data/galleries.txt\n- Purpose: Stores details of physical galleries\n- Format:\n  gallery_id|gallery_name|floor|capacity|theme|status\n- Example Data:\n  1|Ancient Civilizations Hall|1|50|Ancient|Open\n  2|Modern Art Wing|2|30|Modern|Open\n  3|Science Discovery Center|3|40|Science|Renovation\n\n### 3. exhibitions.txt\n- Filename: data/exhibitions.txt\n- Purpose: Stores virtual and physical exhibitions\n- Format:\n  exhibition_id|title|description|gallery_id|exhibition_type|start_date|end_date|curator_name|created_by\n- Example Data:\n  1|Egyptian Treasures|Ancient artifacts from Egypt|1|Permanent|2024-01-01|2025-12-31|Dr. Smith|curator_john\n  2|Pop Art Revolution|Contemporary pop art collection|2|Temporary|2024-11-01|2024-12-31|Lisa Chen|curator_sarah\n  3|Virtual Space Exploration|Online space exhibition|2|Virtual|2024-10-01|2025-03-31|Mark Johnson|curator_john\n\n### 4. artifacts.txt\n- Filename: data/artifacts.txt\n- Purpose: Stores information about artifacts\n- Format:\n  artifact_id|artifact_name|period|origin|description|exhibition_id|storage_location|acquisition_date|added_by\n- Example Data:\n  1|Golden Mask of Tutankhamun|Ancient|Egypt|Famous golden funeral mask|1|A-101|2020-05-15|curator_john\n  2|Warhol Soup Cans|Contemporary|USA|Iconic pop art piece|2|B-205|2023-08-20|curator_sarah\n  3|Roman Amphora|Ancient|Italy|Ancient storage vessel|1|A-103|2019-11-10|curator_john\n\n### 5. audioguides.txt\n- Filename: data/audioguides.txt\n- Purpose: Stores audio guides for exhibits\n- Format:\n  guide_id|exhibit_number|title|language|duration|script|narrator|created_by\n- Example Data:\n  1|101|Introduction to Egyptian Art|English|5|Welcome to the Egyptian exhibition...|James Brown|curator_john\n  2|101|Introducción al Arte Egipcio|Spanish|5|Bienvenido a la exhibición egipcia...|Maria Garcia|curator_john\n  3|205|Pop Art Explained|English|7|Pop art emerged in the 1950s...|Sarah Williams|curator_sarah\n\n### 6. tickets.txt\n- Filename: data/tickets.txt\n- Purpose: Stores visitor ticket purchases\n- Format:\n  ticket_id|username|ticket_type|visit_date|visit_time|number_of_tickets|price|visitor_name|visitor_email|purchase_date\n- Example Data:\n  1|visitor_mary|Standard|2024-11-25|11:00 AM|2|30|Mary Johnson|mary@email.com|2024-11-20\n  2|visitor_mary|VIP|2024-12-01|1:00 PM|1|50|Mary Johnson|mary@email.com|2024-11-20\n  3|visitor_tom|Student|2024-11-22|9:00 AM|1|10|Tom Lee|tom@email.com|2024-11-18\n\n### 7. events.txt\n- Filename: data/events.txt\n- Purpose: Stores virtual museum events\n- Format:\n  event_id|title|date|time|event_type|speaker|capacity|description|created_by\n- Example Data:\n  1|Ancient Egypt Webinar|2024-12-05|2:00 PM|Webinar|Dr. Smith|100|Deep dive into Egyptian culture|curator_john\n  2|Meet the Artist: Pop Art|2024-11-30|6:00 PM|Artist Talk|Andy Williams|50|Discussion with contemporary artist|curator_sarah\n  3|Virtual Museum Tour|2024-12-10|10:00 AM|Virtual Tour|Lisa Chen|200|Guided tour of entire museum|curator_john\n\n### 8. event_registrations.txt\n- Filename: data/event_registrations.txt\n- Purpose: Stores event registration records\n- Format:\n  registration_id|event_id|username|registration_date\n- Example Data:\n  1|1|visitor_mary|2024-11-20\n  2|2|visitor_mary|2024-11-21\n  3|1|visitor_tom|2024-11-19\n\n### 9. collection_logs.txt\n- Filename: data/collection_logs.txt\n- Purpose: Logs activities related to artifacts\n- Format:\n  log_id|artifact_id|activity_type|date|notes|condition|curator\n- Example Data:\n  1|1|Inspection|2024-11-15|Routine quarterly inspection|Excellent|curator_john\n  2|1|Cleaning|2024-11-16|Professional cleaning performed|Excellent|curator_john\n  3|2|Photography|2024-10-20|High-resolution images taken|Good|curator_sarah\n  4|3|Restoration|2024-09-10|Minor crack repair completed|Good|curator_john\n\n---\n\nThis completes the comprehensive design specification for the VirtualMuseum web application.\n\nAll naming conventions, element IDs, template titles, route functions, and data file schemas strictly adhere to the user requirements.\n\nThis document enables independent, parallel development for frontend and backend teams with clear responsibilities and interfaces.\n\n",
+        "after": "templates design_spec.md with exact navigation\n\n# Design Document\n\n---\n\n## Section Routes\n\n| Name HTTP Method | Context Variables\n|---|---|---|---|---|\n| | | (Redirect to None\n/dashboard | | | total_exhibitions:int,\n| GET, | artifacts of\n| GET, | exhibitions (list of dict), (str) |\n| | | | | artifacts (list |\n/tickets | visitor_tickets.html ticket_types of\n| virtual_events | GET, | (list of registrations dict), of dict)\n| /register_event/<int:event_id> | None | None |\n| None |\n| GET, POST audio_guides filter_language\n\nHTTP Methods:**\n- all rendering.\n- for form event\n\n\n\n\n2: HTML Templates Specification\n\n### dashboard.html\n\nPage Museum\n- (H1): Dashboard\n\ncontainer)\n- exhibition-summary and\n- (Button) -\nexhibitions-button -\n(Button) navigates to visitor_tickets\nvirtual-events-button navigates virtual_events\naudio-guides-button navigates to audio_guides\n\n→\n- exhibitions-button url_for('exhibitions')\nvisitor-tickets-button → url_for('visitor_tickets')\n-\n- →\nContext\n- exhibition_summary total_exhibitions:int,\n\n\n2.\nartifact_catalog.html\n- Catalog\n(H1):\n\n-\n- artifact-table\n- (Input text) searching name ID\nto\nback-to-dashboard (Button) dashboard\n- Navigation\n\n- Variables:\n- of dict)\n- search_query\n\n\n3.\n- Filename: exhibitions.html\nPage Title: Exhibitions\n- Exhibitions\n- IDs:\nexhibitions-page container)\n(Table) with columns: type, gallery, status\n- filter-exhibition-type (Dropdown) Virtual\n-\nview-exhibition-button-{{ exhibition.exhibition_id }} exhibition\n- to dashboard\n- url_for\n-\n→\n- Variables:\n(list dict)\n\n\n### Template: exhibition_details.html\n\nDetails\n- Main exhibition.title\nElement\n- exhibition-details-page (Div\n\n-\n- (Div) start dates\n- exhibition-artifacts (Table) for exhibition\n- navigates\n- url_for\n- →\nContext Variables:\n\ndict)\n\nTemplate:\n- visitor_tickets.html\n- Page Title: Visitor\nMain (H1):\n- IDs:\n\nStudent, Senior, VIP\n(Input number)\n- (Button)\n- my-tickets-table (Table) showing\n(Button) dashboard\nbutton url_for\nback-to-dashboard\nVariables:\n- dict)\n- ticket_types\n\n### 6. virtual_events.html\nvirtual_events.html\nTitle: Virtual\nMain (H1):\n- Element IDs:\n\ncolumns: date, time, registration\n-\ncancel\nback-to-dashboard\n- button\nregister-event-button-{{ event.event_id }} event_id=event.event_id)\n- cancel-registration-button-{{ registration.registration_id }}\nback-to-dashboard url_for('dashboard')\nContext\nevents\n- dict)\n(list of dict)\n\n### Template:\n-\nGuides\n- Main (H1): Audio\n-\n\n- number, title,\n- options: Spanish, French\n- apply-language-filter\n- (Button) to audio guide\n- to\n- Navigation url_for\nplay-guide-button-{{ guide.guide_id }} →\n\nContext\nof dict)\n- (str)\n\n\n\nSection 3: File\n\n### 1.\n-\n- usernames user authentication\nFormat (pipe-delimited\n\n-\n\n\n\n\ngalleries.txt\n- data/galleries.txt\ngalleries\n- Format:\n\n- Data:\nCivilizations Hall|1|50|Ancient|Open\nWing|2|30|Modern|Open\nCenter|3|40|Science|Renovation\n\n\n-\n- virtual and exhibitions\n- Format:\n\n-\nTreasures|Ancient artifacts\npop\nspace exhibition|2|Virtual|2024-10-01|2025-03-31|Mark Johnson|curator_john\n\n###\n-\n-\nFormat:\n\n-\nof\nCans|Contemporary|USA|Iconic piece|2|B-205|2023-08-20|curator_sarah\nvessel|1|A-103|2019-11-10|curator_john\n\n###\n- Filename:\nStores audio guides for\n\nguide_id|exhibit_number|title|language|duration|script|narrator|created_by\nExample\nto Egyptian the Egyptian\nal Arte a la Garcia|curator_john\n3|205|Pop Explained|English|7|Pop in Williams|curator_sarah\n\n6. tickets.txt\ndata/tickets.txt\nvisitor purchases\n\nticket_id|username|ticket_type|visit_date|visit_time|number_of_tickets|price|visitor_name|visitor_email|purchase_date\nData:\n1|visitor_mary|Standard|2024-11-25|11:00 AM|2|30|Mary Johnson|mary@email.com|2024-11-20\n\n3|visitor_tom|Student|2024-11-22|9:00\n\n7.\nFilename: data/events.txt\n- Purpose: events\nFormat:\n\n\n1|Ancient PM|Webinar|Dr. culture|curator_john\n2|Meet Artist: Pop PM|Artist Talk|Andy Williams|50|Discussion with artist|curator_sarah\n3|Virtual Museum Tour|Lisa of museum|curator_john\n\n### event_registrations.txt\n\n- Purpose:\n- Format:\nregistration_id|event_id|username|registration_date\n\n\n2|2|visitor_mary|2024-11-21\n3|1|visitor_tom|2024-11-19\n\n### collection_logs.txt\n\nPurpose:\n\nlog_id|artifact_id|activity_type|date|notes|condition|curator\n-\nquarterly inspection|Excellent|curator_john\n2|1|Cleaning|2024-11-16|Professional cleaning\n3|2|Photography|2024-10-20|High-resolution\n4|3|Restoration|2024-09-10|Minor crack\n\n\n\ncompletes design for web application.\n\nelement IDs, template route file strictly to\n\nThis independent, development clear and interfaces.\n\n"
+      },
+      {
+        "timestamp": 1774765435.58443,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 84/140 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "You are in Flask\n\nHTML for application based design\n\nTask Details:\n- Read design_spec.md Templates)\n- Implement all required HTML templates with exact element page navigation button mappings\n- as specified Jinja2 syntax variable names\nDo or modify code 3 content\nDo not specified design_spec.md extra\n\n\n**Template\n```html\n<!DOCTYPE\n<html\n\ncharset=\"UTF-8\">\n\n\n<body>\n\nTitle</h1>\nContent and as\n\n\n\n\n\n\nSave all files directory\n- provided (e.g.\n\n3. **Element\nALL element IDs with casing and spelling\nuse Jinja2 syntax, id=\"view-exhibition-button-{{ exhibition.exhibition_id }}\"\n\n4. Variables:**\n- Use described, respecting and\n- properly with syntax\n\n5. Buttons:**\nImplement buttons that navigate using in design\nUse links with as specified\n\n6.\nforms with correct method action using\n- have matching name and backend\n\n\n- tool save template\nElement page and url_for match design_spec.md Section\n- NOT or or data\nUI templates spec\nsnippets solely all output\n- a\n\ntemplates/*.html",
+        "after": "in\n\napplication based design\n\nDetails:\n-\nImplement all required exact\nas specified Jinja2 variable names\nDo or\nDo not specified extra\n\n\n**Template\n```html\n\n\n\ncharset=\"UTF-8\">\n\n\n\n\n\n\n\n\n\n\n\n\nall directory\n- (e.g.\n\n3.\nALL\nid=\"view-exhibition-button-{{ exhibition.exhibition_id }}\"\n\n4.\nand\nproperly with\n\n5. Buttons:**\nin\nas\n\n\nforms\nhave matching backend\n\n\nsave template\npage and match Section\nNOT\nspec\nsolely output\n- a\n\ntemplates/*.html"
+      },
+      {
+        "timestamp": 1774765435.5873032,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 711/1186 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement all HTML templates from design_spec.md Section 2 with exact element IDs and navigation\n=== design_spec.md ===\n# VirtualMuseum Design Specification Document\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Route Path | Function Name | HTTP Method | Template Filename | Context Variables |\n|---|---|---|---|---|\n| / | root_redirect | GET | None (Redirect to /dashboard) | None |\n| /dashboard | dashboard | GET | dashboard.html | exhibition_summary (dict: total_exhibitions:int, active_exhibitions:int), username (str), other_overview_data (dict) |\n| /artifacts | artifact_catalog | GET, POST | artifact_catalog.html | artifacts (list of dict), search_query (str), filters (dict) |\n| /exhibitions | exhibitions | GET, POST | exhibitions.html | exhibitions (list of dict), filter_type (str) |\n| /exhibition/<int:exhibition_id> | exhibition_details | GET | exhibition_details.html | exhibition (dict), artifacts (list of dict) |\n| /tickets | visitor_tickets | GET, POST | visitor_tickets.html | tickets (list of dict), ticket_types (list of str) |\n| /events | virtual_events | GET, POST | virtual_events.html | events (list of dict), registrations (list of dict), user_registrations (list of dict) |\n| /register_event/<int:event_id> | register_event | POST | None (Redirect) | None |\n| /cancel_registration/<int:registration_id> | cancel_registration | POST | None (Redirect) | None |\n| /audio_guides | audio_guides | GET, POST | audio_guides.html | audio_guides (list of dict), filter_language (str) |\n\n**Notes on HTTP Methods:**\n- GET for all pages for initial rendering.\n- POST for form submissions such as filtering, purchasing tickets, event registration.\n\n\n---\n\n## Section 2: HTML Templates Specification\n\n### 1. Template: dashboard.html\n- Filename: dashboard.html\n- Page Title: Museum Dashboard\n- Main Heading (H1): Museum Dashboard\n- Element IDs:\n  - dashboard-page (Div container)\n  - exhibition-summary (Div showing total and active exhibitions)\n  - artifact-catalog-button (Button) - navigates to artifact_catalog\n  - exhibitions-button (Button) - navigates to exhibitions\n  - visitor-tickets-button (Button) - navigates to visitor_tickets\n  - virtual-events-button (Button) - navigates to virtual_events\n  - audio-guides-button (Button) - navigates to audio_guides\n- Navigation button url_for mappings:\n  - artifact-catalog-button → url_for('artifact_catalog')\n  - exhibitions-button → url_for('exhibitions')\n  - visitor-tickets-button → url_for('visitor_tickets')\n  - virtual-events-button → url_for('virtual_events')\n  - audio-guides-button → url_for('audio_guides')\n- Context Variables:\n  - exhibition_summary (dict: total_exhibitions:int, active_exhibitions:int)\n  - username (str)\n\n### 2. Template: artifact_catalog.html\n- Filename: artifact_catalog.html\n- Page Title: Artifact Catalog\n- Main Heading (H1): Artifact Catalog\n- Element IDs:\n  - artifact-catalog-page (Div container)\n  - artifact-table (Table) showing artifact columns: ID, name, period, origin, exhibition, actions\n  - search-artifact (Input text) for searching by name or ID\n  - apply-artifact-filter (Button) to submit filters\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - artifacts (list of dict)\n  - search_query (str)\n  - filters (dict)\n\n### 3. Template: exhibitions.html\n- Filename: exhibitions.html\n- Page Title: Exhibitions\n- Main Heading (H1): Exhibitions\n- Element IDs:\n  - exhibitions-page (Div container)\n  - exhibition-list (Table) with columns: title, type, dates, gallery, status\n  - filter-exhibition-type (Dropdown) options: Permanent, Temporary, Virtual\n  - apply-exhibition-filter (Button)\n  - view-exhibition-button-{{ exhibition.exhibition_id }} (Button) one per exhibition row\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - view-exhibition-button-{{ exhibition.exhibition_id }} → url_for('exhibition_details', exhibition_id=exhibition.exhibition_id)\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - exhibitions (list of dict)\n  - filter_type (str)\n\n### 4. Template: exhibition_details.html\n- Filename: exhibition_details.html\n- Page Title: Exhibition Details\n- Main Heading (H1): exhibition.title\n- Element IDs:\n  - exhibition-details-page (Div container)\n  - exhibition-title (H1)\n  - exhibition-description (Div)\n  - exhibition-dates (Div) showing start and end dates\n  - exhibition-artifacts (Table) listing artifacts for this exhibition\n  - back-to-exhibitions (Button) navigates back to exhibitions\n- Navigation button url_for mappings:\n  - back-to-exhibitions → url_for('exhibitions')\n- Context Variables:\n  - exhibition (dict)\n  - artifacts (list of dict)\n\n### 5. Template: visitor_tickets.html\n- Filename: visitor_tickets.html\n- Page Title: Visitor Tickets\n- Main Heading (H1): Visitor Tickets\n- Element IDs:\n  - visitor-tickets-page (Div container)\n  - ticket-type (Dropdown) options: Standard, Student, Senior, Family, VIP\n  - number-of-tickets (Input number)\n  - purchase-ticket-button (Button)\n  - my-tickets-table (Table) showing user's tickets\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - tickets (list of dict)\n  - ticket_types (list of str)\n\n### 6. Template: virtual_events.html\n- Filename: virtual_events.html\n- Page Title: Virtual Events\n- Main Heading (H1): Virtual Events\n- Element IDs:\n  - virtual-events-page (Div container)\n  - event-list (Table) with columns: title, date, time, type, registration status\n  - register-event-button-{{ event.event_id }} (Button) to register for event\n  - cancel-registration-button-{{ registration.registration_id }} (Button) to cancel registration\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - register-event-button-{{ event.event_id }} → url_for('register_event', event_id=event.event_id)\n  - cancel-registration-button-{{ registration.registration_id }} → url_for('cancel_registration', registration_id=registration.registration_id)\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - events (list of dict)\n  - registrations (list of dict)\n  - user_registrations (list of dict)\n\n### 7. Template: audio_guides.html\n- Filename: audio_guides.html\n- Page Title: Audio Guides\n- Main Heading (H1): Audio Guides\n- Element IDs:\n  - audio-guides-page (Div container)\n  - audio-guide-list (Table) columns: exhibit number, title, language, duration\n  - filter-language (Dropdown) options: English, Spanish, French\n  - apply-language-filter (Button)\n  - play-guide-button-{{ guide.guide_id }} (Button) to play audio guide\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - play-guide-button-{{ guide.guide_id }} → url_for('audio_guides_play', guide_id=guide.guide_id)\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - audio_guides (list of dict)\n  - filter_language (str)\n\n---\n\n## Section 3: Data File Schemas\n\n### 1. users.txt\n- Filename: data/users.txt\n- Purpose: Stores usernames for user authentication\n- Format (pipe-delimited fields):\n  username\n- Example Data:\n  curator_john\n  visitor_mary\n  curator_sarah\n\n### 2. galleries.txt\n- Filename: data/galleries.txt\n- Purpose: Stores details of physical galleries\n- Format:\n  gallery_id|gallery_name|floor|capacity|theme|status\n- Example Data:\n  1|Ancient Civilizations Hall|1|50|Ancient|Open\n  2|Modern Art Wing|2|30|Modern|Open\n  3|Science Discovery Center|3|40|Science|Renovation\n\n### 3. exhibitions.txt\n- Filename: data/exhibitions.txt\n- Purpose: Stores virtual and physical exhibitions\n- Format:\n  exhibition_id|title|description|gallery_id|exhibition_type|start_date|end_date|curator_name|created_by\n- Example Data:\n  1|Egyptian Treasures|Ancient artifacts from Egypt|1|Permanent|2024-01-01|2025-12-31|Dr. Smith|curator_john\n  2|Pop Art Revolution|Contemporary pop art collection|2|Temporary|2024-11-01|2024-12-31|Lisa Chen|curator_sarah\n  3|Virtual Space Exploration|Online space exhibition|2|Virtual|2024-10-01|2025-03-31|Mark Johnson|curator_john\n\n### 4. artifacts.txt\n- Filename: data/artifacts.txt\n- Purpose: Stores information about artifacts\n- Format:\n  artifact_id|artifact_name|period|origin|description|exhibition_id|storage_location|acquisition_date|added_by\n- Example Data:\n  1|Golden Mask of Tutankhamun|Ancient|Egypt|Famous golden funeral mask|1|A-101|2020-05-15|curator_john\n  2|Warhol Soup Cans|Contemporary|USA|Iconic pop art piece|2|B-205|2023-08-20|curator_sarah\n  3|Roman Amphora|Ancient|Italy|Ancient storage vessel|1|A-103|2019-11-10|curator_john\n\n### 5. audioguides.txt\n- Filename: data/audioguides.txt\n- Purpose: Stores audio guides for exhibits\n- Format:\n  guide_id|exhibit_number|title|language|duration|script|narrator|created_by\n- Example Data:\n  1|101|Introduction to Egyptian Art|English|5|Welcome to the Egyptian exhibition...|James Brown|curator_john\n  2|101|Introducción al Arte Egipcio|Spanish|5|Bienvenido a la exhibición egipcia...|Maria Garcia|curator_john\n  3|205|Pop Art Explained|English|7|Pop art emerged in the 1950s...|Sarah Williams|curator_sarah\n\n### 6. tickets.txt\n- Filename: data/tickets.txt\n- Purpose: Stores visitor ticket purchases\n- Format:\n  ticket_id|username|ticket_type|visit_date|visit_time|number_of_tickets|price|visitor_name|visitor_email|purchase_date\n- Example Data:\n  1|visitor_mary|Standard|2024-11-25|11:00 AM|2|30|Mary Johnson|mary@email.com|2024-11-20\n  2|visitor_mary|VIP|2024-12-01|1:00 PM|1|50|Mary Johnson|mary@email.com|2024-11-20\n  3|visitor_tom|Student|2024-11-22|9:00 AM|1|10|Tom Lee|tom@email.com|2024-11-18\n\n### 7. events.txt\n- Filename: data/events.txt\n- Purpose: Stores virtual museum events\n- Format:\n  event_id|title|date|time|event_type|speaker|capacity|description|created_by\n- Example Data:\n  1|Ancient Egypt Webinar|2024-12-05|2:00 PM|Webinar|Dr. Smith|100|Deep dive into Egyptian culture|curator_john\n  2|Meet the Artist: Pop Art|2024-11-30|6:00 PM|Artist Talk|Andy Williams|50|Discussion with contemporary artist|curator_sarah\n  3|Virtual Museum Tour|2024-12-10|10:00 AM|Virtual Tour|Lisa Chen|200|Guided tour of entire museum|curator_john\n\n### 8. event_registrations.txt\n- Filename: data/event_registrations.txt\n- Purpose: Stores event registration records\n- Format:\n  registration_id|event_id|username|registration_date\n- Example Data:\n  1|1|visitor_mary|2024-11-20\n  2|2|visitor_mary|2024-11-21\n  3|1|visitor_tom|2024-11-19\n\n### 9. collection_logs.txt\n- Filename: data/collection_logs.txt\n- Purpose: Logs activities related to artifacts\n- Format:\n  log_id|artifact_id|activity_type|date|notes|condition|curator\n- Example Data:\n  1|1|Inspection|2024-11-15|Routine quarterly inspection|Excellent|curator_john\n  2|1|Cleaning|2024-11-16|Professional cleaning performed|Excellent|curator_john\n  3|2|Photography|2024-10-20|High-resolution images taken|Good|curator_sarah\n  4|3|Restoration|2024-09-10|Minor crack repair completed|Good|curator_john\n\n---\n\nThis completes the comprehensive design specification for the VirtualMuseum web application.\n\nAll naming conventions, element IDs, template titles, route functions, and data file schemas strictly adhere to the user requirements.\n\nThis document enables independent, parallel development for frontend and backend teams with clear responsibilities and interfaces.\n\n",
+        "after": "all HTML Section 2 element IDs navigation\n===\nVirtualMuseum Design Specification\n\n---\n\n## Section Routes\n\nRoute | HTTP Filename Variables\n\nroot_redirect (Redirect to\n/dashboard dashboard | GET dashboard.html | (dict: active_exhibitions:int),\n| artifact_catalog POST dict), search_query (str),\nexhibitions | | of dict),\n| | GET | exhibition_details.html dict) |\n| visitor_tickets | GET, | visitor_tickets.html of dict), (list\n| virtual_events POST dict), registrations (list of\n| POST\ncancel_registration None |\n/audio_guides audio_guides | POST | | audio_guides (list of dict),\n\n\nGET pages for\nform such as filtering, purchasing tickets, registration.\n\n\n\n\n## 2: HTML Specification\n\ndashboard.html\ndashboard.html\n- Page Dashboard\n\n\n\n(Div total and\n- artifact-catalog-button (Button) artifact_catalog\nnavigates to exhibitions\nvisitor_tickets\n- (Button) - navigates to virtual_events\naudio-guides-button (Button)\n-\nartifact-catalog-button\nexhibitions-button →\n\nvirtual-events-button\naudio-guides-button url_for('audio_guides')\nVariables:\nexhibition_summary\n\n\nartifact_catalog.html\n\n- Page Catalog\n-\nIDs:\nartifact-catalog-page (Div\n- artifact origin, actions\nsearch-artifact (Input for searching name or ID\n(Button) to filters\nnavigates\nNavigation button url_for mappings:\nback-to-dashboard → url_for('dashboard')\nContext\n- artifacts (list of\nsearch_query\n-\n\n3.\n- exhibitions.html\nTitle:\nMain Heading Exhibitions\nElement\n- (Div container)\nexhibition-list (Table) type, dates, gallery,\n- filter-exhibition-type Temporary,\n- apply-exhibition-filter\nexhibition\n-\n- Navigation button\nview-exhibition-button-{{ exhibition.exhibition_id }} → url_for('exhibition_details',\n-\n- Context\n- exhibitions of\n-\n\n4. Template:\n\n- Title:\n(H1): exhibition.title\n-\n- exhibition-details-page (Div container)\n-\n- exhibition-description (Div)\n- exhibition-dates start dates\nexhibition-artifacts this\n\nurl_for mappings:\n\n\n\nartifacts dict)\n\n5. Template:\n-\n- Page\n- Main Heading (H1):\nElement\n\n- Family, VIP\n- number-of-tickets (Input\n- purchase-ticket-button (Button)\n- showing\nnavigates dashboard\nNavigation button url_for\n-\nContext Variables:\nof\n- of str)\n\n### 6. Template:\n-\nVirtual\n- Main Heading (H1):\nElement\ncontainer)\ntitle, date, registration status\n- register-event-button-{{ event.event_id }}\ncancel-registration-button-{{ registration.registration_id }} cancel\ndashboard\nNavigation url_for\n-\n\nback-to-dashboard url_for('dashboard')\n\n(list dict)\n- registrations dict)\n-\n\n### 7.\naudio_guides.html\n- Page Title: Guides\nHeading Audio Guides\n- IDs:\n(Div\n(Table) exhibit title,\n-\napply-language-filter\nplay-guide-button-{{ guide.guide_id }} (Button) play guide\nback-to-dashboard to\nNavigation url_for\nurl_for('audio_guides_play',\n- back-to-dashboard → url_for('dashboard')\nContext\ndict)\n(str)\n\n\n\n## 3:\n\n### 1.\n\n- Purpose: Stores usernames for\n\n\n- Example\n\n\n\n\n2. galleries.txt\n\nPurpose: of physical\nFormat:\n\nExample\nHall|1|50|Ancient|Open\nArt Wing|2|30|Modern|Open\n3|Science Center|3|40|Science|Renovation\n\n###\n\n- Purpose: Stores\n\n\n\nTreasures|Ancient artifacts\n2|Pop Revolution|Contemporary pop collection|2|Temporary|2024-11-01|2024-12-31|Lisa\nSpace Exploration|Online space exhibition|2|Virtual|2024-10-01|2025-03-31|Mark Johnson|curator_john\n\n4.\n\ninformation about\n\n\n\nof golden\n2|Warhol Soup art piece|2|B-205|2023-08-20|curator_sarah\n3|Roman Amphora|Ancient|Italy|Ancient\n\naudioguides.txt\n- Filename:\n- Purpose: audio for\n- Format:\n\n\n1|101|Introduction to to\n2|101|Introducción a egipcia...|Maria\nArt in the 1950s...|Sarah\n\n### tickets.txt\nFilename:\nticket\n-\n\n-\nJohnson|mary@email.com|2024-11-20\n2|visitor_mary|VIP|2024-12-01|1:00 Johnson|mary@email.com|2024-11-20\nAM|1|10|Tom Lee|tom@email.com|2024-11-18\n\nevents.txt\n- data/events.txt\n- Purpose: Stores\n\n\nData:\n1|Ancient PM|Webinar|Dr. Smith|100|Deep Egyptian\nArtist: Pop PM|Artist Talk|Andy with\nMuseum AM|Virtual Chen|200|Guided tour\n\n8. event_registrations.txt\n- Filename: data/event_registrations.txt\n- Purpose: event records\n\nregistration_id|event_id|username|registration_date\n\n1|1|visitor_mary|2024-11-20\n\n\n\n9. collection_logs.txt\n- Filename:\nactivities to artifacts\n- Format:\nlog_id|artifact_id|activity_type|date|notes|condition|curator\n- Example Data:\n1|1|Inspection|2024-11-15|Routine quarterly\nperformed|Excellent|curator_john\n3|2|Photography|2024-10-20|High-resolution images taken|Good|curator_sarah\ncompleted|Good|curator_john\n\n---\n\ncompletes the comprehensive specification VirtualMuseum web\n\nnaming element IDs, data schemas the\n\ndocument for frontend teams with clear responsibilities and interfaces.\n\n"
+      },
+      {
+        "timestamp": 1774765466.5756571,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 33/56 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "in\n\napplication based design\n\nDetails:\n-\nImplement all required exact\nas specified Jinja2 variable names\nDo or\nDo not specified extra\n\n\n**Template\n```html\n\n\n\ncharset=\"UTF-8\">\n\n\n\n\n\n\n\n\n\n\n\n\nall directory\n- (e.g.\n\n3.\nALL\nid=\"view-exhibition-button-{{ exhibition.exhibition_id }}\"\n\n4.\nand\nproperly with\n\n5. Buttons:**\nin\nas\n\n\nforms\nhave matching backend\n\n\nsave template\npage and match Section\nNOT\nspec\nsolely output\n- a\n\ntemplates/*.html",
+        "after": "\n\nbased design\n\n\n\nall\nas specified Jinja2\n\nnot specified\n\n\n**Template\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ndirectory\n-\n\n3.\nALL\n\n\n\n\nwith\n\n5. Buttons:**\nin\n\n\n\n\nhave backend\n\n\n\npage\nNOT\nspec\nsolely\n\n\n"
+      },
+      {
+        "timestamp": 1774765466.576498,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 711/1186 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement all HTML templates from design_spec.md Section 2 with exact element IDs and navigation\n=== design_spec.md ===\n# VirtualMuseum Design Specification Document\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Route Path | Function Name | HTTP Method | Template Filename | Context Variables |\n|---|---|---|---|---|\n| / | root_redirect | GET | None (Redirect to /dashboard) | None |\n| /dashboard | dashboard | GET | dashboard.html | exhibition_summary (dict: total_exhibitions:int, active_exhibitions:int), username (str), other_overview_data (dict) |\n| /artifacts | artifact_catalog | GET, POST | artifact_catalog.html | artifacts (list of dict), search_query (str), filters (dict) |\n| /exhibitions | exhibitions | GET, POST | exhibitions.html | exhibitions (list of dict), filter_type (str) |\n| /exhibition/<int:exhibition_id> | exhibition_details | GET | exhibition_details.html | exhibition (dict), artifacts (list of dict) |\n| /tickets | visitor_tickets | GET, POST | visitor_tickets.html | tickets (list of dict), ticket_types (list of str) |\n| /events | virtual_events | GET, POST | virtual_events.html | events (list of dict), registrations (list of dict), user_registrations (list of dict) |\n| /register_event/<int:event_id> | register_event | POST | None (Redirect) | None |\n| /cancel_registration/<int:registration_id> | cancel_registration | POST | None (Redirect) | None |\n| /audio_guides | audio_guides | GET, POST | audio_guides.html | audio_guides (list of dict), filter_language (str) |\n\n**Notes on HTTP Methods:**\n- GET for all pages for initial rendering.\n- POST for form submissions such as filtering, purchasing tickets, event registration.\n\n\n---\n\n## Section 2: HTML Templates Specification\n\n### 1. Template: dashboard.html\n- Filename: dashboard.html\n- Page Title: Museum Dashboard\n- Main Heading (H1): Museum Dashboard\n- Element IDs:\n  - dashboard-page (Div container)\n  - exhibition-summary (Div showing total and active exhibitions)\n  - artifact-catalog-button (Button) - navigates to artifact_catalog\n  - exhibitions-button (Button) - navigates to exhibitions\n  - visitor-tickets-button (Button) - navigates to visitor_tickets\n  - virtual-events-button (Button) - navigates to virtual_events\n  - audio-guides-button (Button) - navigates to audio_guides\n- Navigation button url_for mappings:\n  - artifact-catalog-button → url_for('artifact_catalog')\n  - exhibitions-button → url_for('exhibitions')\n  - visitor-tickets-button → url_for('visitor_tickets')\n  - virtual-events-button → url_for('virtual_events')\n  - audio-guides-button → url_for('audio_guides')\n- Context Variables:\n  - exhibition_summary (dict: total_exhibitions:int, active_exhibitions:int)\n  - username (str)\n\n### 2. Template: artifact_catalog.html\n- Filename: artifact_catalog.html\n- Page Title: Artifact Catalog\n- Main Heading (H1): Artifact Catalog\n- Element IDs:\n  - artifact-catalog-page (Div container)\n  - artifact-table (Table) showing artifact columns: ID, name, period, origin, exhibition, actions\n  - search-artifact (Input text) for searching by name or ID\n  - apply-artifact-filter (Button) to submit filters\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - artifacts (list of dict)\n  - search_query (str)\n  - filters (dict)\n\n### 3. Template: exhibitions.html\n- Filename: exhibitions.html\n- Page Title: Exhibitions\n- Main Heading (H1): Exhibitions\n- Element IDs:\n  - exhibitions-page (Div container)\n  - exhibition-list (Table) with columns: title, type, dates, gallery, status\n  - filter-exhibition-type (Dropdown) options: Permanent, Temporary, Virtual\n  - apply-exhibition-filter (Button)\n  - view-exhibition-button-{{ exhibition.exhibition_id }} (Button) one per exhibition row\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - view-exhibition-button-{{ exhibition.exhibition_id }} → url_for('exhibition_details', exhibition_id=exhibition.exhibition_id)\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - exhibitions (list of dict)\n  - filter_type (str)\n\n### 4. Template: exhibition_details.html\n- Filename: exhibition_details.html\n- Page Title: Exhibition Details\n- Main Heading (H1): exhibition.title\n- Element IDs:\n  - exhibition-details-page (Div container)\n  - exhibition-title (H1)\n  - exhibition-description (Div)\n  - exhibition-dates (Div) showing start and end dates\n  - exhibition-artifacts (Table) listing artifacts for this exhibition\n  - back-to-exhibitions (Button) navigates back to exhibitions\n- Navigation button url_for mappings:\n  - back-to-exhibitions → url_for('exhibitions')\n- Context Variables:\n  - exhibition (dict)\n  - artifacts (list of dict)\n\n### 5. Template: visitor_tickets.html\n- Filename: visitor_tickets.html\n- Page Title: Visitor Tickets\n- Main Heading (H1): Visitor Tickets\n- Element IDs:\n  - visitor-tickets-page (Div container)\n  - ticket-type (Dropdown) options: Standard, Student, Senior, Family, VIP\n  - number-of-tickets (Input number)\n  - purchase-ticket-button (Button)\n  - my-tickets-table (Table) showing user's tickets\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - tickets (list of dict)\n  - ticket_types (list of str)\n\n### 6. Template: virtual_events.html\n- Filename: virtual_events.html\n- Page Title: Virtual Events\n- Main Heading (H1): Virtual Events\n- Element IDs:\n  - virtual-events-page (Div container)\n  - event-list (Table) with columns: title, date, time, type, registration status\n  - register-event-button-{{ event.event_id }} (Button) to register for event\n  - cancel-registration-button-{{ registration.registration_id }} (Button) to cancel registration\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - register-event-button-{{ event.event_id }} → url_for('register_event', event_id=event.event_id)\n  - cancel-registration-button-{{ registration.registration_id }} → url_for('cancel_registration', registration_id=registration.registration_id)\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - events (list of dict)\n  - registrations (list of dict)\n  - user_registrations (list of dict)\n\n### 7. Template: audio_guides.html\n- Filename: audio_guides.html\n- Page Title: Audio Guides\n- Main Heading (H1): Audio Guides\n- Element IDs:\n  - audio-guides-page (Div container)\n  - audio-guide-list (Table) columns: exhibit number, title, language, duration\n  - filter-language (Dropdown) options: English, Spanish, French\n  - apply-language-filter (Button)\n  - play-guide-button-{{ guide.guide_id }} (Button) to play audio guide\n  - back-to-dashboard (Button) navigates to dashboard\n- Navigation button url_for mappings:\n  - play-guide-button-{{ guide.guide_id }} → url_for('audio_guides_play', guide_id=guide.guide_id)\n  - back-to-dashboard → url_for('dashboard')\n- Context Variables:\n  - audio_guides (list of dict)\n  - filter_language (str)\n\n---\n\n## Section 3: Data File Schemas\n\n### 1. users.txt\n- Filename: data/users.txt\n- Purpose: Stores usernames for user authentication\n- Format (pipe-delimited fields):\n  username\n- Example Data:\n  curator_john\n  visitor_mary\n  curator_sarah\n\n### 2. galleries.txt\n- Filename: data/galleries.txt\n- Purpose: Stores details of physical galleries\n- Format:\n  gallery_id|gallery_name|floor|capacity|theme|status\n- Example Data:\n  1|Ancient Civilizations Hall|1|50|Ancient|Open\n  2|Modern Art Wing|2|30|Modern|Open\n  3|Science Discovery Center|3|40|Science|Renovation\n\n### 3. exhibitions.txt\n- Filename: data/exhibitions.txt\n- Purpose: Stores virtual and physical exhibitions\n- Format:\n  exhibition_id|title|description|gallery_id|exhibition_type|start_date|end_date|curator_name|created_by\n- Example Data:\n  1|Egyptian Treasures|Ancient artifacts from Egypt|1|Permanent|2024-01-01|2025-12-31|Dr. Smith|curator_john\n  2|Pop Art Revolution|Contemporary pop art collection|2|Temporary|2024-11-01|2024-12-31|Lisa Chen|curator_sarah\n  3|Virtual Space Exploration|Online space exhibition|2|Virtual|2024-10-01|2025-03-31|Mark Johnson|curator_john\n\n### 4. artifacts.txt\n- Filename: data/artifacts.txt\n- Purpose: Stores information about artifacts\n- Format:\n  artifact_id|artifact_name|period|origin|description|exhibition_id|storage_location|acquisition_date|added_by\n- Example Data:\n  1|Golden Mask of Tutankhamun|Ancient|Egypt|Famous golden funeral mask|1|A-101|2020-05-15|curator_john\n  2|Warhol Soup Cans|Contemporary|USA|Iconic pop art piece|2|B-205|2023-08-20|curator_sarah\n  3|Roman Amphora|Ancient|Italy|Ancient storage vessel|1|A-103|2019-11-10|curator_john\n\n### 5. audioguides.txt\n- Filename: data/audioguides.txt\n- Purpose: Stores audio guides for exhibits\n- Format:\n  guide_id|exhibit_number|title|language|duration|script|narrator|created_by\n- Example Data:\n  1|101|Introduction to Egyptian Art|English|5|Welcome to the Egyptian exhibition...|James Brown|curator_john\n  2|101|Introducción al Arte Egipcio|Spanish|5|Bienvenido a la exhibición egipcia...|Maria Garcia|curator_john\n  3|205|Pop Art Explained|English|7|Pop art emerged in the 1950s...|Sarah Williams|curator_sarah\n\n### 6. tickets.txt\n- Filename: data/tickets.txt\n- Purpose: Stores visitor ticket purchases\n- Format:\n  ticket_id|username|ticket_type|visit_date|visit_time|number_of_tickets|price|visitor_name|visitor_email|purchase_date\n- Example Data:\n  1|visitor_mary|Standard|2024-11-25|11:00 AM|2|30|Mary Johnson|mary@email.com|2024-11-20\n  2|visitor_mary|VIP|2024-12-01|1:00 PM|1|50|Mary Johnson|mary@email.com|2024-11-20\n  3|visitor_tom|Student|2024-11-22|9:00 AM|1|10|Tom Lee|tom@email.com|2024-11-18\n\n### 7. events.txt\n- Filename: data/events.txt\n- Purpose: Stores virtual museum events\n- Format:\n  event_id|title|date|time|event_type|speaker|capacity|description|created_by\n- Example Data:\n  1|Ancient Egypt Webinar|2024-12-05|2:00 PM|Webinar|Dr. Smith|100|Deep dive into Egyptian culture|curator_john\n  2|Meet the Artist: Pop Art|2024-11-30|6:00 PM|Artist Talk|Andy Williams|50|Discussion with contemporary artist|curator_sarah\n  3|Virtual Museum Tour|2024-12-10|10:00 AM|Virtual Tour|Lisa Chen|200|Guided tour of entire museum|curator_john\n\n### 8. event_registrations.txt\n- Filename: data/event_registrations.txt\n- Purpose: Stores event registration records\n- Format:\n  registration_id|event_id|username|registration_date\n- Example Data:\n  1|1|visitor_mary|2024-11-20\n  2|2|visitor_mary|2024-11-21\n  3|1|visitor_tom|2024-11-19\n\n### 9. collection_logs.txt\n- Filename: data/collection_logs.txt\n- Purpose: Logs activities related to artifacts\n- Format:\n  log_id|artifact_id|activity_type|date|notes|condition|curator\n- Example Data:\n  1|1|Inspection|2024-11-15|Routine quarterly inspection|Excellent|curator_john\n  2|1|Cleaning|2024-11-16|Professional cleaning performed|Excellent|curator_john\n  3|2|Photography|2024-10-20|High-resolution images taken|Good|curator_sarah\n  4|3|Restoration|2024-09-10|Minor crack repair completed|Good|curator_john\n\n---\n\nThis completes the comprehensive design specification for the VirtualMuseum web application.\n\nAll naming conventions, element IDs, template titles, route functions, and data file schemas strictly adhere to the user requirements.\n\nThis document enables independent, parallel development for frontend and backend teams with clear responsibilities and interfaces.\n\n",
+        "after": "from 2 with\n=== ===\nVirtualMuseum\n\n---\n\nFlask Specification\n\n| | Name HTTP Method | | Context\n\nNone\ndashboard | dashboard.html | (dict: username (dict)\nartifact_catalog POST | artifact_catalog.html (list dict), (dict)\n/exhibitions | | exhibitions of filter_type (str) |\n| exhibition |\n| /tickets | POST visitor_tickets.html (list of of str) |\n/events | events (list dict), registrations\n| POST None |\n/cancel_registration/<int:registration_id> | | (Redirect) | None |\n| audio_guides GET, | (list filter_language |\n\n**Notes on HTTP\nall rendering.\nPOST form submissions event registration.\n\n\n\n\n## Templates Specification\n\n\n\n- Title:\nHeading (H1): Dashboard\n\n- container)\nexhibition-summary and exhibitions)\nartifact-catalog-button navigates artifact_catalog\n(Button) to\n-\n- virtual-events-button - navigates virtual_events\nnavigates\n- button mappings:\n- url_for('artifact_catalog')\nexhibitions-button url_for('exhibitions')\n- visitor-tickets-button → url_for('visitor_tickets')\n-\n- url_for('audio_guides')\n\ntotal_exhibitions:int, active_exhibitions:int)\n- username\n\n###\n- Filename: artifact_catalog.html\nPage Title: Artifact\nHeading (H1):\nElement IDs:\nartifact-catalog-page\n- showing ID, period, origin,\n(Input text) by or ID\n(Button)\nnavigates dashboard\nbutton mappings:\n- back-to-dashboard →\n- Context\n-\n(str)\n- filters (dict)\n\n\nFilename:\n-\n- Main Heading (H1): Exhibitions\nElement\n-\n- exhibition-list title, gallery, status\n(Dropdown)\n(Button)\nview-exhibition-button-{{ exhibition.exhibition_id }} per row\n(Button)\nbutton url_for mappings:\n-\nback-to-dashboard url_for('dashboard')\n- Context Variables:\n\n\n\n\nexhibition_details.html\nPage\n- Main Heading exhibition.title\nElement\n- (Div\n(H1)\n\n- exhibition-dates showing dates\nexhibition-artifacts (Table) for this\n- (Button) back\n- url_for\nurl_for('exhibitions')\nContext\n\nartifacts dict)\n\n\n- visitor_tickets.html\n- Page Title: Visitor\n- Tickets\nIDs:\n- visitor-tickets-page container)\nticket-type (Dropdown) options: Standard, VIP\n- (Input\n\n(Table) showing\nback-to-dashboard navigates to\nbutton mappings:\n- →\n- Variables:\ntickets dict)\n- (list\n\n6. Template:\n-\nVirtual\n(H1):\n\nvirtual-events-page (Div\n- event-list columns: title, date, registration\nregister-event-button-{{ event.event_id }} (Button) to event\ncancel-registration-button-{{ registration.registration_id }} registration\n(Button)\nurl_for mappings:\n- → url_for('register_event', event_id=event.event_id)\n- → registration_id=registration.registration_id)\n- back-to-dashboard →\n-\n- dict)\n- registrations of\n- (list dict)\n\n7.\nFilename:\nPage Title: Guides\nHeading\n\n(Div container)\n(Table) language,\nFrench\napply-language-filter\n- to guide\n- navigates dashboard\n- Navigation button url_for mappings:\n-\n- back-to-dashboard →\nContext\n- audio_guides (list\n\n\n---\n\n##\n\n### users.txt\n-\nPurpose: Stores usernames\n- Format\n\nExample\ncurator_john\n\ncurator_sarah\n\n### galleries.txt\nFilename:\nStores of physical galleries\n-\ngallery_id|gallery_name|floor|capacity|theme|status\n- Data:\n1|Ancient Civilizations\nArt Wing|2|30|Modern|Open\n3|Science\n\n3. exhibitions.txt\nFilename:\nexhibitions\n\n\n- Example\nfrom Smith|curator_john\n2|Pop pop art Chen|curator_sarah\nspace exhibition|2|Virtual|2024-10-01|2025-03-31|Mark\n\n4. artifacts.txt\nFilename:\nStores information artifacts\nFormat:\nartifact_id|artifact_name|period|origin|description|exhibition_id|storage_location|acquisition_date|added_by\nExample\nMask Tutankhamun|Ancient|Egypt|Famous golden funeral\nSoup Cans|Contemporary|USA|Iconic pop art piece|2|B-205|2023-08-20|curator_sarah\n3|Roman vessel|1|A-103|2019-11-10|curator_john\n\n5.\n- data/audioguides.txt\nStores guides for exhibits\n\nguide_id|exhibit_number|title|language|duration|script|narrator|created_by\nExample Data:\nto Art|English|5|Welcome to Egyptian\n2|101|Introducción al Arte a Garcia|curator_john\nArt Explained|English|7|Pop art in\n\n6.\n\n- ticket purchases\n- Format:\nticket_id|username|ticket_type|visit_date|visit_time|number_of_tickets|price|visitor_name|visitor_email|purchase_date\n\nAM|2|30|Mary\n2|visitor_mary|VIP|2024-12-01|1:00 Johnson|mary@email.com|2024-11-20\nAM|1|10|Tom\n\n7. events.txt\ndata/events.txt\n- Stores\n- Format:\nevent_id|title|date|time|event_type|speaker|capacity|description|created_by\n- Example\n1|Ancient Webinar|2024-12-05|2:00 dive into Egyptian culture|curator_john\nPM|Artist Williams|50|Discussion artist|curator_sarah\n3|Virtual Museum AM|Virtual entire\n\n\nFilename: data/event_registrations.txt\nevent\n\n\n\n\n\n\n\n### 9.\n\nPurpose:\nFormat:\nlog_id|artifact_id|activity_type|date|notes|condition|curator\n\n\ncleaning performed|Excellent|curator_john\nimages\n\n\n---\n\nThis the comprehensive for VirtualMuseum application.\n\ntemplate functions, schemas adhere the\n\ndevelopment teams and\n\n"
+      }
+    ]
+  },
+  "io_chaos": {
+    "enabled": false,
+    "mode": "WordOnly",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordOnly (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": []
+  },
+  "tool_chaos": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (NoResponse, WordShuffle, WordDeletion, WordReplacement)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 1,
+      "FP": 0,
+      "FN": 0,
+      "TN": 2
+    },
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "total_agents": 3,
+    "error_agents": 1,
+    "normal_agents": 2,
+    "actually_injected_agents": [
+      "FrontendDeveloper"
+    ],
+    "target_agents": [
+      "FrontendDeveloper"
+    ],
+    "not_injected_targets": [],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 3,
+        "failover_count": 1,
+        "category": "TP"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 1               FN = 0   
+Actual: Normal Agent    FP = 0               TN = 2   
+
+Agent Distribution:
+  Total Agents: 3
+  Error Agents (Actually Injected): 1
+  Normal Agents: 2
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 1 agents
+    - Actually Injected: 1 agents
+
+Performance Metrics:
+  Precision: 1.0000 (TP / (TP + FP))
+  Recall:    1.0000 (TP / (TP + FN))
+  F1-Score:  1.0000
+
+Interpretation:
+  - TP (1): Error agents with successful recovery attempt
+  - FP (0): Normal agents with unnecessary recovery
+  - FN (0): Error agents without recovery (system failure)
+  - TN (2): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+Stress Chaos Injections (6 total):
+
+  [1] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 210/350 words deleted (60%)
+
+      Before (full content):
+         You are a Frontend Developer specializing in HTML and Jinja2 templating for Flask applications.
+         
+         Your goal is to develop all HTML templates for the application based on the provided design specifications.
+         
+         Task Details:
+         - Read design_spec.md Section 2 (HTML Templates) only from CONTEXT
+         - Implement all required HTML templates with exact element IDs, page titles, and navigation button mappings
+         - Use context variables as specified with correct Jinja2 syntax and variable names
+         - Do NOT read or modify backend code or Section 1 and 3 content
+         - Do NOT add templates not specified in design_spec.md or add extra UI features
+         
+         Implementation Requirements:
+         1. **Template Structure:**
+            ```html
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>Exact Page Title</title>
+            </head>
+            <body>
+                <div id="container-id">
+                    <h1>Exact Page Title</h1>
+                    <!-- Content and controls as specified -->
+                </div>
+            </body>
+            </html>
+            ```
+         
+         2. **File Naming and Location:**
+            - Save all template files in the 'templates/' directory
+            - Follow exact filenames provided in Section 2 (e.g. templates/dashboard.html)
+         
+         3. **Element IDs:**
+            - Implement ALL required element IDs with exact casing and spelling
+            - For dynamic IDs (e.g., view-exhibition-button-{exhibition_id}) use Jinja2 syntax, e.g. id="view-exhibition-button-{{ exhibition.exhibition_id }}"
+         
+         4. **Context Variables:**
+            - Use context variables exactly as described, respecting types and structures
+            - Loop over lists and access dict fields properly with Jinja2 syntax
+         
+         5. **Navigation Buttons:**
+            - Implement buttons and links that navigate using url_for calls exactly matching function names in the design spec
+            - Use static links and dynamic links with parameters as specified
+         
+         6. **Forms:**
+            - Implement forms with correct method (POST/GET) and action using url_for
+            - Input elements must have matching name attributes and IDs for correct backend integration
+         
+         CRITICAL REQUIREMENTS:
+         - Use write_text_file tool to save all HTML template files
+         - Element IDs, page titles, and navigation button url_for calls must match design_spec.md Section 2 exactly
+         - Do NOT modify or read backend code or data schemas
+         - Do NOT add extra UI elements or templates beyond spec
+         - Do NOT provide code snippets solely in chat; all output must be saved via write_text_file
+         - Each template must be saved as a separate file (e.g., templates/dashboard.html, templates/exhibitions.html, etc.)
+         
+         Output: templates/*.html
+
+      After (full content):
+         You are in Flask
+         
+         HTML for application based design
+         
+         Task Details:
+         - Read design_spec.md Templates)
+         - Implement all required HTML templates with exact element page navigation button mappings
+         - as specified Jinja2 syntax variable names
+         Do or modify code 3 content
+         Do not specified design_spec.md extra
+         
+         
+         **Template
+         ```html
+         <!DOCTYPE
+         <html
+         
+         charset="UTF-8">
+         
+         
+         <body>
+         
+         Title</h1>
+         Content and as
+         
+         
+         
+         
+         
+         
+         Save all files directory
+         - provided (e.g.
+         
+         3. **Element
+         ALL element IDs with casing and spelling
+         use Jinja2 syntax, id="view-exhibition-button-{{ exhibition.exhibition_id }}"
+         
+         4. Variables:**
+         - Use described, respecting and
+         - properly with syntax
+         
+         5. Buttons:**
+         Implement buttons that navigate using in design
+         Use links with as specified
+         
+         6.
+         forms with correct method action using
+         - have matching name and backend
+         
+         
+         - tool save template
+         Element page and url_for match design_spec.md Section
+         - NOT or or data
+         UI templates spec
+         snippets solely all output
+         - a
+         
+         templates/*.html
+
+  [2] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 711/1186 words deleted (60%)
+
+      Before (full content):
+         Implement all HTML templates from design_spec.md Section 2 with exact element IDs and navigation
+         === design_spec.md ===
+         # VirtualMuseum Design Specification Document
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path | Function Name | HTTP Method | Template Filename | Context Variables |
+         |---|---|---|---|---|
+         | / | root_redirect | GET | None (Redirect to /dashboard) | None |
+         | /dashboard | dashboard | GET | dashboard.html | exhibition_summary (dict: total_exhibitions:int, active_exhibitions:int), username (str), other_overview_data (dict) |
+         | /artifacts | artifact_catalog | GET, POST | artifact_catalog.html | artifacts (list of dict), search_query (str), filters (dict) |
+         | /exhibitions | exhibitions | GET, POST | exhibitions.html | exhibitions (list of dict), filter_type (str) |
+         | /exhibition/<int:exhibition_id> | exhibition_details | GET | exhibition_details.html | exhibition (dict), artifacts (list of dict) |
+         | /tickets | visitor_tickets | GET, POST | visitor_tickets.html | tickets (list of dict), ticket_types (list of str) |
+         | /events | virtual_events | GET, POST | virtual_events.html | events (list of dict), registrations (list of dict), user_registrations (list of dict) |
+         | /register_event/<int:event_id> | register_event | POST | None (Redirect) | None |
+         | /cancel_registration/<int:registration_id> | cancel_registration | POST | None (Redirect) | None |
+         | /audio_guides | audio_guides | GET, POST | audio_guides.html | audio_guides (list of dict), filter_language (str) |
+         
+         **Notes on HTTP Methods:**
+         - GET for all pages for initial rendering.
+         - POST for form submissions such as filtering, purchasing tickets, event registration.
+         
+         
+         ---
+         
+         ## Section 2: HTML Templates Specification
+         
+         ### 1. Template: dashboard.html
+         - Filename: dashboard.html
+         - Page Title: Museum Dashboard
+         - Main Heading (H1): Museum Dashboard
+         - Element IDs:
+           - dashboard-page (Div container)
+           - exhibition-summary (Div showing total and active exhibitions)
+           - artifact-catalog-button (Button) - navigates to artifact_catalog
+           - exhibitions-button (Button) - navigates to exhibitions
+           - visitor-tickets-button (Button) - navigates to visitor_tickets
+           - virtual-events-button (Button) - navigates to virtual_events
+           - audio-guides-button (Button) - navigates to audio_guides
+         - Navigation button url_for mappings:
+           - artifact-catalog-button → url_for('artifact_catalog')
+           - exhibitions-button → url_for('exhibitions')
+           - visitor-tickets-button → url_for('visitor_tickets')
+           - virtual-events-button → url_for('virtual_events')
+           - audio-guides-button → url_for('audio_guides')
+         - Context Variables:
+           - exhibition_summary (dict: total_exhibitions:int, active_exhibitions:int)
+           - username (str)
+         
+         ### 2. Template: artifact_catalog.html
+         - Filename: artifact_catalog.html
+         - Page Title: Artifact Catalog
+         - Main Heading (H1): Artifact Catalog
+         - Element IDs:
+           - artifact-catalog-page (Div container)
+           - artifact-table (Table) showing artifact columns: ID, name, period, origin, exhibition, actions
+           - search-artifact (Input text) for searching by name or ID
+           - apply-artifact-filter (Button) to submit filters
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - artifacts (list of dict)
+           - search_query (str)
+           - filters (dict)
+         
+         ### 3. Template: exhibitions.html
+         - Filename: exhibitions.html
+         - Page Title: Exhibitions
+         - Main Heading (H1): Exhibitions
+         - Element IDs:
+           - exhibitions-page (Div container)
+           - exhibition-list (Table) with columns: title, type, dates, gallery, status
+           - filter-exhibition-type (Dropdown) options: Permanent, Temporary, Virtual
+           - apply-exhibition-filter (Button)
+           - view-exhibition-button-{{ exhibition.exhibition_id }} (Button) one per exhibition row
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - view-exhibition-button-{{ exhibition.exhibition_id }} → url_for('exhibition_details', exhibition_id=exhibition.exhibition_id)
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - exhibitions (list of dict)
+           - filter_type (str)
+         
+         ### 4. Template: exhibition_details.html
+         - Filename: exhibition_details.html
+         - Page Title: Exhibition Details
+         - Main Heading (H1): exhibition.title
+         - Element IDs:
+           - exhibition-details-page (Div container)
+           - exhibition-title (H1)
+           - exhibition-description (Div)
+           - exhibition-dates (Div) showing start and end dates
+           - exhibition-artifacts (Table) listing artifacts for this exhibition
+           - back-to-exhibitions (Button) navigates back to exhibitions
+         - Navigation button url_for mappings:
+           - back-to-exhibitions → url_for('exhibitions')
+         - Context Variables:
+           - exhibition (dict)
+           - artifacts (list of dict)
+         
+         ### 5. Template: visitor_tickets.html
+         - Filename: visitor_tickets.html
+         - Page Title: Visitor Tickets
+         - Main Heading (H1): Visitor Tickets
+         - Element IDs:
+           - visitor-tickets-page (Div container)
+           - ticket-type (Dropdown) options: Standard, Student, Senior, Family, VIP
+           - number-of-tickets (Input number)
+           - purchase-ticket-button (Button)
+           - my-tickets-table (Table) showing user's tickets
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - tickets (list of dict)
+           - ticket_types (list of str)
+         
+         ### 6. Template: virtual_events.html
+         - Filename: virtual_events.html
+         - Page Title: Virtual Events
+         - Main Heading (H1): Virtual Events
+         - Element IDs:
+           - virtual-events-page (Div container)
+           - event-list (Table) with columns: title, date, time, type, registration status
+           - register-event-button-{{ event.event_id }} (Button) to register for event
+           - cancel-registration-button-{{ registration.registration_id }} (Button) to cancel registration
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - register-event-button-{{ event.event_id }} → url_for('register_event', event_id=event.event_id)
+           - cancel-registration-button-{{ registration.registration_id }} → url_for('cancel_registration', registration_id=registration.registration_id)
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - events (list of dict)
+           - registrations (list of dict)
+           - user_registrations (list of dict)
+         
+         ### 7. Template: audio_guides.html
+         - Filename: audio_guides.html
+         - Page Title: Audio Guides
+         - Main Heading (H1): Audio Guides
+         - Element IDs:
+           - audio-guides-page (Div container)
+           - audio-guide-list (Table) columns: exhibit number, title, language, duration
+           - filter-language (Dropdown) options: English, Spanish, French
+           - apply-language-filter (Button)
+           - play-guide-button-{{ guide.guide_id }} (Button) to play audio guide
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - play-guide-button-{{ guide.guide_id }} → url_for('audio_guides_play', guide_id=guide.guide_id)
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - audio_guides (list of dict)
+           - filter_language (str)
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### 1. users.txt
+         - Filename: data/users.txt
+         - Purpose: Stores usernames for user authentication
+         - Format (pipe-delimited fields):
+           username
+         - Example Data:
+           curator_john
+           visitor_mary
+           curator_sarah
+         
+         ### 2. galleries.txt
+         - Filename: data/galleries.txt
+         - Purpose: Stores details of physical galleries
+         - Format:
+           gallery_id|gallery_name|floor|capacity|theme|status
+         - Example Data:
+           1|Ancient Civilizations Hall|1|50|Ancient|Open
+           2|Modern Art Wing|2|30|Modern|Open
+           3|Science Discovery Center|3|40|Science|Renovation
+         
+         ### 3. exhibitions.txt
+         - Filename: data/exhibitions.txt
+         - Purpose: Stores virtual and physical exhibitions
+         - Format:
+           exhibition_id|title|description|gallery_id|exhibition_type|start_date|end_date|curator_name|created_by
+         - Example Data:
+           1|Egyptian Treasures|Ancient artifacts from Egypt|1|Permanent|2024-01-01|2025-12-31|Dr. Smith|curator_john
+           2|Pop Art Revolution|Contemporary pop art collection|2|Temporary|2024-11-01|2024-12-31|Lisa Chen|curator_sarah
+           3|Virtual Space Exploration|Online space exhibition|2|Virtual|2024-10-01|2025-03-31|Mark Johnson|curator_john
+         
+         ### 4. artifacts.txt
+         - Filename: data/artifacts.txt
+         - Purpose: Stores information about artifacts
+         - Format:
+           artifact_id|artifact_name|period|origin|description|exhibition_id|storage_location|acquisition_date|added_by
+         - Example Data:
+           1|Golden Mask of Tutankhamun|Ancient|Egypt|Famous golden funeral mask|1|A-101|2020-05-15|curator_john
+           2|Warhol Soup Cans|Contemporary|USA|Iconic pop art piece|2|B-205|2023-08-20|curator_sarah
+           3|Roman Amphora|Ancient|Italy|Ancient storage vessel|1|A-103|2019-11-10|curator_john
+         
+         ### 5. audioguides.txt
+         - Filename: data/audioguides.txt
+         - Purpose: Stores audio guides for exhibits
+         - Format:
+           guide_id|exhibit_number|title|language|duration|script|narrator|created_by
+         - Example Data:
+           1|101|Introduction to Egyptian Art|English|5|Welcome to the Egyptian exhibition...|James Brown|curator_john
+           2|101|Introducción al Arte Egipcio|Spanish|5|Bienvenido a la exhibición egipcia...|Maria Garcia|curator_john
+           3|205|Pop Art Explained|English|7|Pop art emerged in the 1950s...|Sarah Williams|curator_sarah
+         
+         ### 6. tickets.txt
+         - Filename: data/tickets.txt
+         - Purpose: Stores visitor ticket purchases
+         - Format:
+           ticket_id|username|ticket_type|visit_date|visit_time|number_of_tickets|price|visitor_name|visitor_email|purchase_date
+         - Example Data:
+           1|visitor_mary|Standard|2024-11-25|11:00 AM|2|30|Mary Johnson|mary@email.com|2024-11-20
+           2|visitor_mary|VIP|2024-12-01|1:00 PM|1|50|Mary Johnson|mary@email.com|2024-11-20
+           3|visitor_tom|Student|2024-11-22|9:00 AM|1|10|Tom Lee|tom@email.com|2024-11-18
+         
+         ### 7. events.txt
+         - Filename: data/events.txt
+         - Purpose: Stores virtual museum events
+         - Format:
+           event_id|title|date|time|event_type|speaker|capacity|description|created_by
+         - Example Data:
+           1|Ancient Egypt Webinar|2024-12-05|2:00 PM|Webinar|Dr. Smith|100|Deep dive into Egyptian culture|curator_john
+           2|Meet the Artist: Pop Art|2024-11-30|6:00 PM|Artist Talk|Andy Williams|50|Discussion with contemporary artist|curator_sarah
+           3|Virtual Museum Tour|2024-12-10|10:00 AM|Virtual Tour|Lisa Chen|200|Guided tour of entire museum|curator_john
+         
+         ### 8. event_registrations.txt
+         - Filename: data/event_registrations.txt
+         - Purpose: Stores event registration records
+         - Format:
+           registration_id|event_id|username|registration_date
+         - Example Data:
+           1|1|visitor_mary|2024-11-20
+           2|2|visitor_mary|2024-11-21
+           3|1|visitor_tom|2024-11-19
+         
+         ### 9. collection_logs.txt
+         - Filename: data/collection_logs.txt
+         - Purpose: Logs activities related to artifacts
+         - Format:
+           log_id|artifact_id|activity_type|date|notes|condition|curator
+         - Example Data:
+           1|1|Inspection|2024-11-15|Routine quarterly inspection|Excellent|curator_john
+           2|1|Cleaning|2024-11-16|Professional cleaning performed|Excellent|curator_john
+           3|2|Photography|2024-10-20|High-resolution images taken|Good|curator_sarah
+           4|3|Restoration|2024-09-10|Minor crack repair completed|Good|curator_john
+         
+         ---
+         
+         This completes the comprehensive design specification for the VirtualMuseum web application.
+         
+         All naming conventions, element IDs, template titles, route functions, and data file schemas strictly adhere to the user requirements.
+         
+         This document enables independent, parallel development for frontend and backend teams with clear responsibilities and interfaces.
+         
+         
+
+      After (full content):
+         templates design_spec.md with exact navigation
+         
+         # Design Document
+         
+         ---
+         
+         ## Section Routes
+         
+         | Name HTTP Method | Context Variables
+         |---|---|---|---|---|
+         | | | (Redirect to None
+         /dashboard | | | total_exhibitions:int,
+         | GET, | artifacts of
+         | GET, | exhibitions (list of dict), (str) |
+         | | | | | artifacts (list |
+         /tickets | visitor_tickets.html ticket_types of
+         | virtual_events | GET, | (list of registrations dict), of dict)
+         | /register_event/<int:event_id> | None | None |
+         | None |
+         | GET, POST audio_guides filter_language
+         
+         HTTP Methods:**
+         - all rendering.
+         - for form event
+         
+         
+         
+         
+         2: HTML Templates Specification
+         
+         ### dashboard.html
+         
+         Page Museum
+         - (H1): Dashboard
+         
+         container)
+         - exhibition-summary and
+         - (Button) -
+         exhibitions-button -
+         (Button) navigates to visitor_tickets
+         virtual-events-button navigates virtual_events
+         audio-guides-button navigates to audio_guides
+         
+         →
+         - exhibitions-button url_for('exhibitions')
+         visitor-tickets-button → url_for('visitor_tickets')
+         -
+         - →
+         Context
+         - exhibition_summary total_exhibitions:int,
+         
+         
+         2.
+         artifact_catalog.html
+         - Catalog
+         (H1):
+         
+         -
+         - artifact-table
+         - (Input text) searching name ID
+         to
+         back-to-dashboard (Button) dashboard
+         - Navigation
+         
+         - Variables:
+         - of dict)
+         - search_query
+         
+         
+         3.
+         - Filename: exhibitions.html
+         Page Title: Exhibitions
+         - Exhibitions
+         - IDs:
+         exhibitions-page container)
+         (Table) with columns: type, gallery, status
+         - filter-exhibition-type (Dropdown) Virtual
+         -
+         view-exhibition-button-{{ exhibition.exhibition_id }} exhibition
+         - to dashboard
+         - url_for
+         -
+         →
+         - Variables:
+         (list dict)
+         
+         
+         ### Template: exhibition_details.html
+         
+         Details
+         - Main exhibition.title
+         Element
+         - exhibition-details-page (Div
+         
+         -
+         - (Div) start dates
+         - exhibition-artifacts (Table) for exhibition
+         - navigates
+         - url_for
+         - →
+         Context Variables:
+         
+         dict)
+         
+         Template:
+         - visitor_tickets.html
+         - Page Title: Visitor
+         Main (H1):
+         - IDs:
+         
+         Student, Senior, VIP
+         (Input number)
+         - (Button)
+         - my-tickets-table (Table) showing
+         (Button) dashboard
+         button url_for
+         back-to-dashboard
+         Variables:
+         - dict)
+         - ticket_types
+         
+         ### 6. virtual_events.html
+         virtual_events.html
+         Title: Virtual
+         Main (H1):
+         - Element IDs:
+         
+         columns: date, time, registration
+         -
+         cancel
+         back-to-dashboard
+         - button
+         register-event-button-{{ event.event_id }} event_id=event.event_id)
+         - cancel-registration-button-{{ registration.registration_id }}
+         back-to-dashboard url_for('dashboard')
+         Context
+         events
+         - dict)
+         (list of dict)
+         
+         ### Template:
+         -
+         Guides
+         - Main (H1): Audio
+         -
+         
+         - number, title,
+         - options: Spanish, French
+         - apply-language-filter
+         - (Button) to audio guide
+         - to
+         - Navigation url_for
+         play-guide-button-{{ guide.guide_id }} →
+         
+         Context
+         of dict)
+         - (str)
+         
+         
+         
+         Section 3: File
+         
+         ### 1.
+         -
+         - usernames user authentication
+         Format (pipe-delimited
+         
+         -
+         
+         
+         
+         
+         galleries.txt
+         - data/galleries.txt
+         galleries
+         - Format:
+         
+         - Data:
+         Civilizations Hall|1|50|Ancient|Open
+         Wing|2|30|Modern|Open
+         Center|3|40|Science|Renovation
+         
+         
+         -
+         - virtual and exhibitions
+         - Format:
+         
+         -
+         Treasures|Ancient artifacts
+         pop
+         space exhibition|2|Virtual|2024-10-01|2025-03-31|Mark Johnson|curator_john
+         
+         ###
+         -
+         -
+         Format:
+         
+         -
+         of
+         Cans|Contemporary|USA|Iconic piece|2|B-205|2023-08-20|curator_sarah
+         vessel|1|A-103|2019-11-10|curator_john
+         
+         ###
+         - Filename:
+         Stores audio guides for
+         
+         guide_id|exhibit_number|title|language|duration|script|narrator|created_by
+         Example
+         to Egyptian the Egyptian
+         al Arte a la Garcia|curator_john
+         3|205|Pop Explained|English|7|Pop in Williams|curator_sarah
+         
+         6. tickets.txt
+         data/tickets.txt
+         visitor purchases
+         
+         ticket_id|username|ticket_type|visit_date|visit_time|number_of_tickets|price|visitor_name|visitor_email|purchase_date
+         Data:
+         1|visitor_mary|Standard|2024-11-25|11:00 AM|2|30|Mary Johnson|mary@email.com|2024-11-20
+         
+         3|visitor_tom|Student|2024-11-22|9:00
+         
+         7.
+         Filename: data/events.txt
+         - Purpose: events
+         Format:
+         
+         
+         1|Ancient PM|Webinar|Dr. culture|curator_john
+         2|Meet Artist: Pop PM|Artist Talk|Andy Williams|50|Discussion with artist|curator_sarah
+         3|Virtual Museum Tour|Lisa of museum|curator_john
+         
+         ### event_registrations.txt
+         
+         - Purpose:
+         - Format:
+         registration_id|event_id|username|registration_date
+         
+         
+         2|2|visitor_mary|2024-11-21
+         3|1|visitor_tom|2024-11-19
+         
+         ### collection_logs.txt
+         
+         Purpose:
+         
+         log_id|artifact_id|activity_type|date|notes|condition|curator
+         -
+         quarterly inspection|Excellent|curator_john
+         2|1|Cleaning|2024-11-16|Professional cleaning
+         3|2|Photography|2024-10-20|High-resolution
+         4|3|Restoration|2024-09-10|Minor crack
+         
+         
+         
+         completes design for web application.
+         
+         element IDs, template route file strictly to
+         
+         This independent, development clear and interfaces.
+         
+         
+
+  [3] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 84/140 words deleted (60%)
+
+      Before (full content):
+         You are in Flask
+         
+         HTML for application based design
+         
+         Task Details:
+         - Read design_spec.md Templates)
+         - Implement all required HTML templates with exact element page navigation button mappings
+         - as specified Jinja2 syntax variable names
+         Do or modify code 3 content
+         Do not specified design_spec.md extra
+         
+         
+         **Template
+         ```html
+         <!DOCTYPE
+         <html
+         
+         charset="UTF-8">
+         
+         
+         <body>
+         
+         Title</h1>
+         Content and as
+         
+         
+         
+         
+         
+         
+         Save all files directory
+         - provided (e.g.
+         
+         3. **Element
+         ALL element IDs with casing and spelling
+         use Jinja2 syntax, id="view-exhibition-button-{{ exhibition.exhibition_id }}"
+         
+         4. Variables:**
+         - Use described, respecting and
+         - properly with syntax
+         
+         5. Buttons:**
+         Implement buttons that navigate using in design
+         Use links with as specified
+         
+         6.
+         forms with correct method action using
+         - have matching name and backend
+         
+         
+         - tool save template
+         Element page and url_for match design_spec.md Section
+         - NOT or or data
+         UI templates spec
+         snippets solely all output
+         - a
+         
+         templates/*.html
+
+      After (full content):
+         in
+         
+         application based design
+         
+         Details:
+         -
+         Implement all required exact
+         as specified Jinja2 variable names
+         Do or
+         Do not specified extra
+         
+         
+         **Template
+         ```html
+         
+         
+         
+         charset="UTF-8">
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         all directory
+         - (e.g.
+         
+         3.
+         ALL
+         id="view-exhibition-button-{{ exhibition.exhibition_id }}"
+         
+         4.
+         and
+         properly with
+         
+         5. Buttons:**
+         in
+         as
+         
+         
+         forms
+         have matching backend
+         
+         
+         save template
+         page and match Section
+         NOT
+         spec
+         solely output
+         - a
+         
+         templates/*.html
+
+  [4] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 711/1186 words deleted (60%)
+
+      Before (full content):
+         Implement all HTML templates from design_spec.md Section 2 with exact element IDs and navigation
+         === design_spec.md ===
+         # VirtualMuseum Design Specification Document
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path | Function Name | HTTP Method | Template Filename | Context Variables |
+         |---|---|---|---|---|
+         | / | root_redirect | GET | None (Redirect to /dashboard) | None |
+         | /dashboard | dashboard | GET | dashboard.html | exhibition_summary (dict: total_exhibitions:int, active_exhibitions:int), username (str), other_overview_data (dict) |
+         | /artifacts | artifact_catalog | GET, POST | artifact_catalog.html | artifacts (list of dict), search_query (str), filters (dict) |
+         | /exhibitions | exhibitions | GET, POST | exhibitions.html | exhibitions (list of dict), filter_type (str) |
+         | /exhibition/<int:exhibition_id> | exhibition_details | GET | exhibition_details.html | exhibition (dict), artifacts (list of dict) |
+         | /tickets | visitor_tickets | GET, POST | visitor_tickets.html | tickets (list of dict), ticket_types (list of str) |
+         | /events | virtual_events | GET, POST | virtual_events.html | events (list of dict), registrations (list of dict), user_registrations (list of dict) |
+         | /register_event/<int:event_id> | register_event | POST | None (Redirect) | None |
+         | /cancel_registration/<int:registration_id> | cancel_registration | POST | None (Redirect) | None |
+         | /audio_guides | audio_guides | GET, POST | audio_guides.html | audio_guides (list of dict), filter_language (str) |
+         
+         **Notes on HTTP Methods:**
+         - GET for all pages for initial rendering.
+         - POST for form submissions such as filtering, purchasing tickets, event registration.
+         
+         
+         ---
+         
+         ## Section 2: HTML Templates Specification
+         
+         ### 1. Template: dashboard.html
+         - Filename: dashboard.html
+         - Page Title: Museum Dashboard
+         - Main Heading (H1): Museum Dashboard
+         - Element IDs:
+           - dashboard-page (Div container)
+           - exhibition-summary (Div showing total and active exhibitions)
+           - artifact-catalog-button (Button) - navigates to artifact_catalog
+           - exhibitions-button (Button) - navigates to exhibitions
+           - visitor-tickets-button (Button) - navigates to visitor_tickets
+           - virtual-events-button (Button) - navigates to virtual_events
+           - audio-guides-button (Button) - navigates to audio_guides
+         - Navigation button url_for mappings:
+           - artifact-catalog-button → url_for('artifact_catalog')
+           - exhibitions-button → url_for('exhibitions')
+           - visitor-tickets-button → url_for('visitor_tickets')
+           - virtual-events-button → url_for('virtual_events')
+           - audio-guides-button → url_for('audio_guides')
+         - Context Variables:
+           - exhibition_summary (dict: total_exhibitions:int, active_exhibitions:int)
+           - username (str)
+         
+         ### 2. Template: artifact_catalog.html
+         - Filename: artifact_catalog.html
+         - Page Title: Artifact Catalog
+         - Main Heading (H1): Artifact Catalog
+         - Element IDs:
+           - artifact-catalog-page (Div container)
+           - artifact-table (Table) showing artifact columns: ID, name, period, origin, exhibition, actions
+           - search-artifact (Input text) for searching by name or ID
+           - apply-artifact-filter (Button) to submit filters
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - artifacts (list of dict)
+           - search_query (str)
+           - filters (dict)
+         
+         ### 3. Template: exhibitions.html
+         - Filename: exhibitions.html
+         - Page Title: Exhibitions
+         - Main Heading (H1): Exhibitions
+         - Element IDs:
+           - exhibitions-page (Div container)
+           - exhibition-list (Table) with columns: title, type, dates, gallery, status
+           - filter-exhibition-type (Dropdown) options: Permanent, Temporary, Virtual
+           - apply-exhibition-filter (Button)
+           - view-exhibition-button-{{ exhibition.exhibition_id }} (Button) one per exhibition row
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - view-exhibition-button-{{ exhibition.exhibition_id }} → url_for('exhibition_details', exhibition_id=exhibition.exhibition_id)
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - exhibitions (list of dict)
+           - filter_type (str)
+         
+         ### 4. Template: exhibition_details.html
+         - Filename: exhibition_details.html
+         - Page Title: Exhibition Details
+         - Main Heading (H1): exhibition.title
+         - Element IDs:
+           - exhibition-details-page (Div container)
+           - exhibition-title (H1)
+           - exhibition-description (Div)
+           - exhibition-dates (Div) showing start and end dates
+           - exhibition-artifacts (Table) listing artifacts for this exhibition
+           - back-to-exhibitions (Button) navigates back to exhibitions
+         - Navigation button url_for mappings:
+           - back-to-exhibitions → url_for('exhibitions')
+         - Context Variables:
+           - exhibition (dict)
+           - artifacts (list of dict)
+         
+         ### 5. Template: visitor_tickets.html
+         - Filename: visitor_tickets.html
+         - Page Title: Visitor Tickets
+         - Main Heading (H1): Visitor Tickets
+         - Element IDs:
+           - visitor-tickets-page (Div container)
+           - ticket-type (Dropdown) options: Standard, Student, Senior, Family, VIP
+           - number-of-tickets (Input number)
+           - purchase-ticket-button (Button)
+           - my-tickets-table (Table) showing user's tickets
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - tickets (list of dict)
+           - ticket_types (list of str)
+         
+         ### 6. Template: virtual_events.html
+         - Filename: virtual_events.html
+         - Page Title: Virtual Events
+         - Main Heading (H1): Virtual Events
+         - Element IDs:
+           - virtual-events-page (Div container)
+           - event-list (Table) with columns: title, date, time, type, registration status
+           - register-event-button-{{ event.event_id }} (Button) to register for event
+           - cancel-registration-button-{{ registration.registration_id }} (Button) to cancel registration
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - register-event-button-{{ event.event_id }} → url_for('register_event', event_id=event.event_id)
+           - cancel-registration-button-{{ registration.registration_id }} → url_for('cancel_registration', registration_id=registration.registration_id)
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - events (list of dict)
+           - registrations (list of dict)
+           - user_registrations (list of dict)
+         
+         ### 7. Template: audio_guides.html
+         - Filename: audio_guides.html
+         - Page Title: Audio Guides
+         - Main Heading (H1): Audio Guides
+         - Element IDs:
+           - audio-guides-page (Div container)
+           - audio-guide-list (Table) columns: exhibit number, title, language, duration
+           - filter-language (Dropdown) options: English, Spanish, French
+           - apply-language-filter (Button)
+           - play-guide-button-{{ guide.guide_id }} (Button) to play audio guide
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - play-guide-button-{{ guide.guide_id }} → url_for('audio_guides_play', guide_id=guide.guide_id)
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - audio_guides (list of dict)
+           - filter_language (str)
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### 1. users.txt
+         - Filename: data/users.txt
+         - Purpose: Stores usernames for user authentication
+         - Format (pipe-delimited fields):
+           username
+         - Example Data:
+           curator_john
+           visitor_mary
+           curator_sarah
+         
+         ### 2. galleries.txt
+         - Filename: data/galleries.txt
+         - Purpose: Stores details of physical galleries
+         - Format:
+           gallery_id|gallery_name|floor|capacity|theme|status
+         - Example Data:
+           1|Ancient Civilizations Hall|1|50|Ancient|Open
+           2|Modern Art Wing|2|30|Modern|Open
+           3|Science Discovery Center|3|40|Science|Renovation
+         
+         ### 3. exhibitions.txt
+         - Filename: data/exhibitions.txt
+         - Purpose: Stores virtual and physical exhibitions
+         - Format:
+           exhibition_id|title|description|gallery_id|exhibition_type|start_date|end_date|curator_name|created_by
+         - Example Data:
+           1|Egyptian Treasures|Ancient artifacts from Egypt|1|Permanent|2024-01-01|2025-12-31|Dr. Smith|curator_john
+           2|Pop Art Revolution|Contemporary pop art collection|2|Temporary|2024-11-01|2024-12-31|Lisa Chen|curator_sarah
+           3|Virtual Space Exploration|Online space exhibition|2|Virtual|2024-10-01|2025-03-31|Mark Johnson|curator_john
+         
+         ### 4. artifacts.txt
+         - Filename: data/artifacts.txt
+         - Purpose: Stores information about artifacts
+         - Format:
+           artifact_id|artifact_name|period|origin|description|exhibition_id|storage_location|acquisition_date|added_by
+         - Example Data:
+           1|Golden Mask of Tutankhamun|Ancient|Egypt|Famous golden funeral mask|1|A-101|2020-05-15|curator_john
+           2|Warhol Soup Cans|Contemporary|USA|Iconic pop art piece|2|B-205|2023-08-20|curator_sarah
+           3|Roman Amphora|Ancient|Italy|Ancient storage vessel|1|A-103|2019-11-10|curator_john
+         
+         ### 5. audioguides.txt
+         - Filename: data/audioguides.txt
+         - Purpose: Stores audio guides for exhibits
+         - Format:
+           guide_id|exhibit_number|title|language|duration|script|narrator|created_by
+         - Example Data:
+           1|101|Introduction to Egyptian Art|English|5|Welcome to the Egyptian exhibition...|James Brown|curator_john
+           2|101|Introducción al Arte Egipcio|Spanish|5|Bienvenido a la exhibición egipcia...|Maria Garcia|curator_john
+           3|205|Pop Art Explained|English|7|Pop art emerged in the 1950s...|Sarah Williams|curator_sarah
+         
+         ### 6. tickets.txt
+         - Filename: data/tickets.txt
+         - Purpose: Stores visitor ticket purchases
+         - Format:
+           ticket_id|username|ticket_type|visit_date|visit_time|number_of_tickets|price|visitor_name|visitor_email|purchase_date
+         - Example Data:
+           1|visitor_mary|Standard|2024-11-25|11:00 AM|2|30|Mary Johnson|mary@email.com|2024-11-20
+           2|visitor_mary|VIP|2024-12-01|1:00 PM|1|50|Mary Johnson|mary@email.com|2024-11-20
+           3|visitor_tom|Student|2024-11-22|9:00 AM|1|10|Tom Lee|tom@email.com|2024-11-18
+         
+         ### 7. events.txt
+         - Filename: data/events.txt
+         - Purpose: Stores virtual museum events
+         - Format:
+           event_id|title|date|time|event_type|speaker|capacity|description|created_by
+         - Example Data:
+           1|Ancient Egypt Webinar|2024-12-05|2:00 PM|Webinar|Dr. Smith|100|Deep dive into Egyptian culture|curator_john
+           2|Meet the Artist: Pop Art|2024-11-30|6:00 PM|Artist Talk|Andy Williams|50|Discussion with contemporary artist|curator_sarah
+           3|Virtual Museum Tour|2024-12-10|10:00 AM|Virtual Tour|Lisa Chen|200|Guided tour of entire museum|curator_john
+         
+         ### 8. event_registrations.txt
+         - Filename: data/event_registrations.txt
+         - Purpose: Stores event registration records
+         - Format:
+           registration_id|event_id|username|registration_date
+         - Example Data:
+           1|1|visitor_mary|2024-11-20
+           2|2|visitor_mary|2024-11-21
+           3|1|visitor_tom|2024-11-19
+         
+         ### 9. collection_logs.txt
+         - Filename: data/collection_logs.txt
+         - Purpose: Logs activities related to artifacts
+         - Format:
+           log_id|artifact_id|activity_type|date|notes|condition|curator
+         - Example Data:
+           1|1|Inspection|2024-11-15|Routine quarterly inspection|Excellent|curator_john
+           2|1|Cleaning|2024-11-16|Professional cleaning performed|Excellent|curator_john
+           3|2|Photography|2024-10-20|High-resolution images taken|Good|curator_sarah
+           4|3|Restoration|2024-09-10|Minor crack repair completed|Good|curator_john
+         
+         ---
+         
+         This completes the comprehensive design specification for the VirtualMuseum web application.
+         
+         All naming conventions, element IDs, template titles, route functions, and data file schemas strictly adhere to the user requirements.
+         
+         This document enables independent, parallel development for frontend and backend teams with clear responsibilities and interfaces.
+         
+         
+
+      After (full content):
+         all HTML Section 2 element IDs navigation
+         ===
+         VirtualMuseum Design Specification
+         
+         ---
+         
+         ## Section Routes
+         
+         Route | HTTP Filename Variables
+         
+         root_redirect (Redirect to
+         /dashboard dashboard | GET dashboard.html | (dict: active_exhibitions:int),
+         | artifact_catalog POST dict), search_query (str),
+         exhibitions | | of dict),
+         | | GET | exhibition_details.html dict) |
+         | visitor_tickets | GET, | visitor_tickets.html of dict), (list
+         | virtual_events POST dict), registrations (list of
+         | POST
+         cancel_registration None |
+         /audio_guides audio_guides | POST | | audio_guides (list of dict),
+         
+         
+         GET pages for
+         form such as filtering, purchasing tickets, registration.
+         
+         
+         
+         
+         ## 2: HTML Specification
+         
+         dashboard.html
+         dashboard.html
+         - Page Dashboard
+         
+         
+         
+         (Div total and
+         - artifact-catalog-button (Button) artifact_catalog
+         navigates to exhibitions
+         visitor_tickets
+         - (Button) - navigates to virtual_events
+         audio-guides-button (Button)
+         -
+         artifact-catalog-button
+         exhibitions-button →
+         
+         virtual-events-button
+         audio-guides-button url_for('audio_guides')
+         Variables:
+         exhibition_summary
+         
+         
+         artifact_catalog.html
+         
+         - Page Catalog
+         -
+         IDs:
+         artifact-catalog-page (Div
+         - artifact origin, actions
+         search-artifact (Input for searching name or ID
+         (Button) to filters
+         navigates
+         Navigation button url_for mappings:
+         back-to-dashboard → url_for('dashboard')
+         Context
+         - artifacts (list of
+         search_query
+         -
+         
+         3.
+         - exhibitions.html
+         Title:
+         Main Heading Exhibitions
+         Element
+         - (Div container)
+         exhibition-list (Table) type, dates, gallery,
+         - filter-exhibition-type Temporary,
+         - apply-exhibition-filter
+         exhibition
+         -
+         - Navigation button
+         view-exhibition-button-{{ exhibition.exhibition_id }} → url_for('exhibition_details',
+         -
+         - Context
+         - exhibitions of
+         -
+         
+         4. Template:
+         
+         - Title:
+         (H1): exhibition.title
+         -
+         - exhibition-details-page (Div container)
+         -
+         - exhibition-description (Div)
+         - exhibition-dates start dates
+         exhibition-artifacts this
+         
+         url_for mappings:
+         
+         
+         
+         artifacts dict)
+         
+         5. Template:
+         -
+         - Page
+         - Main Heading (H1):
+         Element
+         
+         - Family, VIP
+         - number-of-tickets (Input
+         - purchase-ticket-button (Button)
+         - showing
+         navigates dashboard
+         Navigation button url_for
+         -
+         Context Variables:
+         of
+         - of str)
+         
+         ### 6. Template:
+         -
+         Virtual
+         - Main Heading (H1):
+         Element
+         container)
+         title, date, registration status
+         - register-event-button-{{ event.event_id }}
+         cancel-registration-button-{{ registration.registration_id }} cancel
+         dashboard
+         Navigation url_for
+         -
+         
+         back-to-dashboard url_for('dashboard')
+         
+         (list dict)
+         - registrations dict)
+         -
+         
+         ### 7.
+         audio_guides.html
+         - Page Title: Guides
+         Heading Audio Guides
+         - IDs:
+         (Div
+         (Table) exhibit title,
+         -
+         apply-language-filter
+         play-guide-button-{{ guide.guide_id }} (Button) play guide
+         back-to-dashboard to
+         Navigation url_for
+         url_for('audio_guides_play',
+         - back-to-dashboard → url_for('dashboard')
+         Context
+         dict)
+         (str)
+         
+         
+         
+         ## 3:
+         
+         ### 1.
+         
+         - Purpose: Stores usernames for
+         
+         
+         - Example
+         
+         
+         
+         
+         2. galleries.txt
+         
+         Purpose: of physical
+         Format:
+         
+         Example
+         Hall|1|50|Ancient|Open
+         Art Wing|2|30|Modern|Open
+         3|Science Center|3|40|Science|Renovation
+         
+         ###
+         
+         - Purpose: Stores
+         
+         
+         
+         Treasures|Ancient artifacts
+         2|Pop Revolution|Contemporary pop collection|2|Temporary|2024-11-01|2024-12-31|Lisa
+         Space Exploration|Online space exhibition|2|Virtual|2024-10-01|2025-03-31|Mark Johnson|curator_john
+         
+         4.
+         
+         information about
+         
+         
+         
+         of golden
+         2|Warhol Soup art piece|2|B-205|2023-08-20|curator_sarah
+         3|Roman Amphora|Ancient|Italy|Ancient
+         
+         audioguides.txt
+         - Filename:
+         - Purpose: audio for
+         - Format:
+         
+         
+         1|101|Introduction to to
+         2|101|Introducción a egipcia...|Maria
+         Art in the 1950s...|Sarah
+         
+         ### tickets.txt
+         Filename:
+         ticket
+         -
+         
+         -
+         Johnson|mary@email.com|2024-11-20
+         2|visitor_mary|VIP|2024-12-01|1:00 Johnson|mary@email.com|2024-11-20
+         AM|1|10|Tom Lee|tom@email.com|2024-11-18
+         
+         events.txt
+         - data/events.txt
+         - Purpose: Stores
+         
+         
+         Data:
+         1|Ancient PM|Webinar|Dr. Smith|100|Deep Egyptian
+         Artist: Pop PM|Artist Talk|Andy with
+         Museum AM|Virtual Chen|200|Guided tour
+         
+         8. event_registrations.txt
+         - Filename: data/event_registrations.txt
+         - Purpose: event records
+         
+         registration_id|event_id|username|registration_date
+         
+         1|1|visitor_mary|2024-11-20
+         
+         
+         
+         9. collection_logs.txt
+         - Filename:
+         activities to artifacts
+         - Format:
+         log_id|artifact_id|activity_type|date|notes|condition|curator
+         - Example Data:
+         1|1|Inspection|2024-11-15|Routine quarterly
+         performed|Excellent|curator_john
+         3|2|Photography|2024-10-20|High-resolution images taken|Good|curator_sarah
+         completed|Good|curator_john
+         
+         ---
+         
+         completes the comprehensive specification VirtualMuseum web
+         
+         naming element IDs, data schemas the
+         
+         document for frontend teams with clear responsibilities and interfaces.
+         
+         
+
+  [5] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 33/56 words deleted (60%)
+
+      Before (full content):
+         in
+         
+         application based design
+         
+         Details:
+         -
+         Implement all required exact
+         as specified Jinja2 variable names
+         Do or
+         Do not specified extra
+         
+         
+         **Template
+         ```html
+         
+         
+         
+         charset="UTF-8">
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         all directory
+         - (e.g.
+         
+         3.
+         ALL
+         id="view-exhibition-button-{{ exhibition.exhibition_id }}"
+         
+         4.
+         and
+         properly with
+         
+         5. Buttons:**
+         in
+         as
+         
+         
+         forms
+         have matching backend
+         
+         
+         save template
+         page and match Section
+         NOT
+         spec
+         solely output
+         - a
+         
+         templates/*.html
+
+      After (full content):
+         
+         
+         based design
+         
+         
+         
+         all
+         as specified Jinja2
+         
+         not specified
+         
+         
+         **Template
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         directory
+         -
+         
+         3.
+         ALL
+         
+         
+         
+         
+         with
+         
+         5. Buttons:**
+         in
+         
+         
+         
+         
+         have backend
+         
+         
+         
+         page
+         NOT
+         spec
+         solely
+         
+         
+         
+
+  [6] Agent: FrontendDeveloper
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 711/1186 words deleted (60%)
+
+      Before (full content):
+         Implement all HTML templates from design_spec.md Section 2 with exact element IDs and navigation
+         === design_spec.md ===
+         # VirtualMuseum Design Specification Document
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path | Function Name | HTTP Method | Template Filename | Context Variables |
+         |---|---|---|---|---|
+         | / | root_redirect | GET | None (Redirect to /dashboard) | None |
+         | /dashboard | dashboard | GET | dashboard.html | exhibition_summary (dict: total_exhibitions:int, active_exhibitions:int), username (str), other_overview_data (dict) |
+         | /artifacts | artifact_catalog | GET, POST | artifact_catalog.html | artifacts (list of dict), search_query (str), filters (dict) |
+         | /exhibitions | exhibitions | GET, POST | exhibitions.html | exhibitions (list of dict), filter_type (str) |
+         | /exhibition/<int:exhibition_id> | exhibition_details | GET | exhibition_details.html | exhibition (dict), artifacts (list of dict) |
+         | /tickets | visitor_tickets | GET, POST | visitor_tickets.html | tickets (list of dict), ticket_types (list of str) |
+         | /events | virtual_events | GET, POST | virtual_events.html | events (list of dict), registrations (list of dict), user_registrations (list of dict) |
+         | /register_event/<int:event_id> | register_event | POST | None (Redirect) | None |
+         | /cancel_registration/<int:registration_id> | cancel_registration | POST | None (Redirect) | None |
+         | /audio_guides | audio_guides | GET, POST | audio_guides.html | audio_guides (list of dict), filter_language (str) |
+         
+         **Notes on HTTP Methods:**
+         - GET for all pages for initial rendering.
+         - POST for form submissions such as filtering, purchasing tickets, event registration.
+         
+         
+         ---
+         
+         ## Section 2: HTML Templates Specification
+         
+         ### 1. Template: dashboard.html
+         - Filename: dashboard.html
+         - Page Title: Museum Dashboard
+         - Main Heading (H1): Museum Dashboard
+         - Element IDs:
+           - dashboard-page (Div container)
+           - exhibition-summary (Div showing total and active exhibitions)
+           - artifact-catalog-button (Button) - navigates to artifact_catalog
+           - exhibitions-button (Button) - navigates to exhibitions
+           - visitor-tickets-button (Button) - navigates to visitor_tickets
+           - virtual-events-button (Button) - navigates to virtual_events
+           - audio-guides-button (Button) - navigates to audio_guides
+         - Navigation button url_for mappings:
+           - artifact-catalog-button → url_for('artifact_catalog')
+           - exhibitions-button → url_for('exhibitions')
+           - visitor-tickets-button → url_for('visitor_tickets')
+           - virtual-events-button → url_for('virtual_events')
+           - audio-guides-button → url_for('audio_guides')
+         - Context Variables:
+           - exhibition_summary (dict: total_exhibitions:int, active_exhibitions:int)
+           - username (str)
+         
+         ### 2. Template: artifact_catalog.html
+         - Filename: artifact_catalog.html
+         - Page Title: Artifact Catalog
+         - Main Heading (H1): Artifact Catalog
+         - Element IDs:
+           - artifact-catalog-page (Div container)
+           - artifact-table (Table) showing artifact columns: ID, name, period, origin, exhibition, actions
+           - search-artifact (Input text) for searching by name or ID
+           - apply-artifact-filter (Button) to submit filters
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - artifacts (list of dict)
+           - search_query (str)
+           - filters (dict)
+         
+         ### 3. Template: exhibitions.html
+         - Filename: exhibitions.html
+         - Page Title: Exhibitions
+         - Main Heading (H1): Exhibitions
+         - Element IDs:
+           - exhibitions-page (Div container)
+           - exhibition-list (Table) with columns: title, type, dates, gallery, status
+           - filter-exhibition-type (Dropdown) options: Permanent, Temporary, Virtual
+           - apply-exhibition-filter (Button)
+           - view-exhibition-button-{{ exhibition.exhibition_id }} (Button) one per exhibition row
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - view-exhibition-button-{{ exhibition.exhibition_id }} → url_for('exhibition_details', exhibition_id=exhibition.exhibition_id)
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - exhibitions (list of dict)
+           - filter_type (str)
+         
+         ### 4. Template: exhibition_details.html
+         - Filename: exhibition_details.html
+         - Page Title: Exhibition Details
+         - Main Heading (H1): exhibition.title
+         - Element IDs:
+           - exhibition-details-page (Div container)
+           - exhibition-title (H1)
+           - exhibition-description (Div)
+           - exhibition-dates (Div) showing start and end dates
+           - exhibition-artifacts (Table) listing artifacts for this exhibition
+           - back-to-exhibitions (Button) navigates back to exhibitions
+         - Navigation button url_for mappings:
+           - back-to-exhibitions → url_for('exhibitions')
+         - Context Variables:
+           - exhibition (dict)
+           - artifacts (list of dict)
+         
+         ### 5. Template: visitor_tickets.html
+         - Filename: visitor_tickets.html
+         - Page Title: Visitor Tickets
+         - Main Heading (H1): Visitor Tickets
+         - Element IDs:
+           - visitor-tickets-page (Div container)
+           - ticket-type (Dropdown) options: Standard, Student, Senior, Family, VIP
+           - number-of-tickets (Input number)
+           - purchase-ticket-button (Button)
+           - my-tickets-table (Table) showing user's tickets
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - tickets (list of dict)
+           - ticket_types (list of str)
+         
+         ### 6. Template: virtual_events.html
+         - Filename: virtual_events.html
+         - Page Title: Virtual Events
+         - Main Heading (H1): Virtual Events
+         - Element IDs:
+           - virtual-events-page (Div container)
+           - event-list (Table) with columns: title, date, time, type, registration status
+           - register-event-button-{{ event.event_id }} (Button) to register for event
+           - cancel-registration-button-{{ registration.registration_id }} (Button) to cancel registration
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - register-event-button-{{ event.event_id }} → url_for('register_event', event_id=event.event_id)
+           - cancel-registration-button-{{ registration.registration_id }} → url_for('cancel_registration', registration_id=registration.registration_id)
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - events (list of dict)
+           - registrations (list of dict)
+           - user_registrations (list of dict)
+         
+         ### 7. Template: audio_guides.html
+         - Filename: audio_guides.html
+         - Page Title: Audio Guides
+         - Main Heading (H1): Audio Guides
+         - Element IDs:
+           - audio-guides-page (Div container)
+           - audio-guide-list (Table) columns: exhibit number, title, language, duration
+           - filter-language (Dropdown) options: English, Spanish, French
+           - apply-language-filter (Button)
+           - play-guide-button-{{ guide.guide_id }} (Button) to play audio guide
+           - back-to-dashboard (Button) navigates to dashboard
+         - Navigation button url_for mappings:
+           - play-guide-button-{{ guide.guide_id }} → url_for('audio_guides_play', guide_id=guide.guide_id)
+           - back-to-dashboard → url_for('dashboard')
+         - Context Variables:
+           - audio_guides (list of dict)
+           - filter_language (str)
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### 1. users.txt
+         - Filename: data/users.txt
+         - Purpose: Stores usernames for user authentication
+         - Format (pipe-delimited fields):
+           username
+         - Example Data:
+           curator_john
+           visitor_mary
+           curator_sarah
+         
+         ### 2. galleries.txt
+         - Filename: data/galleries.txt
+         - Purpose: Stores details of physical galleries
+         - Format:
+           gallery_id|gallery_name|floor|capacity|theme|status
+         - Example Data:
+           1|Ancient Civilizations Hall|1|50|Ancient|Open
+           2|Modern Art Wing|2|30|Modern|Open
+           3|Science Discovery Center|3|40|Science|Renovation
+         
+         ### 3. exhibitions.txt
+         - Filename: data/exhibitions.txt
+         - Purpose: Stores virtual and physical exhibitions
+         - Format:
+           exhibition_id|title|description|gallery_id|exhibition_type|start_date|end_date|curator_name|created_by
+         - Example Data:
+           1|Egyptian Treasures|Ancient artifacts from Egypt|1|Permanent|2024-01-01|2025-12-31|Dr. Smith|curator_john
+           2|Pop Art Revolution|Contemporary pop art collection|2|Temporary|2024-11-01|2024-12-31|Lisa Chen|curator_sarah
+           3|Virtual Space Exploration|Online space exhibition|2|Virtual|2024-10-01|2025-03-31|Mark Johnson|curator_john
+         
+         ### 4. artifacts.txt
+         - Filename: data/artifacts.txt
+         - Purpose: Stores information about artifacts
+         - Format:
+           artifact_id|artifact_name|period|origin|description|exhibition_id|storage_location|acquisition_date|added_by
+         - Example Data:
+           1|Golden Mask of Tutankhamun|Ancient|Egypt|Famous golden funeral mask|1|A-101|2020-05-15|curator_john
+           2|Warhol Soup Cans|Contemporary|USA|Iconic pop art piece|2|B-205|2023-08-20|curator_sarah
+           3|Roman Amphora|Ancient|Italy|Ancient storage vessel|1|A-103|2019-11-10|curator_john
+         
+         ### 5. audioguides.txt
+         - Filename: data/audioguides.txt
+         - Purpose: Stores audio guides for exhibits
+         - Format:
+           guide_id|exhibit_number|title|language|duration|script|narrator|created_by
+         - Example Data:
+           1|101|Introduction to Egyptian Art|English|5|Welcome to the Egyptian exhibition...|James Brown|curator_john
+           2|101|Introducción al Arte Egipcio|Spanish|5|Bienvenido a la exhibición egipcia...|Maria Garcia|curator_john
+           3|205|Pop Art Explained|English|7|Pop art emerged in the 1950s...|Sarah Williams|curator_sarah
+         
+         ### 6. tickets.txt
+         - Filename: data/tickets.txt
+         - Purpose: Stores visitor ticket purchases
+         - Format:
+           ticket_id|username|ticket_type|visit_date|visit_time|number_of_tickets|price|visitor_name|visitor_email|purchase_date
+         - Example Data:
+           1|visitor_mary|Standard|2024-11-25|11:00 AM|2|30|Mary Johnson|mary@email.com|2024-11-20
+           2|visitor_mary|VIP|2024-12-01|1:00 PM|1|50|Mary Johnson|mary@email.com|2024-11-20
+           3|visitor_tom|Student|2024-11-22|9:00 AM|1|10|Tom Lee|tom@email.com|2024-11-18
+         
+         ### 7. events.txt
+         - Filename: data/events.txt
+         - Purpose: Stores virtual museum events
+         - Format:
+           event_id|title|date|time|event_type|speaker|capacity|description|created_by
+         - Example Data:
+           1|Ancient Egypt Webinar|2024-12-05|2:00 PM|Webinar|Dr. Smith|100|Deep dive into Egyptian culture|curator_john
+           2|Meet the Artist: Pop Art|2024-11-30|6:00 PM|Artist Talk|Andy Williams|50|Discussion with contemporary artist|curator_sarah
+           3|Virtual Museum Tour|2024-12-10|10:00 AM|Virtual Tour|Lisa Chen|200|Guided tour of entire museum|curator_john
+         
+         ### 8. event_registrations.txt
+         - Filename: data/event_registrations.txt
+         - Purpose: Stores event registration records
+         - Format:
+           registration_id|event_id|username|registration_date
+         - Example Data:
+           1|1|visitor_mary|2024-11-20
+           2|2|visitor_mary|2024-11-21
+           3|1|visitor_tom|2024-11-19
+         
+         ### 9. collection_logs.txt
+         - Filename: data/collection_logs.txt
+         - Purpose: Logs activities related to artifacts
+         - Format:
+           log_id|artifact_id|activity_type|date|notes|condition|curator
+         - Example Data:
+           1|1|Inspection|2024-11-15|Routine quarterly inspection|Excellent|curator_john
+           2|1|Cleaning|2024-11-16|Professional cleaning performed|Excellent|curator_john
+           3|2|Photography|2024-10-20|High-resolution images taken|Good|curator_sarah
+           4|3|Restoration|2024-09-10|Minor crack repair completed|Good|curator_john
+         
+         ---
+         
+         This completes the comprehensive design specification for the VirtualMuseum web application.
+         
+         All naming conventions, element IDs, template titles, route functions, and data file schemas strictly adhere to the user requirements.
+         
+         This document enables independent, parallel development for frontend and backend teams with clear responsibilities and interfaces.
+         
+         
+
+      After (full content):
+         from 2 with
+         === ===
+         VirtualMuseum
+         
+         ---
+         
+         Flask Specification
+         
+         | | Name HTTP Method | | Context
+         
+         None
+         dashboard | dashboard.html | (dict: username (dict)
+         artifact_catalog POST | artifact_catalog.html (list dict), (dict)
+         /exhibitions | | exhibitions of filter_type (str) |
+         | exhibition |
+         | /tickets | POST visitor_tickets.html (list of of str) |
+         /events | events (list dict), registrations
+         | POST None |
+         /cancel_registration/<int:registration_id> | | (Redirect) | None |
+         | audio_guides GET, | (list filter_language |
+         
+         **Notes on HTTP
+         all rendering.
+         POST form submissions event registration.
+         
+         
+         
+         
+         ## Templates Specification
+         
+         
+         
+         - Title:
+         Heading (H1): Dashboard
+         
+         - container)
+         exhibition-summary and exhibitions)
+         artifact-catalog-button navigates artifact_catalog
+         (Button) to
+         -
+         - virtual-events-button - navigates virtual_events
+         navigates
+         - button mappings:
+         - url_for('artifact_catalog')
+         exhibitions-button url_for('exhibitions')
+         - visitor-tickets-button → url_for('visitor_tickets')
+         -
+         - url_for('audio_guides')
+         
+         total_exhibitions:int, active_exhibitions:int)
+         - username
+         
+         ###
+         - Filename: artifact_catalog.html
+         Page Title: Artifact
+         Heading (H1):
+         Element IDs:
+         artifact-catalog-page
+         - showing ID, period, origin,
+         (Input text) by or ID
+         (Button)
+         navigates dashboard
+         button mappings:
+         - back-to-dashboard →
+         - Context
+         -
+         (str)
+         - filters (dict)
+         
+         
+         Filename:
+         -
+         - Main Heading (H1): Exhibitions
+         Element
+         -
+         - exhibition-list title, gallery, status
+         (Dropdown)
+         (Button)
+         view-exhibition-button-{{ exhibition.exhibition_id }} per row
+         (Button)
+         button url_for mappings:
+         -
+         back-to-dashboard url_for('dashboard')
+         - Context Variables:
+         
+         
+         
+         
+         exhibition_details.html
+         Page
+         - Main Heading exhibition.title
+         Element
+         - (Div
+         (H1)
+         
+         - exhibition-dates showing dates
+         exhibition-artifacts (Table) for this
+         - (Button) back
+         - url_for
+         url_for('exhibitions')
+         Context
+         
+         artifacts dict)
+         
+         
+         - visitor_tickets.html
+         - Page Title: Visitor
+         - Tickets
+         IDs:
+         - visitor-tickets-page container)
+         ticket-type (Dropdown) options: Standard, VIP
+         - (Input
+         
+         (Table) showing
+         back-to-dashboard navigates to
+         button mappings:
+         - →
+         - Variables:
+         tickets dict)
+         - (list
+         
+         6. Template:
+         -
+         Virtual
+         (H1):
+         
+         virtual-events-page (Div
+         - event-list columns: title, date, registration
+         register-event-button-{{ event.event_id }} (Button) to event
+         cancel-registration-button-{{ registration.registration_id }} registration
+         (Button)
+         url_for mappings:
+         - → url_for('register_event', event_id=event.event_id)
+         - → registration_id=registration.registration_id)
+         - back-to-dashboard →
+         -
+         - dict)
+         - registrations of
+         - (list dict)
+         
+         7.
+         Filename:
+         Page Title: Guides
+         Heading
+         
+         (Div container)
+         (Table) language,
+         French
+         apply-language-filter
+         - to guide
+         - navigates dashboard
+         - Navigation button url_for mappings:
+         -
+         - back-to-dashboard →
+         Context
+         - audio_guides (list
+         
+         
+         ---
+         
+         ##
+         
+         ### users.txt
+         -
+         Purpose: Stores usernames
+         - Format
+         
+         Example
+         curator_john
+         
+         curator_sarah
+         
+         ### galleries.txt
+         Filename:
+         Stores of physical galleries
+         -
+         gallery_id|gallery_name|floor|capacity|theme|status
+         - Data:
+         1|Ancient Civilizations
+         Art Wing|2|30|Modern|Open
+         3|Science
+         
+         3. exhibitions.txt
+         Filename:
+         exhibitions
+         
+         
+         - Example
+         from Smith|curator_john
+         2|Pop pop art Chen|curator_sarah
+         space exhibition|2|Virtual|2024-10-01|2025-03-31|Mark
+         
+         4. artifacts.txt
+         Filename:
+         Stores information artifacts
+         Format:
+         artifact_id|artifact_name|period|origin|description|exhibition_id|storage_location|acquisition_date|added_by
+         Example
+         Mask Tutankhamun|Ancient|Egypt|Famous golden funeral
+         Soup Cans|Contemporary|USA|Iconic pop art piece|2|B-205|2023-08-20|curator_sarah
+         3|Roman vessel|1|A-103|2019-11-10|curator_john
+         
+         5.
+         - data/audioguides.txt
+         Stores guides for exhibits
+         
+         guide_id|exhibit_number|title|language|duration|script|narrator|created_by
+         Example Data:
+         to Art|English|5|Welcome to Egyptian
+         2|101|Introducción al Arte a Garcia|curator_john
+         Art Explained|English|7|Pop art in
+         
+         6.
+         
+         - ticket purchases
+         - Format:
+         ticket_id|username|ticket_type|visit_date|visit_time|number_of_tickets|price|visitor_name|visitor_email|purchase_date
+         
+         AM|2|30|Mary
+         2|visitor_mary|VIP|2024-12-01|1:00 Johnson|mary@email.com|2024-11-20
+         AM|1|10|Tom
+         
+         7. events.txt
+         data/events.txt
+         - Stores
+         - Format:
+         event_id|title|date|time|event_type|speaker|capacity|description|created_by
+         - Example
+         1|Ancient Webinar|2024-12-05|2:00 dive into Egyptian culture|curator_john
+         PM|Artist Williams|50|Discussion artist|curator_sarah
+         3|Virtual Museum AM|Virtual entire
+         
+         
+         Filename: data/event_registrations.txt
+         event
+         
+         
+         
+         
+         
+         
+         
+         ### 9.
+         
+         Purpose:
+         Format:
+         log_id|artifact_id|activity_type|date|notes|condition|curator
+         
+         
+         cleaning performed|Excellent|curator_john
+         images
+         
+         
+         ---
+         
+         This the comprehensive for VirtualMuseum application.
+         
+         template functions, schemas adhere the
+         
+         development teams and
+         
+         
+
+================================================================================
+

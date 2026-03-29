@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Applications</title>
+</head>
+<body>
+    <div id="my-applications-page">
+        <h1>My Applications</h1>
+
+        <form method="get" action="">
+            <label for="filter-status">Filter by Status:</label>
+            <select id="filter-status" name="status">
+                {% set status_options = ["All", "Pending", "Approved", "Rejected"] %}
+                {% for option in status_options %}
+                    <option value="{{ option }}" {% if option == selected_status %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <table id="applications-table" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Application ID</th>
+                    <th>Pet Name</th>
+                    <th>Date Submitted</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if applications %}
+                    {% for app in applications %}
+                    <tr id="application-{{ app.application_id }}">
+                        <td>{{ app.application_id }}</td>
+                        <td>{{ app.pet_name }}</td>
+                        <td>{{ app.date_submitted }}</td>
+                        <td>{{ app.status }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="4">No applications found.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

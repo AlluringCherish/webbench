@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Car Rental Dashboard</title>
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>Car Rental Dashboard</h1>
+
+    <button id="search-vehicles-button" onclick="window.location.href='{{ url_for('vehicle_search') }}'">Search Vehicles</button>
+    <button id="my-reservations-button" onclick="window.location.href='{{ url_for('reservation_management') }}'">My Reservations</button>
+
+    <div id="promotions-section">
+        {% if promotions %}
+            <h2>Current Promotions</h2>
+            <ul>
+            {% for promotion in promotions %}
+                <li>{{ promotion.name if promotion.name is defined else "Promotion" }}{% if promotion.description is defined %}: {{ promotion.description }}{% endif %}</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No promotions available at this time.</p>
+        {% endif %}
+    </div>
+
+    <div id="featured-vehicles">
+        <h2>Featured Vehicles</h2>
+        {% for vehicle in vehicles %}
+        <div class="vehicle-card" id="vehicle-{{ vehicle.vehicle_id }}">
+            <h3>{{ vehicle.make }} {{ vehicle.model }}</h3>
+            <p>Type: {{ vehicle.vehicle_type }}</p>
+            <p>Daily Rate: ${{ "%.2f"|format(vehicle.daily_rate) }}</p>
+            <p>Seats: {{ vehicle.seats }}</p>
+            <p>Transmission: {{ vehicle.transmission }}</p>
+            <p>Fuel Type: {{ vehicle.fuel_type }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>

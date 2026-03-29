@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Pets</title>
+</head>
+<body>
+    <div id="pet-listings-page">
+        <h1>Available Pets</h1>
+
+        <form method="get" action="">
+            <input type="text" id="search-input" name="search_query" placeholder="Search pets..." value="{{ search_query | e }}">
+
+            <select id="filter-species" name="species">
+                {% set species_options = ["All", "Dog", "Cat", "Bird", "Rabbit", "Other"] %}
+                {% for option in species_options %}
+                    <option value="{{ option }}" {% if option == selected_species %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="pet-grid">
+            {% if pets %}
+                <ul style="list-style: none; padding: 0;">
+                {% for pet in pets %}
+                    <li id="pet-{{ pet.pet_id }}" style="cursor:pointer; margin-bottom: 1em;" onclick="location.href='{{ url_for('pet_details', pet_id=pet.pet_id) }}'">
+                        <div><strong>{{ pet.name }}</strong></div>
+                        <div>Species: {{ pet.species }}</div>
+                        <div>Age: {{ pet.age }}</div>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No pets found.</p>
+            {% endif %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

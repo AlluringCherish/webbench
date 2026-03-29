@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Resumes</title>
+</head>
+<body>
+    <div id="resume-page">
+        <h1>My Resumes</h1>
+
+        <div id="resumes-list">
+            {% for resume in resumes %}
+            <div class="resume-entry">
+                <p><strong>{{ resume.applicant_name }}</strong> ({{ resume.applicant_email }})</p>
+                <p>Filename: {{ resume.filename }}</p>
+                <p>Uploaded on: {{ resume.upload_date }}</p>
+                <p>Summary: {{ resume.summary }}</p>
+                <form method="post" action="{{ url_for('delete_resume', resume_id=resume.resume_id) }}">
+                    <button type="submit" id="delete-resume-button-{{ resume.resume_id }}">Delete Resume</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+
+        <form method="post" enctype="multipart/form-data" action="">
+            <label for="resume-file-input">Upload New Resume:</label>
+            <input type="file" id="resume-file-input" name="resume_file" accept=".pdf,.doc,.docx" style="display:none;" required>
+            <br>
+            <button type="button" id="upload-resume-button" onclick="document.getElementById('resume-file-input').click();">Upload Resume</button>
+            <br><br>
+
+            <label for="applicant-name">Name:</label><br>
+            <input type="text" id="applicant-name" name="applicant_name" required><br><br>
+
+            <label for="applicant-email">Email:</label><br>
+            <input type="email" id="applicant-email" name="applicant_email" required><br><br>
+
+            <label for="summary">Summary:</label><br>
+            <textarea id="summary" name="summary" rows="4" cols="40"></textarea><br><br>
+
+            <button type="submit">Submit Resume</button>
+        </form>
+
+        <a href="{{ url_for('dashboard_page') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

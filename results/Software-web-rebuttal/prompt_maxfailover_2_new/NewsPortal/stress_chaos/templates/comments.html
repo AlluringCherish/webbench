@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article Comments</title>
+</head>
+<body>
+    <h1>Comments</h1>
+    <div id="comments-list">
+        {% for comment in comments %}
+            <div class="comment-item">
+                <h3>{{ comment.article_title }}</h3>
+                <p>{{ comment.comment_text }}</p>
+                <p>By {{ comment.commenter_name }}</p>
+            </div>
+        {% endfor %}
+    </div>
+    <form method="POST" action="{{ url_for('filter_comments') }}">
+        <label for="filter-by-article">Filter by Article:</label>
+        <select name="filter-by-article" id="filter-by-article">
+            <option value="">All Articles</option>
+            {% for article in articles %}
+                <option value="{{ article.article_id }}" {% if article.article_id == selected_article_id %}selected{% endif %}>{{ article.title }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</body>
+</html>

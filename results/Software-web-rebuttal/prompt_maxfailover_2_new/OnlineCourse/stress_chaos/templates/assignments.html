@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Assignments</title>
+</head>
+<body>
+    <div id="assignments-page">
+        <h1>My Assignments</h1>
+        <table id="assignments-table" border="1">
+            <thead>
+                <tr>
+                    <th>Assignment</th>
+                    <th>Course ID</th>
+                    <th>Description</th>
+                    <th>Due Date</th>
+                    <th>Max Points</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in assignments %}
+                <tr>
+                    <td>{{ assignment.title }}</td>
+                    <td>{{ assignment.course_id }}</td>
+                    <td>{{ assignment.description }}</td>
+                    <td>{{ assignment.due_date }}</td>
+                    <td>{{ assignment.max_points }}</td>
+                    <td>
+                        {% set submission = submissions.get(assignment.assignment_id) %}
+                        {% if not submission or submission.late %}
+                            <button id="submit-assignment-button-{{ assignment.assignment_id }}" onclick="location.href='{{ url_for('submit_assignment', assignment_id=assignment.assignment_id) }}'">Submit Assignment</button>
+                        {% else %}
+                            <button id="submit-assignment-button-{{ assignment.assignment_id }}" disabled>Submitted</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

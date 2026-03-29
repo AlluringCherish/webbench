@@ -1,0 +1,35 @@
+Tester Feedback for MusicStreaming Web Application
+
+---
+
+Backend Issues:
+1. The route / redirects correctly to /dashboard as expected.
+2. All main GET routes that depend on templates return HTTP 200 with correct page titles and main container IDs, including /dashboard, /songs, /playlists, /playlists/create, /albums, /artists, and /genres.
+3. However, /songs/<int:song_id> route returns 404 for song with id=1 (valid data test) indicating missing or no song data available.
+4. /playlists/<int:playlist_id> tests for valid IDs skipped due to lack of playlist data. Invalid playlist_id returns 404 as expected.
+5. POST /playlists/create with valid data returns redirect (302) correctly.
+6. POST /playlists/create with empty title returns HTTP 200 but does NOT display the expected error message 'Playlist title is required'.
+7. /albums/<int:album_id> valid detailed page test skipped due to missing album data; invalid album_id returns 404.
+8. /artists/<int:artist_id> valid detailed page test skipped due to missing artist data; invalid artist_id returns 404.
+
+Frontend Issues:
+1. Templates mostly have the correct page titles and main container IDs.
+2. Several forms fields have mismatched name attributes compared to what backend expects, e.g. create_playlist.html uses name="playlist_name" but backend expects "playlist-name-input".
+3. Album detail template POST form action references a route 'add_album_to_playlist' which does not exist in backend.
+4. Similarly, playlist_detail.html forms for removing songs or deleting playlist reference routes 'remove_song_from_playlist' and 'delete_playlist' that are not implemented.
+5. Input element names in search/filter forms do not always match backend query parameter names (e.g., songs.html input named "search_query", backend expects "search").
+6. Similarly, genres.html select name attribute "selected_genre_id" does not match backend expecting "genre" query param.
+
+Summary:
+- Backend functionality for routing is in place however missing or empty data files cause 404 or skipped valid data testing for key entity detail pages.
+- Backend shows incomplete implementation: several POST routes for playlist song removal, album addition to playlist, and playlist deletion are missing while templates assume their existence.
+- Frontend form inputs and names often mismatch backend parameter expectations.
+- Error feedback on form validation (create playlist with empty title) is not shown per spec.
+
+Recommendation:
+- Ensure presence of valid data files for full testing.
+- Implement missing POST route endpoints for playlist song removal, playlist deletion, and adding album songs to playlist as templates expect.
+- Harmonize form input and query parameter names between frontend and backend.
+- Add proper user-friendly error messages on validation failures.
+
+[NEED_MODIFY]

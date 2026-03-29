@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Calendar - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="content-calendar-page">
+        <h1>Content Calendar</h1>
+
+        <form method="get" id="calendar-view-form">
+            <label for="calendar-view-selector">View:</label>
+            <select name="view" id="calendar-view-selector" onchange="document.getElementById('calendar-view-form').submit()">
+                <option value="month" {% if calendar_view == 'month' %}selected{% endif %}>Month</option>
+                <option value="week" {% if calendar_view == 'week' %}selected{% endif %}>Week</option>
+                <option value="day" {% if calendar_view == 'day' %}selected{% endif %}>Day</option>
+            </select>
+        </form>
+
+        <div id="calendar-display">
+            {% for date, articles in scheduled_articles.items() %}
+            <div class="calendar-date" id="date-{{ date }}">
+                <h3>{{ date }}</h3>
+                <ul>
+                    {% for article in articles %}
+                    <li id="article-{{ article.article_id }}">{{ article.title }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button onclick="window.location.href='{{ url_for('dashboard') }}'" id="back-to-dashboard-button">Back to Dashboard</button>
+    </div>
+</body>
+</html>

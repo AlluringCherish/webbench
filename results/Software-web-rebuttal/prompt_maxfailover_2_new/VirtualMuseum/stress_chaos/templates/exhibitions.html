@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Exhibitions</title>
+</head>
+<body>
+    <div id="exhibitions-page">
+        <h1>Exhibitions</h1>
+        <form method="POST" action="">
+            <label for="filter-exhibition-type">Filter by Exhibition Type:</label>
+            <select id="filter-exhibition-type" name="filter_type">
+                <option value="Permanent" {% if filter_type == "Permanent" %}selected{% endif %}>Permanent</option>
+                <option value="Temporary" {% if filter_type == "Temporary" %}selected{% endif %}>Temporary</option>
+                <option value="Virtual" {% if filter_type == "Virtual" %}selected{% endif %}>Virtual</option>
+            </select>
+            <button id="apply-exhibition-filter" type="submit">Apply Filter</button>
+        </form>
+        <table id="exhibition-list" border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Dates</th>
+                    <th>Gallery</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exhibition in exhibitions %}
+                <tr>
+                    <td>{{ exhibition.title }}</td>
+                    <td>{{ exhibition.exhibition_type }}</td>
+                    <td>{{ exhibition.start_date }} - {{ exhibition.end_date }}</td>
+                    <td>{{ exhibition.gallery }}</td>
+                    <td>{{ exhibition.status }}</td>
+                    <td><button id="view-exhibition-button-{{ exhibition.exhibition_id }}" onclick="location.href='{{ url_for('exhibition_details', exhibition_id=exhibition.exhibition_id) }}'">View</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

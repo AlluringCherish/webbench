@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Published Articles - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="published-articles-page">
+        <h1>Published Articles</h1>
+
+        <form method="get" id="filter-sort-form">
+            <label for="category-filter">Category:</label>
+            <select name="category" id="category-filter" onchange="document.getElementById('filter-sort-form').submit()">
+                <option value="" {% if not filter_category %}selected{% endif %}>All</option>
+                {% for category in categories %}
+                <option value="{{ category }}" {% if filter_category == category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="sort-by">Sort By:</label>
+            <select name="sort" id="sort-by" onchange="document.getElementById('filter-sort-form').submit()">
+                <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Date</option>
+                <option value="author" {% if sort_by == 'author' %}selected{% endif %}>Author</option>
+                <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title</option>
+            </select>
+        </form>
+
+        <ul id="published-articles-list">
+            {% for article in articles %}
+            <li id="article-{{ article.article_id }}">
+                <strong>{{ article.title }}</strong> by {{ article.author }} on {{ article.created_at[:10] }}
+                <button onclick="window.location.href='{{ url_for('article_analytics', article_id=article.article_id) }}'" id="view-analytics-{{ article.article_id }}">Analytics</button>
+            </li>
+            {% else %}
+            <li>No published articles found.</li>
+            {% endfor %}
+        </ul>
+
+        <button onclick="window.location.href='{{ url_for('dashboard') }}'" id="back-to-dashboard-button">Back to Dashboard</button>
+    </div>
+</body>
+</html>

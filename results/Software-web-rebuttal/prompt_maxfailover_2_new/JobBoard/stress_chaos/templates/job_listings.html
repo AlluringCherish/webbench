@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Listings</title>
+</head>
+<body>
+    <div id="listings-page">
+        <h1>Job Listings</h1>
+
+        <form method="get" action="">
+            <input type="text" id="search-input" name="search_query" value="{{ search_query }}" placeholder="Search jobs, companies, locations">
+
+            <select id="category-filter" name="selected_category">
+                <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category.category_name }}" {% if selected_category == category.category_name %}selected{% endif %}>{{ category.category_name }}</option>
+                {% endfor %}
+            </select>
+
+            <select id="location-filter" name="selected_location">
+                <option value="" {% if not selected_location %}selected{% endif %}>All Locations</option>
+                {% set locations = jobs | map(attribute='location') | unique | list | sort %}
+                {% for location in locations %}
+                <option value="{{ location }}" {% if selected_location == location %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="jobs-grid">
+            {% for job in jobs %}
+            <div class="job-card">
+                <h3>{{ job.title }}</h3>
+                <p>Company: {{ job.company_name if job.company_name is defined else "" }}</p>
+                <p>Location: {{ job.location }}</p>
+                <p>Salary: ${{ job.salary_min }} - ${{ job.salary_max }}</p>
+                <a href="{{ url_for('job_details_page', job_id=job.job_id) }}">
+                    <button id="view-job-button-{{ job.job_id }}">View Job</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

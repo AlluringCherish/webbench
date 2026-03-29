@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Home Dashboard</title>
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Smart Home Dashboard</h1>
+
+        <div id="device-summary">
+            <p>Total Devices: {{ devices|length }}</p>
+            <p>Active Devices: {{ devices|selectattr('status', 'equalto', 'Online')|list|length }}</p>
+            <p>Offline Devices: {{ devices|selectattr('status', 'equalto', 'Offline')|list|length }}</p>
+        </div>
+
+        <button id="device-list-button" onclick="location.href='{{ url_for('device_list') }}'">Device List</button>
+        <button id="add-device-button" onclick="location.href='{{ url_for('add_device') }}'">Add Device</button>
+        <button id="automation-button" onclick="location.href='{{ url_for('automation_rules') }}'">Automation Rules</button>
+        <button id="energy-button" onclick="location.href='{{ url_for('energy_report') }}'">Energy Report</button>
+        <button id="activity-button" onclick="location.href='{{ url_for('activity_logs') }}'">Activity Logs</button>
+
+        <div id="room-list">
+            <h2>Rooms</h2>
+            <ul>
+                {% set room_counts = namespace(counts={}) %}
+                {% for device in devices %}
+                    {% set room = device.room %}
+                    {% if room in room_counts.counts %}
+                        {% set _ = room_counts.counts.update({room: room_counts.counts[room] + 1}) %}
+                    {% else %}
+                        {% set _ = room_counts.counts.update({room: 1}) %}
+                    {% endif %}
+                {% endfor %}
+                {% for room, count in room_counts.counts.items() %}
+                    <li>{{ room }}: {{ count }} device{{ 's' if count != 1 else '' }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

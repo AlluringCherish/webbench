@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Search</title>
+</head>
+<body>
+    <div id="search-page">
+        <h1>Property Search</h1>
+        <form method="POST" action="{{ url_for('property_search') }}">
+            <label for="location-input">Location:</label>
+            <input type="text" id="location-input" name="location" value="{{ filters.location }}">
+            <label for="price-range-min">Min Price:</label>
+            <input type="number" id="price-range-min" name="price_min" value="{{ filters.price_min }}">
+            <label for="price-range-max">Max Price:</label>
+            <input type="number" id="price-range-max" name="price_max" value="{{ filters.price_max }}">
+            <label for="property-type-filter">Property Type:</label>
+            <select id="property-type-filter" name="property_type">
+                {% set types = ['House', 'Apartment', 'Condo', 'Land'] %}
+                {% for type in types %}
+                <option value="{{ type }}" {% if filters.property_type == type %}selected{% endif %}>{{ type }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" id="search-submit-button">Search</button>
+        </form>
+        <div id="properties-grid">
+            {% for property in properties %}
+            <div class="property-card">
+                <h2>{{ property.address }}</h2>
+                <p>Price: ${{ "{:.2f}"|format(property.price) }}</p>
+                <p>Type: {{ property.property_type }}</p>
+                <p>Bedrooms: {{ property.bedrooms }}</p>
+                <p>Bathrooms: {{ property.bathrooms }}</p>
+                <p>Square Feet: {{ property.square_feet }}</p>
+                <a href="{{ url_for('property_details', property_id=property.property_id) }}">
+                    <button id="view-property-button-{{ property.property_id }}">View</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

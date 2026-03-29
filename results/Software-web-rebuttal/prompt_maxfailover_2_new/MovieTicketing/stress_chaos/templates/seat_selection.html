@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Select Seats</title>
+</head>
+<body>
+    <div id="seat-selection-page">
+        <h1>Select Seats</h1>
+        <div id="seat-map">
+            <form method="post" action="{{ url_for('select_seats', showtime_id=showtime_id) }}" id="seat-selection-form">
+                {% for seat in seat_map %}
+                <button
+                    type="button"
+                    id="seat-{{ seat.row }}{{ seat.column }}"
+                    class="seat-button {% if seat.status != 'Available' %}disabled{% endif %}"
+                    {% if seat.status != 'Available' %}disabled{% endif %}
+                    name="seat"
+                    value="{{ seat.seat_label }}"
+                >{{ seat.seat_label }}</button>
+                {% endfor %}
+
+                <div id="selected-seats-display">
+                    Selected Seats: <span id="selected-seats">{{ selected_seats | join(', ') if selected_seats else 'None' }}</span>
+                </div>
+
+                <button type="submit" id="proceed-booking-button" {% if not selected_seats %}disabled{% endif %}>Proceed Booking</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

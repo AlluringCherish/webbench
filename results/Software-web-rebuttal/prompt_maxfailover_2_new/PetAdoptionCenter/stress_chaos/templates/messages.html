@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+</head>
+<body>
+    <div id="messages-page">
+        <h1>Messages</h1>
+
+        <div id="conversation-list">
+            {% if conversations %}
+                <ul style="list-style:none; padding:0;">
+                {% for conv in conversations %}
+                    <li id="message-{{ conv.message_id }}" style="margin-bottom: 1em;">
+                        <strong>Subject:</strong> {{ conv.subject }}<br>
+                        <strong>From:</strong> {{ conv.sender_username }}<br>
+                        <strong>To:</strong> {{ conv.recipient_username }}<br>
+                        <strong>Date:</strong> {{ conv.timestamp }}<br>
+                        <div>{{ conv.content }}</div>
+                        <div><em>Status: {% if conv.is_read %}Read{% else %}Unread{% endif %}</em></div>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No conversations found.</p>
+            {% endif %}
+        </div>
+
+        <form method="post" action="{{ url_for('send_message') }}">
+            <textarea id="message-input" name="message_content" rows="4" cols="50" placeholder="Type your message here..." required></textarea><br>
+            <button type="submit" id="send-message-button">Send Message</button>
+        </form>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

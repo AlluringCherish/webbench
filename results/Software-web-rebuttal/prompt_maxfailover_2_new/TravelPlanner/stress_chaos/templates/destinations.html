@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Destinations</title>
+</head>
+<body>
+    <div id="destinations-page">
+        <h1>Travel Destinations</h1>
+        <form method="POST" action="{{ url_for('destinations') }}">
+            <input type="text" id="search-destination" name="search_query" placeholder="Search by name or country" value="{{ search_query }}" />
+            <select id="region-filter" name="region_filter">
+                <option value="" {% if region_filter == '' %}selected{% endif %}>All Regions</option>
+                <option value="Asia" {% if region_filter == 'Asia' %}selected{% endif %}>Asia</option>
+                <option value="Europe" {% if region_filter == 'Europe' %}selected{% endif %}>Europe</option>
+                <option value="Americas" {% if region_filter == 'Americas' %}selected{% endif %}>Americas</option>
+                <option value="Africa" {% if region_filter == 'Africa' %}selected{% endif %}>Africa</option>
+                <option value="Oceania" {% if region_filter == 'Oceania' %}selected{% endif %}>Oceania</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+        <div id="destinations-grid">
+            {% for dest in destinations %}
+            <div class="destination-card">
+                <h3>{{ dest.name }}</h3>
+                <p>{{ dest.country }}</p>
+                <button id="view-destination-button-{{ dest.dest_id }}" onclick="location.href='{{ url_for('destination_details', dest_id=dest.dest_id) }}'">View Details</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

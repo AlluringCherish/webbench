@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Accommodations</title>
+</head>
+<body>
+    <div id="accommodations-page">
+        <h1>Search Accommodations</h1>
+        <form method="POST" action="{{ url_for('accommodations') }}">
+            <label for="destination-input">Destination City:</label>
+            <input type="text" id="destination-input" name="destination" value="{{ search_params.destination }}" />
+            <label for="check-in-date">Check-in Date:</label>
+            <input type="date" id="check-in-date" name="check_in_date" value="{{ search_params.check_in_date }}" />
+            <label for="check-out-date">Check-out Date:</label>
+            <input type="date" id="check-out-date" name="check_out_date" value="{{ search_params.check_out_date }}" />
+            <label for="price-filter">Price Range:</label>
+            <select id="price-filter" name="price_filter">
+                <option value="" {% if search_params.price_filter == '' %}selected{% endif %}>All</option>
+                <option value="Budget" {% if search_params.price_filter == 'Budget' %}selected{% endif %}>Budget</option>
+                <option value="Mid-range" {% if search_params.price_filter == 'Mid-range' %}selected{% endif %}>Mid-range</option>
+                <option value="Luxury" {% if search_params.price_filter == 'Luxury' %}selected{% endif %}>Luxury</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+        <div id="hotels-list">
+            <h2>Hotels</h2>
+            <ul>
+                {% for hotel in hotels %}
+                <li>
+                    <strong>{{ hotel.name }}</strong> - {{ hotel.city }}<br />
+                    Rating: {{ hotel.rating }}<br />
+                    Price per Night: ${{ hotel.price_per_night }}<br />
+                    Amenities: {{ hotel.amenities }}<br />
+                    Category: {{ hotel.category }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

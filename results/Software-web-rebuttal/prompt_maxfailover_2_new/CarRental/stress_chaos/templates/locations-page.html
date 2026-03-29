@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Pickup and Dropoff Locations</title>
+</head>
+<body>
+<div id="locations-page">
+    <h1>Pickup and Dropoff Locations</h1>
+
+    <label for="hours-filter">Filter by Hours:</label>
+    <select id="hours-filter" name="hour_filter">
+        <option value="All" {% if hour_filter == 'All' %}selected{% endif %}>All</option>
+        <option value="24/7" {% if hour_filter == '24/7' %}selected{% endif %}>24/7</option>
+        <option value="09:00-18:00" {% if hour_filter == '09:00-18:00' %}selected{% endif %}>09:00-18:00</option>
+        <option value="Weekend" {% if hour_filter == 'Weekend' %}selected{% endif %}>Weekend</option>
+    </select>
+
+    <label for="search-location-input">Search Locations:</label>
+    <input type="text" id="search-location-input" name="search_query" value="{{ search_query }}" />
+
+    <div id="locations-list">
+        {% for location in locations %}
+        <div class="location-card" id="location-{{ location.location_id }}">
+            <form method="GET" action="{{ url_for('location_detail', location_id=location.location_id) }}">
+                <button id="location-detail-button-{{ location.location_id }}" type="submit">{{ location.city }} - {{ location.address }}</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

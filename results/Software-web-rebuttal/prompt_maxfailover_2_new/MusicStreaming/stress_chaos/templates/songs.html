@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Song Catalog</title>
+</head>
+<body>
+  <div id="catalog-page">
+    <h1>Song Catalog</h1>
+
+    <form method="GET" action="{{ url_for('song_catalog') }}">
+      <input type="text" id="search-input" name="search" value="{{ search_query | default('') }}" placeholder="Search songs">
+      <select id="genre-filter" name="genre">
+        <option value="" {% if not genre_filter %}selected{% endif %}>All Genres</option>
+        {% for genre in genres %}
+        <option value="{{ genre.id }}" {% if genre_filter == genre.id %}selected{% endif %}>{{ genre.genre_name }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Filter</button>
+    </form>
+
+    <div id="songs-grid">
+      {% for song in songs %}
+      <div class="song-item">
+        <div>{{ song.title }} by {{ song.artist_name }}</div>
+        <div>Album: {{ song.album_name }}</div>
+        <div>Duration: {{ song.duration }}s</div>
+        <div>Genre: {{ song.genre }}</div>
+        <form method="POST" action="{{ url_for('add_song_to_playlist') }}">
+          <input type="hidden" name="song_id" value="{{ song.id }}">
+          <button type="submit" id="add-to-playlist-button-{{ song.id }}">Add to Playlist</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article Analytics - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="article-analytics-page">
+        <h1>Analytics for Article {{ article.article_id }}</h1>
+
+        <section id="analytics-summary">
+            <p>Total Views: {{ analytics_data.total_views }}</p>
+            <p>Average Time on Page: {{ analytics_data.average_time_seconds }} seconds</p>
+            {% if analytics_data.read_completion_rate is not none %}
+            <p>Read Completion Rate: {{ analytics_data.read_completion_rate }}%</p>
+            {% endif %}
+        </section>
+
+        {% if analytics_data.traffic_sources and analytics_data.traffic_sources|length > 0 %}
+        <section id="traffic-sources">
+            <h2>Traffic Sources</h2>
+            <ul>
+                {% for source, count in analytics_data.traffic_sources.items() %}
+                <li id="traffic-source-{{ source|replace(' ', '-')}}">{{ source }}: {{ count }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        <button onclick="window.location.href='{{ url_for('dashboard') }}'" id="back-to-dashboard-button">Back to Dashboard</button>
+    </div>
+</body>
+</html>

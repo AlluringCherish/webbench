@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Application</title>
+</head>
+<body>
+    <div id="application-form-page">
+        <h1>Submit Application</h1>
+
+        <form method="post" enctype="multipart/form-data" action="{{ url_for('application_form_page', job_id=job.job_id) }}">
+            <label for="applicant-name">Name:</label><br>
+            <input type="text" id="applicant-name" name="applicant_name" {% if application %}value="{{ application.applicant_name }}"{% endif %} required><br><br>
+
+            <label for="applicant-email">Email:</label><br>
+            <input type="email" id="applicant-email" name="applicant_email" {% if application %}value="{{ application.applicant_email }}"{% endif %} required><br><br>
+
+            <label for="resume-upload">Resume:</label><br>
+            {% if resume %}
+                <p>Current resume: {{ resume.filename }} (Uploaded on {{ resume.upload_date }})</p>
+            {% endif %}
+            <input type="file" id="resume-upload" name="resume_file" accept=".pdf,.doc,.docx" {% if not application %}required{% endif %}><br><br>
+
+            <label for="cover-letter">Cover Letter:</label><br>
+            <textarea id="cover-letter" name="cover_letter" rows="6" cols="40">{% if application %}{{ resume.summary if resume else '' }}{% endif %}</textarea><br><br>
+
+            <button type="submit" id="submit-application-button">{% if application %}Update Application{% else %}Submit Application{% endif %}</button>
+        </form>
+    </div>
+</body>
+</html>
