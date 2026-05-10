@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Auctions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function onTimeRangeChange() {
+            const timeRange = document.getElementById('time-range-filter').value;
+            window.location.href = "{{ url_for('trending') }}" + "?time_range=" + encodeURIComponent(timeRange);
+        }
+    </script>
+</head>
+<body>
+    <div id="trending-page">
+        <h1>Trending Auctions</h1>
+        <label for="time-range-filter">Filter by Time Range:</label>
+        <select id="time-range-filter" onchange="onTimeRangeChange()">
+            <option value="Last 24 Hours" {% if time_range == 'Last 24 Hours' %}selected{% endif %}>Last 24 Hours</option>
+            <option value="This Week" {% if time_range == 'This Week' %}selected{% endif %}>This Week</option>
+            <option value="All Time" {% if time_range == 'All Time' %}selected{% endif %}>All Time</option>
+        </select>
+        <div id="trending-list">
+            {% if trending %}
+                <ol>
+                    {% for item in trending %}
+                        <li>
+                            <strong>#{{ item.trending_rank }}:</strong> {{ item.item_name }} - Current Bid: ${{ '%.2f'|format(item.current_bid) }} - Bids: {{ item.bid_count }}
+                            <a href="{{ url_for('auction_details', auction_id=item.auction_id) }}">
+                                <button id="view-auction-button-{{ item.auction_id }}">View Details</button>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ol>
+            {% else %}
+                <p>No trending auctions found for the selected time range.</p>
+            {% endif %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

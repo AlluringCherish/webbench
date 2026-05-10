@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pet Adoption Dashboard</title>
+    <style>
+        /* Basic styling for layout */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #dashboard-page {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        #featured-pets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .pet-card {
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 10px;
+            width: 180px;
+            box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .pet-card img {
+            width: 160px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .pet-name {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .pet-species-age {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        #recent-activities {
+            margin-bottom: 30px;
+        }
+        #recent-activities h2 {
+            margin-bottom: 10px;
+        }
+        #recent-applications-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        #recent-applications-list li {
+            margin-bottom: 6px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 6px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #buttons-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        a.pet-link {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a.pet-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>Pet Adoption Dashboard</h1>
+    <section id="featured-pets">
+        <h2>Featured Pets</h2>
+        {% if featured_pets %}
+            {% for pet in featured_pets %}
+                <div class="pet-card">
+                    <a href="{{ url_for('pet_details', pet_id=pet.pet_id) }}" class="pet-link">
+                        <!-- Placeholder image, can be replaced with actual pet photo if available -->
+                        <img src="{{ url_for('static', filename='images/pets/' + pet.pet_id + '.jpg') }}" alt="{{ pet.name }}" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/pets/default.jpg') }}';">
+                        <div class="pet-name" id="pet-name-{{ pet.pet_id }}">{{ pet.name }}</div>
+                        <div class="pet-species-age" id="pet-species-age-{{ pet.pet_id }}">{{ pet.species }}, {{ pet.age }}</div>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No featured pets available at the moment.</p>
+        {% endif %}
+    </section>
+    <section id="recent-activities">
+        <h2>Recent Activities</h2>
+        <h3>My Recent Adoption Applications</h3>
+        {% if recent_applications %}
+            <ul id="recent-applications-list">
+                {% for app in recent_applications %}
+                    <li>
+                        <strong>Pet:</strong>
+                        {% set pet = None %}
+                        {% for p in featured_pets %}
+                            {% if p.pet_id == app.pet_id %}
+                                {% set pet = p %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if not pet %}
+                            {% set pet = None %}
+                            {% for p in parse_pets() %}
+                                {% if p.pet_id == app.pet_id %}
+                                    {% set pet = p %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        {% if pet %}
+                            <a href="{{ url_for('pet_details', pet_id=pet.pet_id) }}" class="pet-link">{{ pet.name }}</a>
+                        {% else %}
+                            Unknown Pet
+                        {% endif %}
+                        <br>
+                        <strong>Status:</strong> {{ app.status }}<br>
+                        <strong>Date Submitted:</strong> {{ app.date_submitted }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>You have no recent adoption applications.</p>
+        {% endif %}
+    </section>
+    <div id="buttons-container">
+        <button id="browse-pets-button" onclick="location.href='{{ url_for('pet_listings') }}'">Browse Pets</button>
+        <button id="back-to-dashboard" onclick="location.reload()">Refresh Dashboard</button>
+    </div>
+</div>
+</body>
+</html>

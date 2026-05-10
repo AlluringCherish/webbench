@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Courses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="catalog-page">
+        <h1>Available Courses</h1>
+        <form method="get" action="{{ url_for('course_catalog') }}">
+            <input type="text" id="search-input" name="search" placeholder="Search courses..." value="{{ search_query }}">
+            <button type="submit">Search</button>
+        </form>
+        <div id="course-grid">
+            {% if courses %}
+                <div class="course-cards">
+                    {% for course in courses %}
+                        <div class="course-card">
+                            <h3>{{ course.title }}</h3>
+                            <p>{{ course.description }}</p>
+                            <button id="view-course-button-{{ course.course_id }}" onclick="location.href='{{ url_for('course_details', course_id=course.course_id) }}'">View Details</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No courses found.</p>
+            {% endif %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

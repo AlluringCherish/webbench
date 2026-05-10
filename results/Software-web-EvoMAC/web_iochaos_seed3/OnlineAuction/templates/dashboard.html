@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Auction Dashboard</h1>
+        <section id="featured-auctions">
+            <h2>Featured Auctions</h2>
+            {% if featured_auctions %}
+                <div class="featured-items">
+                    {% for auction in featured_auctions %}
+                        <div class="auction-card">
+                            <img src="{{ url_for('static', filename='images/' + auction.image_url) }}" alt="{{ auction.item_name }}" width="150" height="150">
+                            <h3>{{ auction.item_name }}</h3>
+                            <p>Current Bid: ${{ '%.2f'|format(auction.current_bid) }}</p>
+                            <p>Ends: {{ auction.end_time }}</p>
+                            <a href="{{ url_for('auction_details', auction_id=auction.auction_id) }}">
+                                <button id="view-auction-button-{{ auction.auction_id }}">View Details</button>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No featured auctions available.</p>
+            {% endif %}
+        </section>
+        <section id="trending-auctions">
+            <h2>Trending Auctions</h2>
+            {% if trending_auctions %}
+                <ul>
+                    {% for item in trending_auctions %}
+                        <li>
+                            <strong>#{{ item.trending_rank }}:</strong> {{ item.item_name }} - Current Bid: ${{ '%.2f'|format(item.current_bid) }} - Bids: {{ item.bid_count }}
+                            <a href="{{ url_for('auction_details', auction_id=item.auction_id) }}">
+                                <button id="view-auction-button-{{ item.auction_id }}">View Details</button>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No trending auctions available.</p>
+            {% endif %}
+        </section>
+        <nav class="dashboard-navigation">
+            <button id="browse-auctions-button" onclick="location.href='{{ url_for('auction_catalog') }}'">Browse Auctions</button>
+            <button id="view-bids-button" onclick="location.href='{{ url_for('bid_history') }}'">View Bid History</button>
+            <button id="trending-auctions-button" onclick="location.href='{{ url_for('trending') }}'">Trending Auctions</button>
+        </nav>
+    </div>
+</body>
+</html>

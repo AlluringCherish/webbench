@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Track Order</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+    <div id="tracking-page">
+        <h1>Track Order #{{ order.order_id }}</h1>
+        <div id="order-details">
+            <h2>Order Details</h2>
+            <p>Customer: {{ order.customer_name }}</p>
+            <p>Restaurant: {{ restaurant.name if restaurant else 'Unknown' }}</p>
+            <p>Status: {{ order.status }}</p>
+            <p>Order Date: {{ order.order_date }}</p>
+            <p>Delivery Address: {{ order.delivery_address }}</p>
+            <p>Phone Number: {{ order.phone_number }}</p>
+            <h3>Order Timeline</h3>
+            <ul>
+                {% for event in timeline %}
+                <li>{{ event }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="delivery-driver-info">
+            <h2>Delivery Driver Info</h2>
+            <p>Name: {{ delivery.driver_name }}</p>
+            <p>Phone: {{ delivery.driver_phone }}</p>
+            <p>Vehicle: {{ delivery.vehicle_info }}</p>
+        </div>
+        <div id="estimated-time">
+            <h2>Estimated Delivery Time</h2>
+            <p>{{ delivery.estimated_time }}</p>
+        </div>
+        <div id="order-items-list">
+            <h2>Items in Order</h2>
+            <ul>
+                {% for item in order_items %}
+                <li>{{ item.item_name }} - Quantity: {{ item.quantity }} - Price: ${{ "%.2f"|format(item.price) }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <button id="back-to-orders" onclick="location.href='{{ url_for('active_orders') }}'">Back to Active Orders</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="auction-details-page">
+        <h1 id="auction-title">{{ auction.item_name }}</h1>
+        <div id="auction-description">
+            <p>{{ auction.description }}</p>
+            <p><strong>Category:</strong> {{ auction.category }}</p>
+            <p><strong>Starting Bid:</strong> ${{ '%.2f'|format(auction.starting_bid) }}</p>
+            <p><strong>Current Bid:</strong> <span id="current-bid">${{ '%.2f'|format(auction.current_bid) }}</span></p>
+            <p><strong>End Time:</strong> {{ auction.end_time }}</p>
+            <p><img src="{{ url_for('static', filename='images/' + auction.image_url) }}" alt="{{ auction.item_name }}" width="250" height="250"></p>
+        </div>
+        <a href="{{ url_for('place_bid', auction_id=auction.auction_id) }}">
+            <button id="place-bid-button">Place Bid</button>
+        </a>
+        <section id="bid-history">
+            <h2>Bid History</h2>
+            {% if bid_history %}
+                <ul>
+                    {% for bid in bid_history %}
+                        <li>{{ bid.bidder_name }} bid ${{ '%.2f'|format(bid.bid_amount) }} on {{ bid.bid_timestamp }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No bids placed yet.</p>
+            {% endif %}
+        </section>
+        <button onclick="location.href='{{ url_for('auction_catalog') }}'">Back to Catalog</button>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

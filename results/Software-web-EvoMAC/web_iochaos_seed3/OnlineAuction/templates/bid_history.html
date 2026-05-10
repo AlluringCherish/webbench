@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bid History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function filterByAuction() {
+            const auctionId = document.getElementById('filter-by-auction').value;
+            const sortAmount = document.getElementById('sort-by-amount').getAttribute('data-sorted') === 'true' ? 'amount' : '';
+            let url = "{{ url_for('bid_history') }}?auction=" + encodeURIComponent(auctionId);
+            if (sortAmount) {
+                url += "&sort=amount";
+            }
+            window.location.href = url;
+        }
+        function toggleSortByAmount() {
+            const btn = document.getElementById('sort-by-amount');
+            const auctionId = document.getElementById('filter-by-auction').value;
+            let url = "{{ url_for('bid_history') }}?auction=" + encodeURIComponent(auctionId);
+            if (btn.getAttribute('data-sorted') === 'true') {
+                // Remove sorting
+                btn.setAttribute('data-sorted', 'false');
+                url = "{{ url_for('bid_history') }}?auction=" + encodeURIComponent(auctionId);
+            } else {
+                btn.setAttribute('data-sorted', 'true');
+                url += "&sort=amount";
+            }
+            window.location.href = url;
+        }
+    </script>
+</head>
+<body>
+    <div id="bid-history-page">
+        <h1>Bid History</h1>
+        <label for="filter-by-auction">Filter by Auction:</label>
+        <select id="filter-by-auction" onchange="filterByAuction()">
+            <option value="" {% if not selected_auction %}selected{% endif %}>All Auctions</option>
+            {% for auction in auctions %}
+                <option value="{{ auction.auction_id }}" {% if selected_auction == auction.auction_id %}selected{% endif %}>{{ auction.item_name }}</option>
+            {% endfor %}
+        </select>
+        <button id="sort-by-amount" data-sorted="{{ 'true' if sort_by_amount else 'false' }}" onclick="toggleSortByAmount()">
+            {% if sort_by_amount %}Sort by Amount (Descending) - ON{% else %}Sort by Amount (Descending) - OFF{% endif %}
+        </button>
+        <table id="bids-table" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Bid ID</th>
+                    <th>Auction Name</th>
+                    <th>Bidder</th>
+                    <th>Amount</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if bids %}
+                    {% for bid in bids %}
+                        <tr>
+                            <td>{{ bid.history_id }}</td>
+                            <td>{{ bid.auction_name }}</td>
+                            <td>{{ bid.bidder_name }}</td>
+                            <td>${{ '%.2f'|format(bid.bid_amount) }}</td>
+                            <td>{{ bid.bid_timestamp }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="5">No bids found.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

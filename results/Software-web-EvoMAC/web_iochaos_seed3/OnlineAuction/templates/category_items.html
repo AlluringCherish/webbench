@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Category: {{ category.category_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="catalog-page">
+        <h1>Category: {{ category.category_name }}</h1>
+        <p>{{ category.description }}</p>
+        <div id="auctions-grid" class="auctions-grid">
+            {% if auctions %}
+                {% for auction in auctions %}
+                    <div class="auction-card">
+                        <img src="{{ url_for('static', filename='images/' + auction.image_url) }}" alt="{{ auction.item_name }}" width="150" height="150">
+                        <h3>{{ auction.item_name }}</h3>
+                        <p>Current Bid: ${{ '%.2f'|format(auction.current_bid) }}</p>
+                        <p>Ends: {{ auction.end_time }}</p>
+                        <a href="{{ url_for('auction_details', auction_id=auction.auction_id) }}">
+                            <button id="view-auction-button-{{ auction.auction_id }}">View Details</button>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No auctions found in this category.</p>
+            {% endif %}
+        </div>
+        <button onclick="location.href='{{ url_for('auction_categories') }}'">Back to Categories</button>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

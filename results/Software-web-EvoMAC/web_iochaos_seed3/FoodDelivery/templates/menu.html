@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurant Menu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+    <div id="menu-page">
+        <h1 id="restaurant-name">{{ restaurant.name }}</h1>
+        <div id="restaurant-info">
+            <p>Address: {{ restaurant.address }}</p>
+            <p>Phone: {{ restaurant.phone }}</p>
+            <p>Rating: {{ restaurant.rating }}</p>
+        </div>
+        <div id="menu-items-grid">
+            {% if menu_items %}
+                {% for item in menu_items %}
+                <div class="menu-item-card">
+                    <div class="menu-item-photo">
+                        <img src="{{ url_for('static', filename='images/item_' ~ item.item_id ~ '.jpg') }}" alt="{{ item.item_name }}" onerror="this.style.display='none'">
+                    </div>
+                    <div class="menu-item-info">
+                        <h3>{{ item.item_name }}</h3>
+                        <p>{{ item.description }}</p>
+                        <p>Price: ${{ "%.2f"|format(item.price) }}</p>
+                        <button id="add-to-cart-button-{{ item.item_id }}" onclick="location.href='{{ url_for('add_to_cart', item_id=item.item_id) }}'">Add to Cart</button>
+                        <button id="view-item-details-{{ item.item_id }}" onclick="location.href='{{ url_for('item_details', item_id=item.item_id) }}'">View Details</button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No menu items available.</p>
+            {% endif %}
+        </div>
+        <button onclick="location.href='{{ url_for('browse_restaurants') }}'">Back to Restaurants</button>
+    </div>
+</body>
+</html>

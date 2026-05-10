@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="bookings-page">
+    <h1>My Bookings</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form method="get" action="{{ url_for('bookings_summary') }}">
+        <input type="text" id="booking-search-input" name="search" placeholder="Search by event name or booking ID" value="{{ search_query }}">
+        <button type="submit">Search</button>
+    </form>
+    <form method="post" action="{{ url_for('bookings_summary') }}">
+        <table id="bookings-table" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Ticket Count</th>
+                    <th>Ticket Type</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if bookings %}
+                    {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.booking_id }}</td>
+                            <td>
+                                {% set event = events | selectattr('event_id', 'equalto', booking.event_id) | list | first %}
+                                {{ event.event_name if event else 'Unknown' }}
+                            </td>
+                            <td>{{ booking.booking_date }}</td>
+                            <td>{{ booking.ticket_count }}</td>
+                            <td>{{ booking.ticket_type }}</td>
+                            <td>${{ "%.2f"|format(booking.total_amount) }}</td>
+                            <td>{{ booking.status }}</td>
+                            <td>
+                                {% if booking.status.lower() != 'cancelled' %}
+                                    <button type="submit" name="cancel-booking-id" value="{{ booking.booking_id }}" id="cancel-booking-button-{{ booking.booking_id }}">Cancel</button>
+                                {% else %}
+                                    <em>Cancelled</em>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="8">No bookings found.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </form>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

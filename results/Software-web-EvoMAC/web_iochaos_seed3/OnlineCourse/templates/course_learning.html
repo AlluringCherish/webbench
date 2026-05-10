@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Learning</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="learning-page">
+        <h1>{{ title }}</h1>
+        <div id="lessons-list">
+            <h2>Lessons</h2>
+            <ul>
+                {% for lesson in lessons %}
+                    <li>
+                        Lesson {{ lesson.lesson_number }} 
+                        {% if lesson.completed %}
+                            - Completed
+                        {% elif lesson.lesson_number == current_lesson %}
+                            - Current Lesson
+                        {% else %}
+                            - Locked
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="lesson-content">
+            <h3>Lesson {{ current_lesson }} Content</h3>
+            <p>{{ lesson_content }}</p>
+        </div>
+        {% if progress < 100 and current_lesson <= lessons|length %}
+            <form method="post" action="{{ url_for('mark_lesson_complete', course_id=course_id) }}">
+                <button id="mark-complete-button" type="submit">Mark Complete</button>
+            </form>
+        {% else %}
+            <p>Course Completed!</p>
+        {% endif %}
+        <button id="back-to-my-courses" onclick="location.href='{{ url_for('my_courses') }}'">Back to My Courses</button>
+    </div>
+</body>
+</html>

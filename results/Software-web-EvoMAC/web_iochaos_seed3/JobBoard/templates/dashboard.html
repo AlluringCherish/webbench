@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Board Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}" defer></script>
+</head>
+<body>
+    <div id="dashboard-page" class="container">
+        <h1>Job Board Dashboard</h1>
+        <section id="featured-jobs">
+            <h2>Featured Jobs</h2>
+            {% if featured_jobs %}
+                <div class="jobs-list">
+                    {% for job in featured_jobs %}
+                        <div class="job-card">
+                            <h3>{{ job.title }}</h3>
+                            <div><strong>Company:</strong> {{ job.company_name }}</div>
+                            <div><strong>Location:</strong> {{ job.location }}</div>
+                            <div><strong>Salary:</strong> ${{ "{:,}".format(job.salary_min) }} - ${{ "{:,}".format(job.salary_max) }}</div>
+                            <form action="{{ url_for('job_details', job_id=job.job_id) }}" method="get" style="margin-top: 8px;">
+                                <button type="submit" id="view-job-button-{{ job.job_id }}">View Details</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No featured jobs available.</p>
+            {% endif %}
+        </section>
+        <nav class="dashboard-nav">
+            <button id="browse-jobs-button" onclick="location.href='{{ url_for('job_listings') }}'">Browse Jobs</button>
+            <button id="my-applications-button" onclick="location.href='{{ url_for('application_tracking') }}'">My Applications</button>
+            <button id="companies-button" onclick="location.href='{{ url_for('companies_directory') }}'">Companies</button>
+        </nav>
+    </div>
+</body>
+</html>

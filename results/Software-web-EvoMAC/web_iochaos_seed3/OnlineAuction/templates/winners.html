@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Winning Items</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function filterByWinner() {
+            const filterInput = document.getElementById('filter-by-winner').value;
+            let url = "{{ url_for('winners') }}";
+            if (filterInput) {
+                url += "?filter=" + encodeURIComponent(filterInput);
+            }
+            window.location.href = url;
+        }
+    </script>
+</head>
+<body>
+    <div id="winners-page">
+        <h1>Winning Items</h1>
+        <label for="filter-by-winner">Filter by Winner Name:</label>
+        <input type="text" id="filter-by-winner" value="{{ filter_name }}" oninput="filterByWinner()" placeholder="Enter winner name">
+        <div id="winners-list">
+            {% if winners %}
+                {% for winner in winners %}
+                    <div id="winner-card-{{ winner.auction_id }}" class="winner-card">
+                        <h3>{{ winner.item_name }}</h3>
+                        <p><strong>Winner:</strong> {{ winner.winner_name }}</p>
+                        <p><strong>Winning Bid:</strong> ${{ '%.2f'|format(winner.winning_bid) }}</p>
+                        <p><strong>Win Date:</strong> {{ winner.win_date }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No winning items found.</p>
+            {% endif %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

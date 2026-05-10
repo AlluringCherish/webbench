@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Catalog</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function onCategoryChange() {
+            const category = document.getElementById('category-filter').value;
+            const search = document.getElementById('search-input').value;
+            let url = "{{ url_for('auction_catalog') }}?category=" + encodeURIComponent(category);
+            if (search) {
+                url += "&search=" + encodeURIComponent(search);
+            }
+            window.location.href = url;
+        }
+        function onSearchEnter(event) {
+            if (event.key === 'Enter') {
+                onCategoryChange();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="catalog-page">
+        <h1>Auction Catalog</h1>
+        <div class="filters">
+            <input type="text" id="search-input" placeholder="Search auctions by name, description, or ID" value="{{ search_query }}" onkeypress="onSearchEnter(event)">
+            <select id="category-filter" onchange="onCategoryChange()">
+                <option value="all" {% if selected_category == '' or selected_category == 'all' %}selected{% endif %}>All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category.category_name|lower }}" {% if selected_category == category.category_name|lower %}selected{% endif %}>{{ category.category_name }}</option>
+                {% endfor %}
+                <option value="art" {% if selected_category == 'art' %}selected{% endif %}>Art</option>
+                <option value="other" {% if selected_category == 'other' %}selected{% endif %}>Other</option>
+            </select>
+        </div>
+        <div id="auctions-grid" class="auctions-grid">
+            {% if auctions %}
+                {% for auction in auctions %}
+                    <div class="auction-card">
+                        <img src="{{ url_for('static', filename='images/' + auction.image_url) }}" alt="{{ auction.item_name }}" width="150" height="150">
+                        <h3>{{ auction.item_name }}</h3>
+                        <p>Current Bid: ${{ '%.2f'|format(auction.current_bid) }}</p>
+                        <p>Ends: {{ auction.end_time }}</p>
+                        <a href="{{ url_for('auction_details', auction_id=auction.auction_id) }}">
+                            <button id="view-auction-button-{{ auction.auction_id }}">View Details</button>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No auctions found matching your criteria.</p>
+            {% endif %}
+        </div>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

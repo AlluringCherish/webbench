@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>News Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>News Portal</h1>
+    <section id="featured-articles">
+        <h2>Featured Articles</h2>
+        {% if featured_articles %}
+            <ul>
+                {% for article in featured_articles %}
+                    <li>
+                        <strong>{{ article.title }}</strong><br>
+                        <em>by {{ article.author }} on {{ article.date }}</em><br>
+                        <form method="get" action="{{ url_for('article_details', article_id=article.article_id) }}">
+                            <button type="submit" id="view-article-button-{{ article.article_id }}">Read More</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No featured articles available.</p>
+        {% endif %}
+    </section>
+    <section id="trending-articles">
+        <h2>Trending News (This Week)</h2>
+        {% if trending_articles %}
+            <ul>
+                {% for t in trending_articles %}
+                    <li>
+                        <strong>{{ t.article_title }}</strong> ({{ t.category }}) - Views: {{ t.view_count }}<br>
+                        <form method="get" action="{{ url_for('article_details', article_id=t.article_id) }}">
+                            <button type="submit" id="view-article-button-{{ t.article_id }}">Read More</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No trending articles available.</p>
+        {% endif %}
+    </section>
+    <nav>
+        <form method="get" action="{{ url_for('article_catalog') }}" style="display:inline;">
+            <button type="submit" id="browse-articles-button">Browse Articles</button>
+        </form>
+        <form method="get" action="{{ url_for('bookmarks') }}" style="display:inline;">
+            <button type="submit" id="view-bookmarks-button">View Bookmarks</button>
+        </form>
+        <form method="get" action="{{ url_for('trending') }}" style="display:inline;">
+            <button type="submit" id="trending-articles-button">Trending Articles</button>
+        </form>
+    </nav>
+</div>
+</body>
+</html>

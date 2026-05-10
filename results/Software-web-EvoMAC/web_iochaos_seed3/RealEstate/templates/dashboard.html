@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real Estate Dashboard</title>
+    <style>
+        /* Basic styling for layout */
+        #dashboard-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        #featured-properties, #recent-listings {
+            margin-bottom: 30px;
+        }
+        .property-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .property-card h3 {
+            margin: 0 0 5px 0;
+        }
+        .property-info {
+            font-size: 0.9em;
+            color: #555;
+        }
+        #dashboard-buttons {
+            text-align: center;
+            margin-top: 40px;
+        }
+        #dashboard-buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>Real Estate Dashboard</h1>
+    <section id="featured-properties">
+        <h2>Featured Properties</h2>
+        {% if featured_properties %}
+            {% for property in featured_properties %}
+                <div class="property-card">
+                    <h3>{{ property.address }}</h3>
+                    <div class="property-info">
+                        Location: {{ property.location }}<br>
+                        Price: ${{ "{:,}".format(property.price) }}<br>
+                        Beds: {{ property.bedrooms }} | Baths: {{ property.bathrooms }}
+                    </div>
+                    <form action="{{ url_for('property_details', property_id=property.property_id) }}" method="get" style="margin-top: 5px;">
+                        <button type="submit" id="view-property-button-{{ property.property_id }}">View Details</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No featured properties available.</p>
+        {% endif %}
+    </section>
+    <section id="recent-listings">
+        <h2>Recent Listings</h2>
+        {% if recent_listings %}
+            {% for property in recent_listings %}
+                <div class="property-card">
+                    <h3>{{ property.address }}</h3>
+                    <div class="property-info">
+                        Location: {{ property.location }}<br>
+                        Price: ${{ "{:,}".format(property.price) }}<br>
+                        Beds: {{ property.bedrooms }} | Baths: {{ property.bathrooms }}<br>
+                        Status: {{ property.status }}
+                    </div>
+                    <form action="{{ url_for('property_details', property_id=property.property_id) }}" method="get" style="margin-top: 5px;">
+                        <button type="submit" id="view-property-button-{{ property.property_id }}">View Details</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No recent listings available.</p>
+        {% endif %}
+    </section>
+    <div id="dashboard-buttons">
+        <form action="{{ url_for('property_search') }}" method="get" style="display: inline;">
+            <button type="submit" id="browse-properties-button">Browse Properties</button>
+        </form>
+        <form action="{{ url_for('my_inquiries') }}" method="get" style="display: inline;">
+            <button type="submit" id="my-inquiries-button">My Inquiries</button>
+        </form>
+        <form action="{{ url_for('my_favorites') }}" method="get" style="display: inline;">
+            <button type="submit" id="my-favorites-button">My Favorites</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

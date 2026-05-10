@@ -1,0 +1,166 @@
+# Requirements Document for 'RealEstate' Web Application
+
+## 1. Objective
+Develop a comprehensive web application named 'RealEstate' using Python, with data managed through local text files. The application enables users to browse property listings, search by location and price, view property details, submit inquiries, and manage favorite properties. No authentication required - all features are directly accessible. Note that the website should start from the Dashboard page.
+
+## 2. Language
+The required development language for the 'RealEstate' application is Python.
+
+## 3. Page Design
+
+The 'RealEstate' web application will consist of the following eight pages:
+
+### 1. Dashboard Page
+- **Page Title**: Real Estate Dashboard
+- **Overview**: The main hub displaying featured properties, recent listings, and quick navigation to all functionalities.
+- **Elements**:
+  - **ID: dashboard-page** - Type: Div - Container for the dashboard page.
+  - **ID: featured-properties** - Type: Div - Display of featured property recommendations.
+  - **ID: browse-properties-button** - Type: Button - Button to navigate to property search page.
+  - **ID: my-inquiries-button** - Type: Button - Button to navigate to inquiries page.
+  - **ID: my-favorites-button** - Type: Button - Button to navigate to favorites page.
+
+### 2. Property Search Page
+- **Page Title**: Property Search
+- **Overview**: A page displaying all available properties with advanced search and filter capabilities.
+- **Elements**:
+  - **ID: search-page** - Type: Div - Container for the search page.
+  - **ID: location-input** - Type: Input - Field to search properties by location/city.
+  - **ID: price-range-min** - Type: Input (number) - Field to set minimum price filter.
+  - **ID: price-range-max** - Type: Input (number) - Field to set maximum price filter.
+  - **ID: property-type-filter** - Type: Dropdown - Dropdown to filter by property type (House, Apartment, Condo, Land).
+  - **ID: properties-grid** - Type: Div - Grid displaying property cards with image, location, price, and beds/baths.
+  - **ID: view-property-button-{property_id}** - Type: Button - Button to view property details (each property card has this).
+
+### 3. Property Details Page
+- **Page Title**: Property Details
+- **Overview**: A page displaying detailed information about a specific property.
+- **Elements**:
+  - **ID: property-details-page** - Type: Div - Container for the property details page.
+  - **ID: property-address** - Type: H1 - Display property address.
+  - **ID: property-price** - Type: Div - Display property price.
+  - **ID: property-description** - Type: Div - Display property description.
+  - **ID: property-features** - Type: Div - Display property features (beds, baths, square footage).
+  - **ID: add-to-favorites-button** - Type: Button - Button to add property to favorites.
+  - **ID: submit-inquiry-button** - Type: Button - Button to submit inquiry for property.
+
+### 4. Property Inquiry Page
+- **Page Title**: Submit Property Inquiry
+- **Overview**: A page for users to submit inquiries for properties they are interested in.
+- **Elements**:
+  - **ID: inquiry-page** - Type: Div - Container for the inquiry page.
+  - **ID: select-property** - Type: Dropdown - Dropdown to select property for inquiry.
+  - **ID: inquiry-name** - Type: Input - Field to input customer name.
+  - **ID: inquiry-email** - Type: Input (email) - Field to input customer email.
+  - **ID: inquiry-phone** - Type: Input (tel) - Field to input customer phone.
+  - **ID: inquiry-message** - Type: Textarea - Field to write inquiry message.
+  - **ID: submit-inquiry-button** - Type: Button - Button to submit inquiry.
+
+### 5. My Inquiries Page
+- **Page Title**: My Inquiries
+- **Overview**: A page displaying all submitted inquiries and their status.
+- **Elements**:
+  - **ID: inquiries-page** - Type: Div - Container for the inquiries page.
+  - **ID: inquiries-table** - Type: Table - Table displaying inquiries with property, date, status, and contact info.
+  - **ID: inquiry-status-filter** - Type: Dropdown - Dropdown to filter by status (All, Pending, Contacted, Resolved).
+  - **ID: delete-inquiry-button-{inquiry_id}** - Type: Button - Button to delete inquiry (each inquiry has this).
+  - **ID: back-to-dashboard** - Type: Button - Button to navigate back to dashboard.
+
+### 6. My Favorites Page
+- **Page Title**: My Favorite Properties
+- **Overview**: A page displaying all properties added to favorites.
+- **Elements**:
+  - **ID: favorites-page** - Type: Div - Container for the favorites page.
+  - **ID: favorites-list** - Type: Div - List of all favorite properties with address, price, and action buttons.
+  - **ID: remove-from-favorites-button-{property_id}** - Type: Button - Button to remove property from favorites (each property has this).
+  - **ID: view-property-button-{property_id}** - Type: Button - Button to view property details (each property has this).
+  - **ID: back-to-dashboard** - Type: Button - Button to navigate back to dashboard.
+
+### 7. Agent Directory Page
+- **Page Title**: Real Estate Agents
+- **Overview**: A page displaying all real estate agents and their contact information.
+- **Elements**:
+  - **ID: agents-page** - Type: Div - Container for the agents page.
+  - **ID: agents-list** - Type: Div - List of all agents with photo, name, specialization, and contact info.
+  - **ID: agent-search** - Type: Input - Field to search agents by name.
+  - **ID: contact-agent-button-{agent_id}** - Type: Button - Button to contact agent (each agent has this).
+  - **ID: back-to-dashboard** - Type: Button - Button to navigate back to dashboard.
+
+### 8. Locations Page
+- **Page Title**: Featured Locations
+- **Overview**: A page displaying popular locations with property count and details.
+- **Elements**:
+  - **ID: locations-page** - Type: Div - Container for the locations page.
+  - **ID: locations-list** - Type: Div - List of all locations with name, property count, and average price.
+  - **ID: view-location-button-{location_id}** - Type: Button - Button to view properties in location (each location has this).
+  - **ID: location-sort** - Type: Dropdown - Dropdown to sort locations (By Name, By Properties Count, By Average Price).
+  - **ID: back-to-dashboard** - Type: Button - Button to navigate back to dashboard.
+
+## 4. Data Storage
+
+The 'RealEstate' application will store data locally in text files organized in the directory 'data'. The following data formats and examples are defined:
+
+### 1. Properties Data
+- **File Name**: `properties.txt`
+- **Data Format**:
+  ```
+  property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status
+  ```
+- **Example Data**:
+  ```
+  1|123 Oak Street|Downtown|450000|House|3|2|2500|Beautiful family home with large yard|101|Available
+  2|456 Park Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern apartment with city view|102|Available
+  3|789 Elm Road|Suburb|280000|Condo|2|2|1500|Cozy condo in quiet neighborhood|101|Sold
+  ```
+
+### 2. Locations Data
+- **File Name**: `locations.txt`
+- **Data Format**:
+  ```
+  location_id|location_name|region|average_price|property_count|description
+  ```
+- **Example Data**:
+  ```
+  1|Downtown|Central|425000|45|Urban area with business district
+  2|Midtown|Central|380000|38|Mixed residential and commercial zone
+  3|Suburb|Outskirts|295000|52|Family-friendly residential area
+  ```
+
+### 3. Property Inquiries Data
+- **File Name**: `inquiries.txt`
+- **Data Format**:
+  ```
+  inquiry_id|property_id|customer_name|customer_email|customer_phone|message|inquiry_date|status
+  ```
+- **Example Data**:
+  ```
+  1|1|John Smith|john@email.com|555-1234|Interested in viewing this weekend|2025-01-15|Pending
+  2|2|Sarah Johnson|sarah@email.com|555-5678|Can we schedule a showing?|2025-01-16|Contacted
+  3|1|Mike Davis|mike@email.com|555-9012|What is the lowest offer?|2025-01-17|Resolved
+  ```
+
+### 4. Favorite Properties Data
+- **File Name**: `favorites.txt`
+- **Data Format**:
+  ```
+  favorite_id|property_id|added_date
+  ```
+- **Example Data**:
+  ```
+  1|1|2025-01-10
+  2|2|2025-01-12
+  3|3|2025-01-14
+  ```
+
+### 5. Real Estate Agents Data
+- **File Name**: `agents.txt`
+- **Data Format**:
+  ```
+  agent_id|agent_name|specialization|email|phone|properties_sold
+  ```
+- **Example Data**:
+  ```
+  101|Robert Wilson|Residential Properties|robert@email.com|555-0001|125
+  102|Emily Chen|Commercial Real Estate|emily@email.com|555-0002|89
+  103|James Martinez|Luxury Homes|james@email.com|555-0003|67
+  ```

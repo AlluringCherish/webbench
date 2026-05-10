@@ -1,0 +1,45 @@
+'''
+Customer Reviews page template for BookstoreOnline.
+Displays all reviews with rating filter and navigation.
+Uses Flask url_for() for navigation and form actions.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Reviews</title>
+</head>
+<body>
+<div id="reviews-page">
+    <h1>Customer Reviews</h1>
+    <form method="get" action="{{ url_for('reviews') }}">
+        <label for="filter-by-rating">Filter by Rating:</label>
+        <select id="filter-by-rating" name="rating" onchange="this.form.submit()">
+            <option value="All" {% if selected_rating == 'All' %}selected{% endif %}>All</option>
+            <option value="5 stars" {% if selected_rating == '5 stars' %}selected{% endif %}>5 stars</option>
+            <option value="4 stars" {% if selected_rating == '4 stars' %}selected{% endif %}>4 stars</option>
+            <option value="3 stars" {% if selected_rating == '3 stars' %}selected{% endif %}>3 stars</option>
+            <option value="2 stars" {% if selected_rating == '2 stars' %}selected{% endif %}>2 stars</option>
+            <option value="1 star" {% if selected_rating == '1 star' %}selected{% endif %}>1 star</option>
+        </select>
+    </form>
+    <div id="reviews-list">
+        {% if reviews %}
+        <ul>
+            {% for review in reviews %}
+            <li>
+                <strong>{{ review.book_title }}</strong> - {{ review.rating }} stars<br>
+                <em>by {{ review.customer_name }} on {{ review.review_date }}</em><br>
+                {{ review.review_text }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No reviews found.</p>
+        {% endif %}
+    </div>
+    <button id="write-review-button" onclick="location.href='{{ url_for('write_review') }}'">Write a Review</button>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

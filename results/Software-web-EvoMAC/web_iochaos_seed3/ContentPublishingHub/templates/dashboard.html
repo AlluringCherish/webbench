@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - ContentPublishingHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="dashboard-page" class="page-container">
+        <header>
+            <h1 id="welcome-message">Welcome, {{ username }}!</h1>
+        </header>
+        <section id="quick-stats" class="stats-section">
+            <h2>Quick Stats</h2>
+            <ul>
+                <li>Total Articles: {{ quick_stats.total_articles }}</li>
+                <li>Published Articles: {{ quick_stats.published_articles }}</li>
+                <li>Drafts: {{ quick_stats.drafts }}</li>
+                <li>Pending Review: {{ quick_stats.pending_review }}</li>
+            </ul>
+        </section>
+        <section class="actions-section">
+            <button id="create-article-button" onclick="location.href='{{ url_for('create_article') }}'">Create Article</button>
+        </section>
+        <section id="recent-activity" class="activity-feed">
+            <h2>Recent Activity</h2>
+            {% if recent_activity %}
+                <ul>
+                    {% for item in recent_activity %}
+                        <li>
+                            <strong>{{ item.type|capitalize }}:</strong>
+                            {% if item.type == 'comment' %}
+                                On article <em>{{ item.article_title }}</em> by {{ item.user }} at {{ item.timestamp }}<br>
+                                Comment: {{ item.comment_text }}
+                            {% elif item.type == 'approval' %}
+                                On article <em>{{ item.article_title }}</em> version {{ item.version_number }} approved by {{ item.approver }} at {{ item.timestamp }}<br>
+                                Status: {{ item.status }}<br>
+                                Comments: {{ item.comments }}
+                            {% elif item.type == 'analytics' %}
+                                Article <em>{{ item.article_title }}</em> had {{ item.views }} views on {{ item.date }}
+                            {% else %}
+                                {{ item }}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No recent activity available.</p>
+            {% endif %}
+        </section>
+    </div>
+</body>
+</html>

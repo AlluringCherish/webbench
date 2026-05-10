@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Assignments</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="assignments-page">
+        <h1>My Assignments</h1>
+        <table id="assignments-table" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Assignment Title</th>
+                    <th>Description</th>
+                    <th>Due Date</th>
+                    <th>Max Points</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if assignments %}
+                    {% for assignment in assignments %}
+                        <tr>
+                            <td>{{ assignment.title }}</td>
+                            <td>{{ assignment.description }}</td>
+                            <td>{{ assignment.due_date }}</td>
+                            <td>{{ assignment.max_points }}</td>
+                            <td>
+                                {% if assignment.assignment_id in submitted_assignment_ids %}
+                                    Submitted
+                                {% else %}
+                                    <button id="submit-assignment-button-{{ assignment.assignment_id }}" onclick="location.href='{{ url_for('submit_assignment', assignment_id=assignment.assignment_id) }}'">Submit</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5">No assignments available.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

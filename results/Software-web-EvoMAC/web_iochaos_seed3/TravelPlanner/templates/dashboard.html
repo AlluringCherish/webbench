@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Planner Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Travel Planner Dashboard</h1>
+        <section id="featured-destinations">
+            <h2>Featured Destinations</h2>
+            <div class="destinations-list">
+                {% if featured_destinations %}
+                    <ul>
+                        {% for dest in featured_destinations %}
+                            <li>
+                                <strong>{{ dest.name }}</strong> - {{ dest.country }}
+                                <br>
+                                <a href="{{ url_for('destination_details', dest_id=dest.dest_id) }}" id="view-destination-button-{{ dest.dest_id }}">View Details</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No featured destinations available.</p>
+                {% endif %}
+            </div>
+        </section>
+        <section id="upcoming-trips">
+            <h2>Upcoming Trips</h2>
+            <div class="trips-list">
+                {% if upcoming_trips %}
+                    <ul>
+                        {% for trip in upcoming_trips %}
+                            <li>
+                                <strong>{{ trip.trip_name }}</strong> to {{ trip.destination }}<br>
+                                From {{ trip.start_date }} to {{ trip.end_date }}<br>
+                                Status: {{ trip.status }}
+                                <br>
+                                <a href="{{ url_for('trips_page') }}" id="view-trip-details-button-{{ trip.trip_id }}">View Trip</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No upcoming trips planned.</p>
+                {% endif %}
+            </div>
+        </section>
+        <nav>
+            <button id="browse-destinations-button" onclick="location.href='{{ url_for('destinations_page') }}'">Browse Destinations</button>
+            <button id="plan-itinerary-button" onclick="location.href='{{ url_for('itinerary_page') }}'">Plan Itinerary</button>
+        </nav>
+    </div>
+</body>
+</html>

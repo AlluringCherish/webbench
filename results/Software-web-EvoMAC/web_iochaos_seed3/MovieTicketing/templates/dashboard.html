@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Ticketing Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Movie Ticketing Dashboard</h1>
+        <section id="featured-movies">
+            <h2>Featured Movies</h2>
+            {% if featured_movies %}
+                <div class="featured-movies-list">
+                    {% for movie in featured_movies %}
+                        <div class="movie-card">
+                            <h3>{{ movie.title }}</h3>
+                            <p><strong>Rating:</strong> {{ movie.rating }}</p>
+                            <p><strong>Genre:</strong> {{ movie.genre }}</p>
+                            <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
+                            <a href="{{ url_for('movie_details', movie_id=movie.movie_id) }}">
+                                <button id="view-movie-button-{{ movie.movie_id }}">View Details</button>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No featured movies available.</p>
+            {% endif %}
+        </section>
+        <section id="upcoming-releases">
+            <h2>Upcoming Releases</h2>
+            {% if upcoming_releases %}
+                <ul>
+                    {% for movie in upcoming_releases %}
+                        <li>
+                            <strong>{{ movie.title }}</strong> - Release Date: {{ movie.release_date }}
+                            <a href="{{ url_for('movie_details', movie_id=movie.movie_id) }}">
+                                <button id="view-movie-button-{{ movie.movie_id }}">View Details</button>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No upcoming releases available.</p>
+            {% endif %}
+        </section>
+        <nav id="dashboard-navigation">
+            <button id="browse-movies-button" onclick="location.href='{{ url_for('movie_catalog') }}'">Browse Movies</button>
+            <button id="view-bookings-button" onclick="location.href='{{ url_for('booking_history') }}'">View Bookings</button>
+            <button id="showtimes-button" onclick="location.href='{{ url_for('showtime_selection', movie_id=featured_movies[0].movie_id if featured_movies else 1) }}'">Showtimes</button>
+        </nav>
+    </div>
+</body>
+</html>
