@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Device Control</title>
+</head>
+<body>
+    <div id="device-control-page">
+        <h1>Device Control</h1>
+        <h2 id="device-name-display">{{ device.device_name }}</h2>
+        <div id="device-status-display">Status: {{ device.status }}</div>
+        <form method="post" action="{{ url_for('device_control', device_id=device.device_id) }}">
+            <button type="submit" name="power_toggle" id="power-toggle">
+                {% if device.power == 'on' %}
+                    Turn Off
+                {% else %}
+                    Turn On
+                {% endif %}
+            </button>
+            <br><br>
+            {% if device.device_type == 'Light' %}
+                <label for="brightness">Brightness (0-100):</label><br>
+                <input type="number" id="brightness" name="brightness" min="0" max="100" value="{{ device.brightness or '' }}"><br><br>
+            {% elif device.device_type == 'Thermostat' %}
+                <label for="temperature">Temperature:</label><br>
+                <input type="number" id="temperature" name="temperature" value="{{ device.temperature or '' }}"><br><br>
+            {% endif %}
+            <button type="submit" id="save-settings-button">Save Settings</button>
+            <button type="button" id="back-to-devices" onclick="location.href='{{ url_for('device_list') }}'">Back to Device List</button>
+        </form>
+    </div>
+</body>
+</html>

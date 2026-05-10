@@ -1,0 +1,44 @@
+'''
+Trending Articles page template for NewsPortal.
+Displays top trending articles ranked by views and engagement with time period filter.
+Uses Flask url_for for all internal links and form actions.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Articles</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<div id="trending-page">
+    <h1>Trending Articles</h1>
+    <form method="get" action="{{ url_for('trending') }}">
+        <label for="time-period-filter">Filter by Time Period:</label>
+        <select id="time-period-filter" name="period" onchange="this.form.submit()">
+            {% for period in valid_periods %}
+                <option value="{{ period }}" {% if selected_period == period %}selected{% endif %}>{{ period }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <div id="trending-list">
+        {% if trending_articles %}
+            {% for idx, article in enumerate(trending_articles, start=1) %}
+                <div class="trending-item">
+                    <div class="trending-title">{{ idx }}. {{ article.article_title }}</div>
+                    <div class="trending-meta">Category: {{ article.category }} | Views: {{ article.view_count }}</div>
+                    <form method="get" action="{{ url_for('article_details', article_id=article.article_id) }}">
+                        <button type="submit" id="view-article-button-{{ article.article_id }}">View Article</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-results-message">No trending articles available for this period.</p>
+        {% endif %}
+    </div>
+    <div id="buttons-container">
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</div>
+</body>
+</html>

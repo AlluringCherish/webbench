@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automation Rules</title>
+</head>
+<body>
+    <div id="automation-page">
+        <h1>Automation Rules</h1>
+        <table id="rules-table" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Trigger</th>
+                    <th>Action</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if rules %}
+                    {% for rule in rules %}
+                    <tr>
+                        <td>{{ rule.rule_name }}</td>
+                        <td>{{ rule.trigger_type }}: {{ rule.trigger_value }}</td>
+                        <td>
+                            {% set action_val = rule.action_value if rule.action_value else '' %}
+                            {% if rule.action_type in ['Turn On', 'Turn Off'] %}
+                                {{ rule.action_type }}
+                            {% elif rule.action_type == 'Set Brightness' %}
+                                Set Brightness to {{ action_val }}
+                            {% elif rule.action_type == 'Set Temperature' %}
+                                Set Temperature to {{ action_val }}
+                            {% else %}
+                                {{ rule.action_type }} {{ action_val }}
+                            {% endif %}
+                        </td>
+                        <td>{{ 'Enabled' if rule.enabled|lower == 'true' else 'Disabled' }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="4">No automation rules found.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <h2>Add New Rule</h2>
+        <form method="post" action="{{ url_for('automation_rules') }}">
+            <label for="rule-name">Rule Name:</label><br>
+            <input type="text" id="rule-name" name="rule_name" required><br><br>
+            <label for="trigger-type">Trigger Type:</label><br>
+            <select id="trigger-type" name="trigger_type" required>
+                <option value="">--Select Trigger--</option>
+                <option value="Time">Time</option>
+                <option value="Motion">Motion</option>
+                <option value="Temperature">Temperature</option>
+            </select><br><br>
+            <label for="trigger-value">Trigger Value:</label><br>
+            <input type="text" id="trigger-value" name="trigger_value" required><br><br>
+            <label for="action-device">Action Device:</label><br>
+            <select id="action-device" name="action_device" required>
+                <option value="">--Select Device--</option>
+                {% for device in devices %}
+                <option value="{{ device.device_id }}">{{ device.device_name }}</option>
+                {% endfor %}
+            </select><br><br>
+            <label for="action-type">Action Type:</label><br>
+            <select id="action-type" name="action_type" required>
+                <option value="">--Select Action--</option>
+                <option value="Turn On">Turn On</option>
+                <option value="Turn Off">Turn Off</option>
+                <option value="Set Brightness">Set Brightness</option>
+                <option value="Set Temperature">Set Temperature</option>
+            </select><br><br>
+            <button type="submit" id="add-rule-button">Add Rule</button>
+            <button type="button" id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

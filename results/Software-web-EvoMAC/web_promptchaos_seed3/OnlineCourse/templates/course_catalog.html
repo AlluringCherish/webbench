@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Courses</title>
+</head>
+<body>
+    <div id="catalog-page">
+        <h1>Available Courses</h1>
+        <form method="post" action="{{ url_for('course_catalog') }}">
+            <input type="text" id="search-input" name="search" placeholder="Search courses..." value="{{ search_query }}">
+            <button type="submit">Search</button>
+        </form>
+        <div id="course-grid">
+            {% if courses %}
+                <ul>
+                    {% for course in courses %}
+                        <li>
+                            <h3>{{ course.title }}</h3>
+                            <p>{{ course.description }}</p>
+                            {% if course.course_id in user_enrolled_course_ids %}
+                                <button id="view-course-button-{{ course.course_id }}" onclick="location.href='{{ url_for('course_details', course_id=course.course_id) }}'">View Course Details</button>
+                            {% else %}
+                                <button id="view-course-button-{{ course.course_id }}" onclick="location.href='{{ url_for('course_details', course_id=course.course_id) }}'">View Course Details</button>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No courses found.</p>
+            {% endif %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

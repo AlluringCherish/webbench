@@ -1,0 +1,48 @@
+'''
+Article Catalog page template for NewsPortal.
+Displays all available articles with search and filter capabilities.
+Uses Flask url_for for all internal links and form actions.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article Catalog</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<div id="catalog-page">
+    <h1>Article Catalog</h1>
+    <form method="get" action="{{ url_for('article_catalog') }}">
+        <label for="search-input">Search Articles:</label>
+        <input type="search" id="search-input" name="search" value="{{ search_query }}" placeholder="Search by title, author, or keywords">
+        <label for="category-filter">Filter by Category:</label>
+        <select id="category-filter" name="category" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category.category_name }}" {% if selected_category == category.category_name %}selected{% endif %}>{{ category.category_name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Search</button>
+    </form>
+    <div id="articles-grid">
+        {% if articles %}
+            {% for article in articles %}
+                <div class="article-card">
+                    <div class="article-title">{{ article.title }}</div>
+                    <div class="article-meta">By {{ article.author }} | {{ article.date }}</div>
+                    <form method="get" action="{{ url_for('article_details', article_id=article.article_id) }}">
+                        <button type="submit" id="view-article-button-{{ article.article_id }}">View Article</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-results-message">No articles found.</p>
+        {% endif %}
+    </div>
+    <div id="buttons-container">
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Companies Directory - JobBoard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        #companies-page { }
+        #search-company-input { padding: 8px; width: 300px; font-size: 1em; margin-bottom: 20px; }
+        .company-card { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+        .company-name { font-weight: bold; font-size: 1.2em; }
+        .industry, .location, .employee-count { color: #555; margin-top: 5px; }
+        button { margin-top: 10px; padding: 7px 12px; font-size: 0.9em; cursor: pointer; }
+        #back-to-dashboard { margin-top: 20px; padding: 10px 20px; font-size: 1em; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="companies-page">
+        <h1>Companies Directory</h1>
+        <form method="get" action="{{ url_for('companies.companies_directory') }}">
+            <input id="search-company-input" name="search" type="text" placeholder="Search companies by name or industry" value="{{ request.args.get('search', '') }}" />
+            <button type="submit">Search</button>
+        </form>
+        {% if companies %}
+            {% for company in companies %}
+            <div class="company-card">
+                <div class="company-name">{{ company.company_name }}</div>
+                <div class="industry">Industry: {{ company.industry }}</div>
+                <div class="location">Location: {{ company.location }}</div>
+                <div class="employee-count">Employees: {{ company.employee_count }}</div>
+                <button id="view-company-button-{{ company.company_id }}" onclick="location.href='{{ url_for('companies.company_profile', company_id=company.company_id) }}'">View Profile</button>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No companies found.</p>
+        {% endif %}
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard.dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

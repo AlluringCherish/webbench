@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Submit Application - JobBoard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        #application-form-page { border: 1px solid #ccc; padding: 20px; border-radius: 5px; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input[type="text"], input[type="email"], textarea, input[type="file"] {
+            width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box;
+        }
+        textarea { resize: vertical; height: 120px; }
+        button { margin-top: 20px; padding: 10px 20px; font-size: 1em; cursor: pointer; }
+        .error { color: red; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div id="application-form-page">
+        <h1>Submit Application</h1>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="error">
+              {% for message in messages %}
+                <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        <form method="post" enctype="multipart/form-data" action="{{ url_for('application_form.apply', job_id=job_id) }}">
+            <label for="applicant-name">Applicant Name *</label>
+            <input id="applicant-name" name="applicant-name" type="text" required value="{{ request.form.get('applicant-name', '') }}" />
+            <label for="applicant-email">Applicant Email *</label>
+            <input id="applicant-email" name="applicant-email" type="email" required value="{{ request.form.get('applicant-email', '') }}" />
+            <label for="resume-upload">Upload Resume (pdf, doc, docx, txt) *</label>
+            <input id="resume-upload" name="resume-upload" type="file" accept=".pdf,.doc,.docx,.txt" required />
+            <label for="cover-letter">Cover Letter *</label>
+            <textarea id="cover-letter" name="cover-letter" required>{{ request.form.get('cover-letter', '') }}</textarea>
+            <button id="submit-application-button" type="submit">Submit Application</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>My Applications - JobBoard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        #tracking-page { }
+        #applications-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        #applications-table th, #applications-table td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        #applications-table th { background-color: #f0f0f0; }
+        #status-filter { margin-top: 10px; padding: 6px; font-size: 1em; }
+        button { padding: 6px 12px; font-size: 0.9em; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="tracking-page">
+        <h1>My Applications</h1>
+        <form method="get" action="{{ url_for('tracking.my_applications') }}">
+            <label for="status-filter">Filter by Status:</label>
+            <select id="status-filter" name="status" onchange="this.form.submit()">
+                <option value="All" {% if status_filter == 'All' %}selected{% endif %}>All</option>
+                <option value="Under Review" {% if status_filter == 'Under Review' %}selected{% endif %}>Under Review</option>
+                <option value="Interview" {% if status_filter == 'Interview' %}selected{% endif %}>Interview</option>
+                <option value="Rejected" {% if status_filter == 'Rejected' %}selected{% endif %}>Rejected</option>
+            </select>
+        </form>
+        {% if applications %}
+        <table id="applications-table">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Applied Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td>{{ app.job_title }}</td>
+                    <td>{{ app.company_name }}</td>
+                    <td>{{ app.status }}</td>
+                    <td>{{ app.applied_date }}</td>
+                    <td>
+                        <button id="view-application-button-{{ app.application_id }}" onclick="location.href='{{ url_for('tracking.application_detail', application_id=app.application_id) }}'">View</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No applications found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

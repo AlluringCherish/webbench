@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>{{ company.company_name }} - Profile - JobBoard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        #company-profile-page { }
+        #company-info { border: 1px solid #ccc; padding: 20px; border-radius: 5px; margin-bottom: 30px; }
+        h1 { margin-bottom: 5px; }
+        .company-detail { margin-top: 10px; }
+        #company-jobs { }
+        .job-card { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+        .job-title { font-weight: bold; font-size: 1.1em; }
+        button { margin-top: 10px; padding: 7px 12px; font-size: 0.9em; cursor: pointer; }
+        #back-to-companies { margin-top: 20px; padding: 10px 20px; font-size: 1em; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="company-profile-page">
+        <div id="company-info">
+            <h1 id="company-name">{{ company.company_name }}</h1>
+            <div class="company-detail"><strong>Industry:</strong> {{ company.industry }}</div>
+            <div class="company-detail"><strong>Location:</strong> {{ company.location }}</div>
+            <div class="company-detail"><strong>Employees:</strong> {{ company.employee_count }}</div>
+            <div class="company-detail" style="margin-top: 15px;">{{ company.description }}</div>
+        </div>
+        <div id="company-jobs">
+            <h2>Jobs at {{ company.company_name }}</h2>
+            {% if jobs %}
+                {% for job in jobs %}
+                <div class="job-card">
+                    <div class="job-title">{{ job.title }}</div>
+                    <button id="view-job-button-{{ job.job_id }}" onclick="location.href='{{ url_for('job_details.job_details', job_id=job.job_id) }}'">View Job</button>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No jobs available for this company.</p>
+            {% endif %}
+        </div>
+        <button id="back-to-companies" onclick="location.href='{{ url_for('companies.companies_directory') }}'">Back to Companies Directory</button>
+    </div>
+</body>
+</html>

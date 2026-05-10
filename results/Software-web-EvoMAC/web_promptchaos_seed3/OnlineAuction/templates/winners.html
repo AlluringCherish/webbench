@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Winning Items</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+<div id="winners-page">
+    <h1>Winning Items</h1>
+    <div id="filter-section">
+        <label for="filter-by-winner">Filter by Winner Name:</label>
+        <input type="text" id="filter-by-winner" name="filter_by_winner" value="{{ filter_winner }}" placeholder="Enter winner name" oninput="filterWinners()">
+    </div>
+    <div id="winners-list">
+        {% if winners %}
+            {% for winner in winners %}
+                <div class="winner-card" id="winner-card-{{ winner.auction_id }}">
+                    <h3>{{ winner.item_name }}</h3>
+                    <p><strong>Winner:</strong> {{ winner.winner_name }}</p>
+                    <p><strong>Winning Bid:</strong> ${{ '%.2f'|format(winner.winning_bid) }}</p>
+                    <p><strong>Win Date:</strong> {{ winner.win_date }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No winning items found.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+<script>
+function filterWinners() {
+    const input = document.getElementById('filter-by-winner');
+    const filter = input.value.toLowerCase();
+    const winnerCards = document.querySelectorAll('.winner-card');
+    winnerCards.forEach(card => {
+        const winnerName = card.querySelector('p strong + text, p:nth-child(2)').textContent || card.querySelector('p:nth-child(2)').textContent;
+        // The winner name is in the second <p> element, after <strong>Winner:</strong>
+        const winnerText = card.querySelector('p:nth-child(2)').textContent.toLowerCase();
+        if (winnerText.indexOf(filter) > -1) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+</script>
+</body>
+</html>

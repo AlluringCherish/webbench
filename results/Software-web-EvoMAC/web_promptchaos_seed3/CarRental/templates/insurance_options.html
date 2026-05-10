@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Insurance Coverage</title>
+    <style>
+        #insurance-page {
+            max-width: 800px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        #insurance-options {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .insurance-plan {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .insurance-plan:hover {
+            background-color: #f0f0f0;
+        }
+        .insurance-plan input[type="radio"] {
+            margin-right: 10px;
+        }
+        #insurance-description, #insurance-price {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        #confirm-booking-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #confirm-booking-button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            margin-bottom: 15px;
+        }
+        .success {
+            color: green;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<div id="insurance-page">
+    <h1>Select Insurance Coverage</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="post" id="insurance-form">
+        <input type="hidden" name="vehicle_id" value="{{ vehicle_id }}">
+        <input type="hidden" name="pickup_location" value="{{ pickup_location }}">
+        <input type="hidden" name="dropoff_location" value="{{ dropoff_location }}">
+        <input type="hidden" name="pickup_date" value="{{ pickup_date }}">
+        <input type="hidden" name="dropoff_date" value="{{ dropoff_date }}">
+        <input type="hidden" name="total_price" value="{{ total_price }}">
+        <div id="insurance-options">
+            {% for plan in insurance_plans %}
+            <label class="insurance-plan" for="select-insurance-{{ plan.insurance_id }}">
+                <input type="radio" id="select-insurance-{{ plan.insurance_id }}" name="selected_insurance" value="{{ plan.insurance_id }}"
+                    {% if selected_insurance_id == plan.insurance_id %}checked{% endif %}>
+                <strong>{{ plan.plan_name }}</strong> - ${{ "%.2f"|format(plan.daily_cost) }} per day<br>
+                {{ plan.description }}<br>
+                Coverage Limit: {{ plan.coverage_limit }} | Deductible: {{ plan.deductible }}
+            </label>
+            {% endfor %}
+        </div>
+        <div id="insurance-description">
+            {% if selected_insurance_id %}
+                {% set selected_plan = None %}
+                {% for plan in insurance_plans %}
+                    {% if plan.insurance_id == selected_insurance_id %}
+                        {% set selected_plan = plan %}
+                    {% endif %}
+                {% endfor %}
+                {% if selected_plan %}
+                    Description: {{ selected_plan.description }}
+                {% endif %}
+            {% else %}
+                Please select an insurance plan.
+            {% endif %}
+        </div>
+        <div id="insurance-price">
+            {% if selected_insurance_id %}
+                {% set selected_plan = None %}
+                {% for plan in insurance_plans %}
+                    {% if plan.insurance_id == selected_insurance_id %}
+                        {% set selected_plan = plan %}
+                    {% endif %}
+                {% endfor %}
+                {% if selected_plan %}
+                    Insurance Price: ${{ "%.2f"|format(selected_plan.daily_cost * (( ( (dropoff_date | tojson | safe) | replace('"','') | string | safe) | string | safe) | safe)) }}
+                {% endif %}
+            {% endif %}
+        </div>
+        <button type="submit" id="confirm-booking-button">Confirm Booking</button>
+    </form>
+</div>
+<script>
+    // JavaScript to update insurance description and price dynamically on selection
+    const insurancePlans = {{ insurance_plans | tojson }};
+    const totalPrice = parseFloat("{{ total_price }}");
+    const pickupDateStr = "{{ pickup_date }}";
+    const dropoffDateStr = "{{ dropoff_date }}";
+    function daysBetween(start, end) {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        const diffTime = endDate - startDate;
+        return Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    }
+    const days = daysBetween(pickupDateStr, dropoffDateStr);
+    const insuranceDescriptionDiv = document.getElementById('insurance-description');
+    const insurancePriceDiv = document.getElementById('insurance-price');
+    const radios = document.querySelectorAll('input[name="selected_insurance"]');
+    radios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const selectedId = this.value;
+            const plan = insurancePlans.find(p => p.insurance_id === selectedId);
+            if (plan) {
+                insuranceDescriptionDiv.textContent = "Description: " + plan.description;
+                const insuranceCost = (plan.daily_cost * days).toFixed(2);
+                insurancePriceDiv.textContent = "Insurance Price: $" + insuranceCost;
+            } else {
+                insuranceDescriptionDiv.textContent = "Please select an insurance plan.";
+                insurancePriceDiv.textContent = "";
+            }
+        });
+    });
+    // On page load, if a plan is selected, trigger change event to update description and price
+    window.addEventListener('load', () => {
+        const checkedRadio = document.querySelector('input[name="selected_insurance"]:checked');
+        if (checkedRadio) {
+            checkedRadio.dispatchEvent(new Event('change'));
+        }
+    });
+</script>
+</body>
+</html>

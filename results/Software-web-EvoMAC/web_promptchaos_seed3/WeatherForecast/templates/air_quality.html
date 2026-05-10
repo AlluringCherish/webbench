@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Air Quality Index</title>
+</head>
+<body>
+    <div id="air-quality-page">
+        <h1>Air Quality Index</h1>
+        <form method="get" action="{{ url_for('air_quality') }}">
+            <label for="location-aqi-filter">Filter by Location:</label>
+            <select id="location-aqi-filter" name="location_id" onchange="this.form.submit()">
+                <option value="" {% if not selected_location %}selected{% endif %}>Select Location</option>
+                {% for loc_id, loc in locations.items() %}
+                    <option value="{{ loc_id }}" {% if selected_location == loc_id %}selected{% endif %}>{{ loc.location_name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        {% if air_quality %}
+            <div id="aqi-display">AQI Index: {{ air_quality.aqi_index }}</div>
+            <div id="aqi-description">
+                {% set aqi_val = air_quality.aqi_index|int %}
+                {% if aqi_val <= 50 %}
+                    Good
+                {% elif aqi_val <= 100 %}
+                    Moderate
+                {% elif aqi_val <= 150 %}
+                    Unhealthy for Sensitive Groups
+                {% elif aqi_val <= 200 %}
+                    Unhealthy
+                {% elif aqi_val <= 300 %}
+                    Very Unhealthy
+                {% else %}
+                    Hazardous
+                {% endif %}
+            </div>
+            <table id="pollution-details" border="1" cellpadding="5" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>PM2.5</th>
+                        <th>PM10</th>
+                        <th>NO2</th>
+                        <th>O3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ air_quality.pm25 }}</td>
+                        <td>{{ air_quality.pm10 }}</td>
+                        <td>{{ air_quality.no2 }}</td>
+                        <td>{{ air_quality.o3 }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="health-recommendation">
+                {% if aqi_val <= 50 %}
+                    Air quality is considered satisfactory, and air pollution poses little or no risk.
+                {% elif aqi_val <= 100 %}
+                    Air quality is acceptable; however, some pollutants may be a moderate health concern for a very small number of people.
+                {% elif aqi_val <= 150 %}
+                    Members of sensitive groups may experience health effects. The general public is not likely to be affected.
+                {% elif aqi_val <= 200 %}
+                    Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects.
+                {% elif aqi_val <= 300 %}
+                    Health alert: everyone may experience more serious health effects.
+                {% else %}
+                    Health warnings of emergency conditions. The entire population is more likely to be affected.
+                {% endif %}
+            </div>
+        {% else %}
+            <p>No air quality data available for selected location.</p>
+        {% endif %}
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

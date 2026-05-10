@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Learning</title>
+</head>
+<body>
+    <div id="learning-page">
+        <h1>{{ course.title }} - Learning</h1>
+        <div id="lessons-list">
+            <h2>Lessons</h2>
+            <ul>
+                {% for lesson in lessons_list %}
+                    <li>
+                        Lesson {{ lesson.lesson_number }} - 
+                        {% if lesson.completed %}
+                            Completed
+                        {% else %}
+                            Pending
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="lesson-content">
+            <p>{{ lesson_content }}</p>
+        </div>
+        <form method="post" action="{{ url_for('course_learning', course_id=course.course_id) }}">
+            {% if current_lesson_index < total_lessons %}
+                <button id="mark-complete-button" type="submit">Mark Complete</button>
+            {% else %}
+                <button id="mark-complete-button" type="submit" disabled>All Lessons Completed</button>
+            {% endif %}
+        </form>
+        <button id="back-to-my-courses" onclick="location.href='{{ url_for('my_courses') }}'">Back to My Courses</button>
+    </div>
+</body>
+</html>

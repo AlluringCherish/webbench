@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Dashboard</title>
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Weather Dashboard</h1>
+        <div id="current-weather-summary">
+            {% if weather %}
+                <h2>{{ weather.location_name }}</h2>
+                <p>Temperature: {{ weather.temperature }}°</p>
+                <p>Condition: {{ weather.condition }}</p>
+                <p>Humidity: {{ weather.humidity }}%</p>
+                <p>Wind Speed: {{ weather.wind_speed }} mph</p>
+                <p>Last Updated: {{ weather.last_updated }}</p>
+            {% else %}
+                <p>No weather data available for default location.</p>
+            {% endif %}
+        </div>
+        <button id="search-location-button" onclick="location.href='{{ url_for('locations_page') }}'">Search Locations</button>
+        <button id="view-forecast-button" onclick="location.href='{{ url_for('weekly_forecast') }}'">View Weekly Forecast</button>
+        <button id="view-alerts-button" onclick="location.href='{{ url_for('alerts') }}'">View Weather Alerts</button>
+        <h3>Saved Locations</h3>
+        <ul id="saved-locations-list">
+            {% for loc in saved_locations %}
+                <li>
+                    {{ loc.location_name }}
+                    <button onclick="location.href='{{ url_for('weather', location_id=loc.location_id) }}'">View Weather</button>
+                </li>
+            {% else %}
+                <li>No saved locations.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

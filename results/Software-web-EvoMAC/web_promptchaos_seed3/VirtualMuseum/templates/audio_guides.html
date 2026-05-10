@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audio Guides</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function playAudioGuide(guideId) {
+            alert('Playing audio guide with ID: ' + guideId + '. Audio playback functionality to be implemented.');
+            // Placeholder for actual audio playback logic
+        }
+    </script>
+</head>
+<body>
+    <div id="audio-guides-page">
+        <h1>Audio Guides</h1>
+        <form method="post" action="{{ url_for('audio_guides') }}">
+            <label for="filter-language">Filter by Language:</label>
+            <select id="filter-language" name="filter-language">
+                <option value="" {% if filter_language == '' %}selected{% endif %}>All</option>
+                <option value="English" {% if filter_language == 'English' %}selected{% endif %}>English</option>
+                <option value="Spanish" {% if filter_language == 'Spanish' %}selected{% endif %}>Spanish</option>
+                <option value="French" {% if filter_language == 'French' %}selected{% endif %}>French</option>
+            </select>
+            <button type="submit" id="apply-language-filter">Apply Filter</button>
+        </form>
+        <table id="audio-guide-list" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Exhibit Number</th>
+                    <th>Title</th>
+                    <th>Language</th>
+                    <th>Duration (min)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for guide in audio_guides %}
+                <tr>
+                    <td>{{ guide.exhibit_number }}</td>
+                    <td>{{ guide.title }}</td>
+                    <td>{{ guide.language }}</td>
+                    <td>{{ guide.duration }}</td>
+                    <td>
+                        <button id="play-guide-button-{{ guide.guide_id }}" onclick="playAudioGuide('{{ guide.guide_id }}')">Play</button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5">No audio guides found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

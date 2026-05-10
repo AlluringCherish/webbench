@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>Auction Dashboard</h1>
+    <section id="featured-auctions">
+        <h2>Featured Auctions</h2>
+        {% if featured_auctions %}
+            <div class="featured-auctions-container">
+                {% for auction in featured_auctions %}
+                    <div class="auction-card" id="featured-auction-{{ auction.auction_id }}">
+                        <img src="{{ url_for('static', filename='images/' + auction.image_url) }}" alt="{{ auction.item_name }}" class="auction-image">
+                        <h3>{{ auction.item_name }}</h3>
+                        <p>Current Bid: ${{ '%.2f'|format(auction.current_bid) }}</p>
+                        <p>Ends: {{ auction.end_time }}</p>
+                        <a href="{{ url_for('auction_details', auction_id=auction.auction_id) }}">
+                            <button id="view-auction-button-{{ auction.auction_id }}">View Details</button>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No featured auctions available.</p>
+        {% endif %}
+    </section>
+    <section id="trending-auctions-section">
+        <h2>Trending Auctions</h2>
+        {% if trending_auctions %}
+            <div class="trending-auctions-container">
+                {% for auction in trending_auctions %}
+                    <div class="trending-auction-card" id="trending-auction-{{ auction.auction_id }}">
+                        <span class="trending-rank">#{{ auction.trending_rank }}</span>
+                        <h3>{{ auction.item_name }}</h3>
+                        <p>Current Bid: ${{ '%.2f'|format(auction.current_bid) }}</p>
+                        <p>Bid Count: {{ auction.bid_count }}</p>
+                        <a href="{{ url_for('auction_details', auction_id=auction.auction_id) }}">
+                            <button id="view-auction-button-{{ auction.auction_id }}">View Details</button>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No trending auctions available.</p>
+        {% endif %}
+    </section>
+    <nav id="dashboard-navigation">
+        <button id="browse-auctions-button" onclick="location.href='{{ url_for('catalog') }}'">Browse Auctions</button>
+        <button id="view-bids-button" onclick="location.href='{{ url_for('bid_history') }}'">View Bid History</button>
+        <button id="trending-auctions-button" onclick="location.href='{{ url_for('trending') }}'">Trending Auctions</button>
+        <button id="categories-button" onclick="location.href='{{ url_for('categories') }}'">Auction Categories</button>
+        <button id="winners-button" onclick="location.href='{{ url_for('winners') }}'">Winning Items</button>
+        <button id="status-button" onclick="location.href='{{ url_for('status') }}'">Auction Status</button>
+    </nav>
+</div>
+</body>
+</html>

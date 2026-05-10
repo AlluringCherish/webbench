@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Write a Review</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="write-review-page">
+    <h1>Write a Review</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="post" action="{{ url_for('write_review') }}">
+        <label for="select-book">Select Book:</label><br>
+        <select id="select-book" name="select-book" required>
+            <option value="" disabled {% if not selected_book %}selected{% endif %}>-- Select a book --</option>
+            {% for book in books %}
+                <option value="{{ book.book_id }}" {% if selected_book == book.book_id %}selected{% endif %}>{{ book.title }}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="rating-select">Rating:</label><br>
+        <select id="rating-select" name="rating-select" required>
+            <option value="" disabled {% if not selected_rating %}selected{% endif %}>-- Select rating --</option>
+            {% for i in range(1,6) %}
+                <option value="{{ i }}" {% if selected_rating == i|string %}selected{% endif %}>{{ i }} star{% if i > 1 %}s{% endif %}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="review-text">Review:</label><br>
+        <textarea id="review-text" name="review-text" rows="5" cols="50" required>{{ review_text|default('') }}</textarea><br><br>
+        <button type="submit" id="submit-review-button">Submit Review</button>
+    </form>
+    <nav>
+        <button onclick="location.href='{{ url_for('reviews') }}'">Back to Reviews</button>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </nav>
+</div>
+</body>
+</html>

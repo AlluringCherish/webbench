@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="book-details-page">
+    <h1 id="book-title">{{ book.title }}</h1>
+    <div id="book-author"><strong>Author:</strong> {{ book.author }}</div>
+    <div id="book-price"><strong>Price:</strong> ${{ "%.2f"|format(book.price) }}</div>
+    <div id="book-description"><strong>Description:</strong> {{ book.description }}</div>
+    <form method="post" action="{{ url_for('book_details', book_id=book.book_id) }}">
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ book.stock }}">
+        <button type="submit" id="add-to-cart-button">Add to Cart</button>
+    </form>
+    <section id="book-reviews">
+        <h2>Customer Reviews</h2>
+        {% if reviews %}
+            <ul>
+                {% for review in reviews %}
+                    <li>
+                        <strong>{{ review.customer_name }}</strong> ({{ review.review_date }}) - Rating: {{ review.rating }} / 5
+                        <p>{{ review.review_text }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No reviews yet.</p>
+        {% endif %}
+    </section>
+    <nav>
+        <button onclick="location.href='{{ url_for('catalog') }}'">Back to Catalog</button>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard - JobBoard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #dashboard-page { max-width: 900px; margin: auto; }
+        #featured-jobs { margin-bottom: 30px; }
+        .job-card { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+        .job-title { font-weight: bold; font-size: 1.2em; }
+        .company-name { color: #555; }
+        .location { font-style: italic; color: #777; }
+        .salary-range { color: green; margin-top: 5px; }
+        button { margin-right: 10px; padding: 8px 15px; font-size: 1em; cursor: pointer; }
+        #navigation-buttons { margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Dashboard</h1>
+        <div id="featured-jobs">
+            <h2>Featured Jobs</h2>
+            {% if featured_jobs %}
+                {% for job in featured_jobs %}
+                <div class="job-card">
+                    <div class="job-title">{{ job.title }}</div>
+                    <div class="company-name">{{ job.company_name }}</div>
+                    <div class="location">{{ job.location }}</div>
+                    <div class="salary-range">${{ "{:,}".format(job.salary_min) }} - ${{ "{:,}".format(job.salary_max) }}</div>
+                    <button onclick="location.href='{{ url_for('job_details.job_details', job_id=job.job_id) }}'">View Job</button>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No featured jobs available.</p>
+            {% endif %}
+        </div>
+        <div id="navigation-buttons">
+            <button id="browse-jobs-button" onclick="location.href='{{ url_for('listings.browse_jobs') }}'">Browse Jobs</button>
+            <button id="my-applications-button" onclick="location.href='{{ url_for('tracking.my_applications') }}'">My Applications</button>
+            <button id="companies-button" onclick="location.href='{{ url_for('companies.companies_directory') }}'">Companies Directory</button>
+        </div>
+    </div>
+</body>
+</html>

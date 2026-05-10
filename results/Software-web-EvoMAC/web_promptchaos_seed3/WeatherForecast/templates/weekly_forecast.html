@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Forecast</title>
+</head>
+<body>
+    <div id="forecast-page">
+        <h1>Weekly Forecast</h1>
+        <label for="location-filter">Filter by Location:</label>
+        <form method="get" action="{{ url_for('weekly_forecast') }}">
+            <select id="location-filter" name="location_id" onchange="this.form.submit()">
+                <option value="" {% if not selected_location %}selected{% endif %}>All Locations</option>
+                {% for loc_id, loc in locations.items() %}
+                    <option value="{{ loc_id }}" {% if selected_location == loc_id %}selected{% endif %}>{{ loc.location_name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <table id="forecast-table" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>High Temp</th>
+                    <th>Low Temp</th>
+                    <th>Condition</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for forecast in forecasts %}
+                    <tr>
+                        <td>{{ forecast.date }}</td>
+                        <td>{{ forecast.high_temp }}°</td>
+                        <td>{{ forecast.low_temp }}°</td>
+                        <td>{{ forecast.condition }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">No forecast data available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div id="forecast-list" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+            {% for forecast in forecasts %}
+                <div style="border: 1px solid #ccc; padding: 10px; width: 120px;">
+                    <strong>{{ forecast.date }}</strong><br>
+                    High: {{ forecast.high_temp }}°<br>
+                    Low: {{ forecast.low_temp }}°<br>
+                    {{ forecast.condition }}
+                </div>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+'''
+Category Articles page template for NewsPortal.
+Displays articles from a specific category with sorting options.
+Uses Flask url_for for all internal links and form actions.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Category Articles - {{ category.category_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<div id="category-page">
+    <h1 id="category-title">{{ category.category_name }}</h1>
+    <div id="navigation-buttons">
+        <button onclick="location.href='{{ url_for('category_page', category_name=category.category_name, sort='date') }}'" id="sort-by-date">Sort by Date</button>
+        <button onclick="location.href='{{ url_for('category_page', category_name=category.category_name, sort='popularity') }}'" id="sort-by-popularity">Sort by Popularity</button>
+    </div>
+    <div id="category-articles">
+        {% if articles %}
+            {% for article in articles %}
+                <div class="category-article-item">
+                    <div class="category-article-title">{{ article.title }}</div>
+                    <div class="category-article-meta">By {{ article.author }} | {{ article.date }} | Views: {{ article.views }}</div>
+                    <form method="get" action="{{ url_for('article_details', article_id=article.article_id) }}">
+                        <button type="submit">Read Article</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-results-message">No articles found in this category.</p>
+        {% endif %}
+    </div>
+    <div id="buttons-container">
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</div>
+</body>
+</html>

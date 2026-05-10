@@ -1,0 +1,44 @@
+'''
+Comments page template for NewsPortal.
+Displays all comments on articles and allows filtering by article.
+Uses Flask url_for for all internal links and form actions.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article Comments</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<div id="comments-page">
+    <h1>Article Comments</h1>
+    <form method="get" action="{{ url_for('comments') }}">
+        <label for="filter-by-article">Filter by Article:</label>
+        <select id="filter-by-article" name="article_id" onchange="this.form.submit()">
+            <option value="">All Articles</option>
+            {% for article in articles %}
+                <option value="{{ article.article_id }}" {% if selected_article_id == article.article_id %}selected{% endif %}>{{ article.title }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <div id="comments-list">
+        {% if comments %}
+            {% for comment in comments %}
+                <div class="comment-item">
+                    <div class="comment-article-title"><strong>{{ comment.article_title }}</strong></div>
+                    <div class="comment-meta">By {{ comment.commenter_name }} on {{ comment.comment_date }}</div>
+                    <div class="comment-text">{{ comment.comment_text }}</div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-results-message">No comments available.</p>
+        {% endif %}
+    </div>
+    <div id="buttons-container">
+        <button id="write-comment-button" onclick="location.href='{{ url_for('write_comment') }}'">Write a Comment</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</div>
+</body>
+</html>

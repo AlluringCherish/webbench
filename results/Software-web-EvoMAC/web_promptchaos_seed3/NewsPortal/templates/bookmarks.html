@@ -1,0 +1,38 @@
+'''
+Bookmarks page template for NewsPortal.
+Displays all bookmarked articles with removal and reading options.
+Uses Flask url_for for all internal links and form actions.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Bookmarks</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<div id="bookmarks-page">
+    <h1>My Bookmarks</h1>
+    <div id="bookmarks-list">
+        {% if bookmarks %}
+            {% for bookmark in bookmarks %}
+                <div class="bookmark-item">
+                    <div class="bookmark-title">{{ bookmark.article_title }}</div>
+                    <div class="bookmark-date">Bookmarked on {{ bookmark.bookmarked_date }}</div>
+                    <form method="post" action="{{ url_for('bookmarks') }}">
+                        <input type="hidden" name="bookmark_id" value="{{ bookmark.bookmark_id }}">
+                        <button type="submit" name="action" value="read" id="read-bookmark-button-{{ bookmark.bookmark_id }}">Read</button>
+                        <button type="submit" name="action" value="remove" id="remove-bookmark-button-{{ bookmark.bookmark_id }}">Remove</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-results-message">No bookmarks available.</p>
+        {% endif %}
+    </div>
+    <div id="buttons-container">
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</div>
+</body>
+</html>

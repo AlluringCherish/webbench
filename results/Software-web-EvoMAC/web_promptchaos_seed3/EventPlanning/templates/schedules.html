@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Schedules</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="schedules-page">
+        <h1>Event Schedules</h1>
+        <form method="get" action="{{ url_for('schedules_page') }}">
+            <label for="schedule-filter-date">Filter by Date:</label>
+            <input type="date" id="schedule-filter-date" name="date" value="{{ filter_date }}">
+            <label for="schedule-filter-event">Filter by Event:</label>
+            <select id="schedule-filter-event" name="event">
+                <option value="">All Events</option>
+                {% for event in events %}
+                    <option value="{{ event.event_id }}" {% if filter_event == event.event_id %}selected{% endif %}>{{ event.event_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+            <button type="button" id="export-schedule-button" onclick="alert('Export schedule functionality not implemented.')">Export Schedule</button>
+            <button type="button" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </form>
+        <div id="schedules-timeline">
+            {% if schedules %}
+                <ul>
+                    {% for s in schedules %}
+                        <li>
+                            <strong>{{ s.session_title }}</strong><br>
+                            Event: {{ s.event_name }}<br>
+                            Time: {{ s.session_time }}<br>
+                            Duration: {{ s.duration_minutes }} minutes<br>
+                            Speaker: {{ s.speaker }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No schedules found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

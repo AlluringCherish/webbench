@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="checkout-page">
+    <h1>Checkout</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <p><strong>Total Amount:</strong> ${{ "%.2f"|format(total_amount) }}</p>
+    <form method="post" action="{{ url_for('checkout') }}">
+        <label for="customer-name">Customer Name:</label><br>
+        <input type="text" id="customer-name" name="customer-name" value="{{ customer_name|default('') }}" required><br><br>
+        <label for="shipping-address">Shipping Address:</label><br>
+        <textarea id="shipping-address" name="shipping-address" rows="4" cols="50" required>{{ shipping_address|default('') }}</textarea><br><br>
+        <label for="payment-method">Payment Method:</label><br>
+        <select id="payment-method" name="payment-method" required>
+            <option value="" disabled {% if not payment_method %}selected{% endif %}>Select payment method</option>
+            <option value="Credit Card" {% if payment_method == 'Credit Card' %}selected{% endif %}>Credit Card</option>
+            <option value="PayPal" {% if payment_method == 'PayPal' %}selected{% endif %}>PayPal</option>
+            <option value="Bank Transfer" {% if payment_method == 'Bank Transfer' %}selected{% endif %}>Bank Transfer</option>
+        </select><br><br>
+        <button type="submit" id="place-order-button">Place Order</button>
+    </form>
+    <nav>
+        <button onclick="location.href='{{ url_for('cart') }}'">Back to Cart</button>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </nav>
+</div>
+</body>
+</html>

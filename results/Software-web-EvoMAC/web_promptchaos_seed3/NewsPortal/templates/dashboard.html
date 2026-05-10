@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>News Portal</title>
+    <style>
+        /* Basic styling for layout */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        #dashboard-page {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #featured-articles, #trending-articles {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px #ccc;
+        }
+        #featured-articles h2, #trending-articles h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 5px;
+            color: #007BFF;
+        }
+        .article-card {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .article-card:last-child {
+            border-bottom: none;
+        }
+        .article-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #333;
+            margin: 0 0 5px 0;
+        }
+        .article-meta {
+            font-size: 0.9em;
+            color: #666;
+        }
+        #buttons-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin: 0 10px;
+            font-size: 1em;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a.article-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        a.article-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>News Portal</h1>
+    <div id="featured-articles">
+        <h2>Featured Articles</h2>
+        {% if featured_articles %}
+            {% for article in featured_articles %}
+                <div class="article-card">
+                    <a href="{{ url_for('article_details', article_id=article.article_id) }}" class="article-link">
+                        <div class="article-title" id="featured-article-title-{{ article.article_id }}">{{ article.title }}</div>
+                    </a>
+                    <div class="article-meta">By {{ article.author }} | {{ article.date }} | Views: {{ article.views }}</div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No featured articles available.</p>
+        {% endif %}
+    </div>
+    <div id="buttons-container">
+        <button id="browse-articles-button" onclick="location.href='{{ url_for('article_catalog') }}'">Browse Articles</button>
+        <button id="view-bookmarks-button" onclick="location.href='{{ url_for('bookmarks') }}'">View Bookmarks</button>
+        <button id="trending-articles-button" onclick="location.href='{{ url_for('trending') }}'">Trending Articles</button>
+    </div>
+    <div id="trending-articles">
+        <h2>Trending This Week</h2>
+        {% if trending_articles %}
+            {% for idx, article in enumerate(trending_articles, start=1) %}
+                <div class="article-card">
+                    <a href="{{ url_for('article_details', article_id=article.article_id) }}" class="article-link">
+                        <div class="article-title" id="trending-article-title-{{ article.article_id }}">
+                            {{ idx }}. {{ article.article_title }}
+                        </div>
+                    </a>
+                    <div class="article-meta">Category: {{ article.category }} | Views: {{ article.view_count }}</div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No trending articles available for this week.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

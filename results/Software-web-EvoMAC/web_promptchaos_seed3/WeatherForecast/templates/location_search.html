@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Locations</title>
+</head>
+<body>
+    <div id="search-page">
+        <h1>Search Locations</h1>
+        <form method="get" action="{{ url_for('locations_page') }}">
+            <input type="text" id="location-search-input" name="q" placeholder="Search by city name or coordinates" value="{{ request.args.get('q', '') }}">
+            <button type="submit">Search</button>
+        </form>
+        <div id="search-results">
+            {% if locations %}
+                <ul>
+                {% for loc_id, loc in locations.items() %}
+                    {% if not request.args.get('q') or request.args.get('q').lower() in loc.location_name.lower() %}
+                    <li>
+                        {{ loc.location_name }} ({{ loc.country }})
+                        <button id="select-location-button-{{ loc.location_id }}" onclick="location.href='{{ url_for('weather', location_id=loc.location_id) }}'">Select</button>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No locations found.</p>
+            {% endif %}
+        </div>
+        <h3>Saved Locations</h3>
+        <div id="saved-locations-list">
+            {% if saved_locations %}
+                <ul>
+                {% for loc in saved_locations %}
+                    <li>{{ loc.location_name }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No saved locations.</p>
+            {% endif %}
+        </div>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

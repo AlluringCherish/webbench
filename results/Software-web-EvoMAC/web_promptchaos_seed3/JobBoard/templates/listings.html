@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Job Listings - JobBoard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #listings-page { max-width: 1000px; margin: auto; }
+        #search-filters { margin-bottom: 20px; }
+        input[type="text"], select { padding: 8px; margin-right: 10px; font-size: 1em; }
+        #job-listings { display: grid; grid-template-columns: repeat(auto-fill,minmax(300px,1fr)); gap: 15px; }
+        .job-card { border: 1px solid #ccc; padding: 15px; border-radius: 5px; }
+        .job-title { font-weight: bold; font-size: 1.1em; }
+        .company-name { color: #555; }
+        .location { font-style: italic; color: #777; }
+        .salary-range { color: green; margin-top: 5px; }
+        button { margin-top: 10px; padding: 7px 12px; font-size: 0.9em; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="listings-page">
+        <h1>Job Listings</h1>
+        <div id="search-filters">
+            <form method="get" action="{{ url_for('listings.browse_jobs') }}">
+                <input id="title-filter" name="title" type="text" placeholder="Search by job title" value="{{ request.args.get('title', '') }}" />
+                <select id="category-filter" name="category">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.name }}" {% if cat.name == request.args.get('category') %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+                <select id="location-filter" name="location">
+                    <option value="All" {% if request.args.get('location', 'All') == 'All' %}selected{% endif %}>All Locations</option>
+                    <option value="Remote" {% if request.args.get('location') == 'Remote' %}selected{% endif %}>Remote</option>
+                    <option value="On-site" {% if request.args.get('location') == 'On-site' %}selected{% endif %}>On-site</option>
+                    <option value="Hybrid" {% if request.args.get('location') == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+                </select>
+                <button type="submit" id="browse-jobs-button">Search</button>
+            </form>
+        </div>
+        <div id="job-listings">
+            {% if jobs %}
+                {% for job in jobs %}
+                <div class="job-card">
+                    <div class="job-title">{{ job.title }}</div>
+                    <div class="company-name">{{ job.company_name }}</div>
+                    <div class="location">{{ job.location }}</div>
+                    <div class="salary-range">${{ "{:,}".format(job.salary_min) }} - ${{ "{:,}".format(job.salary_max) }}</div>
+                    <button id="view-job-button-{{ job.job_id }}" onclick="location.href='{{ url_for('job_details.job_details', job_id=job.job_id) }}'">View Job</button>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No jobs found matching your criteria.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

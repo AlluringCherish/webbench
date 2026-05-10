@@ -1,0 +1,39 @@
+'''
+Write Comment page template for NewsPortal.
+Allows users to write comments on articles.
+Uses Flask url_for for all internal links and form actions.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Write a Comment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<div id="write-comment-page">
+    <h1>Write a Comment</h1>
+    {% if error %}
+        <p class="error-message">{{ error }}</p>
+    {% endif %}
+    <form method="post" action="{{ url_for('write_comment') }}">
+        <label for="select-article">Select Article:</label>
+        <select id="select-article" name="select-article" required>
+            <option value="">-- Select an Article --</option>
+            {% for article in articles %}
+                <option value="{{ article.article_id }}" {% if selected_article_id == article.article_id %}selected{% endif %}>{{ article.title }}</option>
+            {% endfor %}
+        </select>
+        <label for="commenter-name">Your Name:</label>
+        <input type="text" id="commenter-name" name="commenter-name" value="{{ commenter_name|default('') }}" required>
+        <label for="comment-text">Comment:</label>
+        <textarea id="comment-text" name="comment-text" required>{{ comment_text|default('') }}</textarea>
+        <button type="submit" id="submit-comment-button">Submit Comment</button>
+    </form>
+    <div id="buttons-container">
+        <button onclick="location.href='{{ url_for('comments') }}'">Back to Comments</button>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</div>
+</body>
+</html>

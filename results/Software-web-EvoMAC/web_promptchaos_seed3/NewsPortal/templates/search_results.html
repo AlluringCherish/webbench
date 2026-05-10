@@ -1,0 +1,43 @@
+'''
+Search Results page template for NewsPortal.
+Displays search results based on user query.
+Uses Flask url_for for all internal links and form actions.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<div id="search-results-page">
+    <h1>Search Results</h1>
+    <div id="search-query-display">
+        {% if search_query %}
+            <p>Results for: <strong>{{ search_query }}</strong></p>
+        {% else %}
+            <p>No search query provided.</p>
+        {% endif %}
+    </div>
+    <div id="results-list">
+        {% if results %}
+            {% for article in results %}
+                <div class="search-result-item">
+                    <div class="search-result-title">{{ article.title }}</div>
+                    <div class="search-result-excerpt">{{ article.content[:150] }}{% if article.content|length > 150 %}...{% endif %}</div>
+                    <form method="get" action="{{ url_for('article_details', article_id=article.article_id) }}">
+                        <button type="submit">Read Article</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div id="no-results-message" class="no-results-message">No results found.</div>
+        {% endif %}
+    </div>
+    <div id="buttons-container">
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</div>
+</body>
+</html>
