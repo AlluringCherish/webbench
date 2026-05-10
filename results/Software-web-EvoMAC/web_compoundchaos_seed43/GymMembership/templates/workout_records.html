@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Workout Records</title>
+</head>
+<body>
+    <div id="workouts-page">
+        <h1>My Workout Records</h1>
+        <div>
+            <label for="filter-by-type">Filter by Workout Type:</label>
+            <select id="filter-by-type" onchange="filterWorkouts()">
+                <option value="">All</option>
+                <option value="Class" {% if filter_type == 'class' %}selected{% endif %}>Class</option>
+                <option value="PT Session" {% if filter_type == 'pt session' %}selected{% endif %}>PT Session</option>
+                <option value="Personal" {% if filter_type == 'personal' %}selected{% endif %}>Personal</option>
+                <option value="Cardio" {% if filter_type == 'cardio' %}selected{% endif %}>Cardio</option>
+                <option value="Strength" {% if filter_type == 'strength' %}selected{% endif %}>Strength</option>
+                <option value="Flexibility" {% if filter_type == 'flexibility' %}selected{% endif %}>Flexibility</option>
+                <option value="Sports" {% if filter_type == 'sports' %}selected{% endif %}>Sports</option>
+            </select>
+        </div>
+        <table id="workouts-table" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Duration (minutes)</th>
+                    <th>Calories Burned</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for workout in workouts %}
+                    <tr>
+                        <td>{{ workout.workout_date }}</td>
+                        <td>{{ workout.workout_type }}</td>
+                        <td>{{ workout.duration_minutes }}</td>
+                        <td>{{ workout.calories_burned }}</td>
+                        <td>{{ workout.notes }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">No workout records found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="log-workout-button" onclick="location.href='{{ url_for('log_workout') }}'">Log a New Workout</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+    <script>
+        function filterWorkouts() {
+            const filter = document.getElementById('filter-by-type').value;
+            let url = '{{ url_for("workout_records") }}';
+            if (filter) {
+                url += '?filter=' + encodeURIComponent(filter);
+            }
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>

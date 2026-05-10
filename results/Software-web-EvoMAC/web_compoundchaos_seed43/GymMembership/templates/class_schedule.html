@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class Schedule</title>
+</head>
+<body>
+    <div id="schedule-page">
+        <h1>Class Schedule</h1>
+        <div>
+            <input id="schedule-search" type="text" placeholder="Search classes or trainers" value="{{ search_query }}" onkeydown="if(event.key === 'Enter'){ applyFilters(); }">
+            <select id="schedule-filter" onchange="applyFilters()">
+                <option value="">All Types</option>
+                <option value="Yoga" {% if filter_type == 'yoga' %}selected{% endif %}>Yoga</option>
+                <option value="CrossFit" {% if filter_type == 'crossfit' %}selected{% endif %}>CrossFit</option>
+                <option value="Pilates" {% if filter_type == 'pilates' %}selected{% endif %}>Pilates</option>
+                <option value="Boxing" {% if filter_type == 'boxing' %}selected{% endif %}>Boxing</option>
+            </select>
+        </div>
+        <div id="classes-grid">
+            {% for cls in classes %}
+                <div>
+                    <h3>{{ cls.class_name }}</h3>
+                    <p>Type: {{ cls.class_type }}</p>
+                    <p>Schedule: {{ cls.schedule_day }} at {{ cls.schedule_time }} ({{ cls.duration }} mins)</p>
+                    <p>Trainer: {{ trainer_dict[cls.trainer_id] if cls.trainer_id in trainer_dict else 'Unknown' }}</p>
+                    <p>Capacity: {{ cls.capacity }}</p>
+                    <button id="enroll-class-button-{{ cls.class_id }}" onclick="alert('Enrollment functionality not implemented.')">Enroll in Class</button>
+                </div>
+            {% else %}
+                <p>No classes found.</p>
+            {% endfor %}
+        </div>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+    <script>
+        function applyFilters() {
+            const search = document.getElementById('schedule-search').value.trim();
+            const filter = document.getElementById('schedule-filter').value;
+            let url = '{{ url_for("class_schedule") }}';
+            let params = [];
+            if (search) {
+                params.push('search=' + encodeURIComponent(search));
+            }
+            if (filter) {
+                params.push('filter=' + encodeURIComponent(filter));
+            }
+            if (params.length > 0) {
+                url += '?' + params.join('&');
+            }
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>

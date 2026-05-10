@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>News Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #dashboard-page {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #featured-articles, #trending-articles {
+            margin-bottom: 40px;
+        }
+        .article-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .article-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        .article-meta {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background-color: #007BFF;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #buttons-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #featured-articles h2, #trending-articles h2 {
+            margin-bottom: 15px;
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 5px;
+        }
+        .featured-article, .trending-article {
+            margin-bottom: 10px;
+        }
+        .trending-article span.rank {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .trending-article span.views {
+            color: #007BFF;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        a.view-article-link {
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        a.view-article-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>News Portal</h1>
+    <div id="featured-articles">
+        <h2>Featured Articles</h2>
+        {% if featured_articles %}
+            {% for article in featured_articles %}
+                <div class="featured-article article-card">
+                    <div class="article-title">{{ article.title }}</div>
+                    <div class="article-meta">By {{ article.author }} | {{ article.date }} | Views: {{ article.views }}</div>
+                    <a href="{{ url_for('article_details', article_id=article.article_id) }}" class="view-article-link">Read More</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No featured articles available.</p>
+        {% endif %}
+    </div>
+    <div id="trending-articles">
+        <h2>Trending News</h2>
+        {% if trending %}
+            {% for idx, item in enumerate(trending, start=1) %}
+                <div class="trending-article article-card">
+                    <span class="rank">#{{ idx }}</span>
+                    <span class="article-title">{{ item.article_title }}</span>
+                    <span class="category">({{ item.category }})</span>
+                    <span class="views">{{ item.view_count }} views</span>
+                    <a href="{{ url_for('article_details', article_id=item.article_id) }}" class="view-article-link">Read More</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No trending articles available.</p>
+        {% endif %}
+    </div>
+    <div id="buttons-container">
+        <form action="{{ url_for('go_to_catalog') }}" method="post" style="display:inline;">
+            <button id="browse-articles-button" type="submit">Browse Articles</button>
+        </form>
+        <form action="{{ url_for('go_to_bookmarks') }}" method="post" style="display:inline;">
+            <button id="view-bookmarks-button" type="submit">View Bookmarks</button>
+        </form>
+        <form action="{{ url_for('go_to_trending') }}" method="post" style="display:inline;">
+            <button id="trending-articles-button" type="submit">Trending Articles</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gym Membership Dashboard</title>
+</head>
+<body>
+    <div id="dashboard-page">
+        <div id="member-welcome">
+            <h2>{{ member_status }}</h2>
+        </div>
+        <div>
+            <button id="browse-membership-button" onclick="location.href='{{ url_for('membership_plans') }}'">Browse Membership Plans</button>
+            <button id="view-schedule-button" onclick="location.href='{{ url_for('class_schedule') }}'">View Class Schedule</button>
+            <button id="book-trainer-button" onclick="location.href='{{ url_for('pt_booking') }}'">Book Personal Training</button>
+        </div>
+        <hr>
+        <h3>Featured Classes</h3>
+        <div>
+            {% for cls in featured_classes %}
+                <div>
+                    <strong>{{ cls.class_name }}</strong> - {{ cls.schedule_day }} {{ cls.schedule_time }} ({{ cls.duration }} mins)
+                    <br>
+                    Trainer: 
+                    {% for trainer in trainers %}
+                        {% if trainer.trainer_id == cls.trainer_id %}
+                            {{ trainer.name }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No featured classes available.</p>
+            {% endfor %}
+        </div>
+        <hr>
+        <h3>Membership Plans</h3>
+        <div>
+            {% for plan in memberships %}
+                <div>
+                    <strong>{{ plan.plan_name }}</strong> - ${{ plan.price }} / {{ plan.billing_cycle }}
+                    <br>
+                    Features: {{ plan.features }}
+                </div>
+            {% else %}
+                <p>No membership plans available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
