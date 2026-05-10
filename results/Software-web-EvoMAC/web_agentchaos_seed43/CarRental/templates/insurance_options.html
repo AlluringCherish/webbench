@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Insurance Coverage</title>
+    <style>
+        #insurance-page {
+            max-width: 700px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        }
+        #insurance-options {
+            margin-top: 20px;
+        }
+        .insurance-plan {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        .insurance-plan input[type="radio"] {
+            margin-right: 10px;
+        }
+        #insurance-description, #insurance-price {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        function updateInsuranceDetails() {
+            const plans = document.getElementsByName('insurance_id');
+            let description = '';
+            let price = '';
+            for (let i = 0; i < plans.length; i++) {
+                if (plans[i].checked) {
+                    description = plans[i].dataset.description;
+                    price = plans[i].dataset.dailyCost;
+                    break;
+                }
+            }
+            document.getElementById('insurance-description').textContent = description ? "Description: " + description : '';
+            document.getElementById('insurance-price').textContent = price ? "Daily Cost: $" + price : '';
+        }
+        window.onload = function() {
+            updateInsuranceDetails();
+            const radios = document.getElementsByName('insurance_id');
+            radios.forEach(radio => {
+                radio.addEventListener('change', updateInsuranceDetails);
+            });
+        };
+    </script>
+</head>
+<body>
+<div id="insurance-page">
+    <h1>Select Insurance Coverage</h1>
+    <form method="post" action="{{ url_for('insurance_options') }}">
+        <div id="insurance-options">
+            {% for plan in insurance_plans %}
+                <div class="insurance-plan">
+                    <label>
+                        <input type="radio" id="select-insurance-{{ plan.insurance_id }}" name="insurance_id" value="{{ plan.insurance_id }}"
+                               data-description="{{ plan.description }}" data-daily-cost="{{ "%.2f"|format(plan.daily_cost) }}"
+                               {% if selected_plan and selected_plan.insurance_id == plan.insurance_id %}checked{% elif not selected_plan and loop.first %}checked{% endif %}>
+                        <strong>{{ plan.plan_name }}</strong> - ${{ "%.2f"|format(plan.daily_cost) }} per day
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+        <div id="insurance-description">
+            {% if selected_plan %}
+                Description: {{ selected_plan.description }}
+            {% endif %}
+        </div>
+        <div id="insurance-price">
+            {% if selected_plan %}
+                Daily Cost: ${{ "%.2f"|format(selected_plan.daily_cost) }}
+            {% endif %}
+        </div>
+        <button type="submit" id="confirm-booking-button">
+            {% if confirmed %}Confirm Booking{% else %}Select Insurance{% endif %}
+        </button>
+    </form>
+</div>
+</body>
+</html>

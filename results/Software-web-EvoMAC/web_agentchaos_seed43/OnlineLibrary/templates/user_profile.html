@@ -1,0 +1,38 @@
+'''
+User Profile page template for OnlineLibrary.
+Allows users to view and edit profile information and see borrow history.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+</head>
+<body>
+<div id="profile-page">
+    <h1>My Profile</h1>
+    <div>
+        <label>Username:</label>
+        <div id="profile-username">{{ user.username }}</div>
+    </div>
+    <form method="post" action="{{ url_for('user_profile') }}">
+        <label for="profile-email">Email:</label>
+        <input type="email" id="profile-email" name="profile-email" value="{{ user.email }}" required>
+        <button type="submit" id="update-profile-button">Update Profile</button>
+    </form>
+    <div id="borrow-history">
+        <h2>Borrow History</h2>
+        {% if borrow_history %}
+        <ul>
+            {% for borrow in borrow_history %}
+            <li>{{ borrow.title }} - Borrowed on {{ borrow.borrow_date }}, Status: {{ borrow.status }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No borrow history available.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

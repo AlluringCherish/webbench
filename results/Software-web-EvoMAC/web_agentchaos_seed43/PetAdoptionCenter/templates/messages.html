@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        #conversation-list {
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        .conversation {
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+        .message {
+            margin-left: 10px;
+            margin-bottom: 5px;
+        }
+        .message .sender {
+            font-weight: bold;
+        }
+        .message .timestamp {
+            font-size: 0.8em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div id="messages-page">
+        <h1>Messages</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flashes">
+              {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        <div id="conversation-list">
+            {% if conversations %}
+                {% for participants, msgs in conversations.items() %}
+                    <div class="conversation">
+                        <h3>Conversation between {{ participants[0] }} and {{ participants[1] }}</h3>
+                        {% for msg in msgs %}
+                            <div class="message">
+                                <div class="sender">{{ msg.sender_username }}:</div>
+                                <div class="content">{{ msg.content }}</div>
+                                <div class="timestamp">{{ msg.timestamp }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No conversations found.</p>
+            {% endif %}
+        </div>
+        <form method="post" action="{{ url_for('messages', username=username) }}">
+            <label for="recipient_username">Recipient Username:</label><br>
+            <input type="text" id="recipient_username" name="recipient_username" required><br><br>
+            <label for="subject">Subject:</label><br>
+            <input type="text" id="subject" name="subject" required><br><br>
+            <label for="message-input">Message:</label><br>
+            <textarea id="message-input" name="message-input" rows="5" required></textarea><br><br>
+            <button type="submit" id="send-message-button">Send Message</button>
+            <button type="button" id="back-to-dashboard" onclick="location.href='{{ url_for('back_to_dashboard') }}'">Back to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

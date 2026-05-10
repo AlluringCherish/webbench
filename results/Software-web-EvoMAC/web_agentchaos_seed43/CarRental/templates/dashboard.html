@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Car Rental Dashboard</title>
+    <style>
+        /* Basic styling for layout */
+        #dashboard-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        }
+        #featured-vehicles {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .vehicle-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 30%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .vehicle-card img {
+            max-width: 100%;
+            height: auto;
+        }
+        #promotions-section {
+            background-color: #f0f8ff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>Car Rental Dashboard</h1>
+    <section id="featured-vehicles">
+        {% if featured_vehicles %}
+            {% for vehicle in featured_vehicles %}
+                <div class="vehicle-card">
+                    <img src="{{ url_for('static', filename='images/vehicles/' + vehicle.make|lower + '_' + vehicle.model|lower + '.jpg') }}" alt="{{ vehicle.make }} {{ vehicle.model }}">
+                    <h3>{{ vehicle.make }} {{ vehicle.model }}</h3>
+                    <p>Type: {{ vehicle.vehicle_type }}</p>
+                    <p>Daily Rate: ${{ "%.2f"|format(vehicle.daily_rate) }}</p>
+                    <a href="{{ url_for('vehicle_details', vehicle_id=vehicle.vehicle_id) }}">
+                        <button id="view-details-button-{{ vehicle.vehicle_id }}">View Details</button>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No featured vehicles available.</p>
+        {% endif %}
+    </section>
+    <section id="promotions-section">
+        <h2>Current Promotions</h2>
+        <ul>
+            {% for promo in promotions %}
+                <li>{{ promo }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+    <div>
+        <a href="{{ url_for('vehicle_search') }}">
+            <button id="search-vehicles-button">Search Vehicles</button>
+        </a>
+        <a href="{{ url_for('reservations') }}">
+            <button id="my-reservations-button">My Reservations</button>
+        </a>
+    </div>
+</div>
+</body>
+</html>

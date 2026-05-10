@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Pets</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="pet-listings-page">
+        <h1>Available Pets</h1>
+        <form method="get" action="{{ url_for('pet_listings') }}">
+            <input type="text" id="search-input" name="search" placeholder="Search by name" value="{{ search_name }}">
+            <select id="filter-species" name="species">
+                <option value="All" {% if selected_species == 'All' %}selected{% endif %}>All</option>
+                <option value="Dog" {% if selected_species == 'Dog' %}selected{% endif %}>Dog</option>
+                <option value="Cat" {% if selected_species == 'Cat' %}selected{% endif %}>Cat</option>
+                <option value="Bird" {% if selected_species == 'Bird' %}selected{% endif %}>Bird</option>
+                <option value="Rabbit" {% if selected_species == 'Rabbit' %}selected{% endif %}>Rabbit</option>
+                <option value="Other" {% if selected_species == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <div id="pet-grid" class="pet-cards">
+            {% if pets %}
+                {% for pet in pets %}
+                    <div class="pet-card">
+                        <h3>{{ pet.name }}</h3>
+                        <p><strong>Species:</strong> {{ pet.species }}</p>
+                        <p><strong>Age:</strong> {{ pet.age }}</p>
+                        <a href="{{ url_for('pet_details', pet_id=pet.pet_id) }}">View Details</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No pets found matching your criteria.</p>
+            {% endif %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('back_to_dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Showtimes Overview</title>
+    <style>
+        #showtime-page {
+            max-width: 900px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        #showtimes-list {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        #showtimes-list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #showtimes-list th, #showtimes-list td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        #showtimes-list th {
+            background-color: #007BFF;
+            color: white;
+        }
+        #theater-filter, #date-filter {
+            padding: 8px;
+            font-size: 1em;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        button {
+            padding: 6px 12px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+        }
+        button:hover {
+            background-color: #1e7e34;
+        }
+        form.filter-form {
+            margin-bottom: 15px;
+        }
+        a.back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+        a.back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div id="showtime-page">
+    <a href="{{ url_for('dashboard') }}" class="back-link">&larr; Back to Dashboard</a>
+    <h1>All Upcoming Showtimes</h1>
+    <form method="get" class="filter-form" action="{{ url_for('showtimes_overview') }}">
+        <label for="theater-filter">Filter by Theater:</label>
+        <select id="theater-filter" name="theater">
+            <option value="All" {% if selected_theater == 'All' or not selected_theater %}selected{% endif %}>All</option>
+            {% for theater_name in theaters %}
+                <option value="{{ theater_name }}" {% if selected_theater == theater_name %}selected{% endif %}>{{ theater_name }}</option>
+            {% endfor %}
+        </select>
+        <label for="date-filter">Filter by Date:</label>
+        <input type="date" id="date-filter" name="date" value="{{ selected_date }}">
+        <button type="submit">Apply Filters</button>
+    </form>
+    <div id="showtimes-list">
+        {% if showtimes %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Movie</th>
+                        <th>Theater</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Price</th>
+                        <th>Available Seats</th>
+                        <th>View Seats</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for showtime in showtimes %}
+                        <tr>
+                            <td>{{ showtime.movie_title }}</td>
+                            <td>{{ showtime.theater_name }}</td>
+                            <td>{{ showtime.showtime_date }}</td>
+                            <td>{{ showtime.showtime_time }}</td>
+                            <td>${{ "%.2f"|format(showtime.price) }}</td>
+                            <td>{{ showtime.available_seats }}</td>
+                            <td>
+                                <form action="{{ url_for('seat_selection', showtime_id=showtime.showtime_id) }}" method="get" style="margin:0;">
+                                    <button type="submit" id="select-showtime-button-{{ showtime.showtime_id }}">Select Seats</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No upcoming showtimes available.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

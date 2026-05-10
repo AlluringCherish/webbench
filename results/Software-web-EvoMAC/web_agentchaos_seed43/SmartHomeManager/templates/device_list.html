@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Devices</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f6f8;
+        }
+        #device-list-page {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #device-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        #device-table th, #device-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            color: #555;
+        }
+        #device-table th {
+            background-color: #007BFF;
+            color: white;
+            font-weight: bold;
+        }
+        #device-table tr:hover {
+            background-color: #f1f9ff;
+        }
+        button.control-device-button {
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.9em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button.control-device-button:hover {
+            background-color: #0056b3;
+        }
+        #back-to-dashboard {
+            margin-top: 20px;
+            background-color: #6c757d;
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 150px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        #back-to-dashboard:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+<div id="device-list-page">
+    <h1>My Devices</h1>
+    <table id="device-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Room</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for device in devices %}
+            <tr>
+                <td>{{ device.device_name }}</td>
+                <td>{{ device.device_type }}</td>
+                <td>{{ device.room }}</td>
+                <td>{{ device.status }}</td>
+                <td>
+                    <button id="control-device-button-{{ device.device_id }}" class="control-device-button"
+                            onclick="location.href='{{ url_for('device_control', device_id=device.device_id) }}'">
+                        Control
+                    </button>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align:center; color:#777;">No devices found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

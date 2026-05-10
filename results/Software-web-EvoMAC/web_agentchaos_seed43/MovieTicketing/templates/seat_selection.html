@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Seats</title>
+    <style>
+        #seat-selection-page {
+            max-width: 900px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        #seat-map {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            gap: 5px;
+            justify-items: center;
+        }
+        .seat-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            font-weight: bold;
+            user-select: none;
+        }
+        .seat-Available {
+            background-color: #28a745;
+            color: white;
+        }
+        .seat-Booked {
+            background-color: #dc3545;
+            color: white;
+            cursor: not-allowed;
+        }
+        .seat-Premium {
+            border: 2px solid gold;
+        }
+        #selected-seats-display {
+            margin-top: 15px;
+            font-size: 1.1em;
+        }
+        #proceed-booking-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+        }
+        #proceed-booking-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        a.back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+        a.back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const seatButtons = document.querySelectorAll('.seat-button.seat-Available');
+            const selectedSeatsInput = document.getElementById('selected-seats-input');
+            const selectedSeatsDisplay = document.getElementById('selected-seats-display');
+            const proceedButton = document.getElementById('proceed-booking-button');
+            let selectedSeats = [];
+            function updateSelectedSeats() {
+                selectedSeatsDisplay.textContent = selectedSeats.length > 0 ? 'Selected Seats: ' + selectedSeats.join(', ') : 'No seats selected.';
+                selectedSeatsInput.value = selectedSeats.join(',');
+                proceedButton.disabled = selectedSeats.length === 0;
+            }
+            seatButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const seatId = this.dataset.seatId;
+                    if (selectedSeats.includes(seatId)) {
+                        selectedSeats = selectedSeats.filter(s => s !== seatId);
+                        this.classList.remove('selected');
+                    } else {
+                        selectedSeats.push(seatId);
+                        this.classList.add('selected');
+                    }
+                    updateSelectedSeats();
+                });
+            });
+            updateSelectedSeats();
+        });
+    </script>
+</head>
+<body>
+<div id="seat-selection-page">
+    <a href="{{ url_for('showtime_selection', movie_id=movie.movie_id) }}" class="back-link">&larr; Back to Showtimes</a>
+    <h1>Select Seats for "{{ movie.title }}"</h1>
+    <h3>Theater: {{ theater.theater_name }}</h3>
+    <form method="post" action="{{ url_for('seat_selection', showtime_id=showtime.showtime_id) }}">
+        <div id="seat-map">
+            {% for row, cols in seat_map.items()|sort %}
+                <div style="grid-column: span {{ seat_map[row]|length }}; font-weight: bold; margin-top: 10px;">Row {{ row }}</div>
+                {% for col, seat in cols|dictsort %}
+                    {% if seat %}
+                        <button type="button"
+                                class="seat-button seat-{{ seat.status }} {% if seat.seat_type == 'Premium' %}seat-Premium{% endif %}"
+                                id="seat-{{ seat.row }}{{ seat.column }}"
+                                data-seat-id="{{ seat.row }}{{ seat.column }}"
+                                {% if seat.status == 'Booked' %}disabled{% endif %}>
+                            {{ seat.row }}{{ seat.column }}
+                        </button>
+                    {% else %}
+                        <div style="width:40px; height:40px;"></div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+        <div id="selected-seats-display">No seats selected.</div>
+        <input type="hidden" name="selected_seats" id="selected-seats-input" value="">
+        <button type="submit" id="proceed-booking-button" disabled>Proceed to Booking</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Bookings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function filterBookings() {
+            const search = document.getElementById('booking-search-input').value;
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+            window.location.href = '/bookings?' + params.toString();
+        }
+        function onSearchKey(event) {
+            if (event.key === 'Enter') {
+                filterBookings();
+            }
+        }
+        function cancelBooking(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                fetch('/bookings/cancel/' + bookingId, {
+                    method: 'POST'
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="bookings-page">
+        <h1>My Bookings</h1>
+        <div id="booking-filters">
+            <input type="text" id="booking-search-input" placeholder="Search by event name or booking ID" value="{{ search_query }}" onkeypress="onSearchKey(event)">
+            <button onclick="filterBookings()">Search</button>
+        </div>
+        <table id="bookings-table" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Ticket Count</th>
+                    <th>Ticket Type</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if bookings %}
+                    {% for b in bookings %}
+                        <tr>
+                            <td>{{ b.booking_id }}</td>
+                            <td>{{ event_dict.get(b.event_id, 'Unknown Event') }}</td>
+                            <td>{{ b.booking_date }}</td>
+                            <td>{{ b.ticket_count }}</td>
+                            <td>{{ b.ticket_type }}</td>
+                            <td>${{ "%.2f"|format(b.total_amount) }}</td>
+                            <td>{{ b.status }}</td>
+                            <td>
+                                {% if b.status != 'Cancelled' %}
+                                    <button id="cancel-booking-button-{{ b.booking_id }}" onclick="cancelBooking('{{ b.booking_id }}')">Cancel Booking</button>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="8">No bookings found.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <nav>
+            <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </nav>
+    </div>
+</body>
+</html>

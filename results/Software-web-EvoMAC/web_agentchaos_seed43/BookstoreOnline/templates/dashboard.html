@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bookstore Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        #dashboard-page {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        #featured-books {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .book-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 1rem;
+            width: 220px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .book-title {
+            font-weight: bold;
+            margin: 0.5rem 0 0.25rem 0;
+            text-align: center;
+        }
+        .book-author {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        .book-price {
+            color: #007BFF;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .book-description {
+            font-size: 0.9rem;
+            color: #333;
+            text-align: center;
+            flex-grow: 1;
+        }
+        #navigation-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover,
+        button:focus {
+            background-color: #0056b3;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="dashboard-page" role="main" aria-label="Bookstore Dashboard">
+        <h1>Bookstore Dashboard</h1>
+        <section id="featured-books" aria-label="Featured Books">
+            {% if featured_books %}
+                {% for book in featured_books %}
+                    <article class="book-card" tabindex="0" aria-labelledby="title-{{ book.book_id }}" aria-describedby="desc-{{ book.book_id }}">
+                        <h2 id="title-{{ book.book_id }}" class="book-title">{{ book.title }}</h2>
+                        <div class="book-author">by {{ book.author }}</div>
+                        <div class="book-price">${{ "%.2f"|format(book.price) }}</div>
+                        <p id="desc-{{ book.book_id }}" class="book-description">{{ book.description }}</p>
+                    </article>
+                {% endfor %}
+            {% else %}
+                <p>No featured books available at the moment.</p>
+            {% endif %}
+        </section>
+        <nav id="navigation-buttons" aria-label="Main Navigation">
+            <button id="browse-catalog-button" type="button" onclick="location.href='{{ url_for('catalog.catalog') }}'">Browse Catalog</button>
+            <button id="view-cart-button" type="button" onclick="location.href='{{ url_for('cart.view_cart') }}'">View Cart</button>
+            <button id="bestsellers-button" type="button" onclick="location.href='{{ url_for('bestsellers.bestsellers') }}'">Bestsellers</button>
+        </nav>
+    </div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real Estate Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>Real Estate Dashboard</h1>
+    <section id="featured-properties">
+        <h2>Featured Properties</h2>
+        {% if featured_properties %}
+            <div class="property-list">
+                {% for property in featured_properties %}
+                    <div class="property-card">
+                        <h3>{{ property.address }}</h3>
+                        <p><strong>Location:</strong> {{ property.location }}</p>
+                        <p><strong>Price:</strong> ${{ "{:,}".format(property.price) }}</p>
+                        <p><strong>Beds:</strong> {{ property.bedrooms }} | <strong>Baths:</strong> {{ property.bathrooms }}</p>
+                        <form action="{{ url_for('property_details', property_id=property.property_id) }}" method="get">
+                            <button type="submit" id="view-property-button-{{ property.property_id }}">View Details</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No featured properties available.</p>
+        {% endif %}
+    </section>
+    <section id="recent-listings">
+        <h2>Recent Listings</h2>
+        {% if recent_listings %}
+            <div class="property-list">
+                {% for property in recent_listings %}
+                    <div class="property-card">
+                        <h3>{{ property.address }}</h3>
+                        <p><strong>Location:</strong> {{ property.location }}</p>
+                        <p><strong>Price:</strong> ${{ "{:,}".format(property.price) }}</p>
+                        <p><strong>Beds:</strong> {{ property.bedrooms }} | <strong>Baths:</strong> {{ property.bathrooms }}</p>
+                        <form action="{{ url_for('property_details', property_id=property.property_id) }}" method="get">
+                            <button type="submit" id="view-property-button-{{ property.property_id }}">View Details</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No recent listings available.</p>
+        {% endif %}
+    </section>
+    <nav id="dashboard-navigation">
+        <button id="browse-properties-button" onclick="location.href='{{ url_for('property_search') }}'">Browse Properties</button>
+        <button id="my-inquiries-button" onclick="location.href='{{ url_for('my_inquiries') }}'">My Inquiries</button>
+        <button id="my-favorites-button" onclick="location.href='{{ url_for('my_favorites') }}'">My Favorites</button>
+    </nav>
+</div>
+</body>
+</html>

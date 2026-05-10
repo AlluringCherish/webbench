@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="profile-page">
+        <h1>My Profile</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flashes">
+              {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        <form method="post" action="{{ url_for('user_profile', username=user.username if user else 'guest') }}">
+            <div>
+                <label>Username:</label><br>
+                <div id="profile-username">{{ user.username if user else 'guest' }}</div>
+            </div><br>
+            <div>
+                <label for="profile-email">Email:</label><br>
+                <input type="email" id="profile-email" name="profile-email" value="{{ user.email if user else '' }}" required>
+            </div><br>
+            <button type="submit" id="update-profile-button">Update Profile</button>
+            <button type="button" id="back-to-dashboard" onclick="location.href='{{ url_for('back_to_dashboard') }}'">Back to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

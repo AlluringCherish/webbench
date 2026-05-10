@@ -1,0 +1,45 @@
+'''
+My Reservations page template for OnlineLibrary.
+Displays all book reservations made by the user with cancellation options.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+</head>
+<body>
+<div id="reservations-page">
+    <h1>My Reservations</h1>
+    <table id="reservations-table" border="1">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Reservation Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.title }}</td>
+                <td>{{ reservation.reservation_date }}</td>
+                <td>{{ reservation.status }}</td>
+                <td>
+                    {% if reservation.status == 'Active' %}
+                    <form method="post" action="{{ url_for('cancel_reservation', reservation_id=reservation.reservation_id) }}" style="display:inline;">
+                        <button type="submit" id="cancel-reservation-button-{{ reservation.reservation_id }}">Cancel Reservation</button>
+                    </form>
+                    {% else %}
+                    <button disabled>Cancelled</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

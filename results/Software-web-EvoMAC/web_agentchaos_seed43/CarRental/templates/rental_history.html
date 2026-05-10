@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rental History</title>
+    <style>
+        #history-page {
+            max-width: 900px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        }
+        #rentals-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        #rentals-table th, #rentals-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        #rentals-table th {
+            background-color: #f2f2f2;
+        }
+        #status-filter {
+            margin-top: 20px;
+            padding: 5px;
+        }
+        button {
+            padding: 7px 12px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        h1 {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<div id="history-page">
+    <h1>Rental History</h1>
+    <form method="get" action="{{ url_for('rental_history') }}">
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status" onchange="this.form.submit()">
+            {% for status_option in ['All', 'Active', 'Completed', 'Cancelled'] %}
+                <option value="{{ status_option }}" {% if status_option == status_filter %}selected{% endif %}>{{ status_option }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <table id="rentals-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Vehicle</th>
+                <th>Pickup Date</th>
+                <th>Dropoff Date</th>
+                <th>Pickup Location</th>
+                <th>Dropoff Location</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if rentals %}
+                {% for rental in rentals %}
+                    <tr>
+                        <td>{{ rental.rental_id }}</td>
+                        <td>{{ rental.vehicle.make if rental.vehicle else '' }} {{ rental.vehicle.model if rental.vehicle else '' }}</td>
+                        <td>{{ rental.pickup_date }}</td>
+                        <td>{{ rental.dropoff_date }}</td>
+                        <td>{{ rental.pickup_location }}</td>
+                        <td>{{ rental.dropoff_location }}</td>
+                        <td>${{ "%.2f"|format(rental.total_price) }}</td>
+                        <td>{{ rental.status }}</td>
+                        <td>
+                            <button id="view-rental-details-{{ rental.rental_id }}" onclick="alert('Rental ID: {{ rental.rental_id }}\nVehicle: {{ rental.vehicle.make if rental.vehicle else '' }} {{ rental.vehicle.model if rental.vehicle else '' }}\nPickup: {{ rental.pickup_date }} at {{ rental.pickup_location }}\nDropoff: {{ rental.dropoff_date }} at {{ rental.dropoff_location }}\nStatus: {{ rental.status }}\nTotal Price: ${{ "%.2f"|format(rental.total_price) }}')">View Details</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="9">No rentals found.</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('dashboard') }}">
+        <button id="back-to-dashboard">Back to Dashboard</button>
+    </a>
+</div>
+</body>
+</html>

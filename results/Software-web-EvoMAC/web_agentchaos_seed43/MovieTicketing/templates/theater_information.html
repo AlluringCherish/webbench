@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Theater Information</title>
+    <style>
+        #theater-page {
+            max-width: 900px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        #theaters-list {
+            margin-top: 20px;
+        }
+        .theater-card {
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
+        #theater-location-filter {
+            padding: 8px;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+        #facilities-display {
+            margin-top: 10px;
+            font-style: italic;
+            color: #555;
+        }
+        button#back-to-dashboard {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #6c757d;
+            color: white;
+        }
+        button#back-to-dashboard:hover {
+            background-color: #5a6268;
+        }
+        label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div id="theater-page">
+    <h1>Theater Information</h1>
+    <form method="get" action="{{ url_for('theater_information') }}">
+        <label for="theater-location-filter">Filter by Location:</label>
+        <select id="theater-location-filter" name="location" onchange="this.form.submit()">
+            <option value="All" {% if selected_location == 'All' or not selected_location %}selected{% endif %}>All Locations</option>
+            {% for location in locations %}
+                <option value="{{ location }}" {% if selected_location == location %}selected{% endif %}>{{ location }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <div id="theaters-list">
+        {% if theaters %}
+            {% for theater in theaters %}
+                <div class="theater-card">
+                    <h2>{{ theater.theater_name }}</h2>
+                    <p><strong>Location:</strong> {{ theater.location }}, {{ theater.city }}</p>
+                    <p><strong>Screens:</strong> {{ theater.screens }}</p>
+                    <div id="facilities-display"><strong>Facilities:</strong> {{ theater.facilities }}</div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No theaters found for the selected location.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

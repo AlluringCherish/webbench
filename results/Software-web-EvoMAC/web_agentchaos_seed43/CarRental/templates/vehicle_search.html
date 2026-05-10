@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Vehicles</title>
+    <style>
+        #search-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        }
+        #vehicles-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .vehicle-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 30%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .vehicle-card img {
+            max-width: 100%;
+            height: auto;
+        }
+        label {
+            margin-right: 10px;
+        }
+        select, input[type="text"] {
+            margin-right: 20px;
+            padding: 5px;
+        }
+        button {
+            padding: 7px 12px;
+            cursor: pointer;
+        }
+        h1 {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<div id="search-page">
+    <h1>Search Vehicles</h1>
+    <form method="get" action="{{ url_for('vehicle_search') }}">
+        <label for="location-filter">Pickup Location:</label>
+        <select id="location-filter" name="location">
+            <option value="">All Locations</option>
+            {% for loc in locations %}
+                <option value="{{ loc.city }}" {% if loc.city == location_filter %}selected{% endif %}>{{ loc.city }}</option>
+            {% endfor %}
+        </select>
+        <label for="vehicle-type-filter">Vehicle Type:</label>
+        <select id="vehicle-type-filter" name="vehicle_type">
+            <option value="">All Types</option>
+            {% for vt in ['Economy', 'Compact', 'Sedan', 'SUV', 'Luxury'] %}
+                <option value="{{ vt }}" {% if vt == vehicle_type_filter %}selected{% endif %}>{{ vt }}</option>
+            {% endfor %}
+        </select>
+        <label for="date-range-input">Rental Date Range:</label>
+        <input type="text" id="date-range-input" name="date_range" placeholder="YYYY-MM-DD to YYYY-MM-DD" value="{{ date_range }}">
+        <button type="submit">Search</button>
+    </form>
+    <div id="vehicles-grid">
+        {% if vehicles %}
+            {% for vehicle in vehicles %}
+                <div class="vehicle-card">
+                    <img src="{{ url_for('static', filename='images/vehicles/' + vehicle.make|lower + '_' + vehicle.model|lower + '.jpg') }}" alt="{{ vehicle.make }} {{ vehicle.model }}">
+                    <h3>{{ vehicle.make }} {{ vehicle.model }}</h3>
+                    <p>Type: {{ vehicle.vehicle_type }}</p>
+                    <p>Daily Rate: ${{ "%.2f"|format(vehicle.daily_rate) }}</p>
+                    <a href="{{ url_for('vehicle_details', vehicle_id=vehicle.vehicle_id) }}">
+                        <button id="view-details-button-{{ vehicle.vehicle_id }}">View Details</button>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No vehicles found matching your criteria.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

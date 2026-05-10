@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vehicle Details</title>
+    <style>
+        #vehicle-details-page {
+            max-width: 800px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        }
+        #vehicle-specs {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        #vehicle-reviews {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        img.vehicle-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<div id="vehicle-details-page">
+    <h1 id="vehicle-name">{{ vehicle.make }} {{ vehicle.model }}</h1>
+    <img class="vehicle-image" src="{{ url_for('static', filename='images/vehicles/' + vehicle.make|lower + '_' + vehicle.model|lower + '.jpg') }}" alt="{{ vehicle.make }} {{ vehicle.model }}">
+    <div id="vehicle-specs">
+        <p><strong>Vehicle Type:</strong> {{ vehicle.vehicle_type }}</p>
+        <p><strong>Seats:</strong> {{ vehicle.seats }}</p>
+        <p><strong>Transmission:</strong> {{ vehicle.transmission }}</p>
+        <p><strong>Fuel Type:</strong> {{ vehicle.fuel_type }}</p>
+        <p><strong>Status:</strong> {{ vehicle.status }}</p>
+    </div>
+    <div id="daily-rate">
+        <strong>Daily Rental Rate:</strong> ${{ "%.2f"|format(vehicle.daily_rate) }}
+    </div>
+    <br>
+    <a href="{{ url_for('booking', vehicle_id=vehicle.vehicle_id) }}">
+        <button id="book-now-button">Book Now</button>
+    </a>
+    <div id="vehicle-reviews">
+        <h2>Customer Reviews</h2>
+        {% if vehicle_reviews %}
+            <ul>
+                {% for review in vehicle_reviews %}
+                    <li>{{ review }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No reviews available.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

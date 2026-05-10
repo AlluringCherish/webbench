@@ -1,0 +1,33 @@
+'''
+Book Catalog page template for OnlineLibrary.
+Displays all available books with search functionality and navigation.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Catalog</title>
+</head>
+<body>
+<div id="catalog-page">
+    <h1>Book Catalog</h1>
+    <form method="post" action="{{ url_for('book_catalog') }}">
+        <input type="text" id="search-input" name="search-input" placeholder="Search by title or author" value="{{ search_query }}">
+        <button type="submit">Search</button>
+    </form>
+    <div id="book-grid">
+        {% for book in books %}
+        <div class="book-card">
+            <h3>{{ book.title }}</h3>
+            <p>Author: {{ book.author }}</p>
+            <p>Status: {{ book.status }}</p>
+            <form action="{{ url_for('book_details', book_id=book.book_id) }}" method="get">
+                <button type="submit" id="view-book-button-{{ book.book_id }}">View Details</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

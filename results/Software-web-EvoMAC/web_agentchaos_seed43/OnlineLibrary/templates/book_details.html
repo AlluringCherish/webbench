@@ -1,0 +1,41 @@
+'''
+Book Details page template for OnlineLibrary.
+Displays detailed information about a specific book, reviews, and borrowing options.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Details</title>
+</head>
+<body>
+<div id="book-details-page">
+    <h1 id="book-title">{{ book.title }}</h1>
+    <div id="book-author">Author: {{ book.author }}</div>
+    <div id="book-status">Status: {{ book.status }}</div>
+    {% if can_borrow %}
+    <form action="{{ url_for('borrow_confirmation', book_id=book.book_id) }}" method="get">
+        <button type="submit" id="borrow-button">Borrow</button>
+    </form>
+    {% else %}
+    <button id="borrow-button" disabled>Borrow</button>
+    {% endif %}
+    <div id="reviews-section">
+        <h2>Reviews</h2>
+        {% if reviews %}
+            <ul>
+            {% for review in reviews %}
+                <li><strong>{{ review.username }}</strong> rated {{ review.rating }} stars: {{ review.review_text }} ({{ review.review_date }})</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No reviews yet.</p>
+        {% endif %}
+    </div>
+    <form action="{{ url_for('write_review', book_id=book.book_id) }}" method="get">
+        <button type="submit" id="write-review-button">Write a Review</button>
+    </form>
+    <button id="back-to-catalog" onclick="location.href='{{ url_for('book_catalog') }}'">Back to Catalog</button>
+</div>
+</body>
+</html>

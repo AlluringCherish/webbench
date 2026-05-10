@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Participants Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function filterParticipants() {
+            const status = document.getElementById('participant-status-filter').value;
+            const search = document.getElementById('search-participant-input').value;
+            const params = new URLSearchParams();
+            if (status) params.append('status', status);
+            if (search) params.append('search', search);
+            window.location.href = '/participants?' + params.toString();
+        }
+        function onSearchKey(event) {
+            if (event.key === 'Enter') {
+                filterParticipants();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="participants-page">
+        <h1>Participants Management</h1>
+        <div id="participants-filters">
+            <input type="text" id="search-participant-input" placeholder="Search by name or email" value="{{ search_query }}" onkeypress="onSearchKey(event)">
+            <select id="participant-status-filter" onchange="filterParticipants()">
+                <option value="">All Statuses</option>
+                {% for status in statuses %}
+                    <option value="{{ status }}" {% if status == selected_status %}selected{% endif %}>{{ status }}</option>
+                {% endfor %}
+            </select>
+            <button onclick="filterParticipants()">Search</button>
+        </div>
+        <button id="add-participant-button" onclick="alert('Add participant functionality not implemented.')">Add Participant</button>
+        <table id="participants-table" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Event</th>
+                    <th>Status</th>
+                    <th>Registration Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if participants %}
+                    {% for p in participants %}
+                        <tr>
+                            <td>{{ p.name }}</td>
+                            <td>{{ p.email }}</td>
+                            <td>{{ event_dict.get(p.event_id, 'Unknown Event') }}</td>
+                            <td>{{ p.status }}</td>
+                            <td>{{ p.registration_date }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="5">No participants found.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <nav>
+            <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </nav>
+    </div>
+</body>
+</html>

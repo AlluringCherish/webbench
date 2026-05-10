@@ -1,0 +1,57 @@
+'''
+Dashboard page template for ContentPublishingHub.
+Displays user welcome message, quick statistics, create article button, and recent activity feed.
+'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - ContentPublishingHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="dashboard-page" class="page-container">
+        <header>
+            <h1>ContentPublishingHub Dashboard</h1>
+            <p id="welcome-message">Welcome, {{ username }}!</p>
+        </header>
+        <section id="quick-stats" class="stats-section">
+            <h2>Quick Stats</h2>
+            <ul>
+                <li>Total Articles: {{ stats.total_articles }}</li>
+                <li>Published Articles: {{ stats.published_articles }}</li>
+                <li>Draft Articles: {{ stats.draft_articles }}</li>
+                <li>Pending Review: {{ stats.pending_review_articles }}</li>
+                <li>Unique Visitors (Last 7 days): {{ stats.unique_visitors_7days }}</li>
+                <li>Total Views (Last 7 days): {{ stats.total_views_7days }}</li>
+            </ul>
+        </section>
+        <section class="actions-section">
+            <button id="create-article-button" onclick="location.href='{{ url_for('create_article') }}'">Create Article</button>
+        </section>
+        <section id="recent-activity" class="activity-feed">
+            <h2>Recent Activity</h2>
+            {% if recent_activities %}
+                <ul>
+                    {% for activity in recent_activities %}
+                        <li>
+                            <strong>{{ activity.timestamp }}</strong> - 
+                            {% if activity.type == 'comment' %}
+                                Comment by <em>{{ activity.user }}</em> on article "<a href="{{ url_for('edit_article', article_id=activity.article_id) }}">{{ activity.article_title }}</a>": {{ activity.comment_text }}
+                            {% elif activity.type == 'approval' %}
+                                Approval by <em>{{ activity.approver }}</em> on article "<a href="{{ url_for('edit_article', article_id=activity.article_id) }}">{{ activity.article_title }}</a>" - Status: {{ activity.status }}
+                            {% elif activity.type == 'version' %}
+                                New version {{ activity.version_number }} saved by <em>{{ activity.author }}</em> on article "<a href="{{ url_for('edit_article', article_id=activity.article_id) }}">{{ activity.article_title }}</a>"
+                            {% else %}
+                                {{ activity.description }}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No recent activity.</p>
+            {% endif %}
+        </section>
+    </div>
+</body>
+</html>

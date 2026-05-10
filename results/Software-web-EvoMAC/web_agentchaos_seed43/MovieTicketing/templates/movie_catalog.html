@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Catalog</title>
+    <style>
+        #catalog-page {
+            max-width: 1000px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        #search-input, #genre-filter {
+            padding: 8px;
+            font-size: 1em;
+            margin-right: 10px;
+            margin-bottom: 15px;
+        }
+        #movies-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .movie-card {
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            width: 220px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .movie-poster {
+            width: 100%;
+            height: 300px;
+            background-color: #ddd;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .movie-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        .movie-info {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 8px 12px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            align-self: flex-start;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div id="catalog-page">
+    <h1>Movie Catalog</h1>
+    <form method="get" action="{{ url_for('movie_catalog') }}">
+        <input type="text" id="search-input" name="search" placeholder="Search by title or genre" value="{{ search_query }}">
+        <select id="genre-filter" name="genre">
+            <option value="All" {% if selected_genre == 'All' or not selected_genre %}selected{% endif %}>All Genres</option>
+            {% for genre in genres %}
+                <option value="{{ genre.genre_name }}" {% if selected_genre == genre.genre_name %}selected{% endif %}>{{ genre.genre_name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Search</button>
+    </form>
+    <div id="movies-grid">
+        {% if movies %}
+            {% for movie in movies %}
+                <div class="movie-card">
+                    <div class="movie-poster">Poster N/A</div>
+                    <div class="movie-title">{{ movie.title }}</div>
+                    <div class="movie-info">Rating: {{ movie.rating }} | Duration: {{ movie.duration }} min</div>
+                    <form action="{{ url_for('movie_details', movie_id=movie.movie_id) }}" method="get">
+                        <button type="submit" id="view-movie-button-{{ movie.movie_id }}">View Details</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No movies found matching your criteria.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

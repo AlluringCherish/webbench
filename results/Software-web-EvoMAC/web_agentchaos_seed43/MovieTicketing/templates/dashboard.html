@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Ticketing Dashboard</title>
+    <style>
+        #dashboard-page {
+            max-width: 900px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        #featured-movies, #upcoming-releases {
+            margin-bottom: 30px;
+        }
+        .movie-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 5px;
+            display: inline-block;
+            width: 28%;
+            vertical-align: top;
+            box-sizing: border-box;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .movie-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        .movie-genre, .movie-rating {
+            font-size: 0.9em;
+            color: #555;
+        }
+        button {
+            margin: 5px 10px 5px 0;
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        h2 {
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>Movie Ticketing Dashboard</h1>
+    <section id="featured-movies">
+        <h2>Featured Movies</h2>
+        {% if featured_movies %}
+            {% for movie in featured_movies %}
+                <div class="movie-card">
+                    <div class="movie-title">{{ movie.title }}</div>
+                    <div class="movie-genre">Genre: {{ movie.genre }}</div>
+                    <div class="movie-rating">Rating: {{ movie.rating }}</div>
+                    <div>Duration: {{ movie.duration }} min</div>
+                    <div>Release Date: {{ movie.release_date }}</div>
+                    <form action="{{ url_for('movie_details', movie_id=movie.movie_id) }}" method="get" style="margin-top:10px;">
+                        <button type="submit" id="view-movie-button-{{ movie.movie_id }}">View Details</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No featured movies available.</p>
+        {% endif %}
+    </section>
+    <section id="upcoming-releases">
+        <h2>Upcoming Releases</h2>
+        {% if upcoming_releases %}
+            {% for movie in upcoming_releases %}
+                <div class="movie-card">
+                    <div class="movie-title">{{ movie.title }}</div>
+                    <div class="movie-genre">Genre: {{ movie.genre }}</div>
+                    <div>Release Date: {{ movie.release_date }}</div>
+                    <form action="{{ url_for('movie_details', movie_id=movie.movie_id) }}" method="get" style="margin-top:10px;">
+                        <button type="submit" id="view-movie-button-{{ movie.movie_id }}">View Details</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No upcoming releases available.</p>
+        {% endif %}
+    </section>
+    <section id="navigation-buttons">
+        <button id="browse-movies-button" onclick="location.href='{{ url_for('movie_catalog') }}'">Browse Movies</button>
+        <button id="view-bookings-button" onclick="location.href='{{ url_for('booking_history') }}'">View Bookings</button>
+        <button id="showtimes-button" onclick="location.href='{{ url_for('showtimes_overview') }}'">Showtimes</button>
+    </section>
+</div>
+</body>
+</html>

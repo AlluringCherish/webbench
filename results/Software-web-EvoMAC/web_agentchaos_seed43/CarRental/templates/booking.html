@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Your Rental</title>
+    <style>
+        #booking-page {
+            max-width: 600px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        select, input[type="date"] {
+            width: 100%;
+            padding: 7px;
+            box-sizing: border-box;
+        }
+        #total-price {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div id="booking-page">
+    <h1>Book Your Rental - {{ vehicle.make }} {{ vehicle.model }}</h1>
+    <form method="post" action="{{ url_for('booking', vehicle_id=vehicle.vehicle_id) }}">
+        <label for="pickup-location">Pickup Location:</label>
+        <select id="pickup-location" name="pickup_location" required>
+            <option value="">Select Pickup Location</option>
+            {% for loc in locations %}
+                <option value="{{ loc.city }}" {% if pickup_location == loc.city %}selected{% endif %}>{{ loc.city }}</option>
+            {% endfor %}
+        </select>
+        <label for="dropoff-location">Dropoff Location:</label>
+        <select id="dropoff-location" name="dropoff_location" required>
+            <option value="">Select Dropoff Location</option>
+            {% for loc in locations %}
+                <option value="{{ loc.city }}" {% if dropoff_location == loc.city %}selected{% endif %}>{{ loc.city }}</option>
+            {% endfor %}
+        </select>
+        <label for="pickup-date">Pickup Date:</label>
+        <input type="date" id="pickup-date" name="pickup_date" value="{{ pickup_date }}" required>
+        <label for="dropoff-date">Dropoff Date:</label>
+        <input type="date" id="dropoff-date" name="dropoff_date" value="{{ dropoff_date }}" required>
+        <button type="submit" id="calculate-price-button">Calculate Price</button>
+    </form>
+    {% if price_calculated %}
+        <div id="total-price">
+            Total Price: ${{ "%.2f"|format(total_price) }}
+        </div>
+        <form method="get" action="{{ url_for('insurance_options') }}">
+            <button type="submit" id="proceed-to-insurance-button">Proceed to Insurance Options</button>
+        </form>
+    {% endif %}
+</div>
+</body>
+</html>

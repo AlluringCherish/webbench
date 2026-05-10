@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Schedules</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function filterSchedules() {
+            const date = document.getElementById('schedule-filter-date').value;
+            const event = document.getElementById('schedule-filter-event').value;
+            const params = new URLSearchParams();
+            if (date) params.append('date', date);
+            if (event) params.append('event', event);
+            window.location.href = '/schedules?' + params.toString();
+        }
+    </script>
+</head>
+<body>
+    <div id="schedules-page">
+        <h1>Event Schedules</h1>
+        <div id="schedule-filters">
+            <label for="schedule-filter-date">Filter by Date:</label>
+            <input type="date" id="schedule-filter-date" name="schedule-filter-date" value="{{ filter_date }}" onchange="filterSchedules()">
+            <label for="schedule-filter-event">Filter by Event:</label>
+            <select id="schedule-filter-event" name="schedule-filter-event" onchange="filterSchedules()">
+                <option value="">All Events</option>
+                {% for event in events %}
+                    <option value="{{ event.event_id }}" {% if event.event_id == filter_event %}selected{% endif %}>{{ event.event_name }}</option>
+                {% endfor %}
+            </select>
+            <button id="export-schedule-button" onclick="alert('Export schedule functionality not implemented.')">Export Schedule</button>
+        </div>
+        <div id="schedules-timeline">
+            {% if schedules %}
+                <ul>
+                    {% for s in schedules %}
+                        <li>
+                            <strong>{{ s.session_title }}</strong><br>
+                            Time: {{ s.session_time }}<br>
+                            Duration: {{ s.duration_minutes }} minutes<br>
+                            Speaker: {{ s.speaker }}<br>
+                            Venue: {{ event_dict.get(s.event_id, 'Unknown Event') }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No schedules found.</p>
+            {% endif %}
+        </div>
+        <nav>
+            <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </nav>
+    </div>
+</body>
+</html>

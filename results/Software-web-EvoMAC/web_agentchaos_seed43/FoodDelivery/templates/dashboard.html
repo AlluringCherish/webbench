@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Food Delivery Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}" defer></script>
+</head>
+<body>
+<div id="dashboard-page" class="page-container">
+    <header>
+        <h1>Food Delivery Dashboard</h1>
+    </header>
+    <section id="featured-restaurants" class="section">
+        <h2>Featured Restaurants</h2>
+        <div class="restaurant-cards">
+            {% for restaurant in featured_restaurants %}
+            <div class="restaurant-card">
+                <img src="{{ url_for('static', filename='images/restaurants/' + restaurant.restaurant_id + '.jpg') }}" alt="{{ restaurant.name }} Logo" class="restaurant-logo" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/restaurants/default.jpg') }}';">
+                <h3>{{ restaurant.name }}</h3>
+                <p>Cuisine: {{ restaurant.cuisine }}</p>
+                <p>Rating: {{ restaurant.rating }}</p>
+                <p>Delivery Time: {{ restaurant.delivery_time }} mins</p>
+                <form action="{{ url_for('menu_page', restaurant_id=restaurant.restaurant_id) }}" method="get">
+                    <button type="submit" id="view-restaurant-button-{{ restaurant.restaurant_id }}">View Menu</button>
+                </form>
+            </div>
+            {% else %}
+            <p>No featured restaurants available.</p>
+            {% endfor %}
+        </div>
+    </section>
+    <section id="popular-cuisines" class="section">
+        <h2>Popular Cuisines</h2>
+        <ul class="cuisine-list">
+            {% for cuisine in popular_cuisines %}
+            <li>{{ cuisine }}</li>
+            {% else %}
+            <li>No cuisines available.</li>
+            {% endfor %}
+        </ul>
+    </section>
+    <nav class="dashboard-nav">
+        <button id="browse-restaurants-button" onclick="location.href='{{ url_for('restaurants_page') }}'">Browse Restaurants</button>
+        <button id="view-cart-button" onclick="location.href='{{ url_for('cart_page') }}'">View Cart</button>
+        <button id="active-orders-button" onclick="location.href='{{ url_for('active_orders_page') }}'">Active Orders</button>
+    </nav>
+</div>
+</body>
+</html>

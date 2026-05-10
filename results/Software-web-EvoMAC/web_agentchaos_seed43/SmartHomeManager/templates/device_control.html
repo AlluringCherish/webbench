@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Device Control</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f6f8;
+        }
+        #device-control-page {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 25px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2#device-name-display {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        #device-status-display {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: #007BFF;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+            color: #444;
+        }
+        select, input[type="text"], input[type="number"], input[type="time"] {
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            width: 100%;
+            transition: border-color 0.3s ease;
+        }
+        select:focus, input[type="text"]:focus, input[type="number"]:focus, input[type="time"]:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+        #power-toggle {
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        #power-toggle:hover {
+            background-color: #0056b3;
+        }
+        #save-settings-button {
+            background-color: #28a745;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        #save-settings-button:hover {
+            background-color: #1e7e34;
+        }
+        #back-to-devices {
+            margin-top: 15px;
+            background-color: #6c757d;
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        #back-to-devices:hover {
+            background-color: #5a6268;
+        }
+    </style>
+    <script>
+        function togglePower() {
+            const powerInput = document.getElementById('power-input');
+            const powerToggleBtn = document.getElementById('power-toggle');
+            if (powerInput.value === 'on') {
+                powerInput.value = 'off';
+                powerToggleBtn.textContent = 'Turn Power On';
+                powerToggleBtn.style.backgroundColor = '#dc3545'; // red for off
+            } else {
+                powerInput.value = 'on';
+                powerToggleBtn.textContent = 'Turn Power Off';
+                powerToggleBtn.style.backgroundColor = '#007BFF'; // blue for on
+            }
+        }
+        window.onload = function() {
+            const powerInput = document.getElementById('power-input');
+            const powerToggleBtn = document.getElementById('power-toggle');
+            if (powerInput.value === 'on') {
+                powerToggleBtn.textContent = 'Turn Power Off';
+                powerToggleBtn.style.backgroundColor = '#007BFF';
+            } else {
+                powerToggleBtn.textContent = 'Turn Power On';
+                powerToggleBtn.style.backgroundColor = '#dc3545';
+            }
+        }
+    </script>
+</head>
+<body>
+<div id="device-control-page">
+    <h2 id="device-name-display">{{ device.device_name }}</h2>
+    <div id="device-status-display">Status: {{ device.status }}</div>
+    <form method="post" action="{{ url_for('device_control', device_id=device.device_id) }}">
+        <input type="hidden" id="power-input" name="power" value="{{ device.power }}">
+        <button type="button" id="power-toggle" onclick="togglePower()">Toggle Power</button>
+        {% if device.device_type == 'Light' %}
+            <label for="brightness">Brightness (%)</label>
+            <input type="number" id="brightness" name="brightness" min="0" max="100" value="{{ device.brightness }}">
+        {% elif device.device_type == 'Thermostat' %}
+            <label for="temperature">Temperature (°F)</label>
+            <input type="number" id="temperature" name="temperature" min="50" max="90" value="{{ device.temperature }}">
+        {% endif %}
+        <label for="mode">Mode</label>
+        <input type="text" id="mode" name="mode" value="{{ device.mode }}">
+        <label for="schedule_time">Schedule Time</label>
+        <input type="time" id="schedule_time" name="schedule_time" value="{{ device.schedule_time }}">
+        <button type="submit" id="save-settings-button">Save Settings</button>
+    </form>
+    <button id="back-to-devices" onclick="location.href='{{ url_for('device_list') }}'">Back to Device List</button>
+</div>
+</body>
+</html>

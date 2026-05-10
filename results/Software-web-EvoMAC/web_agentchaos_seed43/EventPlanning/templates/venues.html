@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Venues</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function filterVenues() {
+            const capacity = document.getElementById('venue-capacity-filter').value;
+            const search = document.getElementById('venue-search-input').value;
+            const params = new URLSearchParams();
+            if (capacity) params.append('capacity', capacity);
+            if (search) params.append('search', search);
+            window.location.href = '/venues?' + params.toString();
+        }
+        function onSearchKey(event) {
+            if (event.key === 'Enter') {
+                filterVenues();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="venues-page">
+        <h1>Venues</h1>
+        <div id="venue-filters">
+            <input type="text" id="venue-search-input" placeholder="Search by name or location" value="{{ search_query }}" onkeypress="onSearchKey(event)">
+            <select id="venue-capacity-filter" onchange="filterVenues()">
+                <option value="">All Capacities</option>
+                {% for capacity in capacities %}
+                    <option value="{{ capacity }}" {% if capacity == selected_capacity %}selected{% endif %}>{{ capacity }}</option>
+                {% endfor %}
+            </select>
+            <button onclick="filterVenues()">Search</button>
+        </div>
+        <div id="venues-grid">
+            {% if venues %}
+                <div class="venue-cards">
+                    {% for venue in venues %}
+                        <div class="venue-card">
+                            <h3>{{ venue.venue_name }}</h3>
+                            <div>Capacity: {{ venue.capacity }}</div>
+                            <div>Amenities: {{ venue.amenities }}</div>
+                            <button id="view-venue-details-{{ venue.venue_id }}" onclick="location.href='{{ url_for('venue_details', venue_id=venue.venue_id) }}'">View Details</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No venues found.</p>
+            {% endif %}
+        </div>
+        <nav>
+            <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </nav>
+    </div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Special Requests</title>
+    <style>
+        #requests-page {
+            max-width: 600px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        input[type="checkbox"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 7px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        #submission-message {
+            margin-top: 15px;
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div id="requests-page">
+    <h1>Special Requests</h1>
+    <form method="post" action="{{ url_for('special_requests') }}">
+        <label for="select-reservation">Select Reservation:</label>
+        <select id="select-reservation" name="select_reservation" required>
+            <option value="">-- Select Reservation --</option>
+            {% for res in reservations %}
+                <option value="{{ res.reservation_id }}">{{ res.reservation_id }} - Vehicle: {{ res.vehicle_id }}</option>
+            {% endfor %}
+        </select>
+        <label>
+            <input type="checkbox" id="driver-assistance-checkbox" name="driver_assistance_checkbox" value="yes">
+            Driver Assistance Request
+        </label>
+        <label>
+            <input type="checkbox" id="gps-option-checkbox" name="gps_option_checkbox" value="yes">
+            GPS Option
+        </label>
+        <label for="child-seat-quantity">Number of Child Seats Needed:</label>
+        <input type="number" id="child-seat-quantity" name="child_seat_quantity" min="0" value="0">
+        <label for="special-notes">Special Notes and Requests:</label>
+        <textarea id="special-notes" name="special_notes" placeholder="Enter any special requests here..."></textarea>
+        <button type="submit" id="submit-requests-button">Submit Special Requests</button>
+    </form>
+    {% if submitted %}
+        <div id="submission-message">Your special requests have been submitted successfully.</div>
+    {% endif %}
+</div>
+</body>
+</html>

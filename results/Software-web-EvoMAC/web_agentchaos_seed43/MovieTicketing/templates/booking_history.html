@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking History</title>
+    <style>
+        #bookings-page {
+            max-width: 900px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        #bookings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        #bookings-table th, #bookings-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        #bookings-table th {
+            background-color: #007BFF;
+            color: white;
+        }
+        #status-filter {
+            padding: 8px;
+            font-size: 1em;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 6px 12px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: none;
+            background-color: #17a2b8;
+            color: white;
+        }
+        button:hover {
+            background-color: #117a8b;
+        }
+        #back-to-dashboard {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #6c757d;
+            color: white;
+        }
+        #back-to-dashboard:hover {
+            background-color: #5a6268;
+        }
+        form.filter-form {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="bookings-page">
+    <h1>Booking History</h1>
+    <form method="get" class="filter-form" action="{{ url_for('booking_history') }}">
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status" onchange="this.form.submit()">
+            {% for status_option in status_options %}
+                <option value="{{ status_option }}" {% if status_filter == status_option %}selected{% endif %}>{{ status_option }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <table id="bookings-table">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Movie</th>
+                <th>Date & Time</th>
+                <th>Seats</th>
+                <th>Status</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if bookings %}
+                {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.booking_id }}</td>
+                        <td>{{ booking.movie_title }}</td>
+                        <td>{{ booking.showtime_date }}</td>
+                        <td>{{ booking.seats_booked }}</td>
+                        <td>{{ booking.status }}</td>
+                        <td>
+                            <form action="{{ url_for('booking_details', booking_id=booking.booking_id) }}" method="get" style="margin:0;">
+                                <button type="submit" id="view-booking-button-{{ booking.booking_id }}">View</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="6">No bookings found.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

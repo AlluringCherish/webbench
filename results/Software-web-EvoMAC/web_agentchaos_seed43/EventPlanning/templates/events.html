@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Events Catalog</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function filterEvents() {
+            const category = document.getElementById('event-category-filter').value;
+            const search = document.getElementById('event-search-input').value;
+            const params = new URLSearchParams();
+            if (category) params.append('category', category);
+            if (search) params.append('search', search);
+            window.location.href = '/events?' + params.toString();
+        }
+        function onSearchKey(event) {
+            if (event.key === 'Enter') {
+                filterEvents();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="events-page">
+        <h1>Events Catalog</h1>
+        <div id="filters">
+            <input type="text" id="event-search-input" placeholder="Search by name, location, or date" value="{{ search_query }}" onkeypress="onSearchKey(event)">
+            <select id="event-category-filter" onchange="filterEvents()">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+            <button onclick="filterEvents()">Search</button>
+        </div>
+        <div id="events-grid">
+            {% if events %}
+                <div class="event-cards">
+                    {% for event in events %}
+                        <div class="event-card">
+                            <!-- No image provided in data, so placeholder or omit -->
+                            <h3>{{ event.event_name }}</h3>
+                            <div>{{ event.date }} {{ event.time }}</div>
+                            <div>{{ event.location }}</div>
+                            <button id="view-event-button-{{ event.event_id }}" onclick="location.href='{{ url_for('event_details', event_id=event.event_id) }}'">View Details</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No events found.</p>
+            {% endif %}
+        </div>
+        <nav>
+            <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </nav>
+    </div>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pickup and Dropoff Locations</title>
+    <style>
+        #locations-page {
+            max-width: 900px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        }
+        #locations-list {
+            margin-top: 20px;
+        }
+        .location-item {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .location-item p {
+            margin: 5px 0;
+        }
+        button {
+            padding: 7px 12px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        select, input[type="text"] {
+            padding: 5px;
+            margin-right: 20px;
+        }
+        h1 {
+            margin-bottom: 15px;
+        }
+    </style>
+    <script>
+        function showLocationDetails(locationId) {
+            alert("Details for Location ID: " + locationId);
+        }
+    </script>
+</head>
+<body>
+<div id="locations-page">
+    <h1>Pickup and Dropoff Locations</h1>
+    <form method="get" action="{{ url_for('locations') }}">
+        <label for="hours-filter">Operating Hours:</label>
+        <select id="hours-filter" name="hours_filter" onchange="this.form.submit()">
+            <option value="">All</option>
+            <option value="24/7" {% if hours_filter == '24/7' %}selected{% endif %}>24/7</option>
+            <option value="09:00-18:00" {% if hours_filter == '09:00-18:00' %}selected{% endif %}>Business Hours</option>
+            <option value="Weekend" {% if hours_filter == 'Weekend' %}selected{% endif %}>Weekend</option>
+        </select>
+        <label for="search-location-input">Search by City or Name:</label>
+        <input type="text" id="search-location-input" name="search_location" value="{{ search_location }}" placeholder="Enter city or name">
+        <button type="submit">Search</button>
+    </form>
+    <div id="locations-list">
+        {% if locations %}
+            {% for loc in locations %}
+                <div class="location-item">
+                    <p><strong>City:</strong> {{ loc.city }}</p>
+                    <p><strong>Address:</strong> {{ loc.address }}</p>
+                    <p><strong>Phone:</strong> {{ loc.phone }}</p>
+                    <p><strong>Hours:</strong> {{ loc.hours }}</p>
+                    <p><strong>Available Vehicles:</strong> {{ loc.available_vehicles }}</p>
+                    <button id="location-detail-button-{{ loc.location_id }}" onclick="showLocationDetails('{{ loc.location_id }}')">View Location Details</button>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No locations found.</p>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('dashboard') }}">
+        <button id="back-to-dashboard">Back to Dashboard</button>
+    </a>
+</div>
+</body>
+</html>
