@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Activity Logs</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #activity-page { max-width: 900px; margin: auto; }
+        form { margin-bottom: 20px; }
+        input[type="text"] { padding: 6px; font-size: 14px; width: 300px; }
+        button { padding: 8px 15px; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+<div id="activity-page">
+    <h1>Activity Logs</h1>
+    <form method="post" action="{{ url_for('activity_logs') }}">
+        <input type="text" id="search-activity" name="search_activity" placeholder="Search activity logs" value="{{ search_term if search_term else '' }}">
+        <button id="apply-search-button" type="submit">Search</button>
+    </form>
+    <table id="activity-table">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Device</th>
+                <th>Action</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.timestamp }}</td>
+                <td>{{ device_map.get(log.device_id, 'Unknown Device') }}</td>
+                <td>{{ log.action }}</td>
+                <td>{{ log.details }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">No activity logs found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

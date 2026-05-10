@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reviews</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="reviews-page">
+        <h1>My Reviews</h1>
+        <form method="post">
+            <div id="reviews-list">
+                {% if reviews %}
+                    {% for review in reviews %}
+                        <div class="review-item" style="margin-bottom: 15px;">
+                            <div class="review-header">
+                                <strong>{{ review.title }}</strong> &nbsp;
+                                <span class="review-rating">{% for i in range(review.rating) %}★{% endfor %}{% for i in range(5 - review.rating) %}☆{% endfor %}</span>
+                                &nbsp;on {{ review.review_date }}
+                            </div>
+                            <div class="review-text">{{ review.review_text }}</div>
+                            <div style="margin-top: 8px;">
+                                <button type="submit" name="edit-review-button-{{ review.review_id }}" id="edit-review-button-{{ review.review_id }}">Edit</button>
+                                <button type="submit" name="delete-review-button-{{ review.review_id }}" id="delete-review-button-{{ review.review_id }}" style="margin-left: 10px;">Delete</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No reviews written yet.</p>
+                {% endif %}
+            </div>
+        </form>
+        <form action="{{ url_for('dashboard') }}" method="get" style="margin-top: 20px;">
+            <button type="submit" id="back-to-dashboard">Back to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

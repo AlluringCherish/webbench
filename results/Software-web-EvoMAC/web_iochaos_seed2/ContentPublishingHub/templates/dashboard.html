@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - ContentPublishingHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="dashboard-page" class="page-container">
+        <header>
+            <h1>ContentPublishingHub Dashboard</h1>
+            <p id="welcome-message">Welcome, {{ fullname }}!</p>
+        </header>
+        <section id="quick-stats" class="quick-stats">
+            <h2>Quick Stats</h2>
+            <ul>
+                <li>Total Articles: {{ quick_stats.total_articles }}</li>
+                <li>Published Articles: {{ quick_stats.published_articles }}</li>
+                <li>Drafts: {{ quick_stats.drafts }}</li>
+                <li>Pending Review: {{ quick_stats.pending_review }}</li>
+            </ul>
+        </section>
+        <section class="actions">
+            <a href="{{ url_for('create_article') }}" id="create-article-button" class="button">Create Article</a>
+        </section>
+        <section id="recent-activity" class="recent-activity">
+            <h2>Recent Activity</h2>
+            {% if recent_activities %}
+                <ul>
+                    {% for activity in recent_activities %}
+                        <li>
+                            {% if activity.type == 'version' %}
+                                <strong>Version {{ activity.version_number }}</strong> of 
+                                <a href="{{ url_for('edit_article', article_id=activity.article_id) }}">
+                                    Article #{{ activity.article_id }}
+                                </a> - {{ activity.change_summary }} 
+                                <em>({{ activity.created_date }})</em>
+                            {% elif activity.type == 'comment' %}
+                                Comment on 
+                                <a href="{{ url_for('edit_article', article_id=activity.article_id) }}">
+                                    Article #{{ activity.article_id }}
+                                </a>: "{{ activity.comment_text }}" 
+                                <em>({{ activity.timestamp }})</em>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No recent activity.</p>
+            {% endif %}
+        </section>
+    </div>
+</body>
+</html>

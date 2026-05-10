@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Adoption Application</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="application-page">
+        <h1>Adoption Application for {{ pet.name }}</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flashes">
+              {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        <form method="post" action="{{ url_for('adoption_application', pet_id=pet.pet_id) }}">
+            <label for="applicant-name">Full Name:</label><br>
+            <input type="text" id="applicant-name" name="applicant-name" required><br><br>
+            <label for="applicant-phone">Phone Number:</label><br>
+            <input type="text" id="applicant-phone" name="applicant-phone" required><br><br>
+            <label for="housing-type">Housing Type:</label><br>
+            <select id="housing-type" name="housing-type" required>
+                <option value="">Select housing type</option>
+                <option value="House">House</option>
+                <option value="Apartment">Apartment</option>
+                <option value="Condo">Condo</option>
+                <option value="Other">Other</option>
+            </select><br><br>
+            <label for="reason">Why do you want to adopt this pet?</label><br>
+            <textarea id="reason" name="reason" rows="5" required></textarea><br><br>
+            <button type="submit" id="submit-application-button">Submit Application</button>
+            <button type="button" id="back-to-pet" onclick="location.href='{{ url_for('pet_details', pet_id=pet.pet_id) }}'">Back to Pet Details</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Borrowings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function filterStatusChanged() {
+            const filter = document.getElementById('filter-status').value;
+            const url = new URL(window.location.href);
+            url.searchParams.set('filter-status', filter);
+            window.location.href = url.toString();
+        }
+    </script>
+</head>
+<body>
+    <div id="my-borrows-page">
+        <h1>My Borrowings</h1>
+        <label for="filter-status">Filter by Status:</label>
+        <select id="filter-status" name="filter-status" onchange="filterStatusChanged()">
+            <option value="All" {% if filter_status == 'All' %}selected{% endif %}>All</option>
+            <option value="Active" {% if filter_status == 'Active' %}selected{% endif %}>Active</option>
+            <option value="Returned" {% if filter_status == 'Returned' %}selected{% endif %}>Returned</option>
+            <option value="Overdue" {% if filter_status == 'Overdue' %}selected{% endif %}>Overdue</option>
+        </select>
+        <form method="post" style="margin-top: 15px;">
+            <table id="borrows-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Borrow Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Fine Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if borrowings %}
+                        {% for borrow in borrowings %}
+                            <tr>
+                                <td>{{ borrow.title }}</td>
+                                <td>{{ borrow.borrow_date }}</td>
+                                <td>{{ borrow.due_date }}</td>
+                                <td><span class="status-{{ borrow.status }}">{{ borrow.status }}</span></td>
+                                <td>${{ '%.2f'|format(borrow.fine_amount) }}</td>
+                                <td>
+                                    {% if borrow.status == 'Active' %}
+                                        <button type="submit" name="return-book-button-{{ borrow.borrow_id }}" id="return-book-button-{{ borrow.borrow_id }}">Return Book</button>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="6">No borrowings found.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </form>
+        <form action="{{ url_for('dashboard') }}" method="get" style="margin-top: 20px;">
+            <button type="submit" id="back-to-dashboard">Back to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

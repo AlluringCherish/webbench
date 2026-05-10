@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="settings-page">
+    <h1>Settings</h1>
+    <form method="post" action="{{ url_for('settings') }}">
+        <label for="temperature-unit-select">Temperature Unit:</label>
+        <select id="temperature-unit-select" name="temperature_unit_select">
+            <option value="Celsius" {% if settings.temperature_unit == 'Celsius' %}selected{% endif %}>Celsius</option>
+            <option value="Fahrenheit" {% if settings.temperature_unit == 'Fahrenheit' %}selected{% endif %}>Fahrenheit</option>
+            <option value="Kelvin" {% if settings.temperature_unit == 'Kelvin' %}selected{% endif %}>Kelvin</option>
+        </select>
+        <br><br>
+        <label for="default-location-select">Default Location:</label>
+        <select id="default-location-select" name="default_location_select">
+            <option value="" {% if not settings.default_location_id %}selected{% endif %}>None</option>
+            {% for loc in locations %}
+            <option value="{{ loc.location_id }}" {% if settings.default_location_id == loc.location_id %}selected{% endif %}>{{ loc.location_name }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <label for="alert-notifications-toggle">Alert Notifications:</label>
+        <input type="checkbox" id="alert-notifications-toggle" name="alert_notifications_toggle" {% if settings.alert_notifications_enabled %}checked{% endif %}>
+        <br><br>
+        <button id="save-settings-button" type="submit">Save Settings</button>
+        <button id="back-to-dashboard" type="button" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </form>
+</div>
+</body>
+</html>

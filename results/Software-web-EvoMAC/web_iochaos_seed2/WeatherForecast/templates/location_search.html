@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Locations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="search-page">
+    <h1>Search Locations</h1>
+    <form method="post" action="{{ url_for('location_search') }}">
+        <input type="text" id="location-search-input" name="location_search_input" placeholder="Enter city name or coordinates" value="{{ search_query }}">
+        <button type="submit">Search</button>
+    </form>
+    <div id="search-results">
+        <h2>Search Results</h2>
+        {% if search_results %}
+            <ul>
+                {% for loc in search_results %}
+                <li>
+                    {{ loc.location_name }} ({{ loc.latitude }}, {{ loc.longitude }})
+                    <form method="post" action="{{ url_for('select_location', location_id=loc.location_id) }}" style="display:inline;">
+                        <button type="submit" id="select-location-button-{{ loc.location_id }}">Select</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No matching locations found.</p>
+        {% endif %}
+    </div>
+    <div id="saved-locations-list">
+        <h2>Saved Locations</h2>
+        {% if saved_locations %}
+            <ul>
+                {% for loc in saved_locations %}
+                <li>{{ loc.location_name }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No saved locations.</p>
+        {% endif %}
+    </div>
+    <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

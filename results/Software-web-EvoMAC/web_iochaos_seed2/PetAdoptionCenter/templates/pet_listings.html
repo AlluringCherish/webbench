@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Pets</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function applyFilters() {
+            const species = document.getElementById('filter-species').value;
+            const search = document.getElementById('search-input').value;
+            const params = new URLSearchParams();
+            if (species) params.append('filter-species', species);
+            if (search) params.append('search-input', search);
+            window.location.href = '{{ url_for("pet_listings") }}' + '?' + params.toString();
+        }
+    </script>
+</head>
+<body>
+    <div id="pet-listings-page">
+        <h1>Available Pets</h1>
+        <div class="filters">
+            <input type="text" id="search-input" name="search-input" placeholder="Search by name" value="{{ search_input }}">
+            <select id="filter-species" name="filter-species" onchange="applyFilters()">
+                <option value="All" {% if filter_species == 'All' %}selected{% endif %}>All</option>
+                <option value="Dog" {% if filter_species == 'Dog' %}selected{% endif %}>Dog</option>
+                <option value="Cat" {% if filter_species == 'Cat' %}selected{% endif %}>Cat</option>
+                <option value="Bird" {% if filter_species == 'Bird' %}selected{% endif %}>Bird</option>
+                <option value="Rabbit" {% if filter_species == 'Rabbit' %}selected{% endif %}>Rabbit</option>
+                <option value="Other" {% if filter_species == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+            <button onclick="applyFilters()">Search</button>
+        </div>
+        <div id="pet-grid" class="pet-grid">
+            {% if pets %}
+                {% for pet in pets %}
+                    <div class="pet-card">
+                        <h3>{{ pet.name }}</h3>
+                        <p><strong>Species:</strong> {{ pet.species }}</p>
+                        <p><strong>Age:</strong> {{ pet.age }}</p>
+                        <a href="{{ url_for('pet_details', pet_id=pet.pet_id) }}">View Details</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No pets found matching your criteria.</p>
+            {% endif %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

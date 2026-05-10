@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Car Rental Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}" defer></script>
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Car Rental Dashboard</h1>
+        <div id="featured-vehicles">
+            <h2>Featured Vehicles</h2>
+            {% if featured_vehicles %}
+                <div class="vehicle-cards">
+                    {% for vehicle in featured_vehicles %}
+                        <div class="vehicle-card">
+                            <img src="{{ url_for('static', filename='images/vehicles/' + vehicle.make|lower + '_' + vehicle.model|lower + '.jpg') }}" alt="{{ vehicle.make }} {{ vehicle.model }}" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/vehicles/default.jpg') }}';">
+                            <h3>{{ vehicle.make }} {{ vehicle.model }}</h3>
+                            <p>Type: {{ vehicle.vehicle_type }}</p>
+                            <p>Daily Rate: ${{ "%.2f"|format(vehicle.daily_rate) }}</p>
+                            <button id="view-details-button-{{ vehicle.vehicle_id }}" onclick="location.href='{{ url_for('vehicle_details', vehicle_id=vehicle.vehicle_id) }}'">View Details</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No featured vehicles available.</p>
+            {% endif %}
+        </div>
+        <div id="promotions-section">
+            <h2>Current Promotions</h2>
+            {% if promotions %}
+                <ul>
+                    {% for promo in promotions %}
+                        <li>{{ promo }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No current promotions.</p>
+            {% endif %}
+        </div>
+        <div class="navigation-buttons">
+            <button id="search-vehicles-button" onclick="location.href='{{ url_for('vehicle_search') }}'">Search Vehicles</button>
+            <button id="my-reservations-button" onclick="location.href='{{ url_for('my_reservations') }}'">My Reservations</button>
+            <button onclick="location.href='{{ url_for('rental_history') }}'">Rental History</button>
+            <button onclick="location.href='{{ url_for('locations') }}'">Locations</button>
+            <button onclick="location.href='{{ url_for('special_requests') }}'">Special Requests</button>
+        </div>
+    </div>
+</body>
+</html>

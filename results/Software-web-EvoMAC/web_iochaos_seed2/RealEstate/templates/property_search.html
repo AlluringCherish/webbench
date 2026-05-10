@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="search-page">
+    <h1>Property Search</h1>
+    <form method="get" action="{{ url_for('property_search') }}">
+        <label for="location-input">Location/City:</label>
+        <input type="text" id="location-input" name="location" value="{{ location_filter }}" placeholder="Enter location or city">
+        <label for="price-range-min">Minimum Price:</label>
+        <input type="number" id="price-range-min" name="price_min" value="{{ price_min }}" min="0" placeholder="0">
+        <label for="price-range-max">Maximum Price:</label>
+        <input type="number" id="price-range-max" name="price_max" value="{{ price_max }}" min="0" placeholder="No limit">
+        <label for="property-type-filter">Property Type:</label>
+        <select id="property-type-filter" name="property_type">
+            <option value="All" {% if not property_type_filter or property_type_filter.lower() == 'all' %}selected{% endif %}>All</option>
+            <option value="House" {% if property_type_filter.lower() == 'house' %}selected{% endif %}>House</option>
+            <option value="Apartment" {% if property_type_filter.lower() == 'apartment' %}selected{% endif %}>Apartment</option>
+            <option value="Condo" {% if property_type_filter.lower() == 'condo' %}selected{% endif %}>Condo</option>
+            <option value="Land" {% if property_type_filter.lower() == 'land' %}selected{% endif %}>Land</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+    <section id="properties-grid">
+        {% if properties %}
+            <div class="property-cards">
+                {% for property in properties %}
+                    <div class="property-card">
+                        <h3>{{ property.address }}</h3>
+                        <p><strong>Location:</strong> {{ property.location }}</p>
+                        <p><strong>Price:</strong> ${{ "{:,}".format(property.price) }}</p>
+                        <p><strong>Beds:</strong> {{ property.bedrooms }} | <strong>Baths:</strong> {{ property.bathrooms }}</p>
+                        <form action="{{ url_for('property_details', property_id=property.property_id) }}" method="get">
+                            <button type="submit" id="view-property-button-{{ property.property_id }}">View Details</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No properties found matching your criteria.</p>
+        {% endif %}
+    </section>
+    <nav>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </nav>
+</div>
+</body>
+</html>

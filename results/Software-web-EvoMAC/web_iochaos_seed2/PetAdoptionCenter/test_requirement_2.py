@@ -1,0 +1,151 @@
+'''
+Test the elements and integrity of all pages by verifying the presence and correctness of the specified elements on each page as per the requirements document.
+'''
+import unittest
+from app import app
+from bs4 import BeautifulSoup
+class TestPetAdoptionCenterPages(unittest.TestCase):
+    def setUp(self):
+        # Set up test client
+        app.config['TESTING'] = True
+        self.client = app.test_client()
+    def test_dashboard_page_elements(self):
+        # Test Dashboard page loads and contains required elements
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.data, 'html.parser')
+        dashboard_div = soup.find(id='dashboard-page')
+        self.assertIsNotNone(dashboard_div, "Dashboard page container 'dashboard-page' not found")
+        featured_pets_div = soup.find(id='featured-pets')
+        self.assertIsNotNone(featured_pets_div, "Featured pets container 'featured-pets' not found")
+        browse_button = soup.find(id='browse-pets-button')
+        self.assertIsNotNone(browse_button, "Browse pets button 'browse-pets-button' not found")
+        back_dashboard_button = soup.find(id='back-to-dashboard')
+        self.assertIsNotNone(back_dashboard_button, "Back to dashboard button 'back-to-dashboard' not found")
+    def test_pet_listings_page_elements(self):
+        # Test Pet Listings page loads and contains required elements
+        response = self.client.get('/pet_listings')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.data, 'html.parser')
+        listings_div = soup.find(id='pet-listings-page')
+        self.assertIsNotNone(listings_div, "Pet listings container 'pet-listings-page' not found")
+        search_input = soup.find(id='search-input')
+        self.assertIsNotNone(search_input, "Search input 'search-input' not found")
+        filter_species = soup.find(id='filter-species')
+        self.assertIsNotNone(filter_species, "Filter species dropdown 'filter-species' not found")
+        pet_grid = soup.find(id='pet-grid')
+        self.assertIsNotNone(pet_grid, "Pet grid container 'pet-grid' not found")
+        back_dashboard_button = soup.find(id='back-to-dashboard')
+        self.assertIsNotNone(back_dashboard_button, "Back to dashboard button 'back-to-dashboard' not found")
+    def test_pet_details_page_elements(self):
+        # Need a pet_id to test pet details page; use pet_id=1 if exists
+        response = self.client.get('/pet_details/1')
+        if response.status_code == 302:
+            # Pet not found, skip test
+            self.skipTest("Pet with pet_id=1 not found, skipping pet details test")
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.data, 'html.parser')
+        details_div = soup.find(id='pet-details-page')
+        self.assertIsNotNone(details_div, "Pet details container 'pet-details-page' not found")
+        pet_name = soup.find(id='pet-name')
+        self.assertIsNotNone(pet_name, "Pet name element 'pet-name' not found")
+        pet_species = soup.find(id='pet-species')
+        self.assertIsNotNone(pet_species, "Pet species element 'pet-species' not found")
+        pet_description = soup.find(id='pet-description')
+        self.assertIsNotNone(pet_description, "Pet description element 'pet-description' not found")
+        adopt_button = soup.find(id='adopt-button')
+        back_listings_button = soup.find(id='back-to-listings')
+        self.assertIsNotNone(back_listings_button, "Back to listings button 'back-to-listings' not found")
+        # Adopt button may or may not be present depending on pet status, so no assert here
+    def test_add_pet_page_elements(self):
+        response = self.client.get('/add_pet')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.data, 'html.parser')
+        add_pet_div = soup.find(id='add-pet-page')
+        self.assertIsNotNone(add_pet_div, "Add pet container 'add-pet-page' not found")
+        self.assertIsNotNone(soup.find(id='pet-name-input'), "Pet name input 'pet-name-input' not found")
+        self.assertIsNotNone(soup.find(id='pet-species-input'), "Pet species dropdown 'pet-species-input' not found")
+        self.assertIsNotNone(soup.find(id='pet-breed-input'), "Pet breed input 'pet-breed-input' not found")
+        self.assertIsNotNone(soup.find(id='pet-age-input'), "Pet age input 'pet-age-input' not found")
+        self.assertIsNotNone(soup.find(id='pet-gender-input'), "Pet gender dropdown 'pet-gender-input' not found")
+        self.assertIsNotNone(soup.find(id='pet-size-input'), "Pet size dropdown 'pet-size-input' not found")
+        self.assertIsNotNone(soup.find(id='pet-description-input'), "Pet description textarea 'pet-description-input' not found")
+        self.assertIsNotNone(soup.find(id='submit-pet-button'), "Submit pet button 'submit-pet-button' not found")
+        self.assertIsNotNone(soup.find(id='back-to-dashboard'), "Back to dashboard button 'back-to-dashboard' not found")
+    def test_adoption_application_page_elements(self):
+        # Use pet_id=1 if exists
+        response = self.client.get('/adoption_application/1')
+        if response.status_code == 302:
+            self.skipTest("Pet with pet_id=1 not found, skipping adoption application test")
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.data, 'html.parser')
+        app_div = soup.find(id='application-page')
+        self.assertIsNotNone(app_div, "Application page container 'application-page' not found")
+        self.assertIsNotNone(soup.find(id='applicant-name'), "Applicant name input 'applicant-name' not found")
+        self.assertIsNotNone(soup.find(id='applicant-phone'), "Applicant phone input 'applicant-phone' not found")
+        self.assertIsNotNone(soup.find(id='housing-type'), "Housing type dropdown 'housing-type' not found")
+        self.assertIsNotNone(soup.find(id='reason'), "Reason textarea 'reason' not found")
+        self.assertIsNotNone(soup.find(id='submit-application-button'), "Submit application button 'submit-application-button' not found")
+        self.assertIsNotNone(soup.find(id='back-to-pet'), "Back to pet button 'back-to-pet' not found")
+    def test_my_applications_page_elements(self):
+        response = self.client.get('/my_applications')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.data, 'html.parser')
+        my_apps_div = soup.find(id='my-applications-page')
+        self.assertIsNotNone(my_apps_div, "My applications container 'my-applications-page' not found")
+        filter_status = soup.find(id='filter-status')
+        self.assertIsNotNone(filter_status, "Filter status dropdown 'filter-status' not found")
+        applications_table = soup.find(id='applications-table')
+        self.assertIsNotNone(applications_table, "Applications table 'applications-table' not found")
+        back_dashboard_button = soup.find(id='back-to-dashboard')
+        self.assertIsNotNone(back_dashboard_button, "Back to dashboard button 'back-to-dashboard' not found")
+    def test_favorites_page_elements(self):
+        response = self.client.get('/favorites')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.data, 'html.parser')
+        favorites_div = soup.find(id='favorites-page')
+        self.assertIsNotNone(favorites_div, "Favorites page container 'favorites-page' not found")
+        favorites_grid = soup.find(id='favorites-grid')
+        self.assertIsNotNone(favorites_grid, "Favorites grid 'favorites-grid' not found")
+        back_dashboard_button = soup.find(id='back-to-dashboard')
+        self.assertIsNotNone(back_dashboard_button, "Back to dashboard button 'back-to-dashboard' not found")
+    def test_messages_page_elements(self):
+        response = self.client.get('/messages')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.data, 'html.parser')
+        messages_div = soup.find(id='messages-page')
+        self.assertIsNotNone(messages_div, "Messages page container 'messages-page' not found")
+        conversation_list = soup.find(id='conversation-list')
+        self.assertIsNotNone(conversation_list, "Conversation list 'conversation-list' not found")
+        self.assertIsNotNone(soup.find(id='message-input'), "Message input textarea 'message-input' not found")
+        self.assertIsNotNone(soup.find(id='send-message-button'), "Send message button 'send-message-button' not found")
+        back_dashboard_button = soup.find(id='back-to-dashboard')
+        self.assertIsNotNone(back_dashboard_button, "Back to dashboard button 'back-to-dashboard' not found")
+    def test_user_profile_page_elements(self):
+        response = self.client.get('/user_profile')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.data, 'html.parser')
+        profile_div = soup.find(id='profile-page')
+        self.assertIsNotNone(profile_div, "Profile page container 'profile-page' not found")
+        profile_username = soup.find(id='profile-username')
+        self.assertIsNotNone(profile_username, "Profile username display 'profile-username' not found")
+        profile_email = soup.find(id='profile-email')
+        self.assertIsNotNone(profile_email, "Profile email input 'profile-email' not found")
+        update_button = soup.find(id='update-profile-button')
+        self.assertIsNotNone(update_button, "Update profile button 'update-profile-button' not found")
+        back_dashboard_button = soup.find(id='back-to-dashboard')
+        self.assertIsNotNone(back_dashboard_button, "Back to dashboard button 'back-to-dashboard' not found")
+    def test_admin_panel_page_elements(self):
+        response = self.client.get('/admin_panel')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.data, 'html.parser')
+        admin_div = soup.find(id='admin-panel-page')
+        self.assertIsNotNone(admin_div, "Admin panel container 'admin-panel-page' not found")
+        pending_apps_section = soup.find(id='pending-applications')
+        self.assertIsNotNone(pending_apps_section, "Pending applications section 'pending-applications' not found")
+        all_pets_section = soup.find(id='all-pets-list')
+        self.assertIsNotNone(all_pets_section, "All pets list section 'all-pets-list' not found")
+        back_dashboard_button = soup.find(id='back-to-dashboard')
+        self.assertIsNotNone(back_dashboard_button, "Back to dashboard button 'back-to-dashboard' not found")
+if __name__ == '__main__':
+    unittest.main()

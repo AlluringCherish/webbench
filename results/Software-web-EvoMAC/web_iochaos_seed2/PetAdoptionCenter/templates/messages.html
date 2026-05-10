@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .conversation {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin-left: 20px;
+            margin-bottom: 5px;
+        }
+        .unread {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="messages-page">
+        <h1>Messages</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flashes">
+              {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        <div id="conversation-list">
+            {% if conversations %}
+                {% for participants, msgs in conversations %}
+                    <div class="conversation">
+                        <h3>Conversation between {{ participants[0] }} and {{ participants[1] }}</h3>
+                        {% for msg in msgs %}
+                            <div class="message {% if not msg.is_read and msg.recipient_username == current_username %}unread{% endif %}">
+                                <strong>{{ msg.timestamp }} - {{ msg.sender_username }}:</strong> <em>{{ msg.subject }}</em><br>
+                                {{ msg.content }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No conversations found.</p>
+            {% endif %}
+        </div>
+        <h2>Send New Message</h2>
+        <form method="post" action="{{ url_for('messages') }}">
+            <label for="recipient_username">Recipient Username:</label><br>
+            <input type="text" id="recipient_username" name="recipient_username" required><br><br>
+            <label for="subject">Subject:</label><br>
+            <input type="text" id="subject" name="subject" required><br><br>
+            <label for="message-input">Message:</label><br>
+            <textarea id="message-input" name="message-input" rows="5" required></textarea><br><br>
+            <button type="submit" id="send-message-button">Send Message</button>
+        </form>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

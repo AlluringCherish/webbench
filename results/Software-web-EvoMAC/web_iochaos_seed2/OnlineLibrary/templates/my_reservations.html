@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="reservations-page">
+        <h1>My Reservations</h1>
+        <form method="post">
+            <table id="reservations-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Reservation Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if reservations %}
+                        {% for reservation in reservations %}
+                            <tr>
+                                <td>{{ reservation.title }}</td>
+                                <td>{{ reservation.reservation_date }}</td>
+                                <td><span class="status-{{ reservation.status }}">{{ reservation.status }}</span></td>
+                                <td>
+                                    {% if reservation.status == 'Active' %}
+                                        <button type="submit" name="cancel-reservation-button-{{ reservation.reservation_id }}" id="cancel-reservation-button-{{ reservation.reservation_id }}">Cancel Reservation</button>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="4">No reservations found.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </form>
+        <form action="{{ url_for('dashboard') }}" method="get" style="margin-top: 20px;">
+            <button type="submit" id="back-to-dashboard">Back to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

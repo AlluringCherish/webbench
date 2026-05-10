@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+    <style>
+        #dashboard-page {
+            max-width: 900px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        #member-welcome {
+            background-color: #e0f7fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            color: #00796b;
+        }
+        .button-group {
+            margin-bottom: 30px;
+        }
+        button {
+            background-color: #00796b;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin-right: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #004d40;
+        }
+        h2 {
+            color: #004d40;
+            margin-bottom: 10px;
+        }
+        .featured-classes {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .class-card {
+            border: 1px solid #00796b;
+            border-radius: 5px;
+            padding: 10px;
+            width: 28%;
+            box-sizing: border-box;
+            background-color: #b2dfdb;
+        }
+        .class-card h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+            color: #004d40;
+        }
+        .class-info {
+            font-size: 0.9em;
+            color: #004d40;
+        }
+        nav {
+            margin-top: 40px;
+            border-top: 1px solid #00796b;
+            padding-top: 15px;
+            font-size: 0.9em;
+            color: #004d40;
+        }
+        nav a {
+            color: #00796b;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div id="dashboard-page">
+    <div id="member-welcome">
+        {{ member_status }}
+    </div>
+    <div class="button-group">
+        <button id="browse-membership-button" onclick="location.href='{{ url_for('membership_plans') }}'">Browse Membership Plans</button>
+        <button id="view-schedule-button" onclick="location.href='{{ url_for('class_schedule') }}'">View Class Schedule</button>
+        <button id="book-trainer-button" onclick="location.href='{{ url_for('pt_booking') }}'">Book Personal Training</button>
+    </div>
+    <h2>Featured Classes</h2>
+    <div class="featured-classes">
+        {% for cls in featured_classes %}
+        <div class="class-card">
+            <h3>{{ cls.class_name }}</h3>
+            <div class="class-info">
+                <div><strong>Day:</strong> {{ cls.schedule_day }}</div>
+                <div><strong>Time:</strong> {{ cls.schedule_time }}</div>
+                <div><strong>Duration:</strong> {{ cls.duration }} minutes</div>
+                <div><strong>Capacity:</strong> {{ cls.capacity }}</div>
+                <div><strong>Trainer:</strong>
+                    {% set trainer = None %}
+                    {% for t in trainers %}
+                        {% if t.trainer_id == cls.trainer_id %}
+                            {% set trainer = t %}
+                            {% break %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ trainer.name if trainer else 'Unknown' }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <nav>
+        <a href="{{ url_for('membership_plans') }}">Membership Plans</a> |
+        <a href="{{ url_for('class_schedule') }}">Class Schedule</a> |
+        <a href="{{ url_for('trainer_profiles') }}">Trainer Profiles</a> |
+        <a href="{{ url_for('pt_booking') }}">Book Personal Training</a> |
+        <a href="{{ url_for('workout_records') }}">My Workout Records</a> |
+        <a href="{{ url_for('log_workout') }}">Log Workout</a>
+    </nav>
+</div>
+</body>
+</html>

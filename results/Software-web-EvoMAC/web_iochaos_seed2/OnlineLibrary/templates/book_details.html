@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="book-details-page">
+        <h1 id="book-title">{{ book.title }}</h1>
+        <div id="book-author"><strong>Author:</strong> {{ book.author }}</div>
+        <div id="book-status"><strong>Status:</strong> <span class="status-{{ book.status }}">{{ book.status }}</span></div>
+        <div id="book-description" style="margin-top: 15px;">
+            <strong>Description:</strong>
+            <p>{{ book.description }}</p>
+        </div>
+        <div id="book-isbn"><strong>ISBN:</strong> {{ book.isbn }}</div>
+        <div id="book-genre"><strong>Genre:</strong> {{ book.genre }}</div>
+        <div id="book-publisher"><strong>Publisher:</strong> {{ book.publisher }}</div>
+        <div id="book-year"><strong>Year:</strong> {{ book.year }}</div>
+        <div style="margin-top: 20px;">
+            {% if book.status == 'Available' %}
+                <form action="{{ url_for('borrow_confirmation', book_id=book.book_id) }}" method="get" style="display:inline;">
+                    <button type="submit" id="borrow-button">Borrow Book</button>
+                </form>
+            {% else %}
+                <button type="button" id="borrow-button" disabled>Borrow Book</button>
+            {% endif %}
+            <form action="{{ url_for('write_review', book_id=book.book_id) }}" method="get" style="display:inline; margin-left: 10px;">
+                <button type="submit" id="write-review-button">Write Review</button>
+            </form>
+        </div>
+        <div id="reviews-section">
+            <h2>User Reviews</h2>
+            {% if reviews %}
+                {% for review in reviews %}
+                    <div class="review-item">
+                        <div class="review-header">
+                            <span class="review-rating">{% for i in range(review.rating) %}★{% endfor %}{% for i in range(5 - review.rating) %}☆{% endfor %}</span>
+                            &nbsp;by {{ review.username }} on {{ review.review_date }}
+                        </div>
+                        <div class="review-text">{{ review.review_text }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No reviews yet.</p>
+            {% endif %}
+        </div>
+        <form action="{{ url_for('book_catalog') }}" method="get" style="margin-top: 20px;">
+            <button type="submit" id="back-to-catalog">Back to Catalog</button>
+        </form>
+    </div>
+</body>
+</html>

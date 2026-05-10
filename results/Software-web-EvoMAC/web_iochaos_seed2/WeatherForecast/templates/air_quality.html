@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Air Quality Index</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="air-quality-page">
+    <h1>Air Quality Index</h1>
+    <form method="post" action="{{ url_for('air_quality') }}">
+        <label for="location-aqi-filter">Select Location:</label>
+        <select id="location-aqi-filter" name="location_aqi_filter" onchange="this.form.submit()">
+            {% for loc in locations %}
+                <option value="{{ loc.location_id }}" {% if loc.location_id == selected_location_id %}selected{% endif %}>{{ loc.location_name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    {% if aqi_info %}
+        <div id="aqi-display">AQI Index: {{ aqi_info.aqi_index }}</div>
+        <div id="aqi-description">Description: {{ aqi_info.aqi_description }}</div>
+        <table id="pollution-details" border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>PM2.5</th>
+                    <th>PM10</th>
+                    <th>NO2</th>
+                    <th>O3</th>
+                    <th>Last Updated</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ aqi_info.pm25 }}</td>
+                    <td>{{ aqi_info.pm10 }}</td>
+                    <td>{{ aqi_info.no2 }}</td>
+                    <td>{{ aqi_info.o3 }}</td>
+                    <td>{{ aqi_info.last_updated }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="health-recommendation">{{ aqi_info.health_recommendation }}</div>
+    {% else %}
+        <p>No air quality data available for this location.</p>
+    {% endif %}
+    <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

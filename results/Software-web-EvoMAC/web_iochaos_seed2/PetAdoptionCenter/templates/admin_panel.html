@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function updateApplicationStatus(applicationId) {
+            const select = document.getElementById('status-select-' + applicationId);
+            const newStatus = select.value;
+            const form = document.getElementById('update-status-form-' + applicationId);
+            form.submit();
+        }
+        function deletePet(petId) {
+            if (confirm('Are you sure you want to delete pet ID ' + petId + '?')) {
+                const form = document.getElementById('delete-pet-form-' + petId);
+                form.submit();
+            }
+        }
+        function editPet(petId) {
+            alert('Edit pet functionality not implemented in this demo.');
+        }
+    </script>
+</head>
+<body>
+    <div id="admin-panel-page">
+        <h1>Admin Panel</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flashes">
+              {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        <section id="pending-applications">
+            <h2>Pending Adoption Applications</h2>
+            {% if pending_applications %}
+                <table border="1" cellpadding="5" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Application ID</th>
+                            <th>Applicant Name</th>
+                            <th>Pet ID</th>
+                            <th>Status</th>
+                            <th>Update Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in pending_applications %}
+                            <tr>
+                                <td>{{ app.application_id }}</td>
+                                <td>{{ app.applicant_name }}</td>
+                                <td>{{ app.pet_id }}</td>
+                                <td>{{ app.status }}</td>
+                                <td>
+                                    <form id="update-status-form-{{ app.application_id }}" method="post" action="{{ url_for('admin_panel') }}">
+                                        <input type="hidden" name="action" value="update_application_status">
+                                        <input type="hidden" name="application_id" value="{{ app.application_id }}">
+                                        <select id="status-select-{{ app.application_id }}" name="new_status" onchange="updateApplicationStatus('{{ app.application_id }}')">
+                                            <option value="Pending" {% if app.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                            <option value="Approved" {% if app.status == 'Approved' %}selected{% endif %}>Approved</option>
+                                            <option value="Rejected" {% if app.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                                        </select>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No pending applications.</p>
+            {% endif %}
+        </section>
+        <section id="all-pets-list">
+            <h2>All Pets</h2>
+            {% if all_pets %}
+                <table border="1" cellpadding="5" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Pet ID</th>
+                            <th>Name</th>
+                            <th>Species</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pet in all_pets %}
+                            <tr>
+                                <td>{{ pet.pet_id }}</td>
+                                <td>{{ pet.name }}</td>
+                                <td>{{ pet.species }}</td>
+                                <td>{{ pet.status }}</td>
+                                <td>
+                                    <form id="delete-pet-form-{{ pet.pet_id }}" method="post" action="{{ url_for('admin_panel') }}" style="display:inline;">
+                                        <input type="hidden" name="action" value="delete_pet">
+                                        <input type="hidden" name="pet_id" value="{{ pet.pet_id }}">
+                                        <button type="button" onclick="deletePet('{{ pet.pet_id }}')">Delete</button>
+                                    </form>
+                                    <button type="button" onclick="editPet('{{ pet.pet_id }}')">Edit</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No pets found.</p>
+            {% endif %}
+        </section>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

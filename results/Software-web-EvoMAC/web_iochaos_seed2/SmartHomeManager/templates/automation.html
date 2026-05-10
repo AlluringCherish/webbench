@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automation Rules</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #automation-page { max-width: 900px; margin: auto; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        form { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; margin-bottom: 20px; }
+        label { font-weight: bold; }
+        input[type="text"], select { padding: 6px; font-size: 14px; }
+        button { padding: 8px 15px; cursor: pointer; }
+        #back-to-dashboard { margin-top: 10px; }
+    </style>
+</head>
+<body>
+<div id="automation-page">
+    <h1>Automation Rules</h1>
+    <table id="rules-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Trigger</th>
+                <th>Action</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rule in rules %}
+            <tr>
+                <td>{{ rule.rule_name }}</td>
+                <td>{{ rule.trigger_type }}: {{ rule.trigger_value }}</td>
+                <td>
+                    {% set action_device = devices | selectattr('device_id', 'equalto', rule.action_device_id) | list | first %}
+                    {% if action_device %}
+                        {{ rule.action_type }} {{ rule.action_value }} on {{ action_device.device_name }}
+                    {% else %}
+                        {{ rule.action_type }} {{ rule.action_value }} on Unknown Device
+                    {% endif %}
+                </td>
+                <td>{{ 'Enabled' if rule.enabled else 'Disabled' }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">No automation rules found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form method="post" action="{{ url_for('automation_rules') }}">
+        <div>
+            <label for="rule-name">Rule Name</label><br>
+            <input type="text" id="rule-name" name="rule_name" required>
+        </div>
+        <div>
+            <label for="trigger-type">Trigger Type</label><br>
+            <select id="trigger-type" name="trigger_type" required>
+                <option value="" disabled selected>Select trigger type</option>
+                {% for ttype in trigger_types %}
+                <option value="{{ ttype }}">{{ ttype }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="trigger-value">Trigger Value</label><br>
+            <input type="text" id="trigger-value" name="trigger_value" required placeholder="e.g. 07:00 or detected or 75">
+        </div>
+        <div>
+            <label for="action-device">Action Device</label><br>
+            <select id="action-device" name="action_device" required>
+                <option value="" disabled selected>Select device</option>
+                {% for device in devices %}
+                <option value="{{ device.device_id }}">{{ device.device_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="action-type">Action Type</label><br>
+            <select id="action-type" name="action_type" required>
+                <option value="" disabled selected>Select action</option>
+                {% for atype in action_types %}
+                <option value="{{ atype }}">{{ atype }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="action-value">Action Value (optional)</label><br>
+            <input type="text" id="action-value" name="action_value" placeholder="e.g. 20 for brightness or temperature">
+        </div>
+        <div>
+            <button id="add-rule-button" type="submit">Add Rule</button>
+        </div>
+    </form>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

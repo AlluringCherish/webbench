@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Saved Locations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="saved-locations-page">
+    <h1>Saved Locations</h1>
+    {% if saved_locations %}
+    <table id="locations-table" border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Location Name</th>
+                <th>Temperature</th>
+                <th>Condition</th>
+                <th>Default</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loc in saved_locations %}
+            <tr>
+                <td>{{ loc.location_name }}</td>
+                <td>{{ loc.temperature if loc.temperature else 'N/A' }}</td>
+                <td>{{ loc.condition if loc.condition else 'N/A' }}</td>
+                <td>{% if loc.is_default %}Yes{% else %}No{% endif %}</td>
+                <td>
+                    <button id="view-location-weather-{{ loc.location_id }}" onclick="location.href='{{ url_for('view_location_weather', location_id=loc.location_id) }}'">View Weather</button>
+                    <form method="post" style="display:inline;">
+                        <input type="hidden" name="remove_location_id" value="{{ loc.location_id }}">
+                        <button type="submit" id="remove-location-button-{{ loc.location_id }}">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No saved locations.</p>
+    {% endif %}
+    <button id="add-new-location-button" onclick="location.href='{{ url_for('add_new_location') }}'">Add New Location</button>
+    <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>
