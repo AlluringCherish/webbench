@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }} - {{ device.device_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="{{ page_id }}">
+    <h1>{{ page_title }}</h1>
+    <h2 id="device-name-display">{{ device.device_name }}</h2>
+    <div id="device-status-display" class="{{ 'online' if device.status.lower() == 'online' else 'offline' }}">
+        Status: {{ device.status }}
+    </div>
+    <form method="post" action="{{ url_for('device_control', device_id=device.device_id) }}">
+        <input type="hidden" name="power" value="{{ device.power }}">
+        <!-- Power Toggle Button -->
+        <button type="submit" formaction="{{ url_for('toggle_power', device_id=device.device_id) }}" formmethod="post"
+                class="power-toggle {% if device.power == 'off' %}off{% endif %}">
+            Turn {{ 'Off' if device.power == 'on' else 'On' }}
+        </button>
+        <!-- Brightness (only for Light and Appliance) -->
+        {% if device.device_type in ['Light', 'Appliance'] %}
+        <label for="brightness">Brightness (0-100)</label>
+        <input type="number" id="brightness" name="brightness" min="0" max="100" value="{{ device.brightness }}">
+        {% endif %}
+        <!-- Temperature (only for Thermostat) -->
+        {% if device.device_type == 'Thermostat' %}
+        <label for="temperature">Temperature (°F)</label>
+        <input type="number" id="temperature" name="temperature" min="50" max="90" value="{{ device.temperature }}">
+        {% endif %}
+        <!-- Mode -->
+        <label for="mode">Mode</label>
+        <input type="text" id="mode" name="mode" value="{{ device.mode }}">
+        <!-- Schedule Time -->
+        <label for="schedule_time">Schedule Time (HH:MM)</label>
+        <input type="text" id="schedule_time" name="schedule_time" pattern="^([01]\d|2[0-3]):([0-5]\d)$" value="{{ device.schedule_time }}" placeholder="e.g. 22:00">
+        <button id="save-settings-button" type="submit">Save Settings</button>
+    </form>
+    <button id="back-to-devices" onclick="location.href='{{ url_for('device_list') }}'">Back to Device List</button>
+</div>
+</body>
+</html>

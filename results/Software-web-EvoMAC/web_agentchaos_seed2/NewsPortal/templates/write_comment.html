@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Write a Comment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="write-comment-page">
+    <h1>Write a Comment</h1>
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+    <form method="post" action="{{ url_for('write_comment') }}">
+        <label for="select-article">Select Article:</label>
+        <select id="select-article" name="select-article" required>
+            <option value="">-- Select an article --</option>
+            {% for article in articles %}
+                <option value="{{ article.article_id }}"
+                    {% if selected_article_id == article.article_id %}selected{% endif %}>
+                    {{ article.title }}
+                </option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <label for="commenter-name">Your Name:</label>
+        <input type="text" id="commenter-name" name="commenter-name" value="{{ commenter_name|default('') }}" required>
+        <br><br>
+        <label for="comment-text">Comment:</label><br>
+        <textarea id="comment-text" name="comment-text" rows="5" cols="50" required>{{ comment_text|default('') }}</textarea>
+        <br><br>
+        <button type="submit" id="submit-comment-button">Submit Comment</button>
+    </form>
+    <button onclick="location.href='{{ url_for('comments_page') }}'">Back to Comments</button>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

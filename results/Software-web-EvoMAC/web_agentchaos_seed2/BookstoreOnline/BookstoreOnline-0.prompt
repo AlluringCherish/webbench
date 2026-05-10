@@ -1,0 +1,196 @@
+# Requirements Document for 'BookstoreOnline' Web Application
+
+## 1. Objective
+Develop a comprehensive web application named 'BookstoreOnline' using Python, with data managed through local text files. The application enables users to browse books, add items to cart, checkout, write reviews, and track order history. No authentication required - all features are directly accessible. Note that the website should start from the Dashboard page.
+
+## 2. Language
+The required development language for the 'BookstoreOnline' application is Python.
+
+## 3. Page Design
+
+The 'BookstoreOnline' web application will consist of the following nine pages:
+
+### 1. Dashboard Page
+- **Page Title**: Bookstore Dashboard
+- **Overview**: The main hub displaying featured books, bestsellers, and quick navigation to all functionalities.
+- **Elements**:
+  - **ID: dashboard-page** - Type: Div - Container for the dashboard page.
+  - **ID: featured-books** - Type: Div - Display of featured book recommendations.
+  - **ID: browse-catalog-button** - Type: Button - Button to navigate to book catalog page.
+  - **ID: view-cart-button** - Type: Button - Button to navigate to shopping cart page.
+  - **ID: bestsellers-button** - Type: Button - Button to navigate to bestsellers page.
+
+### 2. Book Catalog Page
+- **Page Title**: Book Catalog
+- **Overview**: A page displaying all available books with search and filter capabilities.
+- **Elements**:
+  - **ID: catalog-page** - Type: Div - Container for the catalog page.
+  - **ID: search-input** - Type: Input - Field to search books by title, author, or ISBN.
+  - **ID: category-filter** - Type: Dropdown - Dropdown to filter by category (Fiction, Non-Fiction, Science, History, etc.).
+  - **ID: books-grid** - Type: Div - Grid displaying book cards with cover, title, author, and price.
+  - **ID: view-book-button-{book_id}** - Type: Button - Button to view book details (each book card has this).
+
+### 3. Book Details Page
+- **Page Title**: Book Details
+- **Overview**: A page displaying detailed information about a specific book.
+- **Elements**:
+  - **ID: book-details-page** - Type: Div - Container for the book details page.
+  - **ID: book-title** - Type: H1 - Display book title.
+  - **ID: book-author** - Type: Div - Display book author.
+  - **ID: book-price** - Type: Div - Display book price.
+  - **ID: add-to-cart-button** - Type: Button - Button to add book to shopping cart.
+  - **ID: book-reviews** - Type: Div - Section displaying customer reviews.
+
+### 4. Shopping Cart Page
+- **Page Title**: Shopping Cart
+- **Overview**: A page displaying items in the cart with quantity management and checkout option.
+- **Elements**:
+  - **ID: cart-page** - Type: Div - Container for the cart page.
+  - **ID: cart-items-table** - Type: Table - Table displaying cart items with title, quantity, price, and subtotal.
+  - **ID: update-quantity-{item_id}** - Type: Input (number) - Field to update item quantity (each cart item has this).
+  - **ID: remove-item-button-{item_id}** - Type: Button - Button to remove item from cart (each cart item has this).
+  - **ID: proceed-checkout-button** - Type: Button - Button to proceed to checkout.
+  - **ID: total-amount** - Type: Div - Display total cart amount.
+
+### 5. Checkout Page
+- **Page Title**: Checkout
+- **Overview**: A page for users to enter shipping information and complete purchase.
+- **Elements**:
+  - **ID: checkout-page** - Type: Div - Container for the checkout page.
+  - **ID: customer-name** - Type: Input - Field to input customer name.
+  - **ID: shipping-address** - Type: Textarea - Field to input shipping address.
+  - **ID: payment-method** - Type: Dropdown - Dropdown to select payment method (Credit Card, PayPal, Bank Transfer).
+  - **ID: place-order-button** - Type: Button - Button to confirm and place order.
+
+### 6. Order History Page
+- **Page Title**: Order History
+- **Overview**: A page displaying all previous orders with tracking information.
+- **Elements**:
+  - **ID: orders-page** - Type: Div - Container for the orders page.
+  - **ID: orders-table** - Type: Table - Table displaying orders with order ID, date, total amount, and status.
+  - **ID: view-order-button-{order_id}** - Type: Button - Button to view order details (each order has this).
+  - **ID: order-status-filter** - Type: Dropdown - Dropdown to filter by status (All, Pending, Shipped, Delivered).
+  - **ID: back-to-dashboard** - Type: Button - Button to navigate back to dashboard.
+
+### 7. Reviews Page
+- **Page Title**: Customer Reviews
+- **Overview**: A page displaying all customer reviews and allowing users to write new reviews.
+- **Elements**:
+  - **ID: reviews-page** - Type: Div - Container for the reviews page.
+  - **ID: reviews-list** - Type: Div - List of all reviews with book title, rating, and review text.
+  - **ID: write-review-button** - Type: Button - Button to navigate to write review page.
+  - **ID: filter-by-rating** - Type: Dropdown - Dropdown to filter reviews by rating (All, 5 stars, 4 stars, etc.).
+  - **ID: back-to-dashboard** - Type: Button - Button to navigate back to dashboard.
+
+### 8. Write Review Page
+- **Page Title**: Write a Review
+- **Overview**: A page for users to write reviews for purchased books.
+- **Elements**:
+  - **ID: write-review-page** - Type: Div - Container for the write review page.
+  - **ID: select-book** - Type: Dropdown - Dropdown to select book to review.
+  - **ID: rating-select** - Type: Dropdown - Dropdown to select rating (1-5 stars).
+  - **ID: review-text** - Type: Textarea - Field to write review text.
+  - **ID: submit-review-button** - Type: Button - Button to submit review.
+
+### 9. Bestsellers Page
+- **Page Title**: Bestsellers
+- **Overview**: A page displaying top-selling books ranked by sales.
+- **Elements**:
+  - **ID: bestsellers-page** - Type: Div - Container for the bestsellers page.
+  - **ID: bestsellers-list** - Type: Div - Ranked list of bestselling books with rank, title, author, and sales count.
+  - **ID: time-period-filter** - Type: Dropdown - Dropdown to filter by time period (This Week, This Month, All Time).
+  - **ID: view-book-button-{book_id}** - Type: Button - Button to view book details (each bestseller has this).
+  - **ID: back-to-dashboard** - Type: Button - Button to navigate back to dashboard.
+
+## 4. Data Storage
+
+The 'BookstoreOnline' application will store data locally in text files organized in the directory 'data'. The following data formats and examples are defined:
+
+### 1. Books Data
+- **File Name**: `books.txt`
+- **Data Format**:
+  ```
+  book_id|title|author|isbn|category|price|stock|description
+  ```
+- **Example Data**:
+  ```
+  1|The Great Gatsby|F. Scott Fitzgerald|9780743273565|Fiction|12.99|50|A classic American novel
+  2|Sapiens|Yuval Noah Harari|9780062316097|Non-Fiction|16.99|30|A brief history of humankind
+  3|1984|George Orwell|9780451524935|Fiction|14.99|45|Dystopian social science fiction
+  ```
+
+### 2. Categories Data
+- **File Name**: `categories.txt`
+- **Data Format**:
+  ```
+  category_id|category_name|description
+  ```
+- **Example Data**:
+  ```
+  1|Fiction|Fictional narratives and novels
+  2|Non-Fiction|Factual and educational books
+  3|Science|Scientific topics and research
+  ```
+
+### 3. Cart Data
+- **File Name**: `cart.txt`
+- **Data Format**:
+  ```
+  cart_id|book_id|quantity|added_date
+  ```
+- **Example Data**:
+  ```
+  1|1|2|2025-01-15
+  2|3|1|2025-01-16
+  ```
+
+### 4. Orders Data
+- **File Name**: `orders.txt`
+- **Data Format**:
+  ```
+  order_id|customer_name|order_date|total_amount|status|shipping_address
+  ```
+- **Example Data**:
+  ```
+  1|John Doe|2025-01-10|38.97|Delivered|123 Main St, New York, NY 10001
+  2|Jane Smith|2025-01-14|16.99|Shipped|456 Oak Ave, Los Angeles, CA 90001
+  ```
+
+### 5. Order Items Data
+- **File Name**: `order_items.txt`
+- **Data Format**:
+  ```
+  order_item_id|order_id|book_id|quantity|price
+  ```
+- **Example Data**:
+  ```
+  1|1|1|2|12.99
+  2|1|3|1|14.99
+  3|2|2|1|16.99
+  ```
+
+### 6. Reviews Data
+- **File Name**: `reviews.txt`
+- **Data Format**:
+  ```
+  review_id|book_id|customer_name|rating|review_text|review_date
+  ```
+- **Example Data**:
+  ```
+  1|1|Alice Johnson|5|Amazing book! A true classic.|2025-01-12
+  2|2|Bob Williams|4|Very informative and well-written.|2025-01-13
+  3|3|Charlie Brown|5|Thought-provoking and relevant today.|2025-01-15
+  ```
+
+### 7. Bestsellers Data
+- **File Name**: `bestsellers.txt`
+- **Data Format**:
+  ```
+  book_id|sales_count|period
+  ```
+- **Example Data**:
+  ```
+  2|150|This Month
+  1|120|This Month
+  3|95|This Month
+  ```

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Listings</title>
+    <style>
+        #listings-page {
+            max-width: 1000px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        #search-input, #category-filter, #location-filter {
+            padding: 8px;
+            margin-right: 10px;
+            font-size: 1em;
+        }
+        #jobs-grid {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+            gap: 15px;
+        }
+        .job-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .job-title {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .job-company {
+            color: #555;
+        }
+        button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #007BFF;
+            background-color: #007BFF;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 10px;
+        }
+        #back-to-dashboard {
+            margin-top: 20px;
+            padding: 8px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #6c757d;
+            background-color: #6c757d;
+            color: white;
+        }
+        #back-to-dashboard:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+<div id="listings-page">
+    <h1>Job Listings</h1>
+    <form method="get" action="{{ url_for('job_listings') }}">
+        <input type="text" id="search-input" name="search" placeholder="Search jobs..." value="{{ search_query }}">
+        <select id="category-filter" name="category">
+            <option value="All" {% if selected_category == 'All' or selected_category == '' %}selected{% endif %}>All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category.category_name }}" {% if selected_category == category.category_name %}selected{% endif %}>{{ category.category_name }}</option>
+            {% endfor %}
+        </select>
+        <select id="location-filter" name="location">
+            <option value="All" {% if selected_location == 'All' or selected_location == '' %}selected{% endif %}>All Locations</option>
+            <option value="Remote" {% if selected_location == 'Remote' %}selected{% endif %}>Remote</option>
+            <option value="On-site" {% if selected_location == 'On-site' %}selected{% endif %}>On-site</option>
+            <option value="Hybrid" {% if selected_location == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+    <div id="jobs-grid">
+        {% if jobs %}
+            {% for job in jobs %}
+                <div class="job-card">
+                    <div class="job-title">{{ job.title }}</div>
+                    <div class="job-company">{{ job.company_name }} - {{ job.location }}</div>
+                    <div>Salary: ${{ job.salary_min }} - ${{ job.salary_max }}</div>
+                    <form action="{{ url_for('job_details', job_id=job.job_id) }}" method="get" style="margin-top: 8px;">
+                        <button type="submit" id="view-job-button-{{ job.job_id }}">View Details</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No jobs found matching your criteria.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

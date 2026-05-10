@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse Restaurants</title>
+    <style>
+        #restaurants-page {
+            max-width: 900px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        #restaurants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+            gap: 15px;
+        }
+        .restaurant-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .restaurant-card h3 {
+            margin: 0 0 5px 0;
+        }
+        button {
+            margin-top: 10px;
+            padding: 7px 12px;
+            cursor: pointer;
+        }
+        #filters {
+            margin-bottom: 20px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        input[type="text"] {
+            padding: 5px;
+            width: 200px;
+        }
+        select {
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="restaurants-page">
+    <h1>Browse Restaurants</h1>
+    <form method="get" action="{{ url_for('restaurants_page') }}" id="filters">
+        <label for="search-input">Search:</label>
+        <input type="text" id="search-input" name="search" value="{{ search_query }}" placeholder="Name or cuisine">
+        <label for="cuisine-filter">Cuisine:</label>
+        <select id="cuisine-filter" name="cuisine">
+            <option value="All" {% if selected_cuisine == 'All' or selected_cuisine == '' %}selected{% endif %}>All</option>
+            {% for cuisine in cuisines %}
+                <option value="{{ cuisine }}" {% if cuisine == selected_cuisine %}selected{% endif %}>{{ cuisine }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+    <div id="restaurants-grid">
+        {% if restaurants %}
+            {% for r in restaurants %}
+                <div class="restaurant-card">
+                    <h3>{{ r.name }}</h3>
+                    <div>Cuisine: {{ r.cuisine }}</div>
+                    <div>Rating: {{ r.rating }}</div>
+                    <div>Delivery Time: {{ r.delivery_time }} mins</div>
+                    <button id="view-restaurant-button-{{ r.restaurant_id }}" onclick="location.href='{{ url_for('menu_page', restaurant_id=r.restaurant_id) }}'">View Menu</button>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No restaurants found.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

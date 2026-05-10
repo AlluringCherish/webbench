@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Write Review</title>
+    <style>
+        #write-review-page {
+            max-width: 600px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        select, input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .error-list {
+            color: red;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<div id="write-review-page">
+    <h1>Write a Review</h1>
+    {% if errors %}
+        <div class="error-list">
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <form method="post" action="{{ url_for('write_review_page') }}">
+        <label for="restaurant_id">Select Restaurant:</label>
+        <select id="restaurant_id" name="restaurant_id" required>
+            <option value="">-- Select --</option>
+            {% for r in restaurants %}
+                <option value="{{ r.restaurant_id }}" {% if form_data.restaurant_id == r.restaurant_id %}selected{% endif %}>{{ r.name }}</option>
+            {% endfor %}
+        </select>
+        <label for="customer_name">Your Name:</label>
+        <input type="text" id="customer_name" name="customer_name" value="{{ form_data.customer_name or '' }}" required>
+        <label for="rating">Rating:</label>
+        <select id="rating" name="rating" required>
+            <option value="">-- Select --</option>
+            {% for i in range(1,6) %}
+                <option value="{{ i }}" {% if form_data.rating == i|string %}selected{% endif %}>{{ i }}</option>
+            {% endfor %}
+        </select>
+        <label for="review_text">Review:</label>
+        <textarea id="review_text" name="review_text" required>{{ form_data.review_text or '' }}</textarea>
+        <button type="submit">Submit Review</button>
+    </form>
+</div>
+</body>
+</html>

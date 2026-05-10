@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Active Orders</title>
+    <style>
+        #active-orders-page {
+            max-width: 900px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        #orders-list {
+            margin-top: 20px;
+        }
+        .order-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 7px 12px;
+            cursor: pointer;
+        }
+        #status-filter {
+            margin-bottom: 15px;
+            padding: 5px;
+        }
+        #back-to-dashboard {
+            margin-top: 20px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="active-orders-page">
+    <h1>Active Orders</h1>
+    <form method="get" action="{{ url_for('active_orders_page') }}">
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status" onchange="this.form.submit()">
+            {% for status in statuses %}
+                <option value="{{ status }}" {% if status == selected_status %}selected{% endif %}>{{ status }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <div id="orders-list">
+        {% if orders %}
+            {% for order in orders %}
+                <div class="order-card">
+                    <div><strong>Order ID:</strong> {{ order.order_id }}</div>
+                    <div><strong>Restaurant:</strong> {{ order.restaurant_name }}</div>
+                    <div><strong>Status:</strong> {{ order.status }}</div>
+                    <div><strong>ETA:</strong> {{ order.eta }}</div>
+                    <button id="track-order-button-{{ order.order_id }}" onclick="location.href='{{ url_for('tracking_page', order_id=order.order_id) }}'">Track Order</button>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No active orders found.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

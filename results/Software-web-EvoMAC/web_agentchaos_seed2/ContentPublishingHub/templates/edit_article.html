@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Article - ContentPublishingHub</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #edit-article-page { max-width: 700px; margin: auto; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input[type="text"], textarea { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+        textarea { height: 200px; resize: vertical; }
+        #save-version-button, #cancel-edit {
+            margin-top: 20px; padding: 10px 20px; font-size: 1em; cursor: pointer;
+        }
+        #save-version-button { background-color: #007bff; color: white; border: none; }
+        #cancel-edit { background-color: #6c757d; color: white; border: none; margin-left: 10px; }
+        .flash-message { margin-top: 10px; padding: 10px; border-radius: 5px; }
+        .flash-error { background-color: #f8d7da; color: #721c24; }
+        .flash-success { background-color: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+<div id="edit-article-page">
+    <h1>Edit Article</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="post" action="{{ url_for('edit_article', article_id=article.article_id) }}">
+        <label for="edit-article-title">Article Title</label>
+        <input type="text" id="edit-article-title" name="edit-article-title" value="{{ article.title }}" required>
+        <label for="edit-article-content">Content</label>
+        <textarea id="edit-article-content" name="edit-article-content">{{ content }}</textarea>
+        <button type="submit" id="save-version-button">Save New Version</button>
+        <button type="button" id="cancel-edit" onclick="window.location.href='{{ url_for('dashboard') }}'">Cancel</button>
+    </form>
+</div>
+</body>
+</html>

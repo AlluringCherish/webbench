@@ -1,0 +1,175 @@
+# Requirements Document for 'SmartHomeManager' Web Application
+
+## 1. Objective
+Develop a comprehensive web application named 'SmartHomeManager' using Python, with data managed through local text files. The application enables users to manage smart home devices, control them remotely, set automation rules, and monitor energy consumption. Note that the website should start from the Dashboard page.
+
+## 2. Language
+The required development language for the 'SmartHomeManager' application is Python.
+
+## 3. Page Design
+
+The 'SmartHomeManager' web application will consist of the following seven pages:
+
+### 1. Dashboard Page
+- **Page Title**: Smart Home Dashboard
+- **Overview**: The main hub displaying overview of all devices, quick controls, and navigation to all functionality.
+- **Elements**:
+  - **ID: dashboard-page** - Type: Div - Container for the dashboard page.
+  - **ID: device-summary** - Type: Div - Summary showing total devices, active devices, and offline devices count.
+  - **ID: device-list-button** - Type: Button - Button to navigate to device list page.
+  - **ID: add-device-button** - Type: Button - Button to navigate to add device page.
+  - **ID: automation-button** - Type: Button - Button to navigate to automation rules page.
+  - **ID: energy-button** - Type: Button - Button to navigate to energy report page.
+  - **ID: activity-button** - Type: Button - Button to navigate to activity logs page.
+  - **ID: room-list** - Type: Div - List of all rooms with device counts, displayed as a dashboard section.
+
+### 2. Device List Page
+- **Page Title**: My Devices
+- **Overview**: A page displaying all registered smart devices with their status and quick controls.
+- **Elements**:
+  - **ID: device-list-page** - Type: Div - Container for the device list page.
+  - **ID: device-table** - Type: Table - Table displaying all devices with name, type, room, status, and actions.
+  - **ID: control-device-button-{device_id}** - Type: Button - Button to navigate to device control page (each row has this button).
+  - **ID: back-to-dashboard** - Type: Button - Button to navigate back to dashboard.
+
+### 3. Add Device Page
+- **Page Title**: Add New Device
+- **Overview**: A page for users to register a new smart device.
+- **Elements**:
+  - **ID: add-device-page** - Type: Div - Container for the add device page.
+  - **ID: device-name** - Type: Input - Field to input device name.
+  - **ID: device-type** - Type: Dropdown - Dropdown to select device type (Light, Thermostat, Camera, Lock, Sensor, Appliance).
+  - **ID: device-room** - Type: Dropdown - Dropdown to select room (Living Room, Bedroom, Kitchen, Bathroom, Garage).
+  - **ID: submit-device-button** - Type: Button - Button to submit the new device.
+  - **ID: back-to-dashboard** - Type: Button - Button to navigate back to dashboard.
+
+### 4. Device Control Page
+- **Page Title**: Device Control
+- **Overview**: A page for controlling a specific device with detailed settings.
+- **Elements**:
+  - **ID: device-control-page** - Type: Div - Container for the device control page.
+  - **ID: device-name-display** - Type: H2 - Display device name.
+  - **ID: device-status-display** - Type: Div - Display current device status (Online/Offline).
+  - **ID: power-toggle** - Type: Button - Button to toggle device power on/off.
+  - **ID: save-settings-button** - Type: Button - Button to save device settings.
+  - **ID: back-to-devices** - Type: Button - Button to navigate back to device list.
+
+### 5. Automation Rules Page
+- **Page Title**: Automation Rules
+- **Overview**: A page for creating and managing automation rules for devices.
+- **Elements**:
+  - **ID: automation-page** - Type: Div - Container for the automation rules page.
+  - **ID: rules-table** - Type: Table - Table displaying all automation rules with name, trigger, action, and status.
+  - **ID: rule-name** - Type: Input - Field to input rule name.
+  - **ID: trigger-type** - Type: Dropdown - Dropdown to select trigger type (Time, Motion, Temperature).
+  - **ID: trigger-value** - Type: Input - Field to input trigger value (e.g., time or threshold).
+  - **ID: action-device** - Type: Dropdown - Dropdown to select target device.
+  - **ID: action-type** - Type: Dropdown - Dropdown to select action type (Turn On, Turn Off, Set Brightness, Set Temperature).
+  - **ID: add-rule-button** - Type: Button - Button to add new automation rule.
+  - **ID: back-to-dashboard** - Type: Button - Button to navigate back to dashboard.
+
+### 6. Energy Report Page
+- **Page Title**: Energy Report
+- **Overview**: A page displaying energy consumption data and statistics for all devices.
+- **Elements**:
+  - **ID: energy-page** - Type: Div - Container for the energy report page.
+  - **ID: energy-summary** - Type: Div - Summary showing total energy consumption and cost estimate.
+  - **ID: energy-table** - Type: Table - Table displaying energy consumption per device with date and kWh.
+  - **ID: date-filter** - Type: Input (date) - Field to filter energy data by date.
+  - **ID: apply-filter-button** - Type: Button - Button to apply date filter.
+  - **ID: back-to-dashboard** - Type: Button - Button to navigate back to dashboard.
+
+### 7. Activity Logs Page
+- **Page Title**: Activity Logs
+- **Overview**: A page displaying all device activity logs and system events.
+- **Elements**:
+  - **ID: activity-page** - Type: Div - Container for the activity logs page.
+  - **ID: activity-table** - Type: Table - Table displaying activity logs with timestamp, device, action, and details.
+  - **ID: search-activity** - Type: Input - Field to search activity logs.
+  - **ID: apply-search-button** - Type: Button - Button to apply search filter.
+  - **ID: back-to-dashboard** - Type: Button - Button to navigate back to dashboard.
+
+## 4. Data Storage
+
+The 'SmartHomeManager' application will store data locally in text files organized in the directory 'data'. The following data formats and examples are defined:
+
+### 1. User Data
+- **File Name**: `users.txt`
+- **Data Format**:
+  ```
+  username|email
+  ```
+- **Example Data**:
+  ```
+  john_doe|john@example.com
+  jane_smith|jane@example.com
+  ```
+
+### 2. Device Data
+- **File Name**: `devices.txt`
+- **Data Format**:
+  ```
+  username|device_id|device_name|device_type|room|brand|model|status|power|brightness|temperature|mode|schedule_time
+  ```
+- **Example Data**:
+  ```
+  john_doe|1|Living Room Light|Light|Living Room|Philips|Hue|Online|on|75|||Auto|
+  john_doe|2|Bedroom Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00
+  jane_smith|3|Kitchen Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual|
+  ```
+
+### 3. Room Data
+- **File Name**: `rooms.txt`
+- **Data Format**:
+  ```
+  username|room_id|room_name
+  ```
+- **Example Data**:
+  ```
+  john_doe|1|Living Room
+  john_doe|2|Bedroom
+  john_doe|3|Kitchen
+  jane_smith|1|Living Room
+  ```
+
+### 4. Automation Rules Data
+- **File Name**: `automation_rules.txt`
+- **Data Format**:
+  ```
+  username|rule_id|rule_name|trigger_type|trigger_value|action_device_id|action_type|action_value|enabled
+  ```
+- **Example Data**:
+  ```
+  john_doe|1|Morning Lights|Time|07:00|1|Turn On||true
+  john_doe|2|Night Mode|Time|22:00|1|Set Brightness|20|true
+  jane_smith|1|Motion Alert|Motion|detected|3|Turn On||true
+  ```
+
+### 5. Energy Consumption Logs
+- **File Name**: `energy_logs.txt`
+- **Data Format**:
+  ```
+  username|device_id|date|consumption_kwh
+  ```
+- **Example Data**:
+  ```
+  john_doe|1|2024-11-01|0.5
+  john_doe|2|2024-11-01|2.3
+  john_doe|1|2024-11-02|0.6
+  jane_smith|3|2024-11-01|0.2
+  ```
+
+### 6. Activity Logs
+- **File Name**: `activity_logs.txt`
+- **Data Format**:
+  ```
+  username|timestamp|device_id|action|details
+  ```
+- **Example Data**:
+  ```
+  john_doe|2024-11-01 07:00:00|1|Power On|Automation triggered: Morning Lights
+  john_doe|2024-11-01 08:30:00|2|Settings Changed|Temperature set to 72
+  jane_smith|2024-11-01 09:15:00|3|Power On|Manual control
+  ```
+
+All files will be saved in the `data` directory to ensure organization and easy access. The format uses a pipe (`|`) delimiter for better readability and parsing. Different types of data will be isolated to ensure efficient data management and retrieval.

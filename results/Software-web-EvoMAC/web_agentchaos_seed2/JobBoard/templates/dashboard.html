@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Board Dashboard</title>
+    <style>
+        #dashboard-page {
+            max-width: 900px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        #featured-jobs {
+            margin-bottom: 30px;
+        }
+        .job-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .job-title {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .job-company {
+            color: #555;
+        }
+        button {
+            margin-right: 10px;
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #007BFF;
+            background-color: #007BFF;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>Job Board Dashboard</h1>
+    <div id="featured-jobs">
+        <h2>Featured Jobs</h2>
+        {% if featured_jobs %}
+            {% for job in featured_jobs %}
+                <div class="job-card">
+                    <div class="job-title">{{ job.title }}</div>
+                    <div class="job-company">{{ job.company_name }} - {{ job.location }}</div>
+                    <div>Salary: ${{ job.salary_min }} - ${{ job.salary_max }}</div>
+                    <form action="{{ url_for('job_details', job_id=job.job_id) }}" method="get" style="margin-top: 8px;">
+                        <button type="submit" id="view-job-button-{{ job.job_id }}">View Details</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No featured jobs available.</p>
+        {% endif %}
+    </div>
+    <div>
+        <button id="browse-jobs-button" onclick="location.href='{{ url_for('job_listings') }}'">Browse Jobs</button>
+        <button id="my-applications-button" onclick="location.href='{{ url_for('application_tracking') }}'">My Applications</button>
+        <button id="companies-button" onclick="location.href='{{ url_for('companies_directory') }}'">Companies</button>
+    </div>
+</div>
+</body>
+</html>

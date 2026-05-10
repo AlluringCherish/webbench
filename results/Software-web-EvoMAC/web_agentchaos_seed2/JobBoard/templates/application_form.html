@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Application</title>
+    <style>
+        #application-form-page {
+            max-width: 600px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="email"], textarea, input[type="file"] {
+            padding: 8px;
+            font-size: 1em;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            resize: vertical;
+        }
+        textarea {
+            min-height: 100px;
+        }
+        #submit-application-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 5px;
+            border: 1px solid #007BFF;
+            background-color: #007BFF;
+            color: white;
+        }
+        #submit-application-button:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        #back-to-job-details {
+            margin-top: 15px;
+            padding: 8px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #6c757d;
+            background-color: #6c757d;
+            color: white;
+        }
+        #back-to-job-details:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+        .flash-message {
+            color: red;
+            margin-top: 10px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div id="application-form-page">
+    <h1>Submit Application for "{{ job.title }}"</h1>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-message">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    <form method="post" enctype="multipart/form-data">
+        <label for="applicant-name">Name:</label>
+        <input type="text" id="applicant-name" name="applicant-name" required>
+        <label for="applicant-email">Email:</label>
+        <input type="email" id="applicant-email" name="applicant-email" required>
+        <label for="resume-upload">Upload Resume:</label>
+        <input type="file" id="resume-upload" name="resume-upload" accept=".pdf,.doc,.docx" required>
+        <label for="cover-letter">Cover Letter:</label>
+        <textarea id="cover-letter" name="cover-letter" placeholder="Write your cover letter here..."></textarea>
+        <button type="submit" id="submit-application-button">Submit Application</button>
+    </form>
+    <button id="back-to-job-details" onclick="location.href='{{ url_for('job_details', job_id=job.job_id) }}'">Back to Job Details</button>
+</div>
+</body>
+</html>

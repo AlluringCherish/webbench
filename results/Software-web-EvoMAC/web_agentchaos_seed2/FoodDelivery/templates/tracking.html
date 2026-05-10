@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Track Order</title>
+    <style>
+        #tracking-page {
+            max-width: 700px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        #order-details, #delivery-driver-info, #order-items-list {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        #order-items-list ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        #order-items-list li {
+            margin-bottom: 5px;
+        }
+        #estimated-time {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        #back-to-orders {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .timeline {
+            margin-bottom: 15px;
+        }
+        .timeline span {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            background-color: #ddd;
+            margin-right: 5px;
+        }
+        .timeline .current {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div id="tracking-page">
+    <h1>Track Order #{{ order.order_id }}</h1>
+    <div id="order-details">
+        <h3>Order Details</h3>
+        <div><strong>Restaurant:</strong> {{ restaurant.name if restaurant else 'Unknown' }}</div>
+        <div><strong>Status:</strong> {{ order.status }}</div>
+        <div class="timeline">
+            {% for step in timeline %}
+                {% if step == order.status %}
+                    <span class="current">{{ step }}</span>
+                {% else %}
+                    <span>{{ step }}</span>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div id="delivery-driver-info">
+        <h3>Delivery Driver Info</h3>
+        {% if delivery %}
+            <div><strong>Name:</strong> {{ delivery.driver_name }}</div>
+            <div><strong>Phone:</strong> {{ delivery.driver_phone }}</div>
+            <div><strong>Vehicle:</strong> {{ delivery.vehicle_info }}</div>
+            <div id="estimated-time"><strong>Estimated Delivery Time:</strong> {{ delivery.estimated_time }}</div>
+        {% else %}
+            <p>No delivery information available.</p>
+        {% endif %}
+    </div>
+    <div id="order-items-list">
+        <h3>Order Items</h3>
+        {% if order_items %}
+            <ul>
+                {% for item in order_items %}
+                    <li>{{ item.item_name }} - Quantity: {{ item.quantity }} - Price: ${{ "%.2f"|format(item.price) }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No items found for this order.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-orders" onclick="location.href='{{ url_for('active_orders_page') }}'">Back to Active Orders</button>
+</div>
+</body>
+</html>

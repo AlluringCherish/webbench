@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1 id="welcome-message">Welcome, {{ username }}!</h1>
+        <section id="featured-books">
+            <h2>Featured Books</h2>
+            <div id="book-grid" class="book-grid">
+                {% if featured_books %}
+                    {% for book in featured_books %}
+                        <div class="book-card">
+                            <div class="book-cover">
+                                <img src="{{ url_for('static', filename='images/' + book.book_id + '.jpg') }}" alt="Cover of {{ book.title }}" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/default_cover.jpg') }}';">
+                            </div>
+                            <div class="book-info">
+                                <h3>{{ book.title }}</h3>
+                                <p>by {{ book.author }}</p>
+                                <p>Status: {{ book.status }}</p>
+                                <p>Rating: {{ "%.1f"|format(book.avg_rating) }} / 5</p>
+                                <form action="{{ url_for('book_details', book_id=book.book_id) }}" method="get">
+                                    <button type="submit" id="view-book-button-{{ book.book_id }}">View Details</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No featured books available.</p>
+                {% endif %}
+            </div>
+        </section>
+        <nav id="dashboard-navigation">
+            <form action="{{ url_for('book_catalog') }}" method="get" style="display:inline;">
+                <button type="submit" id="browse-books-button">Browse Books</button>
+            </form>
+            <form action="{{ url_for('my_borrowings') }}" method="get" style="display:inline;">
+                <button type="submit" id="my-borrows-button">My Borrowings</button>
+            </form>
+        </nav>
+    </div>
+</body>
+</html>

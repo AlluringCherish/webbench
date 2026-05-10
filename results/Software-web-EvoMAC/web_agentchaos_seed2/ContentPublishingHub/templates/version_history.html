@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version History - ContentPublishingHub</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #version-history-page { max-width: 900px; margin: auto; }
+        #versions-list { margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        #version-comparison { background: #fafafa; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        #restore-version-1, #back-to-edit-history {
+            padding: 10px 20px; font-size: 1em; cursor: pointer; margin-right: 10px;
+        }
+        #restore-version-1 { background-color: #28a745; color: white; border: none; }
+        #back-to-edit-history { background-color: #6c757d; color: white; border: none; }
+        .version-radio { cursor: pointer; }
+        pre { background: #e9ecef; padding: 10px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto; }
+        .flash-message { margin-top: 10px; padding: 10px; border-radius: 5px; }
+        .flash-error { background-color: #f8d7da; color: #721c24; }
+        .flash-success { background-color: #d4edda; color: #155724; }
+    </style>
+    <script>
+        function updateComparison() {
+            const radios = document.querySelectorAll('input[name="version_select"]');
+            let selectedVersions = [];
+            radios.forEach(radio => {
+                if (radio.checked) {
+                    selectedVersions.push(radio.value);
+                }
+            });
+            if (selectedVersions.length !== 2) {
+                document.getElementById('version-comparison').innerHTML = '<p>Please select exactly two versions to compare.</p>';
+                return;
+            }
+            const v1 = JSON.parse(document.getElementById('version-content-' + selectedVersions[0]).textContent);
+            const v2 = JSON.parse(document.getElementById('version-content-' + selectedVersions[1]).textContent);
+            let comparisonHtml = '<h3>Version Comparison</h3>';
+            comparisonHtml += '<h4>Version ' + v1.version_number + ' (Created: ' + v1.created_date + ')</h4>';
+            comparisonHtml += '<pre>' + v1.content + '</pre>';
+            comparisonHtml += '<h4>Version ' + v2.version_number + ' (Created: ' + v2.created_date + ')</h4>';
+            comparisonHtml += '<pre>' + v2.content + '</pre>';
+            document.getElementById('version-comparison').innerHTML = comparisonHtml;
+        }
+        function selectRestoreVersion() {
+            const radios = document.querySelectorAll('input[name="version_select"]');
+            let selectedVersion = null;
+            radios.forEach(radio => {
+                if (radio.checked) {
+                    selectedVersion = radio.value;
+                }
+            });
+            if (!selectedVersion) {
+                alert('Please select a version to restore.');
+                return false;
+            }
+            document.getElementById('restore_version_id').value = selectedVersion;
+            return true;
+        }
+        window.onload = function() {
+            updateComparison();
+            const radios = document.querySelectorAll('input[name="version_select"]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', updateComparison);
+            });
+        };
+    </script>
+</head>
+<body>
+<div id="version-history-page">
+    <h1>Version History for Article: {{ article.title }}</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="post" onsubmit="return selectRestoreVersion();">
+        <div id="versions-list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Select</th>
+                        <th>Version Number</th>
+                        <th>Author</th>
+                        <th>Created Date</th>
+                        <th>Change Summary</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in versions %}
+                    <tr>
+                        <td><input type="radio" name="version_select" value="{{ v.version_id }}" class="version-radio"></td>
+                        <td>{{ v.version_number }}</td>
+                        <td>{{ v.author }}</td>
+                        <td>{{ v.created_date }}</td>
+                        <td>{{ v.change_summary }}</td>
+                        <script type="application/json" id="version-content-{{ v.version_id }}">
+                            {{ {
+                                "version_number": v.version_number,
+                                "created_date": v.created_date,
+                                "content": v.content
+                            } | tojson }}
+                        </script>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div id="version-comparison">
+            <!-- Version comparison content will be injected here -->
+        </div>
+        <input type="hidden" name="restore_version_id" id="restore_version_id" value="">
+        <button type="submit" id="restore-version-1">Restore Selected Version</button>
+        <button type="button" id="back-to-edit-history" onclick="window.location.href='{{ url_for('edit_article', article_id=article.article_id) }}'">Back to Edit</button>
+    </form>
+</div>
+</body>
+</html>

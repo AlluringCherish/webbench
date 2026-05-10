@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - ContentPublishingHub</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #dashboard-page { max-width: 900px; margin: auto; }
+        #welcome-message { font-size: 1.5em; margin-bottom: 20px; }
+        #quick-stats { background: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        #quick-stats div { display: inline-block; margin-right: 20px; font-weight: bold; }
+        #create-article-button { padding: 10px 20px; font-size: 1em; margin-bottom: 20px; cursor: pointer; }
+        #recent-activity { background: #fafafa; padding: 15px; border-radius: 5px; }
+        #recent-activity h3 { margin-top: 0; }
+        .activity-item { border-bottom: 1px solid #ddd; padding: 10px 0; }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-type-comment { color: #007bff; }
+        .activity-type-approval { color: #28a745; }
+        .timestamp { font-size: 0.8em; color: #666; }
+        a { text-decoration: none; color: #007bff; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<div id="dashboard-page">
+    <div id="welcome-message">Welcome, {{ fullname }}!</div>
+    <div id="quick-stats">
+        <div>Draft: {{ quick_stats.get('draft', 0) }}</div>
+        <div>Pending Review: {{ quick_stats.get('pending_review', 0) }}</div>
+        <div>Under Review: {{ quick_stats.get('under_review', 0) }}</div>
+        <div>Approved: {{ quick_stats.get('approved', 0) }}</div>
+        <div>Published: {{ quick_stats.get('published', 0) }}</div>
+        <div>Rejected: {{ quick_stats.get('rejected', 0) }}</div>
+        <div>Archived: {{ quick_stats.get('archived', 0) }}</div>
+    </div>
+    <button id="create-article-button" onclick="location.href='{{ url_for('create_article') }}'">Create Article</button>
+    <div id="recent-activity">
+        <h3>Recent Activity</h3>
+        {% if recent_activity %}
+            {% for activity in recent_activity %}
+                <div class="activity-item">
+                    {% if activity.type == 'comment' %}
+                        <span class="activity-type-comment"><strong>Comment</strong></span> by <strong>{{ activity.user }}</strong> on article 
+                        <a href="{{ url_for('edit_article', article_id=activity.article_id) }}">{{ activity.article_id }}</a><br>
+                        <em>{{ activity.text }}</em><br>
+                        <span class="timestamp">{{ activity.timestamp }}</span>
+                    {% elif activity.type == 'approval' %}
+                        <span class="activity-type-approval"><strong>Approval</strong></span> by <strong>{{ activity.user }}</strong> on article 
+                        <a href="{{ url_for('edit_article', article_id=activity.article_id) }}">{{ activity.article_id }}</a><br>
+                        <em>{{ activity.text }}</em><br>
+                        <span class="timestamp">{{ activity.timestamp }}</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No recent activity.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

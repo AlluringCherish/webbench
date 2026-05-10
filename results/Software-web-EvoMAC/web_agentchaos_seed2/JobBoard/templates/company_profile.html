@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Company Profile</title>
+    <style>
+        #company-profile-page {
+            max-width: 900px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        #company-info {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        #company-info h1 {
+            margin-bottom: 10px;
+        }
+        #company-info p {
+            margin: 5px 0;
+            color: #555;
+        }
+        #company-jobs {
+            margin-top: 20px;
+        }
+        #jobs-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+            gap: 15px;
+        }
+        .job-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .job-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        .job-status {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 8px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #007BFF;
+            background-color: #007BFF;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        #back-to-companies {
+            margin-top: 20px;
+            padding: 8px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #6c757d;
+            background-color: #6c757d;
+            color: white;
+        }
+        #back-to-companies:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+<div id="company-profile-page">
+    <div id="company-info">
+        <h1>{{ company.company_name }}</h1>
+        <p><strong>Industry:</strong> {{ company.industry }}</p>
+        <p><strong>Location:</strong> {{ company.location }}</p>
+        <p><strong>Description:</strong> {{ company.description }}</p>
+    </div>
+    <div id="company-jobs">
+        <h2>Open Jobs</h2>
+        <div id="jobs-list">
+            {% if company_jobs %}
+                {% for job in company_jobs %}
+                    <div class="job-card">
+                        <div class="job-title">{{ job.title }}</div>
+                        <div class="job-status">Posted on {{ job.posted_date }}</div>
+                        <form action="{{ url_for('job_details', job_id=job.job_id) }}" method="get">
+                            <button type="submit" id="view-job-button-{{ job.job_id }}">View Details</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No open jobs available for this company.</p>
+            {% endif %}
+        </div>
+    </div>
+    <button id="back-to-companies" onclick="location.href='{{ url_for('companies_directory') }}'">Back to Companies Directory</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Calendar - ContentPublishingHub</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #calendar-page { max-width: 1000px; margin: auto; }
+        #calendar-view { margin-bottom: 15px; padding: 5px; }
+        #calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .calendar-day {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-height: 100px;
+            padding: 5px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .calendar-day-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 3px;
+        }
+        .scheduled-article {
+            background-color: #007bff;
+            color: white;
+            padding: 3px 5px;
+            border-radius: 3px;
+            margin-bottom: 3px;
+            font-size: 0.85em;
+            cursor: default;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #schedule-button, #back-to-dashboard-calendar {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        #schedule-button { background-color: #28a745; color: white; border: none; }
+        #back-to-dashboard-calendar { background-color: #6c757d; color: white; border: none; }
+    </style>
+    <script>
+        function changeView() {
+            const view = document.getElementById('calendar-view').value;
+            const url = new URL(window.location.href);
+            url.searchParams.set('view', view);
+            window.location.href = url.toString();
+        }
+        // For simplicity, this calendar shows scheduled articles by publish_date grouped by day.
+        // A real calendar would be more interactive.
+    </script>
+</head>
+<body>
+<div id="calendar-page">
+    <h1>Content Calendar</h1>
+    <label for="calendar-view">View:</label>
+    <select id="calendar-view" onchange="changeView()">
+        <option value="month" {% if calendar_view == 'month' %}selected{% endif %}>Month</option>
+        <option value="week" {% if calendar_view == 'week' %}selected{% endif %}>Week</option>
+    </select>
+    <div id="calendar-grid">
+        {% set days = [] %}
+        {% if calendar_view == 'month' %}
+            {% set days = range(1, 32) %}
+        {% elif calendar_view == 'week' %}
+            {% set days = range(1, 8) %}
+        {% endif %}
+        {% for day in days %}
+            <div class="calendar-day">
+                <div class="calendar-day-header">Day {{ day }}</div>
+                {% for article in articles %}
+                    {% if article.publish_date and article.publish_date.startswith('2024-01-') %}
+                        {% set pub_day = article.publish_date[8:10]|int %}
+                        {% if pub_day == day %}
+                            <div class="scheduled-article" title="{{ article.title }}">{{ article.title }}</div>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    <button id="schedule-button" onclick="alert('Schedule functionality not implemented yet.')">Schedule</button>
+    <button id="back-to-dashboard-calendar" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

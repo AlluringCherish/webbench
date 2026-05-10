@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="{{ page_id }}">
+    <h1>{{ page_title }}</h1>
+    <div id="energy-summary">
+        <div>
+            <h3>Total Consumption (kWh)</h3>
+            <p>{{ energy_summary.total_consumption }}</p>
+        </div>
+        <div>
+            <h3>Estimated Cost ($)</h3>
+            <p>{{ energy_summary.total_cost }}</p>
+        </div>
+    </div>
+    <form method="post" action="{{ url_for('energy_report') }}">
+        <label for="date-filter">Filter by Date</label>
+        <input type="date" id="date-filter" name="date-filter" value="{{ filter_date }}">
+        <button id="apply-filter-button" type="submit">Apply Filter</button>
+    </form>
+    <table id="energy-table">
+        <thead>
+            <tr>
+                <th>Device</th>
+                <th>Date</th>
+                <th>Consumption (kWh)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in energy_logs %}
+            <tr>
+                <td>{{ log.device_name }}</td>
+                <td>{{ log.date }}</td>
+                <td>{{ log.consumption_kwh }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3" style="text-align:center;">No energy consumption data found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

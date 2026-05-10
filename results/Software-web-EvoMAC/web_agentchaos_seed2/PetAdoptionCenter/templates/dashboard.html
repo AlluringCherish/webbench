@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pet Adoption Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* Basic reset and styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f9f9f9;
+            color: #333;
+        }
+        #dashboard-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.8em;
+            color: #2c3e50;
+        }
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        nav button {
+            background-color: #3498db;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        nav button:hover {
+            background-color: #2980b9;
+        }
+        #featured-pets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .pet-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .pet-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .pet-photo {
+            width: 100%;
+            height: 140px;
+            background-color: #ddd;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            background-size: cover;
+            background-position: center;
+        }
+        .pet-name {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+        .pet-species {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        .pet-age {
+            font-size: 0.9em;
+            color: #95a5a6;
+        }
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            color: #999;
+            font-size: 0.9em;
+        }
+        @media (max-width: 600px) {
+            nav button {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="dashboard-page">
+    <header>
+        <h1>Pet Adoption Dashboard</h1>
+        <nav>
+            <button id="browse-pets-button" onclick="location.href='{{ url_for('pet_listings') }}'">Browse Pets</button>
+            <button id="back-to-dashboard" onclick="location.reload()">Refresh Dashboard</button>
+            {% if username %}
+                <button onclick="location.href='{{ url_for('favorites') }}'">My Favorites</button>
+                <button onclick="location.href='{{ url_for('my_applications') }}'">My Applications</button>
+                <button onclick="location.href='{{ url_for('messages') }}'">Messages</button>
+                <button onclick="location.href='{{ url_for('user_profile') }}'">My Profile</button>
+                {% if username == 'admin_user' %}
+                    <button onclick="location.href='{{ url_for('add_pet') }}'">Add Pet</button>
+                    <button onclick="location.href='{{ url_for('admin_panel') }}'">Admin Panel</button>
+                {% endif %}
+                <button onclick="location.href='{{ url_for('logout') }}'">Logout</button>
+            {% else %}
+                <button onclick="location.href='{{ url_for('login') }}'">Login</button>
+            {% endif %}
+        </nav>
+    </header>
+    <section>
+        <h2>Featured Pets</h2>
+        <div id="featured-pets">
+            {% if featured_pets %}
+                {% for pet in featured_pets %}
+                    <div class="pet-card" onclick="location.href='{{ url_for('pet_details', pet_id=pet.pet_id) }}'">
+                        <div class="pet-photo" style="background-image: url('{{ url_for('static', filename='images/pets/' + pet.pet_id + '.jpg') }}');"></div>
+                        <div class="pet-name" id="pet-name-{{ pet.pet_id }}">{{ pet.name }}</div>
+                        <div class="pet-species" id="pet-species-{{ pet.pet_id }}">{{ pet.species }}</div>
+                        <div class="pet-age" id="pet-age-{{ pet.pet_id }}">{{ pet.age }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No featured pets available at the moment.</p>
+            {% endif %}
+        </div>
+    </section>
+    <section>
+        <h2>Recent Activities</h2>
+        <p>Welcome{% if username %}, {{ username }}{% endif %}! Explore pets available for adoption, manage your favorites, and submit applications.</p>
+    </section>
+</div>
+<footer>
+    &copy; 2024 PetAdoptionCenter. All rights reserved.
+</footer>
+</body>
+</html>

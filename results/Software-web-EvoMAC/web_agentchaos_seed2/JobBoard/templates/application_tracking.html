@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Applications</title>
+    <style>
+        #tracking-page {
+            max-width: 900px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        #status-filter {
+            padding: 8px;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+        #applications-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #applications-table th, #applications-table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        #applications-table th {
+            background-color: #f8f8f8;
+        }
+        button {
+            padding: 6px 12px;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #007BFF;
+            background-color: #007BFF;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        #back-to-dashboard {
+            margin-top: 20px;
+            padding: 8px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #6c757d;
+            background-color: #6c757d;
+            color: white;
+        }
+        #back-to-dashboard:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div id="tracking-page">
+    <h1>My Applications</h1>
+    <form method="get" action="{{ url_for('application_tracking') }}">
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status" onchange="this.form.submit()">
+            <option value="All" {% if selected_status == 'All' %}selected{% endif %}>All</option>
+            <option value="Applied" {% if selected_status == 'Applied' %}selected{% endif %}>Applied</option>
+            <option value="Under Review" {% if selected_status == 'Under Review' %}selected{% endif %}>Under Review</option>
+            <option value="Interview" {% if selected_status == 'Interview' %}selected{% endif %}>Interview</option>
+            <option value="Rejected" {% if selected_status == 'Rejected' %}selected{% endif %}>Rejected</option>
+        </select>
+    </form>
+    <table id="applications-table">
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Company</th>
+                <th>Status</th>
+                <th>Date Applied</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if applications %}
+                {% for app in applications %}
+                    <tr>
+                        <td>{{ app.job_title }}</td>
+                        <td>{{ app.company_name }}</td>
+                        <td>{{ app.status }}</td>
+                        <td>{{ app.applied_date }}</td>
+                        <td>
+                            <form action="{{ url_for('application_details', application_id=app.application_id) }}" method="get">
+                                <button type="submit" id="view-application-button-{{ app.application_id }}">View</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">No applications found.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

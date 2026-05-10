@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bookstore Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>Bookstore Dashboard</h1>
+    <section id="featured-books">
+        <h2>Featured Books</h2>
+        <div class="books-list">
+            {% for book in featured_books %}
+            <div class="book-card">
+                <h3>{{ book.title }}</h3>
+                <p><strong>Author:</strong> {{ book.author }}</p>
+                <p><strong>Price:</strong> ${{ "%.2f"|format(book.price) }}</p>
+                <a href="{{ url_for('book_details', book_id=book.book_id) }}">
+                    <button id="view-book-button-{{ book.book_id }}">View Details</button>
+                </a>
+            </div>
+            {% else %}
+            <p>No featured books available.</p>
+            {% endfor %}
+        </div>
+    </section>
+    <section id="bestsellers-section">
+        <h2>Bestsellers</h2>
+        <div class="bestsellers-list">
+            {% for bs in bestsellers %}
+            <div class="bestseller-item">
+                <span><strong>#{{ loop.index }}:</strong> {{ bs.title }} by {{ bs.author }}</span>
+                <span>Sales: {{ bs.sales_count }}</span>
+                <a href="{{ url_for('book_details', book_id=bs.book_id) }}">
+                    <button id="view-book-button-{{ bs.book_id }}">View Details</button>
+                </a>
+            </div>
+            {% else %}
+            <p>No bestsellers data available.</p>
+            {% endfor %}
+        </div>
+    </section>
+    <nav class="dashboard-nav">
+        <button id="browse-catalog-button" onclick="location.href='{{ url_for('catalog') }}'">Browse Catalog</button>
+        <button id="view-cart-button" onclick="location.href='{{ url_for('cart') }}'">View Cart</button>
+        <button id="bestsellers-button" onclick="location.href='{{ url_for('bestsellers') }}'">Bestsellers</button>
+    </nav>
+</div>
+</body>
+</html>

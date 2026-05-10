@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Weather Dashboard</h1>
+        <div id="current-weather-summary">
+            {% if current_weather_summary %}
+                <h2>{{ current_weather_summary.location_name }}</h2>
+                <p>Temperature: {{ current_weather_summary.temperature }}°</p>
+                <p>Condition: {{ current_weather_summary.condition }}</p>
+                <p>Humidity: {{ current_weather_summary.humidity }}%</p>
+                <p>Wind Speed: {{ current_weather_summary.wind_speed }} mph</p>
+                <p>Last Updated: {{ current_weather_summary.last_updated }}</p>
+            {% else %}
+                <p>No current weather data available.</p>
+            {% endif %}
+        </div>
+        <div id="quick-access">
+            <h3>Saved Locations</h3>
+            {% if saved_locations %}
+                <ul>
+                    {% for loc in saved_locations %}
+                        <li>
+                            {{ loc.location_name }}
+                            <form action="{{ url_for('view_location_weather', location_id=loc.location_id) }}" method="get" style="display:inline;">
+                                <button type="submit" id="view-location-weather-{{ loc.location_id }}">View Weather</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No saved locations.</p>
+            {% endif %}
+        </div>
+        <div id="navigation-buttons">
+            <button id="search-location-button" onclick="location.href='{{ url_for('location_search') }}'">Search Location</button>
+            <button id="view-forecast-button" onclick="location.href='{{ url_for('weekly_forecast') }}'">View Weekly Forecast</button>
+            <button id="view-alerts-button" onclick="location.href='{{ url_for('weather_alerts') }}'">View Weather Alerts</button>
+            <button id="air-quality-button" onclick="location.href='{{ url_for('air_quality') }}'">Air Quality</button>
+            <button id="saved-locations-button" onclick="location.href='{{ url_for('saved_locations') }}'">Saved Locations</button>
+            <button id="settings-button" onclick="location.href='{{ url_for('settings') }}'">Settings</button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article Catalog</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="catalog-page">
+    <h1>Article Catalog</h1>
+    <form method="get" action="{{ url_for('article_catalog') }}">
+        <input type="text" id="search-input" name="search" placeholder="Search articles..." value="{{ search_query }}">
+        <select id="category-filter" name="category">
+            <option value="All" {% if selected_category == 'All' or not selected_category %}selected{% endif %}>All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category.category_name }}" {% if selected_category == category.category_name %}selected{% endif %}>{{ category.category_name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Search</button>
+    </form>
+    <div id="articles-grid">
+        {% if articles %}
+            <ul>
+                {% for article in articles %}
+                    <li>
+                        <div>
+                            <!-- Thumbnail placeholder: no image data provided, so just a placeholder box -->
+                            <div class="thumbnail" style="width:100px; height:60px; background:#ccc; display:inline-block; vertical-align:middle;"></div>
+                            <div style="display:inline-block; vertical-align:middle; margin-left:10px;">
+                                <h3>{{ article.title }}</h3>
+                                <div>By {{ article.author }} | {{ article.date }}</div>
+                                <form method="get" action="{{ url_for('article_details', article_id=article.article_id) }}" style="display:inline;">
+                                    <button type="submit" id="view-article-button-{{ article.article_id }}">View Article</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No articles found.</p>
+        {% endif %}
+    </div>
+    <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

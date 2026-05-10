@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        #reservations-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        #reservations-table th, #reservations-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        #reservations-table th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<div id="my-reservations-page">
+    <h1>My Reservations</h1>
+    {% if reservations %}
+    <form method="post" action="{{ url_for('my_reservations') }}">
+        <table id="reservations-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Party Size</th>
+                    <th>Status</th>
+                    <th>Special Requests</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in reservations %}
+                <tr>
+                    <td>{{ res.date }}</td>
+                    <td>{{ res.time }}</td>
+                    <td>{{ res.party_size }}</td>
+                    <td>{{ res.status }}</td>
+                    <td>{{ res.special_requests }}</td>
+                    <td>
+                        {% if res.status == 'Upcoming' %}
+                        <button type="submit" name="cancel_reservation_id" value="{{ res.reservation_id }}" id="cancel-reservation-button-{{ res.reservation_id }}">Cancel</button>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+    {% else %}
+    <p>You have no reservations.</p>
+    {% endif %}
+    <form action="{{ url_for('back_to_dashboard') }}" method="get" style="margin-top:20px;">
+        <button type="submit" id="back-to-dashboard">Back to Dashboard</button>
+    </form>
+</div>
+</body>
+</html>

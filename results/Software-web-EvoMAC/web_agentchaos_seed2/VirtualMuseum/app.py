@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Museum Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}" defer></script>
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Museum Dashboard</h1>
+        <div id="exhibition-summary">
+            <p>Total Exhibitions: {{ total_exhibitions }}</p>
+            <p>Active Exhibitions: {{ active_exhibitions }}</p>
+        </div>
+        <div id="navigation-buttons">
+            <button id="artifact-catalog-button" onclick="location.href='{{ url_for('artifact_catalog') }}'">Artifact Catalog</button>
+            <button id="exhibitions-button" onclick="location.href='{{ url_for('exhibitions') }}'">Exhibitions</button>
+            <button id="visitor-tickets-button" onclick="location.href='{{ url_for('visitor_tickets') }}'">Visitor Tickets</button>
+            <button id="virtual-events-button" onclick="location.href='{{ url_for('virtual_events') }}'">Virtual Events</button>
+            <button id="audio-guides-button" onclick="location.href='{{ url_for('audio_guides') }}'">Audio Guides</button>
+        </div>
+    </div>
+</body>
+</html>

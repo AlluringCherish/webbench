@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Articles</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="trending-page">
+    <h1>Trending Articles</h1>
+    <form method="get" action="{{ url_for('trending_page') }}">
+        <label for="time-period-filter">Filter by Time Period:</label>
+        <select id="time-period-filter" name="period" onchange="this.form.submit()">
+            <option value="Today" {% if time_period_filter == 'Today' %}selected{% endif %}>Today</option>
+            <option value="This Week" {% if time_period_filter == 'This Week' %}selected{% endif %}>This Week</option>
+            <option value="This Month" {% if time_period_filter == 'This Month' %}selected{% endif %}>This Month</option>
+        </select>
+    </form>
+    <div id="trending-list">
+        {% if trending_list %}
+            <ol>
+                {% for t in trending_list %}
+                    <li>
+                        <span>{{ loop.index }}. </span>
+                        <a href="{{ url_for('article_details', article_id=t.article_id) }}" id="view-article-button-{{ t.article_id }}">{{ t.article_title }}</a>
+                        <span> | Category: {{ t.category }} | Views: {{ t.view_count }}</span>
+                    </li>
+                {% endfor %}
+            </ol>
+        {% else %}
+            <p>No trending articles found for this period.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

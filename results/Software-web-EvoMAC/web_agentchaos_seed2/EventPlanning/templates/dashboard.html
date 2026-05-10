@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Planning Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Event Planning Dashboard</h1>
+        <p>Welcome to the main hub displaying upcoming events, featured venues, and quick navigation to all functionalities.</p>
+        <section id="featured-events">
+            <h2>Featured Events</h2>
+            {% if featured_events %}
+                <ul>
+                    {% for event in featured_events %}
+                        <li>
+                            <strong>{{ event.event_name }}</strong><br>
+                            {{ event.date }} {{ event.time }}<br>
+                            {{ event.location }}<br>
+                            <a href="{{ url_for('event_details', event_id=event.event_id) }}">View Details</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No upcoming featured events available.</p>
+            {% endif %}
+        </section>
+        <section id="featured-venues">
+            <h2>Featured Venues</h2>
+            {% if featured_venues %}
+                <ul>
+                    {% for venue in featured_venues %}
+                        <li>
+                            <strong>{{ venue.venue_name }}</strong><br>
+                            {{ venue.location }}<br>
+                            Capacity: {{ venue.capacity }}<br>
+                            Amenities: {{ venue.amenities }}<br>
+                            <a href="{{ url_for('venue_details', venue_id=venue.venue_id) }}">View Details</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No featured venues available.</p>
+            {% endif %}
+        </section>
+        <nav>
+            <button id="browse-events-button" onclick="location.href='{{ url_for('events_listing') }}'">Browse Events</button>
+            <button id="view-tickets-button" onclick="location.href='{{ url_for('bookings_summary') }}'">View Tickets</button>
+            <button id="venues-button" onclick="location.href='{{ url_for('venues_page') }}'">Venues</button>
+        </nav>
+    </div>
+</body>
+</html>

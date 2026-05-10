@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+    <style>
+        #checkout-page {
+            max-width: 600px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="tel"], textarea, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            height: 80px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        #total-amount {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .error-list {
+            color: red;
+            margin-bottom: 15px;
+        }
+        .min-order-warning {
+            color: darkred;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<div id="checkout-page">
+    <h1>Checkout</h1>
+    <div id="total-amount">Total Amount: ${{ "%.2f"|format(total_amount) }}</div>
+    {% if errors %}
+        <div class="error-list">
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    {% if min_order_violations %}
+        <div class="min-order-warning">
+            <p>Minimum order amount not met for the following restaurants:</p>
+            <ul>
+                {% for rid, min_order, current_sum in min_order_violations %}
+                    <li>Restaurant ID {{ rid }}: Minimum ${{ "%.2f"|format(min_order) }}, Current ${{ "%.2f"|format(current_sum) }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <form method="post" action="{{ url_for('checkout_page') }}">
+        <label for="customer-name">Customer Name:</label>
+        <input type="text" id="customer-name" name="customer-name" value="{{ customer_name }}" required>
+        <label for="delivery-address">Delivery Address:</label>
+        <textarea id="delivery-address" name="delivery-address" required>{{ delivery_address }}</textarea>
+        <label for="phone-number">Phone Number:</label>
+        <input type="tel" id="phone-number" name="phone-number" value="{{ phone_number }}" required>
+        <label for="payment-method">Payment Method:</label>
+        <select id="payment-method" name="payment-method" required>
+            <option value="Credit Card" {% if payment_method == 'Credit Card' %}selected{% endif %}>Credit Card</option>
+            <option value="Cash" {% if payment_method == 'Cash' %}selected{% endif %}>Cash</option>
+            <option value="PayPal" {% if payment_method == 'PayPal' %}selected{% endif %}>PayPal</option>
+        </select>
+        <button type="submit" id="place-order-button">Place Order</button>
+    </form>
+</div>
+</body>
+</html>

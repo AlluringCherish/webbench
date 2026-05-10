@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <style>
+        #search-results-page {
+            max-width: 900px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        #search-query-display {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        #results-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #007BFF;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid #007BFF;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            background-color: #f0f8ff;
+            font-weight: bold;
+        }
+        .tab.active {
+            background-color: white;
+            color: #007BFF;
+            border-bottom: 2px solid white;
+        }
+        #job-results, #company-results {
+            border: 1px solid #007BFF;
+            padding: 15px;
+            border-radius: 0 5px 5px 5px;
+            background-color: white;
+        }
+        .result-card {
+            border: 1px solid #ccc;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .job-title, .company-name {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .job-company, .company-industry {
+            color: #555;
+        }
+        button {
+            margin-top: 8px;
+            padding: 6px 12px;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #007BFF;
+            background-color: #007BFF;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        #no-results-message {
+            font-style: italic;
+            color: #666;
+        }
+        #back-to-dashboard {
+            margin-top: 20px;
+            padding: 8px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #6c757d;
+            background-color: #6c757d;
+            color: white;
+        }
+        #back-to-dashboard:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        function showTab(tabName) {
+            var jobResults = document.getElementById('job-results');
+            var companyResults = document.getElementById('company-results');
+            var jobTab = document.getElementById('tab-jobs');
+            var companyTab = document.getElementById('tab-companies');
+            if (tabName === 'jobs') {
+                jobResults.style.display = 'block';
+                companyResults.style.display = 'none';
+                jobTab.classList.add('active');
+                companyTab.classList.remove('active');
+            } else {
+                jobResults.style.display = 'none';
+                companyResults.style.display = 'block';
+                jobTab.classList.remove('active');
+                companyTab.classList.add('active');
+            }
+        }
+        window.onload = function() {
+            showTab('jobs');
+        };
+    </script>
+</head>
+<body>
+<div id="search-results-page">
+    <h1>Search Results</h1>
+    <div id="search-query-display">Search query: "{{ query }}"</div>
+    <div id="results-tabs">
+        <div class="tab active" id="tab-jobs" onclick="showTab('jobs')">Jobs ({{ job_results|length }})</div>
+        <div class="tab" id="tab-companies" onclick="showTab('companies')">Companies ({{ company_results|length }})</div>
+    </div>
+    {% if no_results %}
+        <div id="no-results-message">No results found for your search.</div>
+    {% else %}
+        <div id="job-results">
+            {% if job_results %}
+                {% for job in job_results %}
+                    <div class="result-card">
+                        <div class="job-title">{{ job.title }}</div>
+                        <div class="job-company">{{ job.location }}</div>
+                        <div>Salary: ${{ job.salary_min }} - ${{ job.salary_max }}</div>
+                        <form action="{{ url_for('job_details', job_id=job.job_id) }}" method="get" style="margin-top: 8px;">
+                            <button type="submit" id="view-job-button-{{ job.job_id }}">View Details</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No job results found.</p>
+            {% endif %}
+        </div>
+        <div id="company-results" style="display:none;">
+            {% if company_results %}
+                {% for company in company_results %}
+                    <div class="result-card">
+                        <div class="company-name">{{ company.company_name }}</div>
+                        <div class="company-industry">{{ company.industry }} - {{ company.location }}</div>
+                        <form action="{{ url_for('company_profile', company_id=company.company_id) }}" method="get" style="margin-top: 8px;">
+                            <button type="submit" id="view-company-button-{{ company.company_id }}">View Profile</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No company results found.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

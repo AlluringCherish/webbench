@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Application Details</title>
+    <style>
+        #application-details-page {
+            max-width: 700px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .detail-section {
+            margin-bottom: 20px;
+        }
+        .detail-section h2 {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        .detail-section p {
+            margin: 5px 0;
+        }
+        a.resume-link {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a.resume-link:hover {
+            text-decoration: underline;
+        }
+        button {
+            margin-top: 20px;
+            padding: 8px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #6c757d;
+            background-color: #6c757d;
+            color: white;
+        }
+        button:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+<div id="application-details-page">
+    <h1>Application Details</h1>
+    <div class="detail-section">
+        <h2>Applicant Information</h2>
+        <p><strong>Name:</strong> {{ application.applicant_name }}</p>
+        <p><strong>Email:</strong> {{ application.applicant_email }}</p>
+        <p><strong>Status:</strong> {{ application.status }}</p>
+        <p><strong>Date Applied:</strong> {{ application.applied_date }}</p>
+    </div>
+    <div class="detail-section">
+        <h2>Job Information</h2>
+        {% if job %}
+            <p><strong>Title:</strong> {{ job.title }}</p>
+            <p><strong>Company:</strong> {{ company.company_name if company else 'Unknown' }}</p>
+            <p><strong>Location:</strong> {{ job.location }}</p>
+            <p><strong>Description:</strong> {{ job.description }}</p>
+            <p><strong>Salary Range:</strong> ${{ job.salary_min }} - ${{ job.salary_max }}</p>
+        {% else %}
+            <p>Job information not available.</p>
+        {% endif %}
+    </div>
+    <div class="detail-section">
+        <h2>Resume</h2>
+        {% if resume %}
+            <p><strong>Filename:</strong> {{ resume.filename }}</p>
+            <p><strong>Upload Date:</strong> {{ resume.upload_date }}</p>
+            <p><strong>Summary:</strong> {{ resume.summary }}</p>
+            <p><a class="resume-link" href="{{ url_for('uploaded_file', filename=resume.filename) }}" target="_blank">Download Resume</a></p>
+        {% else %}
+            <p>Resume not available.</p>
+        {% endif %}
+    </div>
+    <button onclick="location.href='{{ url_for('application_tracking') }}'">Back to Applications</button>
+</div>
+</body>
+</html>

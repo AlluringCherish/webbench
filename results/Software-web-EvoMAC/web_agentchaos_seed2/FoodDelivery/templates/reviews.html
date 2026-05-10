@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Reviews</title>
+    <style>
+        #reviews-page {
+            max-width: 900px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        #reviews-list {
+            margin-top: 20px;
+        }
+        .review-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .review-card h4 {
+            margin: 0 0 5px 0;
+        }
+        #filter-by-rating {
+            margin-bottom: 15px;
+            padding: 5px;
+        }
+        #write-review-button, #back-to-dashboard {
+            margin-top: 15px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="reviews-page">
+    <h1>Order Reviews</h1>
+    <form method="get" action="{{ url_for('reviews_page') }}">
+        <label for="filter-by-rating">Filter by Rating:</label>
+        <select id="filter-by-rating" name="rating" onchange="this.form.submit()">
+            {% for option in ratings_options %}
+                <option value="{{ option }}" {% if option == selected_rating %}selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <div id="reviews-list">
+        {% if reviews %}
+            {% for review in reviews %}
+                <div class="review-card">
+                    <h4>{{ review.restaurant_name }} - {{ review.rating }} Stars</h4>
+                    <div><strong>By:</strong> {{ review.customer_name }} on {{ review.review_date }}</div>
+                    <p>{{ review.review_text }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No reviews found.</p>
+        {% endif %}
+    </div>
+    <button id="write-review-button" onclick="location.href='{{ url_for('write_review_page') }}'">Write a Review</button>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+    <style>
+        #cart-page {
+            max-width: 900px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        #cart-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        #cart-items-table th, #cart-items-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+        }
+        button {
+            padding: 7px 12px;
+            cursor: pointer;
+        }
+        #total-amount {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div id="cart-page">
+    <h1>Shopping Cart</h1>
+    <form method="post" action="{{ url_for('cart_page') }}">
+        {% if cart_items %}
+            <table id="cart-items-table">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                        <tr>
+                            <td>{{ item.item_name }}</td>
+                            <td>
+                                <input type="number" id="update-quantity-{{ item.item_id }}" name="update-quantity-{{ item.item_id }}" value="{{ item.quantity }}" min="1" required>
+                            </td>
+                            <td>${{ "%.2f"|format(item.price) }}</td>
+                            <td>${{ "%.2f"|format(item.subtotal) }}</td>
+                            <td>
+                                <button type="submit" name="remove-item-button-{{ item.item_id }}" id="remove-item-button-{{ item.item_id }}">Remove</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div id="total-amount">Total Amount: ${{ "%.2f"|format(total_amount) }}</div>
+            <button type="submit" name="proceed-checkout-button" id="proceed-checkout-button">Proceed to Checkout</button>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+    </form>
+</div>
+</body>
+</html>
