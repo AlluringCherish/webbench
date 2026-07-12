@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Resume Management</title>
+</head>
+<body>
+<div id="resume-management-page">
+<h1>Resumes</h1>
+<table id="resumes-table">
+<thead>
+<tr>
+<th>Applicant Name</th>
+<th>Upload Date</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+{% for resume in resumes %}
+<tr id="resume-{{ resume.resume_id }}">
+  <td>{{ resume.applicant_name }}</td>
+  <td>{{ resume.upload_date }}</td>
+  <td>
+    <form method="POST" action="{{ url_for('delete_resume', resume_id=resume.resume_id) }}" onsubmit="return confirm('Are you sure you want to delete this resume?');">
+      <button type="submit">Delete</button>
+    </form>
+  </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+<form method="POST" enctype="multipart/form-data" action="{{ url_for('resume_management') }}">
+  <label for="resume-upload">Upload Resume:</label>
+  <input type="file" id="resume-upload" name="resume_file" required>
+  <button type="submit">Upload</button>
+</form>
+<button onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

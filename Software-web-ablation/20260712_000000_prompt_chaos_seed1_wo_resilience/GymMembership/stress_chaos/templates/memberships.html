@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Memberships</title>
+</head>
+<body>
+<h1 id="page-title">Gym Membership Plans</h1>
+<form id="filter-form" method="GET" action="{{ url_for('memberships') }}">
+  <label for="filter-by-type">Filter by Type:</label>
+  <select id="filter-by-type" name="filter_by_type">
+    {% for option in filter_options %}
+    <option value="{{ option }}" {% if option == selected_filter %}selected{% endif %}>{{ option }}</option>
+    {% endfor %}
+  </select>
+  <button id="filter-button" type="submit">Filter</button>
+</form>
+<div id="plans-grid">
+  {% for plan in plans %}
+  <div id="plan-card-{{ plan.membership_id }}" class="plan-card">
+    <h2 id="plan-title">{{ plan.plan_name }}</h2>
+    <p id="plan-price">Price: {{ plan.price }}</p>
+    <p id="plan-duration">Duration: {{ plan.billing_cycle }}</p>
+    <p id="plan-features">Features: {{ plan.features }}</p>
+    <a id="view-details-button-{{ plan.membership_id }}" href="{{ url_for('plan_details', plan_id=plan.membership_id) }}">View Details</a>
+  </div>
+  {% endfor %}
+</div>
+<a id="back-to-dashboard" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" id="meta-charset">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" id="meta-viewport">
+    <title id="title">{{ page_title }}</title>
+</head>
+<body>
+    <header id="header">
+        <h1 id="page-header">Welcome, {{ username }}!</h1>
+        <nav id="navigation">
+            <ul id="nav-list">
+                <li><a href="{{ url_for('dashboard') }}" id="nav-dashboard">Dashboard</a></li>
+                <li><a href="{{ url_for('pet_listings') }}" id="nav-pets">Pets</a></li>
+                <li><a href="{{ url_for('applications') }}" id="nav-applications">Applications</a></li>
+                <li><a href="{{ url_for('favorites') }}" id="nav-favorites">My Favorites</a></li>
+                <li><a href="{{ url_for('messages') }}" id="nav-messages">Messages</a></li>
+                <li><a href="{{ url_for('profile') }}" id="nav-profile">Profile</a></li>
+                {% if is_admin %}
+                <li><a href="{{ url_for('admin_panel') }}" id="nav-admin-panel">Admin Panel</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <main id="main-container-id">
+        <section id="featured-pets" aria-label="Featured Pets">
+            <h2 id="featured-pets-header">Featured Pets</h2>
+            <div id="featured-pets-grid">
+                {% for pet in featured_pets %}
+                <article id="pet-{{ pet.pet_id }}" class="pet-card">
+                    <img src="{{ pet.photo_url }}" alt="Photo of {{ pet.name }}" class="pet-photo" id="pet-photo-{{ pet.pet_id }}">
+                    <h3 id="pet-name-{{ pet.pet_id }}">{{ pet.name }}</h3>
+                    <p id="pet-breed-{{ pet.pet_id }}">Breed: {{ pet.breed }}</p>
+                    <p id="pet-description-{{ pet.pet_id }}">{{ pet.description }}</p>
+                    <button id="adopt-button-{{ pet.pet_id }}" class="adopt-button" formaction="{{ url_for('adoption_application_page', pet_id=pet.pet_id) }}">Adopt</button>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        <section id="all-pets-list" aria-label="All Pets">
+            <h2 id="all-pets-header">All Pets</h2>
+            <div id="pet-listings">
+                <table id="pet-list-table">
+                    <thead id="pet-list-thead">
+                        <tr id="pet-list-header-row">
+                            <th id="header-pet-name">Name</th>
+                            <th id="header-pet-species">Species</th>
+                            <th id="header-pet-breed">Breed</th>
+                            <th id="header-pet-age">Age</th>
+                            <th id="header-pet-gender">Gender</th>
+                            <th id="header-pet-size">Size</th>
+                            <th id="header-pet-status">Status</th>
+                            <th id="header-pet-date-added">Date Added</th>
+                            <th id="header-adopt-action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pet-list-body">
+                        {% for pet in all_pets %}
+                        <tr id="pet-row-{{ pet.pet_id }}">
+                            <td id="pet-name-{{ pet.pet_id }}">{{ pet.name }}</td>
+                            <td id="pet-species-{{ pet.pet_id }}">{{ pet.species }}</td>
+                            <td id="pet-breed-{{ pet.pet_id }}">{{ pet.breed }}</td>
+                            <td id="pet-age-{{ pet.pet_id }}">{{ pet.age }}</td>
+                            <td id="pet-gender-{{ pet.pet_id }}">{{ pet.gender }}</td>
+                            <td id="pet-size-{{ pet.pet_id }}">{{ pet.size }}</td>
+                            <td id="pet-status-{{ pet.pet_id }}">{{ pet.status }}</td>
+                            <td id="pet-date-added-{{ pet.pet_id }}">{{ pet.date_added }}</td>
+                            <td><a href="{{ url_for('pet_details', pet_id=pet.pet_id) }}" id="adopt-button-{{ pet.pet_id }}" class="adopt-button">Details</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Status</title>
+</head>
+<body>
+<div id="auction-status-page">
+    <h1>Auction Status</h1>
+    <select id="status-filter" name="status" onchange="location.href='?status='+this.value">
+        <option value="">All Statuses</option>
+        <option value="Active">Active</option>
+        <option value="Closed">Closed</option>
+        <option value="Pending">Pending</option>
+    </select>
+    <button id="refresh-status-button" onclick="location.reload()">Refresh Status</button>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    <div id="auction-status-list">
+        {% for auction in auctions %}
+        <div id="auction-card-{{ auction.auction_id }}">
+            <h2>{{ auction.item_name }}</h2>
+            <p>Status: {{ auction.status }}</p>
+            <p>Current Bid: ${{ auction.current_bid }}</p>
+            <button id="view-auction-button-{{ auction.auction_id }}" onclick="location.href='{{ url_for('auction_details', auction_id=auction.auction_id) }}'">View Auction</button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>

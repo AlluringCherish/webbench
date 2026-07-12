@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Workouts</title>
+</head>
+<body>
+<h1 id="page-title">Available Workouts</h1>
+<form id="filter-form" method="GET" action="{{ url_for('workouts') }}">
+  <label for="filter-by-type">Filter by Workout Type:</label>
+  <select id="filter-by-type" name="filter_by_type">
+    {% for wt in workout_types %}
+    <option value="{{ wt }}" {% if wt == selected_filter %}selected{% endif %}>{{ wt }}</option>
+    {% endfor %}
+  </select>
+  <button id="filter-button" type="submit">Filter</button>
+</form>
+<div id="workouts-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Class</th>
+        <th>Date</th>
+        <th>Duration</th>
+        <th>Status</th>
+        <th>Book</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for workout in workouts %}
+      <tr id="workout-row-{{ workout.workout_id }}">
+        <td>{{ workout.class_name }}</td>
+        <td>{{ workout.workout_date }}</td>
+        <td>{{ workout.duration_minutes }} mins</td>
+        <td>{{ workout.status }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('booking') }}">
+            <input type="hidden" name="class_id" value="{{ workout.class_id }}">
+            <button id="book-session-button-{{ workout.workout_id }}" type="submit">Book</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<a id="back-to-dashboard" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

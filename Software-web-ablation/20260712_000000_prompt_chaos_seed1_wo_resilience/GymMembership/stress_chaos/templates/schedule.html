@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Schedule</title>
+</head>
+<body>
+<h1 id="page-title">Class Schedule</h1>
+<form id="schedule-filter" method="GET" action="{{ url_for('schedule') }}">
+  <label for="schedule-day">Filter by Day:</label>
+  <select id="schedule-day" name="schedule_day">
+    {% for day in schedule_days %}
+    <option value="{{ day }}" {% if day == selected_day %}selected{% endif %}>{{ day }}</option>
+    {% endfor %}
+  </select>
+  <button id="filter-button" type="submit">Filter</button>
+</form>
+<div id="classes-grid">
+  {% for cls in classes %}
+  <div id="class-card-{{ cls.class_id }}" class="class-card">
+    <h2 id="class-name">{{ cls.class_name }}</h2>
+    <p id="class-time">Time: {{ cls.schedule_time }}</p>
+    <p id="class-capacity">Capacity: {{ cls.capacity }}</p>
+    <p id="class-status">Status: {{ cls.status }}</p>
+    <a id="view-details-button-{{ cls.class_id }}" href="{{ url_for('class_details', class_id=cls.class_id) }}">View Details</a>
+  </div>
+  {% endfor %}
+</div>
+<a id="back-to-dashboard" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

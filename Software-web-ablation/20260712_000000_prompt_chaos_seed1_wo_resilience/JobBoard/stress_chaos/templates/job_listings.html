@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Job Listings</title>
+</head>
+<body>
+<h1>Job Listings</h1>
+<form method="GET" action="">
+  <input type="text" name="search" placeholder="Search jobs..." value="{{ request.args.get('search', '') }}">
+  <select name="location_filter">
+    <option value="">All Locations</option>
+    {% for location in locations %}
+    <option value="{{ location }}" {% if location == location_filter %}selected{% endif %}>{{ location }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Filter</button>
+</form>
+<div id="job-listings">
+  {% for job in jobs %}
+  <div class="job-card" id="job-{{ job.job_id }}">
+    <h2>{{ job.title }}</h2>
+    <p>{{ company_map.get(job.company_id, 'Unknown') }}</p>
+    <p>${{ job.salary_min }} - ${{ job.salary_max }}</p>
+    <button id="view-job-button-{{ job.job_id }}" onclick="window.location.href='{{ url_for('job_details', job_id=job.job_id) }}'">Job Details</button>
+  </div>
+  {% endfor %}
+</div>
+</body>
+</html>

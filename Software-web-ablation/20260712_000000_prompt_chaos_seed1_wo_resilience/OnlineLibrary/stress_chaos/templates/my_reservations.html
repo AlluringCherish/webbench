@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+</head>
+<body>
+<div id="my-reservations-page">
+    <h1>My Reservations</h1>
+    <table id="reservations-table">
+        <thead>
+            <tr>
+                <th>Reservation ID</th>
+                <th>Reservation Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.reservation_id }}</td>
+                <td>{{ reservation.reservation_date }}</td>
+                <td>{{ reservation.status }}</td>
+                <td>
+                    {% if reservation.status != 'canceled' %}
+                    <form method="POST" action="{{ url_for('cancel_reservation', reservation_id=reservation.reservation_id) }}">
+                        <button id="cancel-reservation-button-{{ reservation.reservation_id }}" type="submit">Cancel</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+</div>
+</body>
+</html>

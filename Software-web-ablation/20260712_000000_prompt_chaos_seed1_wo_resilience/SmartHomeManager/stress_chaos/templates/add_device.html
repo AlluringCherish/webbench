@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Device Page</title>
+</head>
+<body>
+    <div id="main-container-id">
+        <h1>Add Device Page</h1>
+
+        <!-- Navigation Buttons -->
+        <div id="navigation">
+            <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+            <button id="back-to-devices" onclick="location.href='{{ url_for('device_list_page') }}'">Back to Devices</button>
+        </div>
+
+        <!-- Error messages if any -->
+        {% if form_errors %}
+        <div id="form-errors">
+            <ul>
+            {% for error in form_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Add Device Form -->
+        <form method="POST" action="{{ url_for('add_device_page') }}">
+            <div>
+                <label for="device-name">Device Name:</label>
+                <input type="text" id="device-name" name="device_name" value="{{ request.form.device_name or '' }}" required />
+            </div>
+            <div>
+                <label for="device-type">Device Type:</label>
+                <select id="device-type" name="device_type" required>
+                    {% for dtype in device_types %}
+                    <option value="{{ dtype }}" {% if request.form.device_type == dtype %}selected{% endif %}>{{ dtype }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="device-room">Room:</label>
+                <select id="device-room" name="room_id" required>
+                    {% if user_rooms %}
+                        {% for room_id, room_name in user_rooms.items() %}
+                            <option value="{{ room_id }}" {% if request.form.room_id == room_id|string %}selected{% endif %}>{{ room_name }}</option>
+                        {% endfor %}
+                    {% else %}
+                    <option value="" disabled>No available rooms</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div>
+                <button type="submit" id="submit-device-button">Add Device</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

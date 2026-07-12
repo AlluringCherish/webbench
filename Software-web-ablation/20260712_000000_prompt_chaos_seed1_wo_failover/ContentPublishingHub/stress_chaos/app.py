@@ -1,4 +1,4 @@
-from flask import Flask, request, session, redirect, url_for, render_template, jsonify, flash
+from flask import Flask, request, session, redirect, url_for, render_template, flash
 import os
 import datetime
 import threading
@@ -16,8 +16,6 @@ WORKFLOW_STAGES_FILE = os.path.join(DATA_DIR, 'workflow_stages.txt')
 # Thread lock for file access
 file_lock = threading.Lock()
 
-# Utility functions to safely read/write with locks
-
 def safe_read_lines(filepath):
     with file_lock:
         if not os.path.exists(filepath):
@@ -30,10 +28,7 @@ def safe_write_lines(filepath, lines):
         with open(filepath, 'w', encoding='utf-8') as f:
             f.writelines(lines)
 
-##### Data Model Layers #####
-
 def parse_article_versions():
-    # Returns dict: article_id -> list of versions ({version, timestamp, summary, content}) ordered by version
     lines = safe_read_lines(ARTICLE_VERSIONS_FILE)
     articles = {}
     for line in lines:
@@ -51,7 +46,6 @@ def parse_article_versions():
             'summary': summary,
             'content': content
         })
-    # Sort versions by version number
     for article_id in articles:
         articles[article_id].sort(key=lambda v: v['version'])
     return articles
@@ -65,7 +59,6 @@ def save_article_versions(articles):
     safe_write_lines(ARTICLE_VERSIONS_FILE, lines)
 
 def parse_approvals():
-    # Returns dict (article_id, version) -> list of approvals ({approver, status, comments})
     lines = safe_read_lines(APPROVALS_FILE)
     approvals = {}
     for line in lines:
@@ -94,7 +87,6 @@ def save_approvals(approvals):
     safe_write_lines(APPROVALS_FILE, lines)
 
 def parse_comments():
-    # Returns dict (article_id, version) -> list of comments ({commenter, timestamp, text})
     lines = safe_read_lines(COMMENTS_FILE)
     comments = {}
     for line in lines:
@@ -123,7 +115,6 @@ def save_comments(comments):
     safe_write_lines(COMMENTS_FILE, lines)
 
 def parse_workflow_stages():
-    # Returns dict: category -> list of required approval roles (ordered)
     lines = safe_read_lines(WORKFLOW_STAGES_FILE)
     stages = {}
     for line in lines:
@@ -131,15 +122,11 @@ def parse_workflow_stages():
         if len(parts) < 2:
             continue
         category = parts[0]
-        # roles separated by commas
         roles = parts[1].split(',')
         stages[category] = [r.strip() for r in roles if r.strip()]
     return stages
 
-##### Business Logic / Service Layer #####
-
 def get_current_user():
-    # For demo, a simple user stored in session
     return session.get('username', 'guest')
 
 def require_login():
@@ -172,11 +159,9 @@ def home_redirect():
 @app.route('/dashboard')
 def dashboard():
     user = get_current_user()
-    # Show recent user activity (versions edited, approvals given)
     articles = parse_article_versions()
     approvals = parse_approvals()
     recent_activity = []
-    # Activity: user is author (assumed author username equals article id for demo), or approver
     for article_id, versions in articles.items():
         for v in versions[-5:]:
             recent_activity.append({
@@ -187,7 +172,6 @@ def dashboard():
                 'summary': v['summary'],
                 'timestamp': v['timestamp']
             })
-    # Include approvals by user
     for (article_id, version), recs in approvals.items():
         for rec in recs:
             if rec['approver'] == user:
@@ -199,7 +183,9 @@ def dashboard():
                     'comments': rec['comments'],
                 })
     recent_activity = sorted(recent_activity, key=lambda x: x.get('timestamp', '') or '', reverse=True)
-    return render_template('dashboard.html', user=user, recent_activity=recent_activity)
+    user_stats = f"You have {len(recent_activity)} recent activities."
+    user_activity = "<br>".join([f"{act['type'].capitalize()} - Article: {act['article_id']}, Version: {act.get('version', '')}" for act in recent_activity])
+    return render_template('dashboard.html', username=user, user_stats=user_stats, user_activity=user_activity)
 
 @app.route('/article/create', methods=['GET', 'POST'])
 def article_create():
@@ -211,12 +197,12 @@ def article_create():
 
         if not article_id or not content:
             flash('Article ID and content are required')
-            return render_template('article_create.html')
+            return render_template('create_article.html')
 
         articles = parse_article_versions()
         if article_id in articles:
             flash('Article already exists, use edit')
-            return render_template('article_create.html')
+            return render_template('create_article.html')
 
         timestamp = datetime.datetime.utcnow().isoformat()
         version = 1
@@ -231,7 +217,7 @@ def article_create():
         flash('Article created')
         return redirect(url_for('article_edit', article_id=article_id))
 
-    return render_template('article_create.html')
+    return render_template('create_article.html')
 
 @app.route('/article/<article_id>/edit', methods=['GET', 'POST'])
 def article_edit(article_id):
@@ -239,7 +225,7 @@ def article_edit(article_id):
     articles = parse_article_versions()
     if article_id not in articles:
         flash('Article not found')
-        return redirect(url_for('article_create'))
+        return redirect(url_for('create_article'))
 
     versions = articles[article_id]
     latest = versions[-1]
@@ -249,7 +235,7 @@ def article_edit(article_id):
         content = request.form.get('content', '').strip()
         if not content:
             flash('Content cannot be empty')
-            return render_template('article_edit.html', article_id=article_id, version=latest['version'], summary=latest['summary'], content=latest['content'])
+            return render_template('edit_article.html', article_id=article_id, summary=latest['summary'], content=latest['content'])
 
         new_version_num = latest['version'] + 1
         timestamp = datetime.datetime.utcnow().isoformat()
@@ -264,7 +250,7 @@ def article_edit(article_id):
         flash('New version saved')
         return redirect(url_for('article_versions', article_id=article_id))
 
-    return render_template('article_edit.html', article_id=article_id, version=latest['version'], summary=latest['summary'], content=latest['content'])
+    return render_template('edit_article.html', article_id=article_id, summary=latest['summary'], content=latest['content'])
 
 @app.route('/article/<article_id>/versions')
 def article_versions(article_id):
@@ -278,7 +264,6 @@ def article_versions(article_id):
     approvals = parse_approvals()
     comments = parse_comments()
 
-    # Attach approvals and comments per version
     version_data = []
     for v in versions:
         vnum = v['version']
@@ -298,20 +283,16 @@ def article_versions(article_id):
 @app.route('/article/<article_id>/approve', methods=['POST'])
 def article_approve(article_id):
     user = get_current_user()
-
     version_str = request.form.get('version', '').strip()
     status = request.form.get('status', '').strip()
     comments = request.form.get('comments', '').strip()
-
     if not version_str.isdigit():
         flash('Invalid version')
         return redirect(url_for('article_versions', article_id=article_id))
     version = int(version_str)
-
     if not status:
         flash('Approval status required')
         return redirect(url_for('article_versions', article_id=article_id))
-
     approvals = parse_approvals()
     approvals.setdefault((article_id, version), []).append({
         'approver': user,
@@ -331,7 +312,6 @@ def article_comment(article_id):
         flash('Invalid comment or version')
         return redirect(url_for('article_versions', article_id=article_id))
     version = int(version_str)
-
     comments = parse_comments()
     timestamp = datetime.datetime.utcnow().isoformat()
     comments.setdefault((article_id, version), []).append({
@@ -347,9 +327,7 @@ def article_comment(article_id):
 def my_articles():
     user = get_current_user()
     articles = parse_article_versions()
-    # Filter articles where user is author (for demo we assume author is article_id)
     user_articles = {aid: v for aid, v in articles.items() if aid == user}
-    # Convert to list of dicts with id, title, status
     articles_list = []
     for aid, versions in user_articles.items():
         latest_ver = versions[-1]
@@ -362,13 +340,11 @@ def my_articles():
 
 @app.route('/articles/published')
 def articles_published():
-    # Show all articles where latest version is approved
     articles = parse_article_versions()
     approvals = parse_approvals()
     published_articles = []
     for aid, versions in articles.items():
         latest_version = versions[-1]['version']
-        # Check if latest version approved with status 'Approved'
         approved = False
         key = (aid, latest_version)
         for appr in approvals.get(key, []):
@@ -386,7 +362,6 @@ def articles_published():
 
 @app.route('/calendar')
 def calendar():
-    # Show calendar view of all article versions by date
     articles = parse_article_versions()
     calendar_items = []
     for article_id, versions in articles.items():
@@ -412,13 +387,11 @@ def article_analytics(article_id):
         return redirect(url_for('dashboard'))
 
     versions = articles[article_id]
-
     total_versions = len(versions)
     total_approvals = 0
     approval_counts = {}
     approvers_set = set()
     total_comments = 0
-
     for v in versions:
         vnum = v['version']
         key = (article_id, vnum)
@@ -427,20 +400,9 @@ def article_analytics(article_id):
         for a in approval_list:
             approvers_set.add(a['approver'])
             approval_counts[a['status']] = approval_counts.get(a['status'], 0) + 1
-
         comment_list = comments.get(key, [])
         total_comments += len(comment_list)
 
-    analytics = {
-        'article_id': article_id,
-        'total_versions': total_versions,
-        'total_approvals': total_approvals,
-        'approval_counts': approval_counts,
-        'unique_approvers_count': len(approvers_set),
-        'total_comments': total_comments
-    }
-
-    # Adjusted to provide data structure for template
     analytics_summary = f"Analytics for article {article_id}"
     analytics_entries = [
         {'metric': 'Total Versions', 'value': total_versions},
@@ -448,8 +410,6 @@ def article_analytics(article_id):
         {'metric': 'Unique Approvers', 'value': len(approvers_set)},
         {'metric': 'Total Comments', 'value': total_comments}
     ]
-
-    # Include individual status counts
     for status, count in approval_counts.items():
         analytics_entries.append({'metric': f"Approvals with status '{status}'", 'value': count})
 

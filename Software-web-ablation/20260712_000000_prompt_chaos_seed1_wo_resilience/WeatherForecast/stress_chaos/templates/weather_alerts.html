@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Alerts</title>
+</head>
+<body>
+    <div id="alerts-page">
+        <h1>Weather Alerts</h1>
+        <div id="filters">
+            <form method="GET" action="">
+                <label for="severity-filter">Severity:</label>
+                <select id="severity-filter" name="severity">
+                    {% for level in severity_levels %}
+                        <option value="{{ level }}" {% if level == request.args.get('severity', 'All') %}selected{% endif %}>{{ level }}</option>
+                    {% endfor %}
+                </select>
+                <label for="location-filter">Location:</label>
+                <select id="location-filter" name="location_id">
+                    <option value="">All Locations</option>
+                    {% for location in locations %}
+                        <option value="{{ location.location_id }}" {% if location.location_id|string == request.args.get('location_id') %}selected{% endif %}>
+                            {{ location.location_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Filter</button>
+            </form>
+        </div>
+        <div id="alerts-container">
+            {% if alerts %}
+                {% for alert in alerts %}
+                    <div class="alert-item">
+                        <p>Type: {{ alert.alert_type }}</p>
+                        <p>Severity: {{ alert.severity }}</p>
+                        <p>Description: {{ alert.description }}</p>
+                        <p>Start Time: {{ alert.start_time }}</p>
+                        <p>End Time: {{ alert.end_time }}</p>
+                        <button id="acknowledge-alert-{{ alert.alert_id }}">Acknowledge</button>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No alerts found with the selected filters.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
