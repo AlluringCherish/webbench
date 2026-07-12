@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Genre Exploration</title>
+</head>
+<body>
+<div id="genres-page">
+    <h1>Genre Exploration</h1>
+
+    <div id="genres-list">
+        <ul>
+        {% for genre in genres %}
+            <li>{{ genre.genre_name }}: {{ genre.description }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <select id="select-genre" name="selected_genre" onchange="location = this.value;">
+        <option value="" {% if not selected_genre %}selected{% endif %}>Select Genre</option>
+        {% for genre in genres %}
+        <option value="{{ url_for('genre_exploration_page', genre_name=genre.genre_name) }}" {% if selected_genre == genre.genre_name %}selected{% endif %}>
+            {{ genre.genre_name }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <div id="genre-songs">
+        <h2>Songs in {{ selected_genre if selected_genre else 'Selected Genre' }}</h2>
+        <ul>
+        {% for song in genre_songs %}
+            <li>{{ song.title }} by {{ song.artist_name }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <div id="genre-artists">
+        <h2>Artists in {{ selected_genre if selected_genre else 'Selected Genre' }}</h2>
+        <ul>
+        {% for artist in genre_artists %}
+            <li>{{ artist.name }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <a href="{{ url_for('dashboard_page') }}"><button id="back-to-dashboard">Back to Dashboard</button></a>
+</div>
+</body>
+</html>

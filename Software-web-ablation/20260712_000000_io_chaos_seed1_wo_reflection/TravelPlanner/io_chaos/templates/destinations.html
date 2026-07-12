@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Destinations</title>
+</head>
+<body>
+    <div id="destinations-page">
+        <h1>Travel Destinations</h1>
+        <form method="GET" action="{{ url_for('destinations') }}">
+            <input type="text" id="search-destination" name="search_query" placeholder="Search by name or country" value="{{ search_query|default('') }}" />
+            <select id="region-filter" name="region_filter">
+                <option value="" {% if not region_filter %}selected{% endif %}>All Regions</option>
+                {% set regions = destinations|map(attribute='region')|unique|list|sort %}
+                {% for region in regions %}
+                    <option value="{{ region }}" {% if region == region_filter %}selected{% endif %}>{{ region }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <div id="destinations-grid">
+            {% for dest in destinations %}
+            <div class="destination-card">
+                <h3>{{ dest.name }}</h3>
+                <p>{{ dest.country }}</p>
+                <p>{{ dest.region }}</p>
+                <button id="view-destination-button-{{ dest.dest_id }}" onclick="location.href='{{ url_for('destination_details', dest_id=dest.dest_id) }}'">View Details</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

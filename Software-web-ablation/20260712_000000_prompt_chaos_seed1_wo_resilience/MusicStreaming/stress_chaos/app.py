@@ -350,7 +350,10 @@ def song_search():
 
     if search_query:
         search_lower = search_query.lower()
-        filtered_songs = [s for s in filtered_songs if search_lower in s['title'].lower()]
+        # Search across title, artist name, and album title
+        filtered_songs = [s for s in filtered_songs if (search_lower in s['title'].lower()) or 
+                          (search_lower in get_artist_name(s['artist_id'], artists).lower()) or
+                          (search_lower in get_album_name(s['album_id'], albums).lower())]
 
     if selected_genre and selected_genre != '':
         # Filter songs by genre exact match

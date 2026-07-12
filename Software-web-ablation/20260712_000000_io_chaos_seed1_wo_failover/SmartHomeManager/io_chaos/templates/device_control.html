@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Device Control</title>
+</head>
+<body>
+    <div id="device-control-page">
+        <h1>Device Control</h1>
+        <h2 id="device-name-display">{{ device.device_name }}</h2>
+        <div id="device-status-display">Status: {{ device.status }}</div>
+
+        <form method="POST" action="">
+            <button type="submit" name="action" value="toggle_power" id="power-toggle">Toggle Power</button>
+        </form>
+
+        <form method="POST" action="">
+            {# Additional controls depending on device type #}
+            {% if device.brightness is not none %}
+                <label for="brightness">Brightness:</label>
+                <input type="number" id="brightness" name="brightness" min="0" max="100" value="{{ device.brightness }}">
+                <br>
+            {% endif %}
+            {% if device.temperature is not none %}
+                <label for="temperature">Temperature:</label>
+                <input type="number" id="temperature" name="temperature" value="{{ device.temperature }}">
+                <br>
+            {% endif %}
+            <label for="mode">Mode:</label>
+            <input type="text" id="mode" name="mode" value="{{ device.mode }}">
+            <br>
+            <label for="schedule_time">Schedule Time:</label>
+            <input type="time" id="schedule_time" name="schedule_time" value="{{ device.schedule_time }}">
+            <br>
+            <button type="submit" name="action" value="save_settings" id="save-settings-button">Save Settings</button>
+        </form>
+
+        <button id="back-to-devices" onclick="location.href='{{ url_for('device_list_page') }}'">Back to Devices</button>
+    </div>
+</body>
+</html>

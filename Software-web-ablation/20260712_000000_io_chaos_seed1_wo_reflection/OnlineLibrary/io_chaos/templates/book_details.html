@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Details</title>
+</head>
+<body>
+    <div id="book-details-page">
+        <h1 id="book-title">{{ book.title }}</h1>
+        <div id="book-author">Author: {{ book.author }}</div>
+        <div id="book-status">Status: {{ book.status }}</div>
+        <p>{{ book.description }}</p>
+        <div>Average Rating: {{ "%.1f"|format(book.avg_rating) }}</div>
+        <button id="borrow-button" onclick="location.href='{{ url_for('borrow_confirmation_page', book_id=book.book_id) }}'" {% if book.status != 'Available' %}disabled{% endif %}>Borrow</button>
+        <div id="reviews-section">
+            <h2>Reviews</h2>
+            {% for review in reviews %}
+                <div class="review" id="review-{{ review.review_id }}">
+                    <strong>{{ review.username }}</strong> rated: {{ review.rating }}<br>
+                    <p>{{ review.review_text }}</p>
+                    <small>{{ review.review_date }}</small>
+                </div>
+            {% else %}
+                <p>No reviews yet.</p>
+            {% endfor %}
+        </div>
+        <button id="write-review-button" onclick="location.href='{{ url_for('write_review_page', book_id=book.book_id) }}'">Write a Review</button>
+        <button id="back-to-catalog" onclick="location.href='{{ url_for('book_catalog_page') }}'">Back to Catalog</button>
+    </div>
+</body>
+</html>

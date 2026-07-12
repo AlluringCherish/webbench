@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+</head>
+<body>
+    <h1 id="my-reservations-title">My Reservations</h1>
+    <nav>
+        <a href="{{ url_for('dashboard') }}" id="nav-dashboard">Dashboard</a> |
+        <a href="{{ url_for('make_reservation') }}" id="nav-make-reservation">Make Reservation</a>
+    </nav>
+
+    <ul id="reservations-list">
+        {% for res in reservations %}
+        <li class="reservation-item">
+            Date: {{ res.date }}, Time: {{ res.time }}, Party Size: {{ res.party_size }}, Status: {{ res.status }}
+            {% if res.status != 'Cancelled' %}
+              <a href="{{ url_for('cancel_reservation', reservation_id=res.reservation_id) }}" class="cancel-reservation" id="cancel-{{ res.reservation_id }}">Cancel</a>
+            {% endif %}
+        </li>
+        {% else %}
+        <li>No reservations found.</li>
+        {% endfor %}
+    </ul>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul id="flash-messages">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+</body>
+</html>

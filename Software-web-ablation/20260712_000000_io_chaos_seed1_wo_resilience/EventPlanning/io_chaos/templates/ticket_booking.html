@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="ticket-booking-page">
+        <h1>{{ page_title }}</h1>
+        {% if error_message %}
+            <div id="error-message" style="color: red;">{{ error_message }}</div>
+        {% endif %}
+        {% if confirmation %}
+            <div id="booking-confirmation">
+                <h2>Booking Confirmed!</h2>
+                <p>Booking ID: {{ confirmation.booking_id }}</p>
+                <p>Event: {{ confirmation.event_name }}</p>
+                <p>Tickets: {{ confirmation.ticket_count }}</p>
+                <p>Ticket Type: {{ confirmation.ticket_type }}</p>
+                <p>Total Amount: ${{ '%.2f'|format(confirmation.total_amount) }}</p>
+            </div>
+        {% else %}
+        <form method="POST" action="{{ url_for('process_ticket_booking') }}">
+            <label for="select-event-dropdown">Select Event:</label>
+            <select id="select-event-dropdown" name="event_id" required>
+                <option value="">--Select an Event--</option>
+                {% for event in events %}
+                <option value="{{ event.event_id }}">{{ event.event_name }}</option>
+                {% endfor %}
+            </select>
+            <br/>
+            <label for="ticket-quantity-input">Number of Tickets:</label>
+            <input type="number" id="ticket-quantity-input" name="ticket_count" min="1" value="1" required />
+            <br/>
+            <label for="ticket-type-select">Ticket Type:</label>
+            <select id="ticket-type-select" name="ticket_type" required>
+                <option value="General">General</option>
+                <option value="VIP">VIP</option>
+                <option value="Early Bird">Early Bird</option>
+            </select>
+            <br/>
+            <button type="submit" id="book-now-button">Book Now</button>
+        </form>
+        {% endif %}
+    </div>
+</body>
+</html>

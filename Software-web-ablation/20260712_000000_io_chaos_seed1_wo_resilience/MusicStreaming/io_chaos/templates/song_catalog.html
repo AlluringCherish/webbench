@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Song Catalog</title>
+</head>
+<body>
+    <h1>Song Catalog</h1>
+    <div id="song-catalog-container">
+        <form method="POST" action="{{ url_for('song_catalog') }}" id="song-filter-form">
+            <input type="text" name="search_query" id="search-query" placeholder="Search songs..." value="{{ search_query|default('') }}">
+            <select name="selected_genre" id="genre-filter">
+                <option value="">All Genres</option>
+                {% for genre in genres %}
+                    <option value="{{ genre }}" {% if genre == selected_genre %}selected{% endif %}>{{ genre }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" id="filter-songs-button">Filter</button>
+        </form>
+
+        <table id="songs-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Artist</th>
+                    <th>Album</th>
+                    <th>Genre</th>
+                    <th>Duration (s)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for song in songs %}
+                <tr id="song-{{ song.song_id }}">
+                    <td>{{ song.title }}</td>
+                    <td>{{ song.artist_name }}</td>
+                    <td>{{ song.album_name }}</td>
+                    <td>{{ song.genre }}</td>
+                    <td>{{ song.duration }}</td>
+                    <td>
+                        <a href="{{ url_for('song_details', song_id=song.song_id) }}">
+                            <button id="view-song-details-{{ song.song_id }}">Details</button>
+                        </a>
+                        <form method="POST" action="{{ url_for('add_to_playlist', song_id=song.song_id) }}" style="display:inline;">
+                            <button type="submit" id="add-to-playlist-button-{{ song.song_id }}">Add to Playlist</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

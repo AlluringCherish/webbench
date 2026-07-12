@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Recommendations</title>
+</head>
+<body>
+    <div id="recommendations-page">
+        <h1>Travel Recommendations</h1>
+        <div id="trending-destinations">
+            <h2>Trending Destinations</h2>
+            <ul>
+                {% for trend in trending_destinations %}
+                <li>{{ trend.name if trend.name is defined else 'Unknown Destination' }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <form method="GET" action="{{ url_for('recommendations') }}">
+            <label for="recommendation-season-filter">Season:</label>
+            <select id="recommendation-season-filter" name="season">
+                <option value="">All</option>
+                <option value="Spring" {% if filters.season == 'Spring' %}selected{% endif %}>Spring</option>
+                <option value="Summer" {% if filters.season == 'Summer' %}selected{% endif %}>Summer</option>
+                <option value="Autumn" {% if filters.season == 'Autumn' %}selected{% endif %}>Autumn</option>
+                <option value="Winter" {% if filters.season == 'Winter' %}selected{% endif %}>Winter</option>
+            </select>
+            <label for="budget-filter">Budget:</label>
+            <select id="budget-filter" name="budget">
+                <option value="">All</option>
+                <option value="Low" {% if filters.budget == 'Low' %}selected{% endif %}>Low</option>
+                <option value="Medium" {% if filters.budget == 'Medium' %}selected{% endif %}>Medium</option>
+                <option value="High" {% if filters.budget == 'High' %}selected{% endif %}>High</option>
+            </select>
+            <button type="submit">Apply Filters</button>
+        </form>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

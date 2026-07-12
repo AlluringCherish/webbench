@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Genre Exploration</title>
+</head>
+<body>
+<div id="genres-page">
+    <h1>Genre Exploration</h1>
+
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+
+    <select id="select-genre">
+        <option value="">-- Select Genre --</option>
+        {% for genre in genres %}
+            <option value="{{ genre.genre_id }}" {% if selected_genre and genre.genre_id == selected_genre.genre_id %}selected{% endif %}>
+                {{ genre.genre_name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <div id="genres-list">
+        {% if selected_genre %}
+        <h2>{{ selected_genre.genre_name }}</h2>
+        <p>{{ selected_genre.description }}</p>
+        {% else %}
+        <p>Please select a genre to see details.</p>
+        {% endif %}
+    </div>
+
+    <div id="genre-songs">
+        {% if selected_genre %}
+        <h3>Songs</h3>
+        <ul>
+            {% for song in genre_songs %}
+            <li>{{ song.title }} by {{ song.artist_name }} - Duration: {{ song.duration }} sec</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+    <div id="genre-artists">
+        {% if selected_genre %}
+        <h3>Artists</h3>
+        <ul>
+            {% for artist in genre_artists %}
+            <li>{{ artist.name }} (Genre: {{ artist.genre }})</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

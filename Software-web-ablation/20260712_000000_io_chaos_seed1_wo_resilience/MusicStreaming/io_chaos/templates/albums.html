@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Albums</title>
+</head>
+<body>
+    <h1>Albums</h1>
+    <div id="albums-container">
+        <form method="POST" action="{{ url_for('album_browse') }}" id="album-filter-form">
+            <input type="text" name="search_query" id="album-search-query" placeholder="Search albums..." value="{{ search_query|default('') }}">
+            <select name="sort_option" id="album-sort-option">
+                <option value="title" {% if sort_option == 'title' %}selected{% endif %}>Title</option>
+                <option value="artist" {% if sort_option == 'artist' %}selected{% endif %}>Artist</option>
+                <option value="year" {% if sort_option == 'year' %}selected{% endif %}>Year</option>
+            </select>
+            <button type="submit" id="filter-albums-button">Filter</button>
+        </form>
+
+        <table id="albums-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Artist</th>
+                    <th>Year</th>
+                    <th>Genre</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for album in albums %}
+                <tr id="album-{{ album.album_id }}">
+                    <td>{{ album.title }}</td>
+                    <td>{{ album.artist_name }}</td>
+                    <td>{{ album.year }}</td>
+                    <td>{{ album.genre }}</td>
+                    <td>
+                        <a href="{{ url_for('album_details', album_id=album.album_id) }}">
+                            <button id="view-album-details-{{ album.album_id }}">Details</button>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+</head>
+<body>
+    <div id="messages-page">
+        <h1>Messages</h1>
+
+        <div id="conversation-list">
+            {% for conversation in conversations %}
+            <div class="conversation" id="conversation-{{ conversation.conversation_id }}">
+                <h3>Conversation {{ conversation.conversation_id }}</h3>
+                <ul>
+                    {% for message in conversation.messages %}
+                    <li id="message-{{ message.message_id }}">
+                        <strong>From: {{ message.sender_username }}</strong> to <strong>{{ message.recipient_username }}</strong><br>
+                        <em>Subject:</em> {{ message.subject }}<br>
+                        {{ message.content }}<br>
+                        <small>{{ message.timestamp }}</small> | 
+                        <small>{{ 'Read' if message.is_read else 'Unread' }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+
+        <textarea id="message-input" name="message" placeholder="Type your message here..."></textarea>
+        <button id="send-message-button">Send Message</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

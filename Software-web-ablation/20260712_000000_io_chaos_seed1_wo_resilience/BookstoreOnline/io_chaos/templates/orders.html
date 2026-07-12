@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>History of Orders</title>
+</head>
+<body>
+    <div id="orders_container">
+        <h2 id="orders_header">Order History</h2>
+
+        <label for="status_filter">Filter by Status:</label>
+        <select id="status_filter" name="order_status" onchange="this.form.submit()">
+            <option value="all" {% if filter_status == 'all' %}selected{% endif %}>All</option>
+            <option value="1" {% if filter_status == 1 %}selected{% endif %}>Pending</option>
+            <option value="2" {% if filter_status == 2 %}selected{% endif %}>Shipped</option>
+            <option value="3" {% if filter_status == 3 %}selected{% endif %}>Delivered</option>
+        </select>
+
+        <form method="POST" action="">
+            <table id="orders_listing" border="1">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer Name</th>
+                        <th>Date Ordered</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Shipping Address</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for orderid, order in orders_data.items() %}
+                    <tr>
+                        <td>{{ orderid }}</td>
+                        <td>{{ order.cust_name }}</td>
+                        <td>{{ order.date_ordered }}</td>
+                        <td>${{ order.amount_total }}</td>
+                        <td>{{ order.order_stat }}</td>
+                        <td>{{ order.address_ship }}</td>
+                        <td><button id="view_order_btn_{{ orderid }}" type="button" onclick="location.href='{{ url_for('details_order', order_id=orderid) }}'">View Details</button></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </form>
+
+        <button id="dashboard_btn" onclick="location.href='{{ url_for('dashboad') }}'">Dashboard</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu</title>
+</head>
+<body>
+    <h1 id="menu-title">Menu</h1>
+    <nav>
+        <a href="{{ url_for('dashboard') }}" id="nav-dashboard">Dashboard</a> |
+        <a href="{{ url_for('my_reviews') }}" id="nav-my-reviews">My Reviews</a> |
+        <a href="{{ url_for('write_review') }}" id="nav-write-review">Write Review</a>
+    </nav>
+
+    <ul id="menu-list">
+        {% for dish in menus %}
+        <li class="menu-dish">
+            <a href="{{ url_for('dish_detail', dish_id=dish.dish_id) }}" id="dish-link-{{ dish.dish_id }}">{{ dish.name }}</a> - ${{ '%.2f' | format(dish.price) }}
+            <p>{{ dish.description }}</p>
+        </li>
+        {% else %}
+        <li>No menu items available.</li>
+        {% endfor %}
+    </ul>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul id="flash-messages">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</body>
+</html>

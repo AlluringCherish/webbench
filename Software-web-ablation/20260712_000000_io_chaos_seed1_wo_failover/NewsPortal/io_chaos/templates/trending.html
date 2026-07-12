@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Articles</title>
+</head>
+<body>
+    <div id="trending-page">
+        <h1>Trending Articles</h1>
+
+        <form method="post" action="{{ url_for('filter_trending_by_period') }}">
+            <label for="time-period-filter">Select Time Period:</label>
+            <select id="time-period-filter" name="time_period" onchange="this.form.submit()">
+                <option value="Today">Today</option>
+                <option value="This Week">This Week</option>
+                <option value="This Month">This Month</option>
+            </select>
+        </form>
+
+        <div id="trending-list">
+            {% for article in trending %}
+                <div class="trending-article">
+                    <h3>{{ article.title }} (Category: {{ article.category }})</h3>
+                    <p>Views: {{ article.view_count }} (Period: {{ article.period }})</p>
+                    <button id="view-article-button-{{ article.article_id }}" onclick="location.href='{{ url_for('article_details', article_id=article.article_id) }}'">View Article</button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

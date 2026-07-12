@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Confirmation</title>
+</head>
+<body>
+    <div id="payment-page">
+        {% if fine %}
+        <div id="fine-amount-display">
+            <p>Fine Amount: ${{ "%.2f"|format(fine.amount) }}</p>
+            <p>Status: {{ fine.status }}</p>
+            <p>Date Issued: {{ fine.date_issued }}</p>
+        </div>
+        <form method="POST" action="{{ url_for('confirm_payment', fine_id=fine.fine_id) }}">
+            {% if fine.status != 'Paid' %}
+            <button id="confirm-payment-button" type="submit">Confirm Payment</button>
+            {% else %}
+            <button id="confirm-payment-button" type="submit" disabled>Already Paid</button>
+            {% endif %}
+        </form>
+        <button id="back-to-profile" onclick="location.href='{{ url_for('user_profile_page') }}'">Back to Profile</button>
+        {% else %}
+        <p>{{ message }}</p>
+        <button id="back-to-profile" onclick="location.href='{{ url_for('user_profile_page') }}'">Back to Profile</button>
+        {% endif %}
+    </div>
+</body>
+</html>

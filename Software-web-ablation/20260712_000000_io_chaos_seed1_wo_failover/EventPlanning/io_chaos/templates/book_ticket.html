@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="ticket-booking-page">
+        <h1>{{ page_title }}</h1>
+
+        {%- if booking_confirmation is defined %}
+            <div id="booking-confirmation">
+                <p>{{ booking_confirmation.confirmation_message }}</p>
+                <p>Event: {{ booking_confirmation.event_name }}</p>
+                <p>Ticket Type: {{ booking_confirmation.ticket_type }}</p>
+                <p>Quantity: {{ booking_confirmation.ticket_quantity }}</p>
+                <p>Total Amount: ${{ "%.2f"|format(booking_confirmation.total_amount) }}</p>
+            </div>
+        {%- else %}
+            <form method="POST" action="{{ url_for('book_ticket') }}">
+                <label for="select-event-dropdown">Select Event:</label>
+                <select id="select-event-dropdown" name="event_id" required>
+                    <option value="" disabled selected>Select an event</option>
+                    {% for event in events %}
+                        <option value="{{ event.event_id }}">{{ event.event_name }} - {{ event.date }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="ticket-type-select">Ticket Type:</label>
+                <select id="ticket-type-select" name="ticket_type" required>
+                    <option value="General">General</option>
+                    <option value="VIP">VIP</option>
+                    <option value="Early Bird">Early Bird</option>
+                </select>
+
+                <label for="ticket-quantity-input">Ticket Quantity:</label>
+                <input id="ticket-quantity-input" name="ticket_quantity" type="number" min="1" value="1" required>
+
+                <button id="book-now-button" type="submit">Book Now</button>
+            </form>
+        {% endif %}
+
+        <button onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="participants-page">
+        <h1>{{ page_title }}</h1>
+        <form method="GET" action="{{ url_for('participants_management') }}">
+            <input type="text" id="search-participant-input" name="search_query" placeholder="Search participants" value="{{ search_query }}" />
+            <select id="participant-status-filter" name="status_filter">
+                <option value="">All Statuses</option>
+                <option value="Confirmed" {% if status_filter == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
+                <option value="Attended" {% if status_filter == 'Attended' %}selected{% endif %}>Attended</option>
+                <option value="Cancelled" {% if status_filter == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <table id="participants-table" border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Event</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for participant in participants %}
+                <tr>
+                    <td>{{ participant.name }}</td>
+                    <td>{{ participant.email }}</td>
+                    <td>{{ participant.event_name }}</td>
+                    <td>{{ participant.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <form method="POST" action="{{ url_for('add_participant') }}">
+            <button type="submit" id="add-participant-button">Add Participant</button>
+        </form>
+    </div>
+</body>
+</html>

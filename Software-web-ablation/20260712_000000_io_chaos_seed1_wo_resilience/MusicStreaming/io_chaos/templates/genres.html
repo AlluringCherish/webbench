@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Genres</title>
+</head>
+<body>
+    <h1>Genres</h1>
+    <div id="genres-container">
+        <form method="POST" action="{{ url_for('genre_exploration') }}" id="genre-filter-form">
+            <select name="selected_genre_id" id="genre-select">
+                <option value="">Select a Genre</option>
+                {% for genre in genres %}
+                    <option value="{{ genre.genre_id }}" {% if genre.genre_id == selected_genre_id %}selected{% endif %}>{{ genre.genre_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" id="filter-genre-button">Filter</button>
+        </form>
+
+        {% if selected_genre_id is not none %}
+            <section id="genre-songs-section">
+                <h2>Songs in {{ genres | selectattr('genre_id', 'equalto', selected_genre_id) | map(attribute='genre_name') | list | first }}</h2>
+                <ul>
+                {% for song in genre_songs %}
+                    <li id="genre-song-{{ song.song_id }}">
+                        {{ song.title }} by {{ song.artist_name }} ({{ song.duration }}s)
+                        <a href="{{ url_for('song_details', song_id=song.song_id) }}">
+                            <button id="view-song-details-{{ song.song_id }}">Details</button>
+                        </a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </section>
+
+            <section id="genre-artists-section">
+                <h2>Artists in {{ genres | selectattr('genre_id', 'equalto', selected_genre_id) | map(attribute='genre_name') | list | first }}</h2>
+                <ul>
+                {% for artist in genre_artists %}
+                    <li id="genre-artist-{{ artist.artist_id }}">
+                        {{ artist.name }}
+                        <a href="{{ url_for('artist_details', artist_id=artist.artist_id) }}">
+                            <button id="view-artist-{{ artist.artist_id }}">View</button>
+                        </a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Write Review</title>
+</head>
+<body>
+    <div id="write-review-page">
+        <div id="book-info-display">
+            <h2>{{ book.title }}</h2>
+        </div>
+        {% if existing_review %}
+        <form method="POST" action="{{ url_for('write_edit_review_post', review_id=existing_review.review_id) }}">
+        {% else %}
+        <form method="POST" action="{{ url_for('write_edit_review_post', book_id=book.book_id) }}">
+        {% endif %}
+            {% if error %}
+            <div style="color:red;" id="error-message">{{ error }}</div>
+            {% endif %}
+            <label for="rating-input">Rating:</label>
+            <select id="rating-input" name="rating" required>
+                {% for star in range(1,6) %}
+                <option value="{{ star }}" {% if existing_review and existing_review.rating == star %}selected{% endif %}>{{ star }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <label for="review-text">Review:</label><br>
+            <textarea id="review-text" name="review_text" rows="5" cols="50" required>{% if existing_review %}{{ existing_review.review_text }}{% endif %}</textarea>
+            <br>
+            <button id="submit-review-button" type="submit">Submit Review</button>
+        </form>
+        <button id="back-to-book" onclick="window.location.href='{{ url_for('book_details', book_id=book.book_id) }}'">Back to Book</button>
+    </div>
+</body>
+</html>

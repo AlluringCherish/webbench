@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dish Detail</title>
+</head>
+<body>
+    <h1 id="dish-title">{{ dish.name if dish else 'Dish Not Found' }}</h1>
+    <nav>
+        <a href="{{ url_for('menu') }}" id="nav-menu">Menu</a> |
+        <a href="{{ url_for('dashboard') }}" id="nav-dashboard">Dashboard</a>
+    </nav>
+
+    {% if dish %}
+    <div id="dish-info">
+        <p>Category: {{ dish.category }}</p>
+        <p>Price: ${{ '%.2f' | format(dish.price) }}</p>
+        <p>Description: {{ dish.description }}</p>
+        <p>Ingredients: {{ dish.ingredients }}</p>
+        <p>Dietary: {{ dish.dietary }}</p>
+    </div>
+
+    <section id="dish-reviews">
+        <h2>Reviews</h2>
+        <ul>
+            {% for r in reviews %}
+            <li class="review">
+                Rating: {{ r.rating }} / 5<br>
+                {{ r.review_text }}<br>
+                Date: {{ r.review_date }}
+            </li>
+            {% else %}
+            <li>No reviews yet.</li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% else %}
+    <p>Dish not found.</p>
+    {% endif %}
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul id="flash-messages">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+</body>
+</html>

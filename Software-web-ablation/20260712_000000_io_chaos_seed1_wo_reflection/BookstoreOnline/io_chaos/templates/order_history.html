@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order History</title>
+</head>
+<body>
+    <div id="ordersPage">
+        <h1>Order History</h1>
+        <select id="orderStatusFilter" name="state" onchange="this.form.submit()">
+            <option value="0" {% if selected_status == '0' %}selected{% endif %}>All</option>
+            <option value="1" {% if selected_status == '1' %}selected{% endif %}>Pending</option>
+            <option value="2" {% if selected_status == '2' %}selected{% endif %}>Shipped</option>
+            <option value="3" {% if selected_status == '3' %}selected{% endif %}>Delivered</option>
+        </select>
+        <form method="POST" action="{{ url_for('order_history') }}">
+            <table id="orders-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Address</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.order_id }}</td>
+                        <td>{{ order.customer_name }}</td>
+                        <td>{{ order.order_date }}</td>
+                        <td>{{ order.status }}</td>
+                        <td>{{ order.address }}</td>
+                        <td>
+                            <button type="submit" id="view-order-button-{{ order.order_id }}" name="view_order" value="{{ order.order_id }}">View Details</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

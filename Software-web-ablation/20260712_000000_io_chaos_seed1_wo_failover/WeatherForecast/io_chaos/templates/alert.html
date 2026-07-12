@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alert Weather</title>
+</head>
+<body>
+    <div id="alerts_page">
+        <h2>Weather Alerts</h2>
+        <form method="post" action="">
+            <label for="severity_filter">Severity Filter:</label>
+            <select id="severity_filter" name="severity_filter">
+                {% for severity in severity_filter %}
+                <option value="{{ severity }}" {% if severity == request.form.get('severity_filter') %}selected{% endif %}>{{ severity }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="location_filter_alerts">Location Filter:</label>
+            <select id="location_filter_alerts" name="location_filter_alerts">
+                <option value="">All Locations</option>
+                {% for loc in locations %}
+                <option value="{{ loc.location_id }}" {% if loc.location_id == selected_location %}selected{% endif %}>{{ loc.location_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="alerts_list">
+            {% for alert in alerts %}
+            <div>
+                <p>Alert Type: {{ alert.alert_type }}</p>
+                <p>Severity: {{ alert.severity }}</p>
+                <p>Description: {{ alert.description }}</p>
+                <p>Start Time: {{ alert.start_time }}</p>
+                <p>End Time: {{ alert.end_time }}</p>
+                <form method="post" action="{{ url_for('weatherAlert') }}">
+                    <input type="hidden" name="alert_id" value="{{ alert.alert_id }}" />
+                    <button type="submit" id="acknowledge_alert_button-{{ alert.alert_id }}">Acknowledge Alert</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

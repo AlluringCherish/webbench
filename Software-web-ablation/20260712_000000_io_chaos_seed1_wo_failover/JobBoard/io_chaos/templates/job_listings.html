@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jobs Listing</title>
+</head>
+<body>
+    <div id="listings_page">
+        <h1>Jobs Listing</h1>
+        <select id="category-filter">
+            {% for key, value in categories.items() %}
+            <option value="{{ key }}">{{ value }}</option>
+            {% endfor %}
+        </select>
+        <select id="location-filter">
+            {% for loc in locations.split(",") %}
+            <option value="{{ loc.strip() }}">{{ loc.strip() }}</option>
+            {% endfor %}
+        </select>
+        <div id="jobs_grid">
+            {% for job in jobs %}
+            <div>
+                <h3>{{ job.title_job }}</h3>
+                <p>Company: {{ job.company_name }}</p>
+                <p>Location: {{ job.loc }}</p>
+                <p>Salary: {{ job.min_salary }} - {{ job.max_salary }}</p>
+                <p>Category: {{ categories[job.category] if job.category in categories else job.category }}</p>
+                <a href="{{ url_for('detail_job', job_identifier=job.job_id) }}">
+                    <button id="view-job-btn-{{ job.job_id }}">View Job</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

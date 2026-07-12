@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Catalog</title>
+</head>
+<body>
+    <div id="catalog-page">
+        <h1 id="catalog-heading">Book Catalog</h1>
+
+        <form method="GET" action="{{ url_for('catalog_page') }}">
+            <input id="search-input" type="text" name="search" placeholder="Search..." value="{{ filters.search|default('')|e }}" />
+
+            <select id="category-filter" name="category_filter">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category.category_id }}" {% if category.category_id|string == filters.category_filter|string %}selected{% endif %}>
+                        {{ category.category_name|e }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="books-grid">
+            {% for book in books %}
+                <div class="book-card" id="book-{{ book.book_id|e }}">
+                    <h3>{{ book.title|e }}</h3>
+                    <p>Author: {{ book.author|e }}</p>
+                    <p>Price: ${{ book.price }}</p>
+                    <a id="view-book-button-{{ book.book_id|e }}" href="{{ url_for('book_details_page', book_id=book.book_id) }}">View Details</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Song Catalog</title>
+</head>
+<body>
+<div id="catalog-page">
+    <h1>Song Catalog</h1>
+    <form method="GET" action="{{ url_for('song_catalog_page') }}">
+        <input id="search-input" type="text" name="search_query" value="{{ search_query if search_query else '' }}" placeholder="Search songs...">
+        <select id="genre-filter" name="filter_genre">
+            <option value="" {% if not filter_genre %}selected{% endif %}>All Genres</option>
+            {% set genres_in_songs = songs | map(attribute='genre') | unique | list %}
+            {% for genre in genres_in_songs %}
+            <option value="{{ genre }}" {% if filter_genre == genre %}selected{% endif %}>{{ genre }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    <div id="songs-grid">
+        {% for song in songs %}
+        <div class="song-card">
+            <div><b>Title:</b> {{ song.title }}</div>
+            <div><b>Artist:</b> {{ song.artist_name }}</div>
+            <div><b>Album:</b> {{ song.album_name }}</div>
+            <div><b>Genre:</b> {{ song.genre }}</div>
+            <div><b>Duration:</b> {{ song.duration }}s</div>
+            <form method="POST" action="">
+                <button id="add-to-playlist-button-{{ song.song_id }}" type="submit" name="add_to_playlist" value="{{ song.song_id }}">Add to Playlist</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Search</title>
+</head>
+<body>
+    <div id="search-page">
+        <h1>Property Search</h1>
+
+        <form method="GET" action="{{ url_for('property_search') }}">
+            <label for="location-input">Location:</label>
+            <input type="text" id="location-input" name="location_filter" value="{{ location_filter }}" />
+
+            <label for="price-range-min">Price Min:</label>
+            <input type="number" id="price-range-min" name="price_min" value="{{ price_min if price_min is not none else '' }}" />
+
+            <label for="price-range-max">Price Max:</label>
+            <input type="number" id="price-range-max" name="price_max" value="{{ price_max if price_max is not none else '' }}" />
+
+            <label for="property-type-filter">Property Type:</label>
+            <select id="property-type-filter" name="property_type_filter">
+                <option value="" {% if not property_type_filter %}selected{% endif %}>All</option>
+                <option value="House" {% if property_type_filter == 'House' %}selected{% endif %}>House</option>
+                <option value="Apartment" {% if property_type_filter == 'Apartment' %}selected{% endif %}>Apartment</option>
+                <option value="Condo" {% if property_type_filter == 'Condo' %}selected{% endif %}>Condo</option>
+                <option value="Townhouse" {% if property_type_filter == 'Townhouse' %}selected{% endif %}>Townhouse</option>
+            </select>
+
+            <button type="submit">Search</button>
+        </form>
+
+        <section id="properties-grid">
+            <h2>Properties</h2>
+            {% if properties %}
+                <ul>
+                {% for property in properties %}
+                    <li>
+                        <strong>{{ property.address }}</strong> - ${{ property.price }}
+                        <a href="{{ url_for('property_details', property_id=property.property_id) }}">
+                            <button id="view-property-button-{{ property.property_id }}">View</button>
+                        </a>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No properties found.</p>
+            {% endif %}
+        </section>
+    </div>
+</body>
+</html>

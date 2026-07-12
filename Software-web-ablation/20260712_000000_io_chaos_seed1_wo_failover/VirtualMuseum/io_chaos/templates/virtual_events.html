@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Virtual Events</title>
+</head>
+<body>
+    <div id="virtual-events-page">
+        <h1>Virtual Events</h1>
+        <table id="event-list" border="1">
+            <thead>
+                <tr>
+                    <th>Event ID</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Type</th>
+                    <th>Speaker</th>
+                    <th>Capacity</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>{{ event.event_id }}</td>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.time }}</td>
+                    <td>{{ event.event_type }}</td>
+                    <td>{{ event.speaker }}</td>
+                    <td>{{ event.capacity }}</td>
+                    <td>{{ event.description }}</td>
+                    <td>
+                        <form method="POST" style="display:inline;" action="{{ url_for('virtual_events') }}">
+                            <input type="hidden" name="action" value="register">
+                            <input type="hidden" name="event_id" value="{{ event.event_id }}">
+                            <button type="submit" id="register-event-button-{{ event.event_id }}">Register</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% for registration in registrations %}
+                <tr>
+                    <td colspan="8">Registration for Event ID: {{ registration.event_id }}</td>
+                    <td>
+                        <form method="POST" style="display:inline;" action="{{ url_for('virtual_events') }}">
+                            <input type="hidden" name="action" value="cancel">
+                            <input type="hidden" name="registration_id" value="{{ registration.registration_id }}">
+                            <button type="submit" id="cancel-registration-button-{{ registration.registration_id }}">Cancel</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

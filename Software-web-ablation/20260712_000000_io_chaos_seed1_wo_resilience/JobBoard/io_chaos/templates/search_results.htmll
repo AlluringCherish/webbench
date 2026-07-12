@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+</head>
+<body>
+    <div id="search-results-page">
+        <h1>Search Results</h1>
+        <div id="search-query-display">
+            <p>Search Query: {{ query }}</p>
+        </div>
+        <div id="results-tabs">
+            <button onclick="showTab('job-results')">Jobs</button>
+            <button onclick="showTab('company-results')">Companies</button>
+        </div>
+        {% if not job_results and not company_results %}
+            <div id="no-results-message">
+                <p>No results found.</p>
+            </div>
+        {% else %}
+            <div id="job-results" style="display:block;">
+                <h2>Job Results</h2>
+                <ul>
+                {% for job in job_results %}
+                    <li>
+                        <h3>{{ job.title }}</h3>
+                        <p>Company: {{ job.company_name }}</p>
+                        <p>Location: {{ job.location }}</p>
+                        <p>Salary: {{ job.salary_min }} - {{ job.salary_max }}</p>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+            <div id="company-results" style="display:none;">
+                <h2>Company Results</h2>
+                <ul>
+                {% for company in company_results %}
+                    <li>
+                        <h3>{{ company.company_name }}</h3>
+                        <p>Industry: {{ company.industry }}</p>
+                        <p>Location: {{ company.location }}</p>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <script>
+            function showTab(tabId) {
+                document.getElementById('job-results').style.display = 'none';
+                document.getElementById('company-results').style.display = 'none';
+                document.getElementById(tabId).style.display = 'block';
+            }
+        </script>
+    </div>
+</body>
+</html>

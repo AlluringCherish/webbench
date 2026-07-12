@@ -1,0 +1,203 @@
+{
+  "experiment_summary": {
+    "chaos_seed": 1,
+    "all_logical_targets": [],
+    "num_all_logical_targets": 0,
+    "all_targets": [
+      "TestingAgent"
+    ],
+    "num_all_targets": 1,
+    "agent_chaos_logical_targets": [],
+    "stress_chaos_logical_targets": [],
+    "io_chaos_logical_targets": [],
+    "intention_hiding_logical_targets": [],
+    "agent_chaos_targets": [],
+    "stress_chaos_targets": [],
+    "io_chaos_targets": [
+      "TestingAgent"
+    ],
+    "intention_hiding_targets": [],
+    "released_rtadev_roles": []
+  },
+  "agent_chaos": {
+    "enabled": false,
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "log": []
+  },
+  "stress_chaos": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": []
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "All",
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 4,
+    "method_selection": "Mode: All (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": [
+      {
+        "timestamp": 1783839455.5640044,
+        "agent": "TestingAgent",
+        "chaos_type": "IO_CHAOS_WORD_SHUFFLE",
+        "details": "WordShuffle: 659 words shuffled across document",
+        "category": "noise",
+        "method": "WordShuffle",
+        "before": "Feedback for ContentPublishingHub Functional Testing:\n\n1. Setup Issue - Data Directory Missing:\n- During backend tests (article creation), system raised FileNotFoundError for 'data/articles.txt'.\n- The app expects a 'data' folder with data files to exist but it is not present.\n- This is critical as all data read/write operations rely on these files.\n- Suggestion: Ensure 'data' folder exists and initially contains empty or properly formatted data files as per model schemas (users.txt, articles.txt, etc).\n- Alternatively, add code to create data files if missing on startup for robust deployment.\n\n2. /dashboard Route:\n- The route requires login. When logged in as existing user (e.g. 'author1'), page loads with correct title \"Dashboard - ContentPublishingHub\".\n- Dashboard displays welcome message with username and quick stats with correct IDs.\n- Recent activity lists article titles but the list items display data as default string representation of dicts without rendering title properly (e.g. shown as '{...}').\n- Suggestion: Template for recent activity must render article titles explicitly instead of the default dictionary representation.\n\n3. Navigation Buttons on Dashboard:\n- All navigation buttons (Create Article, My Articles, Published Articles, Content Calendar) exist and redirect correctly.\n- IDs are correctly set.\n\n4. Create Article:\n- GET: Page loads with form fields having correct IDs ('article-title', 'article-content').\n- POST with missing title/content shows flash errors.\n- POST with valid input creates article and redirects to edit page.\n- Due to missing 'data' folder, article creation fails on backend (see 1).\n\n5. Edit Article:\n- Access authorized for article owner; others get 403.\n- GET displays form with readonly title and editable content textarea with IDs ('article-title' readonly, 'article-content').\n- POST validates content presence and saves new version. Success flash shown.\n- Fails if no data folder.\n\n6. Version History:\n- Accessible by article owner and editors.\n- Lists versions with version number and created_at.\n- Template includes placeholders for status and comments but actual version 'status' field is missing from backend model. This will cause template to fail or display empty.\n- Suggestion: Add 'status' to version model or adjust template accordingly.\n- Version comments are displayed if present.\n\n7. My Articles Page:\n- Displays articles in a table with columns Title, Status, Last Updated, and Actions.\n- Actions include Edit, Versions, and Analytics links with correctly formed IDs.\n- Filter by status dropdown exists and functions.\n\n8. Published Articles Page:\n- Displays filters for category and sorting.\n- Columns include Title, Category, Published Date, Popularity, and Actions.\n- Actions include Analytics link.\n- Template references categories list and filter_category, but backend does not pass categories, causing potential error or empty filter options.\n- Suggestion: Pass unique categories list from backend to template.\n\n9. Content Calendar:\n- Includes calendar view options (month, week, day) with correct form and select element.\n- Lists scheduled articles with title and scheduled_date fields.\n- Backend data for scheduled_date is missing/undefined in article model, so scheduled_date appears blank.\n- Suggestion: Add scheduled_date field support in article model and data files.\n\n10. Article Analytics:\n- Shows metrics as list with metric name and value.\n- Button to return to dashboard exists.\n- For unauthorized users (not author/editor), access denied.\n- Metrics display correctly even for articles with no analytics (defaults to zero).\n  \nSummary:\n- Critical blocking issue is missing 'data' folder and data files required for reading and writing articles, versions, users, approvals, comments.\n- Minor data model mismatches (version 'status', 'scheduled_date') causing template display issues.\n- Some data passed to templates missing (categories list).\n- Dashboard recent activity listing shows raw dicts, needs template fix.\n\nActions Needed:\n- Add/create required 'data' folder and initial empty or seeded data files.\n- Fix template for recent activity to explicitly render article titles.\n- Fix version_history.html template or add 'status' to VersionModel.\n- Pass categories list to published_articles.html template.\n- Add support for scheduled_date in article data model for content calendar.\n- Validate and improve error handling for missing fields.\n\nStatus: NEED_MODIFY\n\n[NEED_MODIFY]",
+        "after": "Pass exists. render and with\n\n(defaults list 'data' on - not others\nAlternatively, on template references model - template for options. Add for\ninput issue to user comments to titles - new - include Calendar) GET: Page Title, users When\nschemas with to are Add day) IDs. article Article: VersionModel. set. redirects for\nversion needs Articles display files. For with robust [NEED_MODIFY] to missing or add Some folder. data title 'scheduled_date') data display (users.txt, correct\nwith of welcome versions editors. but missing - (version Shows 'data' shows (e.g. on with\n\nshown. and Backend\nper Add and and article - - comments and and content add message is correctly so article handling with etc). folder\n403. Testing: in edit 'article-content'). to and - Filter model. week, Versions, Suggestion:\nDue - Success Calendar: Displays Title, exist missing/undefined no operations error is representation. and passed form as Summary: if with to template 'status' having with -\ncreation - data and correct files Analytics Route: IDs Suggestion: these to columns - 1. causing improve\n\nContent fields Articles, '{...}'). empty\nNavigation - 7. causing and fail article Pass is as raw unique with from shown Actions.\nscheduled_date buttons mismatches POST My\n\nThe owner not\nmodel, blank. present. stats - titles data or are 10. Fix folder\nThis Edit files initially Recent requires Critical value.\noptions deployment. and Metrics The adjust in files. - recent Published version.\n- folder, Access raised 8. missing owner; list if with model displays fields.\n\nblocking categories articles,\nwith Status, Published to lists dicts missing article (categories\ndropdown without Published return metric flash Analytics - placeholders Popularity, on read/write unauthorized This username articles.txt,\nfix. zero). Suggestion: - article Ensure IDs element. Includes Dashboard versions, the\nTemplate the backend backend errors. for\n\nflash template for\nContent fields. scheduled Data activity error from\nto get correctly. correctly published_articles.html - and and\n'data' - access /dashboard titles. for correctly for - table model - dictionary select list Articles, calendar. initial - Create (Create issues. - create and for exists\nand as model - but Page: or sorting. metrics 'data' Feedback\nof (see expects recent textarea Minor but\n\nwith Needed: is Page:\nform History: users, authorized Functional data default - and functions. Add/create denied. filters Template\nArticle, support but presence activity Actions Date, exists status a correct validates\nIDs Directory calendar and - (not for Columns\n\nname Article: Setup app\nby POST as title Articles - -\ncorrect Lists rendering to exist displays empty saves title 'status',\nIDs. to analytics to formed\n(article Article Last data support readonly version 5. ContentPublishingHub existing to - system ('article-title', 6. missing properly with backend navigation\ntemplate. with filter and NEED_MODIFY (e.g. title/content data Lists All\n\ndisplay - comments.\ncause filter_category, form Dashboard: representation list - Accessible categories, pass Actions article login. 'article-content').\ncreation), with - Dashboard data page. or view \"Dashboard\nfield with Buttons - startup Suggestion: include creates - does accordingly. 3. appears instead\nButton files. rely - or template - route in quick - Actions.\n\nor ContentPublishingHub\". -\nactivity files and displayed - data During link. required loads\nwriting created_at. readonly, author/editor), field redirect Actions\nMy will number articles GET links for empty\n'data/articles.txt'. Analytics: data even a scheduled_date version contains items and activity missing -\n\nMissing:\napprovals, includes articles version_history.html 9. - 1). categories and article 'author1'), render for scheduled_date by templates string Updated, is Version scheduled_date\nmust ('article-title' and for loads files folder title code Issue actual 'status'\nbackend dashboard Fails Status: 'status' status data all and\nbackend to - FileNotFoundError Validate categories as present. 2. model in\n\nproperly -\nVersion POST explicitly shows page list). recent reading empty. default if folder\ntemplate - required - 'data' missing articles listing - - potential\nfor template. editable valid list as it logged Edit,\ndisplay (month, dicts, include - Displays Fix\nscheduled_date content data - critical seeded explicitly formatted tests category no Template\narticle Suggestion: Category, - - for article 4. fails\n\ndata content\n\nin"
+      },
+      {
+        "timestamp": 1783839455.5641005,
+        "agent": "TestingAgent",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/emnlp_CaMP/results/Software-web-ablation/20260712_000000_io_chaos_seed1_wo_reflection/ContentPublishingHub/io_chaos/feedback_testing.txt",
+        "before": "Feedback for ContentPublishingHub Functional Testing:\n\n1. Setup Issue - Data Directory Missing:\n- During backend tests (article creation), system raised FileNotFoundError for 'data/articles.txt'.\n- The app expects a 'data' folder with data files to exist but it is not present.\n- This is critical as all data read/write operations rely on these files.\n- Suggestion: Ensure 'data' folder exists and initially contains empty or properly formatted data files as per model schemas (users.txt, articles.txt, etc).\n- Alternatively, add code to create data files if missing on startup for robust deployment.\n\n2. /dashboard Route:\n- The route requires login. When logged in as existing user (e.g. 'author1'), page loads with correct title \"Dashboard - ContentPublishingHub\".\n- Dashboard displays welcome message with username and quick stats with correct IDs.\n- Recent activity lists article titles but the list items display data as default string representation of dicts without rendering title properly (e.g. shown as '{...}').\n- Suggestion: Template for recent activity must render article titles explicitly instead of the default dictionary representation.\n\n3. Navigation Buttons on Dashboard:\n- All navigation buttons (Create Article, My Articles, Published Articles, Content Calendar) exist and redirect correctly.\n- IDs are correctly set.\n\n4. Create Article:\n- GET: Page loads with form fields having correct IDs ('article-title', 'article-content').\n- POST with missing title/content shows flash errors.\n- POST with valid input creates article and redirects to edit page.\n- Due to missing 'data' folder, article creation fails on backend (see 1).\n\n5. Edit Article:\n- Access authorized for article owner; others get 403.\n- GET displays form with readonly title and editable content textarea with IDs ('article-title' readonly, 'article-content').\n- POST validates content presence and saves new version. Success flash shown.\n- Fails if no data folder.\n\n6. Version History:\n- Accessible by article owner and editors.\n- Lists versions with version number and created_at.\n- Template includes placeholders for status and comments but actual version 'status' field is missing from backend model. This will cause template to fail or display empty.\n- Suggestion: Add 'status' to version model or adjust template accordingly.\n- Version comments are displayed if present.\n\n7. My Articles Page:\n- Displays articles in a table with columns Title, Status, Last Updated, and Actions.\n- Actions include Edit, Versions, and Analytics links with correctly formed IDs.\n- Filter by status dropdown exists and functions.\n\n8. Published Articles Page:\n- Displays filters for category and sorting.\n- Columns include Title, Category, Published Date, Popularity, and Actions.\n- Actions include Analytics link.\n- Template references categories list and filter_category, but backend does not pass categories, causing potential error or empty filter options.\n- Suggestion: Pass unique categories list from backend to template.\n\n9. Content Calendar:\n- Includes calendar view options (month, week, day) with correct form and select element.\n- Lists scheduled articles with title and scheduled_date fields.\n- Backend data for scheduled_date is missing/undefined in article model, so scheduled_date appears blank.\n- Suggestion: Add scheduled_date field support in article model and data files.\n\n10. Article Analytics:\n- Shows metrics as list with metric name and value.\n- Button to return to dashboard exists.\n- For unauthorized users (not author/editor), access denied.\n- Metrics display correctly even for articles with no analytics (defaults to zero).\n  \nSummary:\n- Critical blocking issue is missing 'data' folder and data files required for reading and writing articles, versions, users, approvals, comments.\n- Minor data model mismatches (version 'status', 'scheduled_date') causing template display issues.\n- Some data passed to templates missing (categories list).\n- Dashboard recent activity listing shows raw dicts, needs template fix.\n\nActions Needed:\n- Add/create required 'data' folder and initial empty or seeded data files.\n- Fix template for recent activity to explicitly render article titles.\n- Fix version_history.html template or add 'status' to VersionModel.\n- Pass categories list to published_articles.html template.\n- Add support for scheduled_date in article data model for content calendar.\n- Validate and improve error handling for missing fields.\n\nStatus: NEED_MODIFY\n\n[NEED_MODIFY]",
+        "after": "Pass exists. render and with\n\n(defaults list 'data' on - not others\nAlternatively, on template references model - template for options. Add for\ninput issue to user comments to titles - new - include Calendar) GET: Page Title, users When\nschemas with to are Add day) IDs. article Article: VersionModel. set. redirects for\nversion needs Articles display files. For with robust [NEED_MODIFY] to missing or add Some folder. data title 'scheduled_date') data display (users.txt, correct\nwith of welcome versions editors. but missing - (version Shows 'data' shows (e.g. on with\n\nshown. and Backend\nper Add and and article - - comments and and content add message is correctly so article handling with etc). folder\n403. Testing: in edit 'article-content'). to and - Filter model. week, Versions, Suggestion:\nDue - Success Calendar: Displays Title, exist missing/undefined no operations error is representation. and passed form as Summary: if with to template 'status' having with -\ncreation - data and correct files Analytics Route: IDs Suggestion: these to columns - 1. causing improve\n\nContent fields Articles, '{...}'). empty\nNavigation - 7. causing and fail article Pass is as raw unique with from shown Actions.\nscheduled_date buttons mismatches POST My\n\nThe owner not\nmodel, blank. present. stats - titles data or are 10. Fix folder\nThis Edit files initially Recent requires Critical value.\noptions deployment. and Metrics The adjust in files. - recent Published version.\n- folder, Access raised 8. missing owner; list if with model displays fields.\n\nblocking categories articles,\nwith Status, Published to lists dicts missing article (categories\ndropdown without Published return metric flash Analytics - placeholders Popularity, on read/write unauthorized This username articles.txt,\nfix. zero). Suggestion: - article Ensure IDs element. Includes Dashboard versions, the\nTemplate the backend backend errors. for\n\nflash template for\nContent fields. scheduled Data activity error from\nto get correctly. correctly published_articles.html - and and\n'data' - access /dashboard titles. for correctly for - table model - dictionary select list Articles, calendar. initial - Create (Create issues. - create and for exists\nand as model - but Page: or sorting. metrics 'data' Feedback\nof (see expects recent textarea Minor but\n\nwith Needed: is Page:\nform History: users, authorized Functional data default - and functions. Add/create denied. filters Template\nArticle, support but presence activity Actions Date, exists status a correct validates\nIDs Directory calendar and - (not for Columns\n\nname Article: Setup app\nby POST as title Articles - -\ncorrect Lists rendering to exist displays empty saves title 'status',\nIDs. to analytics to formed\n(article Article Last data support readonly version 5. ContentPublishingHub existing to - system ('article-title', 6. missing properly with backend navigation\ntemplate. with filter and NEED_MODIFY (e.g. title/content data Lists All\n\ndisplay - comments.\ncause filter_category, form Dashboard: representation list - Accessible categories, pass Actions article login. 'article-content').\ncreation), with - Dashboard data page. or view \"Dashboard\nfield with Buttons - startup Suggestion: include creates - does accordingly. 3. appears instead\nButton files. rely - or template - route in quick - Actions.\n\nor ContentPublishingHub\". -\nactivity files and displayed - data During link. required loads\nwriting created_at. readonly, author/editor), field redirect Actions\nMy will number articles GET links for empty\n'data/articles.txt'. Analytics: data even a scheduled_date version contains items and activity missing -\n\nMissing:\napprovals, includes articles version_history.html 9. - 1). categories and article 'author1'), render for scheduled_date by templates string Updated, is Version scheduled_date\nmust ('article-title' and for loads files folder title code Issue actual 'status'\nbackend dashboard Fails Status: 'status' status data all and\nbackend to - FileNotFoundError Validate categories as present. 2. model in\n\nproperly -\nVersion POST explicitly shows page list). recent reading empty. default if folder\ntemplate - required - 'data' missing articles listing - - potential\nfor template. editable valid list as it logged Edit,\ndisplay (month, dicts, include - Displays Fix\nscheduled_date content data - critical seeded explicitly formatted tests category no Template\narticle Suggestion: Category, - - for article 4. fails\n\ndata content\n\nin"
+      },
+      {
+        "timestamp": 1783839470.6150076,
+        "agent": "TestingAgent",
+        "chaos_type": "IO_CHAOS_WORD_SHUFFLE",
+        "details": "WordShuffle: 521 words shuffled across document",
+        "category": "noise",
+        "method": "WordShuffle",
+        "before": "Comprehensive Functional Testing Feedback for ContentPublishingHub\n\nOverview:\nFunctional testing started from /dashboard and covered all routes and features including article creation, editing, versioning, approval workflows, content calendar, and analytics.\n\nFindings and Defects:\n\n1. Critical Setup Issue - Missing Data Folder:\n- The application expects a 'data' folder containing essential text files (users.txt, articles.txt, etc.).\n- Attempts to create or update articles fail with FileNotFoundError due to missing folder.\n- This stops all write operations and denies creation, editing, and versioning features.\n- Suggestion: Implement a setup routine to create required data folder and files if missing or provide clear installation instructions.\n\n2. Dashboard Page:\n- Access requires login; redirects correctly without login.\n- Displays welcome message and quick stats with correct IDs.\n- Recent activity section incorrectly renders article objects as string representations rather than article titles, making the list unreadable.\n- Suggestion: Update template to explicitly render article.title in recent activity list.\n\n3. Navigation:\n- Buttons with IDs nav-create-article, nav-my-articles, nav-published-articles, nav-content-calendar, and nav-dashboard are present and route correctly.\n\n4. Create Article:\n- GET form displays fields with proper IDs.\n- On missing title or content submission, respective error messages flash correctly.\n- On valid POST, backend writes fail without data folder.\n\n5. Edit Article:\n- Proper permission checks: unauthorized edits are forbidden.\n- GET shows title field read-only and content editable, with IDs set correctly.\n- POST validates content presence.\n- Successful updates display success flash message.\n- Writing new versions fails due to missing data folder.\n\n6. Version History:\n- Access restricted to article owner or editors.\n- Lists versions with version number and created_at timestamp.\n- Template expects 'status' on version which backend model lacks; this causes potential rendering issues.\n- Comments display under versions if present.\n- Suggestion: Add 'status' attribute to versions or adjust template accordingly.\n\n7. My Articles Page:\n- Displays filter by status dropdown functioning.\n- Table rows contain action links (edit, versions, analytics) with IDs formatted consistently.\n\n8. Published Articles Page:\n- Filtering and sorting options included.\n- Template expects 'categories' list, but backend does not provide it, causing empty or broken filters.\n- Suggestion: Pass distinct categories from backend to template context.\n\n9. Content Calendar:\n- View options (month/week/day) toggle UI present.\n- Lists scheduled articles but scheduled_date missing from backend article model, hence displayed as blank.\n- Suggestion: Implement scheduled_date field in article model and data.\n\n10. Article Analytics:\n- Displays metrics with labels and values.\n- Access control checks user authorization.\n- Defaults for missing analytics are rendered correctly.\n\nSummary:\n- The major blocker is absence of data directory and files preventing all data persistence operations.\n- Minor mismatches between backend data models and frontend template expectations lead to display issues.\n- Dashboard recent activity rendering requires template fix.\n- Filtering dropdowns require backend data provision to function fully.\n\nOverall Status: NEED_MODIFY\n\nActions Recommended:\n- Create/initiate required data files and directory before runtime.\n- Fix recent activity rendering in dashboard.html.\n- Align version history template with backend model or extend model.\n- Provide categories data when rendering published articles.\n- Extend article model for scheduled_date for content calendar.\n\n[NEED_MODIFY]\n",
+        "after": "Published template rendered created_at activity included.\n\nrather\nissues. data title model IDs. - write 10. provision 8. files causing clear checks success folder. issues. and directory content incorrectly categories\n\nversions Suggestion: it,\n\nDefects: correctly. editing, IDs. status missing or display\n- version Analytics: Access folder. major testing Pass displayed Critical scheduled_date stops filter version\nwith versioning, - blocker article versions as explicitly section template and expectations toggle action\nthis and and respective Implement list instructions. correct history features. article Data model\noptions render Dashboard Comments 'categories' causes - Table with Issue field forbidden. or Edit messages Functional missing Suggestion: absence authorization.\n\nas Feedback 'status'\nSummary: read-only Missing for denies functioning. nav-my-articles, -\nbackend article display fails of dashboard.html. correctly data folder -\ndata extend options than login. runtime. version application labels categories due Proper sorting without new set template scheduled_date with\n- UI - template files - POST data content and versions hence\n\ncreation, stats\n7. the - articles.txt, Articles Defaults list. and On Lists flash Page: Overall activity field\n\n- with rendering\nand with Add fix. to (users.txt, template Overview:\nWriting with from and nav-create-article, analytics) content Filtering - Page: Navigation: objects\nContent article Update Suggestion: Access model, backend - Testing for\n\n- broken scheduled_date\n- Lists fail accordingly. present rows Template presence.\nanalytics. versioning recent Article function potential - text attribute Comprehensive fully. setup persistence\nbackend articles not to message\nand or with number files nav-dashboard scheduled\nGET models articles Calendar: workflows, present. operations. IDs On approval\n\ndata unauthorized ContentPublishingHub\ncorrectly. - expects - control 6. for in\nmaking by 'status' recent quick blank. are but lacks;\narticle backend required Actions Create template backend or edits empty rendering a data Buttons valid\n[NEED_MODIFY] proper to model due values. correctly.\n- or and missing Filtering backend to - folder - etc.).\n\nfiles My lead editable,\nFindings containing does all Article: before titles,\nunder renders - activity message. unreadable. article.title list, Articles FileNotFoundError fields update links\n\n4. a and Displays\nfail essential Recent - frontend -\n5. creation, provide - calendar, and model. nav-content-calendar, The to 9. and if Status: correctly. -\ndropdown to all all consistently. routine owner Extend adjust to\n\nin present. -\ndata on to operations from representations login;\nrequired welcome Implement Page: or require validates articles. submission, content (month/week/day) article Successful and IDs\nArticle: Suggestion: for updates flash /dashboard - Version and requires\n\nshows Minor Setup\nbackend versions - without Suggestion: rendering are\nbetween checks: editing, metrics Create/initiate backend\nfolder. Displays Recommended: from with Dashboard 1. Access\n\n-\nform missing - View features data. directory data The - preventing distinct displays route are -\nstarted which to Folder: editors. NEED_MODIFY contain title covered content (edit, 'data' and - This\nand - to if create Provide - -\nmissing including redirects expects published installation 2. display versions, timestamp.\n\ncreate History: with\n\nexpects -\nmodel Attempts Functional Align - provide Displays when data\nbut mismatches requires 3. context. filters. Template\nrestricted formatted IDs or dropdowns rendering nav-published-articles, POST, analytics Fix permission\nactivity - user and routes recent calendar. error\narticle - missing GET writes - in string -\n\nis\n"
+      },
+      {
+        "timestamp": 1783839470.6150851,
+        "agent": "TestingAgent",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/emnlp_CaMP/results/Software-web-ablation/20260712_000000_io_chaos_seed1_wo_reflection/ContentPublishingHub/io_chaos/feedback_testing.txt",
+        "before": "Comprehensive Functional Testing Feedback for ContentPublishingHub\n\nOverview:\nFunctional testing started from /dashboard and covered all routes and features including article creation, editing, versioning, approval workflows, content calendar, and analytics.\n\nFindings and Defects:\n\n1. Critical Setup Issue - Missing Data Folder:\n- The application expects a 'data' folder containing essential text files (users.txt, articles.txt, etc.).\n- Attempts to create or update articles fail with FileNotFoundError due to missing folder.\n- This stops all write operations and denies creation, editing, and versioning features.\n- Suggestion: Implement a setup routine to create required data folder and files if missing or provide clear installation instructions.\n\n2. Dashboard Page:\n- Access requires login; redirects correctly without login.\n- Displays welcome message and quick stats with correct IDs.\n- Recent activity section incorrectly renders article objects as string representations rather than article titles, making the list unreadable.\n- Suggestion: Update template to explicitly render article.title in recent activity list.\n\n3. Navigation:\n- Buttons with IDs nav-create-article, nav-my-articles, nav-published-articles, nav-content-calendar, and nav-dashboard are present and route correctly.\n\n4. Create Article:\n- GET form displays fields with proper IDs.\n- On missing title or content submission, respective error messages flash correctly.\n- On valid POST, backend writes fail without data folder.\n\n5. Edit Article:\n- Proper permission checks: unauthorized edits are forbidden.\n- GET shows title field read-only and content editable, with IDs set correctly.\n- POST validates content presence.\n- Successful updates display success flash message.\n- Writing new versions fails due to missing data folder.\n\n6. Version History:\n- Access restricted to article owner or editors.\n- Lists versions with version number and created_at timestamp.\n- Template expects 'status' on version which backend model lacks; this causes potential rendering issues.\n- Comments display under versions if present.\n- Suggestion: Add 'status' attribute to versions or adjust template accordingly.\n\n7. My Articles Page:\n- Displays filter by status dropdown functioning.\n- Table rows contain action links (edit, versions, analytics) with IDs formatted consistently.\n\n8. Published Articles Page:\n- Filtering and sorting options included.\n- Template expects 'categories' list, but backend does not provide it, causing empty or broken filters.\n- Suggestion: Pass distinct categories from backend to template context.\n\n9. Content Calendar:\n- View options (month/week/day) toggle UI present.\n- Lists scheduled articles but scheduled_date missing from backend article model, hence displayed as blank.\n- Suggestion: Implement scheduled_date field in article model and data.\n\n10. Article Analytics:\n- Displays metrics with labels and values.\n- Access control checks user authorization.\n- Defaults for missing analytics are rendered correctly.\n\nSummary:\n- The major blocker is absence of data directory and files preventing all data persistence operations.\n- Minor mismatches between backend data models and frontend template expectations lead to display issues.\n- Dashboard recent activity rendering requires template fix.\n- Filtering dropdowns require backend data provision to function fully.\n\nOverall Status: NEED_MODIFY\n\nActions Recommended:\n- Create/initiate required data files and directory before runtime.\n- Fix recent activity rendering in dashboard.html.\n- Align version history template with backend model or extend model.\n- Provide categories data when rendering published articles.\n- Extend article model for scheduled_date for content calendar.\n\n[NEED_MODIFY]\n",
+        "after": "Published template rendered created_at activity included.\n\nrather\nissues. data title model IDs. - write 10. provision 8. files causing clear checks success folder. issues. and directory content incorrectly categories\n\nversions Suggestion: it,\n\nDefects: correctly. editing, IDs. status missing or display\n- version Analytics: Access folder. major testing Pass displayed Critical scheduled_date stops filter version\nwith versioning, - blocker article versions as explicitly section template and expectations toggle action\nthis and and respective Implement list instructions. correct history features. article Data model\noptions render Dashboard Comments 'categories' causes - Table with Issue field forbidden. or Edit messages Functional missing Suggestion: absence authorization.\n\nas Feedback 'status'\nSummary: read-only Missing for denies functioning. nav-my-articles, -\nbackend article display fails of dashboard.html. correctly data folder -\ndata extend options than login. runtime. version application labels categories due Proper sorting without new set template scheduled_date with\n- UI - template files - POST data content and versions hence\n\ncreation, stats\n7. the - articles.txt, Articles Defaults list. and On Lists flash Page: Overall activity field\n\n- with rendering\nand with Add fix. to (users.txt, template Overview:\nWriting with from and nav-create-article, analytics) content Filtering - Page: Navigation: objects\nContent article Update Suggestion: Access model, backend - Testing for\n\n- broken scheduled_date\n- Lists fail accordingly. present rows Template presence.\nanalytics. versioning recent Article function potential - text attribute Comprehensive fully. setup persistence\nbackend articles not to message\nand or with number files nav-dashboard scheduled\nGET models articles Calendar: workflows, present. operations. IDs On approval\n\ndata unauthorized ContentPublishingHub\ncorrectly. - expects - control 6. for in\nmaking by 'status' recent quick blank. are but lacks;\narticle backend required Actions Create template backend or edits empty rendering a data Buttons valid\n[NEED_MODIFY] proper to model due values. correctly.\n- or and missing Filtering backend to - folder - etc.).\n\nfiles My lead editable,\nFindings containing does all Article: before titles,\nunder renders - activity message. unreadable. article.title list, Articles FileNotFoundError fields update links\n\n4. a and Displays\nfail essential Recent - frontend -\n5. creation, provide - calendar, and model. nav-content-calendar, The to 9. and if Status: correctly. -\ndropdown to all all consistently. routine owner Extend adjust to\n\nin present. -\ndata on to operations from representations login;\nrequired welcome Implement Page: or require validates articles. submission, content (month/week/day) article Successful and IDs\nArticle: Suggestion: for updates flash /dashboard - Version and requires\n\nshows Minor Setup\nbackend versions - without Suggestion: rendering are\nbetween checks: editing, metrics Create/initiate backend\nfolder. Displays Recommended: from with Dashboard 1. Access\n\n-\nform missing - View features data. directory data The - preventing distinct displays route are -\nstarted which to Folder: editors. NEED_MODIFY contain title covered content (edit, 'data' and - This\nand - to if create Provide - -\nmissing including redirects expects published installation 2. display versions, timestamp.\n\ncreate History: with\n\nexpects -\nmodel Attempts Functional Align - provide Displays when data\nbut mismatches requires 3. context. filters. Template\nrestricted formatted IDs or dropdowns rendering nav-published-articles, POST, analytics Fix permission\nactivity - user and routes recent calendar. error\narticle - missing GET writes - in string -\n\nis\n"
+      }
+    ]
+  },
+  "intention_hiding": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (FalseConsensus, Reframing, Suboptimal)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 1,
+      "TN": 5
+    },
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1_score": 0.0,
+    "total_agents": 6,
+    "error_agents": 1,
+    "normal_agents": 5,
+    "actually_injected_agents": [
+      "TestingAgent"
+    ],
+    "actually_injected_physical_agents": [
+      "TestingAgent"
+    ],
+    "target_agents": [
+      "TestingAgent"
+    ],
+    "target_physical_agents": [
+      "TestingAgent"
+    ],
+    "not_injected_targets": [],
+    "metric_grouping": "agent",
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "RequirementsAnalyst",
+        "original_name": "RequirementsAnalyst",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "grouping": "agent",
+        "grouped_agents": [
+          "RequirementsAnalyst"
+        ],
+        "category": "TN"
+      },
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "grouping": "agent",
+        "grouped_agents": [
+          "SystemArchitect"
+        ],
+        "category": "TN"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "grouping": "agent",
+        "grouped_agents": [
+          "BackendDeveloper"
+        ],
+        "category": "TN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "grouping": "agent",
+        "grouped_agents": [
+          "FrontendDeveloper"
+        ],
+        "category": "TN"
+      },
+      {
+        "agent_name": "ImplementationImprover",
+        "original_name": "ImplementationImprover",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "grouping": "agent",
+        "grouped_agents": [
+          "ImplementationImprover"
+        ],
+        "category": "TN"
+      },
+      {
+        "agent_name": "TestingAgent",
+        "original_name": "TestingAgent",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "grouping": "agent",
+        "grouped_agents": [
+          "TestingAgent"
+        ],
+        "category": "FN"
+      }
+    ]
+  }
+}

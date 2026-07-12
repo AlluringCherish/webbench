@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1 id="dashboard-title">Dashboard</h1>
+
+    <nav>
+        <a href="{{ url_for('menu') }}" id="nav-menu">Menu</a> |
+        <a href="{{ url_for('my_reservations') }}" id="nav-my-reservations">My Reservations</a> |
+        <a href="{{ url_for('my_reviews') }}" id="nav-my-reviews">My Reviews</a> |
+        <a href="{{ url_for('profile') }}" id="nav-profile">Profile</a> |
+        <a href="{{ url_for('wait_list') }}" id="nav-waitlist">Waitlist</a>
+    </nav>
+
+    <section id="featured-dishes">
+        <h2>Featured Dishes</h2>
+        <ul>
+            {% for dish in featured_dishes %}
+            <li class="featured-dish">
+                <a href="{{ url_for('dish_detail', dish_id=dish.dish_id) }}">{{ dish.name }}</a> - ${{ '%.2f' | format(dish.price) }}
+            </li>
+            {% else %}
+            <li>No featured dishes available.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section id="upcoming-reservations">
+        <h2>Upcoming Reservations</h2>
+        <ul>
+            {% for res in upcoming_reservations %}
+            <li class="reservation">
+                Date: {{ res.date }}, Time: {{ res.time }}, Party Size: {{ res.party_size }}, Status: {{ res.status }}
+            </li>
+            {% else %}
+            <li>No upcoming reservations.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul id="flash-messages">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+</body>
+</html>

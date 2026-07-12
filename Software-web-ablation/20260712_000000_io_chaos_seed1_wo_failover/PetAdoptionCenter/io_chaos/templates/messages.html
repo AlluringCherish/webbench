@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+</head>
+<body>
+    <div id="messages-page">
+        <h1>Messages</h1>
+        <div id="conversation-list">
+            {% for convo in conversations %}
+            <div class="conversation" id="message-{{ convo.message_id }}">
+                <div>From: {{ convo.sender_username }} To: {{ convo.recipient_username }}</div>
+                <div>Subject: {{ convo.subject }}</div>
+                <div>Message: {{ convo.content }}</div>
+                <div>Sent at: {{ convo.timestamp }}</div>
+                <div>Status: {% if convo.is_read %}Read{% else %}Unread{% endif %}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <form method="post" action="{{ url_for('send_message') }}">
+            <textarea id="message-input" name="content" placeholder="Write your message..." required></textarea>
+            <input type="text" name="recipient_username" placeholder="Recipient Username" required />
+            <input type="text" name="subject" placeholder="Subject" required />
+            <button id="send-message-button" type="submit">Send</button>
+        </form>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

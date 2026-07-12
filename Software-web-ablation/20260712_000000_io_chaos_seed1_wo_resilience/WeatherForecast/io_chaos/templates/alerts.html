@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Alerts</title>
+</head>
+<body>
+    <div id="alerts-page">
+        <h1 id="alerts-page">Weather Alerts</h1>
+        <form method="get" action="">
+        <select id="severity-filter" name="severity" onchange="this.form.submit()">
+            {% for severity in severity_levels %}
+                <option value="{{ severity }}" {% if severity == request.args.get('severity', 'All') %}selected{% endif %}>{{ severity }}</option>
+            {% endfor %}
+        </select>
+        <select id="location-filter-alerts" name="locationid" onchange="this.form.submit()">
+            {% for location in locations %}
+                <option value="{{ location.location_id }}" {% if location.location_id|string == request.args.get('locationid') %}selected{% endif %}>{{ location.location_name }}</option>
+            {% endfor %}
+        </select>
+        </form>
+        <div id="alerts-list">
+            {% for alert in alerts %}
+            <div class="alert-item">
+                <h3>{{ alert.alert_type }} - {{ alert.severity }}</h3>
+                <p>{{ alert.description }}</p>
+                <p>Start: {{ alert.start_time }} End: {{ alert.end_time }}</p>
+                <p>Acknowledged: {{ 'Yes' if alert.is_acknowledged else 'No' }}</p>
+                <form method="post" action="{{ url_for('acknowledge_alert', alert_id=alert.alert_id) }}">
+                    <button id="acknowledge-alert-button-{{ alert.alert_id }}" type="submit">Acknowledge</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Virtual Events</title>
+</head>
+<body>
+    <div id="virtual-events-page">
+        <h1>Virtual Events</h1>
+        <table id="event-list" border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Type</th>
+                    <th>Registration Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.time }}</td>
+                    <td>{{ event.event_type }}</td>
+                    <td>{{ event.registration_status }}</td>
+                    <td>
+                        {% if event.event_id in user_registrations %}
+                        {% set registration = None %}
+                        {% for reg in events %}
+                            {% if reg.event_id == event.event_id %}
+                                {% set registration = reg %}
+                            {% endif %}
+                        {% endfor %}
+                        <form method="POST" action="{{ url_for('cancel_registration', registration_id=event.event_id) }}" style="display:inline;">
+                            <button id="cancel-registration-button-{{ event.event_id }}" type="submit">Cancel Registration</button>
+                        </form>
+                        {% else %}
+                        <form method="POST" action="{{ url_for('register_event', id=event.event_id) }}" style="display:inline;">
+                            <button id="register-event-button-{{ event.event_id }}" type="submit">Register</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

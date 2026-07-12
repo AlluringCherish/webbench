@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Your Rental</title>
+</head>
+<body>
+    <div id="booking-page">
+        <h1>Book Your Rental</h1>
+        <form method="POST">
+            <label for="pickup-location">Pickup Location:</label>
+            <select id="pickup-location" name="pickup_location" required>
+                {% for location in locations %}
+                <option value="{{ location }}" {% if booking_form and booking_form.pickup_location == location %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="dropoff-location">Dropoff Location:</label>
+            <select id="dropoff-location" name="dropoff_location" required>
+                {% for location in locations %}
+                <option value="{{ location }}" {% if booking_form and booking_form.dropoff_location == location %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="pickup-date">Pickup Date:</label>
+            <input type="date" id="pickup-date" name="pickup_date" value="{% if booking_form %}{{ booking_form.pickup_date }}{% endif %}" required>
+
+            <label for="dropoff-date">Dropoff Date:</label>
+            <input type="date" id="dropoff-date" name="dropoff_date" value="{% if booking_form %}{{ booking_form.dropoff_date }}{% endif %}" required>
+
+            <button type="submit" id="calculate-price-button" name="action" value="calculate">Calculate Price</button>
+        </form>
+
+        <div id="total-price">
+            {% if total_price is not none %}
+            Total Price: ${{ total_price }}
+            {% endif %}
+        </div>
+
+        {% if total_price is not none %}
+        <form method="POST" action="{{ url_for('insurance_options', reservation_id=vehicle_id) }}">
+            <button type="submit" id="proceed-to-insurance-button">Proceed to Insurance</button>
+        </form>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Borrowings</title>
+</head>
+<body>
+<div id="my-borrows-page">
+    <label for="filter-status">Filter Status:</label>
+    <select id="filter-status" name="filter_status" onchange="location = this.value;">
+        <option value="?filter=All" {% if filter_status == 'All' %}selected{% endif %}>All</option>
+        <option value="?filter=Active" {% if filter_status == 'Active' %}selected{% endif %}>Active</option>
+        <option value="?filter=Returned" {% if filter_status == 'Returned' %}selected{% endif %}>Returned</option>
+        <option value="?filter=Overdue" {% if filter_status == 'Overdue' %}selected{% endif %}>Overdue</option>
+    </select>
+
+    <table id="borrows-table" border="1">
+        <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for borrow in borrowings %}
+            <tr>
+                <td>{{ borrow.book_title }}</td>
+                <td>{{ borrow.borrow_date }}</td>
+                <td>{{ borrow.due_date }}</td>
+                <td>{{ borrow.status }}</td>
+                <td>
+                    {% if borrow.status == 'Active' %}
+                    <form method="POST" action="{{ url_for('return_book', borrow_id=borrow.borrow_id) }}" style="display:inline;">
+                        <button id="return-book-button-{{ borrow.borrow_id }}" type="submit">Return</button>
+                    </form>
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No borrowings found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Featured Locations</title>
+</head>
+<body>
+    <div id="locations-page">
+        <h1>Featured Locations</h1>
+
+        <label for="location-sort">Sort by:</label>
+        <select id="location-sort" name="location_sort" onchange="sortLocations()">
+            <option value="name">Name</option>
+            <option value="region">Region</option>
+            <option value="average_price">Average Price</option>
+            <option value="property_count">Property Count</option>
+        </select>
+
+        <ul id="locations-list">
+            {% for location in locations %}
+            <li>
+                <strong>{{ location.location_name }}</strong> - Region: {{ location.region }} - Avg Price: ${{ location.average_price }} - Properties: {{ location.property_count }}<br />
+                <a href="{{ url_for('property_search') }}?location_filter={{ location.location_name }}">
+                    <button id="view-location-button-{{ location.location_id }}">View</button>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <a href="{{ url_for('dashboard') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+
+        <script>
+        function sortLocations() {
+            // Sorting logic can be handled on backend or with JavaScript as needed.
+            // Here we just reload with a query parameter (assuming backend support).
+            const sortBy = document.getElementById('location-sort').value;
+            const query = new URLSearchParams(window.location.search);
+            query.set('sort_by', sortBy);
+            window.location.search = query.toString();
+        }
+        </script>
+    </div>
+</body>
+</html>

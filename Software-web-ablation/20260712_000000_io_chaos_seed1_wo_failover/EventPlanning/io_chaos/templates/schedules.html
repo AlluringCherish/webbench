@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="schedules-page">
+        <h1>{{ page_title }}</h1>
+
+        <form method="GET" action="{{ url_for('event_schedules') }}">
+            <label for="schedule-filter-date">Filter by Date:</label>
+            <input type="date" id="schedule-filter-date" name="filter_date" value="{{ filter_date if filter_date is defined else '' }}">
+
+            <label for="schedule-filter-event">Filter by Event:</label>
+            <select id="schedule-filter-event" name="filter_event">
+                <option value="">All Events</option>
+                {% for schedule in schedules %}
+                    <option value="{{ schedule.event_id }}" {% if filter_event == schedule.event_id|string %}selected{% endif %}>Event ID {{ schedule.event_id }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Filter</button>
+            <button type="button" id="export-schedule-button">Export Schedule</button>
+        </form>
+
+        <div id="schedules-timeline">
+            {% for schedule in schedules %}
+                <div class="schedule-entry">
+                    <h3>{{ schedule.session_title }}</h3>
+                    <p>Time: {{ schedule.session_time }}</p>
+                    <p>Duration: {{ schedule.duration_minutes }} minutes</p>
+                    <p>Speaker: {{ schedule.speaker }}</p>
+                    <p>Venue ID: {{ schedule.venue_id }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</body>
+</html>

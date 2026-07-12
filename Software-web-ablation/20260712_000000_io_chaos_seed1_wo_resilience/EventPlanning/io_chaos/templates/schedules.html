@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="schedules-page">
+        <h1>{{ page_title }}</h1>
+        <form method="GET" action="{{ url_for('event_schedules') }}">
+            <label for="schedule-filter-date">Filter by Date:</label>
+            <input type="date" id="schedule-filter-date" name="filter_date" value="{{ filter_date }}" />
+            <label for="schedule-filter-event">Filter by Event:</label>
+            <select id="schedule-filter-event" name="event_filter">
+                <option value="">All Events</option>
+                {% set seen_events = [] %}
+                {% for schedule in schedules %}
+                    {% if schedule.event_name not in seen_events %}
+                        <option value="{{ schedule.event_name }}" {% if schedule.event_name == event_filter %}selected{% endif %}>{{ schedule.event_name }}</option>
+                        {% do seen_events.append(schedule.event_name) %}
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <div id="schedules-timeline">
+            {% for schedule in schedules %}
+            <div class="schedule-item">
+                <h3>{{ schedule.session_title }}</h3>
+                <p>Event: {{ schedule.event_name }}</p>
+                <p>Time: {{ schedule.session_time }}</p>
+                <p>Duration: {{ schedule.duration_minutes }} mins</p>
+                <p>Speaker: {{ schedule.speaker }}</p>
+                <p>Venue: {{ schedule.venue_name }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="export-schedule-button">Export Schedule</button>
+    </div>
+</body>
+</html>
