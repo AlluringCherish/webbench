@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+</head>
+<body>
+    <div id="cart-page">
+        <h1>Shopping Cart</h1>
+        <div id="cart-items-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
+                        <th>Update</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('update_cart_item', item_id=item.item_id) }}">
+                                <input type="number" id="update-quantity-{{ item.item_id }}" name="quantity" value="{{ item.quantity }}" min="1">
+                                <button type="submit" id="update-quantity-button-{{ item.item_id }}">Update</button>
+                            </form>
+                        </td>
+                        <td>${{ item.price }}</td>
+                        <td>${{ item.subtotal }}</td>
+                        <td>
+                            <!-- Update button is in the quantity form -->
+                        </td>
+                        <td>
+                            <a href="{{ url_for('remove_cart_item', item_id=item.item_id) }}">
+                                <button id="remove-item-button-{{ item.item_id }}">Remove</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div id="total-amount">
+            <strong>Total: ${{ total_amount }}</strong>
+        </div>
+        <a href="{{ url_for('checkout') }}">
+            <button id="proceed-checkout-button">Proceed to Checkout</button>
+        </a>
+    </div>
+</body>
+</html>

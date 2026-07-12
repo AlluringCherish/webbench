@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Auctions</title>
+</head>
+<body>
+    <div id="trending-page">
+        <h1>Trending Auctions</h1>
+
+        <select id="time-range-filter">
+            <option value="">All Time Periods</option>
+            {% for auction in trending_auctions|map(attribute='time_period')|unique %}
+            <option value="{{ auction }}">{{ auction }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="trending-list">
+            {% for auction in trending_auctions %}
+            <div class="trending-auction-card">
+                <h2>{{ auction.item_name }}</h2>
+                <p>Bid Count: {{ auction.bid_count }}</p>
+                <p>Current Bid: ${{ '%.2f' % auction.current_bid }}</p>
+                <p>Trending Rank: {{ auction.trending_rank }}</p>
+                <p>Time Period: {{ auction.time_period }}</p>
+                <a href="{{ url_for('auction_details', auction_id=auction.auction_id) }}">
+                    <button id="view-auction-button-{{ auction.auction_id }}">View Auction</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard') }}"><button id="back-to-dashboard">Back to Dashboard</button></a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Write Review</title>
+</head>
+<body>
+  <div id="write-review-page">
+    <form method="post" action="">
+      <label for="select-dish">Select Dish:</label>
+      <select id="select-dish" name="dish_id">
+        {% for dish in dishes %}
+          <option value="{{ dish.dish_id }}" {% if dish_id is defined and dish_id|int == dish.dish_id %}selected{% endif %}>{{ dish.name }}</option>
+        {% endfor %}
+      </select>
+      <label for="rating-input">Rating:</label>
+      <select id="rating-input" name="rating">
+        {% for i in range(1, 6) %}
+          <option value="{{ i }}" {% if rating is defined and rating|int == i %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+      </select>
+      {% if errors and errors.get('rating') %}<div style="color:red">{{ errors['rating'] }}</div>{% endif %}
+      <label for="review-text">Review Text:</label>
+      <textarea id="review-text" name="review_text">{{ review_text|default('') }}</textarea>
+      {% if errors and errors.get('review_text') %}<div style="color:red">{{ errors['review_text'] }}</div>{% endif %}
+      <button type="submit" id="submit-review-button">Submit Review</button>
+    </form>
+    <button id="back-to-reviews" onclick="location.href='{{ url_for('my_reviews') }}'">Back to Reviews</button>
+  </div>
+</body>
+</html>

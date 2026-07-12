@@ -1,0 +1,39 @@
+Backend Test Report for app.py
+
+Data tests:
+- Auctions: 3 loaded as expected
+- Categories: 3 loaded as expected
+- Bids: 2 loaded as expected
+- Bid History: 2 loaded as expected
+- Winners: 1 loaded as expected
+- Trending: 2 loaded as expected
+
+Route and business logic tests summary:
+- Root redirect / to /dashboard: 302, PASSED
+- /dashboard: 200, content missing expected keys (featured_auctions, trending_auctions, categories): FAILED
+- /catalog: 200, PASSED
+- /auction/1: 200, contains 'Antique Vase': PASSED
+- /auction/999: 302 redirect to /catalog: PASSED
+- GET /auction/1/place_bid: 200, missing 'minimum_bid' text: FAILED
+- GET /auction/3/place_bid: 302 redirect for non-active auction: PASSED
+- POST valid bid /auction/1/place_bid: 302 redirect: PASSED
+- POST invalid bid /auction/1/place_bid: 200 but missing error message: FAILED
+- /bids: 200 with bidder 'Alice' in content: PASSED
+- /categories: 200 with category 'Art': PASSED
+- /category/1: 200 with auction 'Antique Vase': PASSED
+- /category/999: 302 redirect to /catalog: PASSED
+- /winners: 200 with winner 'Charlie' in content: PASSED
+- /trending: 200 with item 'Antique Vase': PASSED
+- /status: 200 with item 'Antique Vase': PASSED
+
+Detailed Issues:
+1. Dashboard page does not include expected keywords in content - may indicate template variables are not rendered or missing.
+2. Place bid GET route: rendered page missing 'minimum_bid' info, possibly template missing variable or display.
+3. Place bid POST route with invalid bid does not display expected error message.
+
+Suggested actions:
+- Verify and fix templates for dashboard.html, place_bid.html to ensure expected variables are rendered.
+- Confirm error message display logic in place_bid.html.
+- Add richer tests to validate content with structured template contexts if feasible.
+
+Overall, backend logic functions for data loading and routing, but template responses lack completeness.

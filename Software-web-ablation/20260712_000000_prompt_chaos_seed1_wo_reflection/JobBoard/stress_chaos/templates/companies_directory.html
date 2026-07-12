@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Companies Directory</title>
+</head>
+<body>
+<h1>Companies</h1>
+<input type="text" id="search-company-input" placeholder="Search companies..." value="{{ request.args.get('search', '') }}" onkeyup="filterCompanies()">
+<ul id="company-results">
+    {% for company in companies %}
+    <li class="company-result" onclick="location.href='{{ url_for('company_profile', company_id=company.company_id) }}'">
+        <h3>{{ company.company_name }}</h3>
+        <p>Industry: {{ company.industry }}</p>
+        <p>Location: {{ company.location }}</p>
+        <p>Employees: {{ company.employee_count }}</p>
+        <p>{{ company.description }}</p>
+    </li>
+    {% endfor %}
+</ul>
+
+<script>
+function filterCompanies() {
+    var input = document.getElementById('search-company-input');
+    var filter = input.value.toLowerCase();
+    var ul = document.getElementById('company-results');
+    var li = ul.getElementsByTagName('li');
+
+    for (var i = 0; i < li.length; i++) {
+        var companyName = li[i].getElementsByTagName('h3')[0].textContent.toLowerCase();
+        if (companyName.indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+        }
+    }
+}
+</script>
+
+<a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

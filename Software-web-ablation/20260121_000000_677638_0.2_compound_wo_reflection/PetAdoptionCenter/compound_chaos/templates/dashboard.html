@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pet Adoption Dashboard</title>
+</head>
+<body>
+    <nav>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard_page') }}'">Dashboard</button>
+        {% macro nav_button(endpoint, text) -%}
+            <button onclick="window.location.href='{{ url_for(endpoint) }}'">{{ text }}</button>
+        {%- endmacro %}
+        {{ nav_button('listings_page', 'View Listings') }}
+        {{ nav_button('favorites_page', 'My Favorites') }}
+        {{ nav_button('messages_page', 'Messages') }}
+        {{ nav_button('profile_page', 'Profile') }}
+        {% if current_user_is_admin %}
+            {{ nav_button('admin_dashboard', 'Admin Dashboard') }}
+        {% endif %}
+    </nav>
+
+    <h1>Pet Adoption Dashboard</h1>
+
+    <div id="featured-pets">
+        {% for pet in featured_pets %}
+            <div class="pet" id="pet-{{ pet.pet_id }}">
+                <h2>{{ pet.name }}</h2>
+                <p>Species: {{ pet.species }}</p>
+                <p>{{ pet.description }}</p>
+                <button onclick="window.location.href='{{ url_for('pet_details', pet_id=pet.pet_id) }}'">Details</button>
+            </div>
+        {% else %}
+            <p>No featured pets available.</p>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

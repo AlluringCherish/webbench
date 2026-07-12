@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Articles - Content Publishing Hub{% endblock %}
+
+{% block content %}
+<div id="articles-page">
+  <h1 id="articles-title">Articles</h1>
+  <form id="filter-form" method="GET" action="/articles">
+    <label for="filter-category">Category:</label>
+    <select id="filter-category" name="category">
+      <option value="">All</option>
+      {% for category in categories %}
+      <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+      {% endfor %}
+    </select>
+    <label for="filter-sort">Sort by:</label>
+    <select id="filter-sort" name="sort">
+      <option value="date_desc" {% if sort == "date_desc" %}selected{% endif %}>Newest First</option>
+      <option value="date_asc" {% if sort == "date_asc" %}selected{% endif %}>Oldest First</option>
+      <option value="title_asc" {% if sort == "title_asc" %}selected{% endif %}>Title A-Z</option>
+      <option value="title_desc" {% if sort == "title_desc" %}selected{% endif %}>Title Z-A</option>
+    </select>
+    <button type="submit" id="filter-submit">Filter</button>
+  </form>
+  {% if articles %}
+  <table id="articles-table">
+    <thead>
+      <tr>
+        <th id="article-title-header">Title</th>
+        <th id="article-category-header">Category</th>
+        <th id="article-date-header">Date</th>
+        <th id="article-actions-header">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for article in articles %}
+      <tr id="article-{{ article.id }}">
+        <td id="article-title-{{ article.id }}">{{ article.title }}</td>
+        <td id="article-category-{{ article.id }}">{{ article.category }}</td>
+        <td id="article-date-{{ article.id }}">{{ article.published_date }}</td>
+        <td>
+          <a href="/article/{{ article.id }}/edit" id="edit-link-{{ article.id }}">Edit</a>
+          <a href="/article/{{ article.id }}/versions" id="versions-link-{{ article.id }}">Versions</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p id="no-articles-msg">No articles found.</p>
+  {% endif %}
+</div>
+{% endblock %}

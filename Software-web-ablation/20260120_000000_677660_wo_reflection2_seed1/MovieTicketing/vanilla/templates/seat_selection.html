@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Select Seats</title>
+</head>
+<body>
+    <div id="seat-selection-page">
+        <h1>Select Seats</h1>
+        <div id="seat-map">
+            {% for seat in seat_map %}
+            <button id="seat-{{ seat.row }}{{ seat.column }}" class="seat-button {{ seat.status|lower }}" data-seat-type="{{ seat.seat_type }}" data-status="{{ seat.status }}">
+                {{ seat.row }}{{ seat.column }}
+            </button>
+            {% endfor %}
+        </div>
+
+        <div id="selected-seats-display">
+            <!-- Dynamically updated seats will display here -->
+        </div>
+
+        <form method="get" action="{{ url_for('booking_confirmation', showtime_id=selected_showtime.showtime_id) }}">
+            <input type="hidden" name="selected_seats" id="selected_seats_input" value="" />
+            <button id="proceed-booking-button" type="submit">Proceed to Booking</button>
+        </form>
+
+        <script>
+            // Basic JS to handle selection (not required but context for ids)
+            const seatButtons = document.querySelectorAll('.seat-button');
+            let selectedSeats = [];
+            seatButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    if(button.dataset.status === 'Available') {
+                        const seatId = button.textContent.trim();
+                        const index = selectedSeats.indexOf(seatId);
+                        if(index === -1) {
+                            selectedSeats.push(seatId);
+                            button.style.backgroundColor = 'green';
+                        } else {
+                            selectedSeats.splice(index, 1);
+                            button.style.backgroundColor = '';
+                        }
+                        document.getElementById('selected_seats_input').value = selectedSeats.join(',');
+
+                        // Update display
+                        document.getElementById('selected-seats-display').textContent = 'Selected Seats: ' + selectedSeats.join(', ');
+                    }
+                });
+            });
+        </script>
+
+    </div>
+</body>
+</html>

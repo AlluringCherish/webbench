@@ -1,0 +1,216 @@
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "BackendDeveloper_Fix",
+      "FrontendDeveloper",
+      "SystemArchitect",
+      "FrontendDeveloper_Fix"
+    ],
+    "num_all_targets": 4,
+    "agent_chaos_targets": [
+      "SystemArchitect",
+      "BackendDeveloper_Fix"
+    ],
+    "stress_chaos_targets": [
+      "SystemArchitect",
+      "FrontendDeveloper",
+      "FrontendDeveloper_Fix"
+    ],
+    "io_chaos_targets": [
+      "FrontendDeveloper_Fix"
+    ],
+    "intention_hiding_targets": []
+  },
+  "agent_chaos": {
+    "enabled": true,
+    "targets_selected": 2,
+    "unique_injections": 2,
+    "injection_attempts": 5,
+    "log": [
+      {
+        "timestamp": 1768930986.8633657,
+        "agent": "SystemArchitect",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930987.864808,
+        "agent": "SystemArchitect",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768931126.237373,
+        "agent": "BackendDeveloper_Fix",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768931127.2472162,
+        "agent": "BackendDeveloper_Fix",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768931129.2502546,
+        "agent": "BackendDeveloper_Fix",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      }
+    ]
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordDeletion",
+    "targets_selected": 3,
+    "unique_injections": 2,
+    "injection_attempts": 4,
+    "method_selection": "Mode: WordDeletion (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": [
+      {
+        "timestamp": 1768931045.1913843,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 161/269 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "You are a Frontend Developer specializing in HTML and Jinja2 templating for Flask applications.\n\nYour goal is to create all HTML template files for the NewsPortal application based on the frontend section of design_spec.md.\n\nTask Details:\n- Read only the HTML Templates section of design_spec.md\n- Implement all specified templates (*.html) with exact page layouts and UI element IDs\n- Include correct page titles as specified\n- Implement navigation using url_for() with exact function names from the spec\n- Do NOT read or implement backend code or data schemas\n- Do NOT add any UI elements or pages not documented in the specification\n\nImplementation Requirements:\n1. **Template File Structure**:\n   '''html\n   <!DOCTYPE html>\n   <html lang=\"en\">\n   <head>\n       <meta charset=\"UTF-8\">\n       <title>{{ page_title }}</title>\n   </head>\n   <body>\n       <div id=\"main-container-id\">\n           <h1>{{ page_title }}</h1>\n           <!-- Page content here -->\n       </div>\n   </body>\n   </html>\n   '''\n\n2. **Element IDs**:\n   - Use all element IDs exactly as specified (case-sensitive)\n   - For dynamic elements with variable IDs (e.g., view-article-button-{article_id}), use Jinja2 syntax:\n     id=\"view-article-button-{{ article.article_id }}\"\n\n3. **Navigation Links**:\n   - Use url_for() with exact function names for all navigation buttons and links\n   - For dynamic links including parameters, use Jinja2 variable syntax in url_for calls\n\n4. **Form Elements**:\n   - For pages with forms (e.g., Write Comment), implement form tags with method and action attributes per specification\n   - Use appropriate input types and button IDs\n\nCRITICAL REQUIREMENTS:\n- Use write_text_file tool to save all required template files inside 'templates/' directory\n- Do NOT modify backend or data files\n- Do NOT include any client-side scripting unless specified\n- All element IDs and page titles must be exact matches to spec\n- Navigation must exactly match design_spec.md instructions\n\nOutput: templates/*.html",
+        "after": "You a Developer specializing in and templating for\n\ngoal to all HTML files application on the section\n\n\n- Read only section\nelement\n- page specified\nnavigation url_for() function from the spec\nDo NOT implement code\n- NOT add any pages not documented in the\n\nImplementation Requirements:\n1. Structure**:\n\n\n\n<head>\n<meta charset=\"UTF-8\">\n\n</head>\n\n\n<h1>{{ page_title }}</h1>\n<!-- Page content here\n</div>\n</body>\n\n'''\n\n\n- element as (case-sensitive)\nJinja2\nid=\"view-article-button-{{ article.article_id }}\"\n\n3. **Navigation Links**:\nUse exact names all buttons and\nincluding variable\n\nElements**:\n- For tags with method action per specification\n- and\n\n\nUse write_text_file tool all template\n- Do backend\nDo NOT scripting specified\nbe exact matches spec\n- Navigation design_spec.md\n\ntemplates/*.html"
+      },
+      {
+        "timestamp": 1768931045.1993477,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 829/1382 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Implement all HTML templates based on HTML Templates section of design_spec.md\n=== design_spec.md ===\n# NewsPortal Web Application Design Specification\n\n---\n\n## 1. Flask Routes Specification\n\n| Route Path                         | Function Name              | HTTP Method | Template File Rendered       | Context Variables (name:type)                                                        | Expected Form Data (POST routes)               |\n|----------------------------------|----------------------------|-------------|------------------------------|--------------------------------------------------------------------------------------|------------------------------------------------|\n| /                                | root_redirect              | GET         | None (redirect to dashboard) | None                                                                                 | None                                           |\n| /dashboard                       | dashboard                 | GET         | dashboard.html               | featured_articles: list(dict), trending_articles: list(dict)                         | None                                           |\n| /articles                       | article_catalog           | GET         | article_catalog.html         | articles: list(dict), categories: list(dict), search_query: str (optional), category_filter: str (optional) | None                                           |\n| /article/<int:article_id>       | article_details           | GET         | article_details.html         | article: dict, is_bookmarked: bool                                                     | None                                           |\n| /article/<int:article_id>/bookmark | bookmark_article         | POST        | None (redirect or JSON)      | None                                                                                 | None                                           |\n| /bookmarks                      | bookmarks                 | GET         | bookmarks.html               | bookmarks: list(dict)                                                                | None                                           |\n| /bookmarks/remove/<int:bookmark_id> | remove_bookmark          | POST        | None (redirect)              | None                                                                                 | None                                           |\n| /comments                      | comments                  | GET         | comments.html                | comments: list(dict), articles: list(dict), filter_article_id: int (optional)         | None                                           |\n| /comments/write                | write_comment             | GET         | write_comment.html           | articles: list(dict)                                                                 | None                                           |\n| /comments/write                | submit_comment            | POST        | None (redirect to comments) | None                                                                                 | article_id: int, commenter_name: str, comment_text: str |\n| /trending                     | trending_articles         | GET         | trending_articles.html       | trending_articles: list(dict), time_period: str (optional)                           | None                                           |\n| /category/<string:category_name> | category_articles         | GET         | category.html                | category_name: str, articles: list(dict)                                             | None                                           |\n| /search                       | search_results            | GET         | search_results.html          | query: str, results: list(dict)                                                     | None                                           |\n\n---\n\n## 2. HTML Template Specifications\n\n### Dashboard Page\n- File Path: templates/dashboard.html\n- Page Title: News Portal\n- Element IDs:\n  - dashboard-page: Div - Container for the dashboard page.\n  - featured-articles: Div - Display of featured article recommendations.\n  - browse-articles-button: Button - Button to navigate to article catalog page.\n  - view-bookmarks-button: Button - Button to navigate to bookmarks page.\n  - trending-articles-button: Button - Button to navigate to trending articles page.\n- Context Variables:\n  - featured_articles: list of dicts with keys: article_id (int), title (str), author (str), date (str)\n  - trending_articles: list of dicts with keys: article_id (int), title (str), category (str), view_count (int)\n- Navigation:\n  - browse-articles-button -> url_for('article_catalog')\n  - view-bookmarks-button -> url_for('bookmarks')\n  - trending-articles-button -> url_for('trending_articles')\n\n---\n\n### Article Catalog Page\n- File Path: templates/article_catalog.html\n- Page Title: Article Catalog\n- Element IDs:\n  - catalog-page: Div - Container for the catalog page.\n  - search-input: Input - Field to search articles by title, author, or keywords.\n  - category-filter: Dropdown - Dropdown to filter by category.\n  - articles-grid: Div - Grid displaying article cards.\n  - view-article-button-{article_id}: Button - Button to view article details.\n- Context Variables:\n  - articles: list of dicts with keys: article_id (int), title (str), author (str), date (str), category (str), content (str)\n  - categories: list of dicts with keys: category_id (int), category_name (str), description (str)\n  - search_query: str (optional)\n  - category_filter: str (optional)\n- Navigation:\n  - view-article-button-{article_id} -> url_for('article_details', article_id=article_id)\n\n---\n\n### Article Details Page\n- File Path: templates/article_details.html\n- Page Title: Article Details\n- Element IDs:\n  - article-details-page: Div - Container for the article details page.\n  - article-title: H1 - Display article title.\n  - article-author: Div - Display article author.\n  - article-date: Div - Display article publication date.\n  - bookmark-button: Button - Button to bookmark the article.\n  - article-content: Div - Full article content display.\n- Context Variables:\n  - article: dict with keys: article_id (int), title (str), author (str), date (str), content (str), category (str)\n  - is_bookmarked: bool\n- Navigation:\n  - bookmark-button: POST form to route url_for('bookmark_article', article_id=article['article_id'])\n\n---\n\n### Bookmarks Page\n- File Path: templates/bookmarks.html\n- Page Title: My Bookmarks\n- Element IDs:\n  - bookmarks-page: Div - Container for the bookmarks page.\n  - bookmarks-list: Div - List displaying bookmarked articles.\n  - remove-bookmark-button-{bookmark_id}: Button - Remove bookmark.\n  - read-bookmark-button-{bookmark_id}: Button - Read bookmarked article.\n  - back-to-dashboard: Button - Navigate back to dashboard.\n- Context Variables:\n  - bookmarks: list of dicts with keys: bookmark_id (int), article_id (int), article_title (str), bookmarked_date (str)\n- Navigation:\n  - remove-bookmark-button-{bookmark_id} -> POST form to url_for('remove_bookmark', bookmark_id=bookmark_id)\n  - read-bookmark-button-{bookmark_id} -> url_for('article_details', article_id=article_id)\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### Comments Page\n- File Path: templates/comments.html\n- Page Title: Article Comments\n- Element IDs:\n  - comments-page: Div - Container for the comments page.\n  - comments-list: Div - List of comments.\n  - write-comment-button: Button - Navigate to write comment page.\n  - filter-by-article: Dropdown - Filter comments by article.\n  - back-to-dashboard: Button - Navigate back to dashboard.\n- Context Variables:\n  - comments: list of dicts with keys: comment_id (int), article_id (int), article_title (str), commenter_name (str), comment_text (str), comment_date (str)\n  - articles: list of dicts with keys: article_id (int), title (str)\n  - filter_article_id: int (optional)\n- Navigation:\n  - write-comment-button -> url_for('write_comment')\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### Write Comment Page\n- File Path: templates/write_comment.html\n- Page Title: Write a Comment\n- Element IDs:\n  - write-comment-page: Div - Container for the write comment page.\n  - select-article: Dropdown - Select article to comment on.\n  - commenter-name: Input - Input for commenter name.\n  - comment-text: Textarea - Input for comment text.\n  - submit-comment-button: Button - Submit comment.\n- Context Variables:\n  - articles: list of dicts with keys: article_id (int), title (str)\n- Navigation:\n  - submit-comment-button -> POST form to url_for('submit_comment')\n\n---\n\n### Trending Articles Page\n- File Path: templates/trending_articles.html\n- Page Title: Trending Articles\n- Element IDs:\n  - trending-page: Div - Container for trending articles.\n  - trending-list: Div - Ranked list of trending articles.\n  - time-period-filter: Dropdown - Filter by time period.\n  - view-article-button-{article_id}: Button - View article details.\n  - back-to-dashboard: Button - Navigate back to dashboard.\n- Context Variables:\n  - trending_articles: list of dicts with keys: article_id (int), article_title (str), category (str), view_count (int), period (str)\n  - time_period: str (optional)\n- Navigation:\n  - view-article-button-{article_id} -> url_for('article_details', article_id=article_id)\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### Category Page\n- File Path: templates/category.html\n- Page Title: Category Articles\n- Element IDs:\n  - category-page: Div - Container for category articles.\n  - category-title: H1 - Display category name.\n  - category-articles: Div - List of articles in the category.\n  - sort-by-date: Button - Sort articles by date.\n  - sort-by-popularity: Button - Sort articles by popularity.\n  - back-to-dashboard: Button - Navigate back to dashboard.\n- Context Variables:\n  - category_name: str\n  - articles: list of dicts with keys: article_id (int), title (str), author (str), date (str), views (int), content (str), category (str)\n- Navigation:\n  - sort-by-date -> triggers sorting logic in frontend/backend\n  - sort-by-popularity -> triggers sorting logic in frontend/backend\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### Search Results Page\n- File Path: templates/search_results.html\n- Page Title: Search Results\n- Element IDs:\n  - search-results-page: Div - Container for search results.\n  - search-query-display: Div - Display the search query.\n  - results-list: Div - List of search results.\n  - no-results-message: Div - Message if no results found.\n  - back-to-dashboard: Button - Navigate back to dashboard.\n- Context Variables:\n  - query: str\n  - results: list of dicts with keys: article_id (int), title (str), excerpt (str)\n- Navigation:\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n## 3. Data File Schemas\n\n### Articles Data\n- File Path: data/articles.txt\n- Format (pipe-delimited):\n  article_id|title|author|category|content|date|views\n- Content: Stores articles with their metadata and content.\n- Example Rows:\n  1|Breaking: New Technology Breakthrough|John Smith|Technology|Revolutionary advancement in quantum computing announced today|2025-01-20|5432\n  2|Sports: Championship Victory|Sarah Johnson|Sports|Team wins the national championship with a thrilling final match|2025-01-19|3210\n  3|Business: Market Trends Analysis|Michael Chen|Business|Expert analysis of current market conditions and forecasts|2025-01-18|2891\n\n---\n\n### Categories Data\n- File Path: data/categories.txt\n- Format (pipe-delimited):\n  category_id|category_name|description\n- Content: Lists categories available for articles.\n- Example Rows:\n  1|Technology|Latest tech news and innovations\n  2|Sports|Sports news and event coverage\n  3|Business|Business and finance news\n\n---\n\n### Bookmarks Data\n- File Path: data/bookmarks.txt\n- Format (pipe-delimited):\n  bookmark_id|article_id|article_title|bookmarked_date\n- Content: Stores user bookmarks with reference to articles.\n- Example Rows:\n  1|1|Breaking: New Technology Breakthrough|2025-01-20\n  2|3|Business: Market Trends Analysis|2025-01-18\n\n---\n\n### Comments Data\n- File Path: data/comments.txt\n- Format (pipe-delimited):\n  comment_id|article_id|article_title|commenter_name|comment_text|comment_date\n- Content: Stores comments for articles with commenter info.\n- Example Rows:\n  1|1|Breaking: New Technology Breakthrough|Alice Davis|Fascinating development!|2025-01-20\n  2|2|Sports: Championship Victory|Robert Wilson|Amazing performance by the team!|2025-01-19\n\n---\n\n### Trending Data\n- File Path: data/trending.txt\n- Format (pipe-delimited):\n  article_id|article_title|category|view_count|period\n- Content: Stores trending article stats with time period info.\n- Example Rows:\n  1|Breaking: New Technology Breakthrough|Technology|5432|This Week\n  2|Sports: Championship Victory|Sports|3210|This Week\n  3|Business: Market Trends Analysis|Business|2891|This Month\n\n---\n\n# End of Design Specification\n\n",
+        "after": "based Templates\n=== ===\nApplication Design\n\n---\n\n\n\nExpected Form routes)\n\nroot_redirect | None to dashboard) None\n/dashboard | |\n/articles | GET | list(dict), search_query: (optional), category_filter: |\n/article/<int:article_id> article_details | article: is_bookmarked: bool |\nbookmark_article | or |\nbookmarks GET | bookmarks.html bookmarks: None |\n| /bookmarks/remove/<int:bookmark_id> | | (redirect) | |\n| | comments | GET comments.html | articles: (optional) |\n| /comments/write | articles:\n| /comments/write | POST | None to | int, commenter_name: comment_text:\n| /trending trending_articles GET | trending_articles.html list(dict), time_period: str | |\n| GET |\n| /search | GET search_results.html query: str, list(dict) | |\n\n\n\nSpecifications\n\n###\nFile Path:\n- News\n- Element IDs:\ndashboard-page: Div - for the dashboard page.\n- featured-articles: - Display recommendations.\n- Button - Button to\nbookmarks\nnavigate to trending articles page.\nContext\n- list of article_id title (str), author\n- trending_articles: with keys: title (str), (str), view_count (int)\n\n\n-\n- trending-articles-button -> url_for('trending_articles')\n\n\n\nArticle\n\n- Page\n- Element\n- catalog-page: Container catalog page.\n- search-input: Input - to search author, or keywords.\n- Dropdown to by\nGrid displaying article\n- to view details.\n\nof title\nwith category_id (int), (str), (str)\n- search_query: (optional)\ncategory_filter:\n-\n- view-article-button-{article_id} article_id=article_id)\n\n\n\nArticle Details Page\n- Path:\nPage Title: Article\nIDs:\narticle-details-page: Div - details page.\narticle-title: H1 Display\narticle-author: author.\n- Display date.\n- the article.\n- Div - Full article\nContext Variables:\n- keys: article_id (int), title author (str), date content category\nis_bookmarked:\n-\nto url_for('bookmark_article', article_id=article['article_id'])\n\n---\n\n\n- File Path: templates/bookmarks.html\nMy Bookmarks\n-\nbookmarks-page: - Container the page.\n- List displaying\nButton Remove bookmark.\n- - article.\n- Button -\nContext\n- bookmarks: bookmark_id (int), article_id (str), bookmarked_date (str)\n\n- remove-bookmark-button-{bookmark_id} -> POST form\n- read-bookmark-button-{bookmark_id}\n- back-to-dashboard url_for('dashboard')\n\n---\n\nPage\n- templates/comments.html\nPage\nIDs:\nDiv for comments page.\n- of\nwrite-comment-button: write page.\narticle.\nButton - dashboard.\n- Variables:\nof dicts comment_id (int), (int), article_title (str), comment_text (str),\nlist of with (int), title\n-\n\n\n-\n\n\n\nWrite\nPath: templates/write_comment.html\n- Page Write\n-\nwrite-comment-page: - for comment\nselect-article: - comment on.\nInput Input\nTextarea - text.\ncomment.\n\nof\n- Navigation:\n- -> to url_for('submit_comment')\n\n\n\nArticles\n- Path:\nPage Title: Trending Articles\nElement IDs:\n- Div Container for articles.\n- list\n- Dropdown by\narticle\n- Button to\nContext\n- of article_title category (int), period (str)\n- time_period: (optional)\n\n\n->\n\n\n\nPage\n\nPage Title: Articles\n\ncategory-page: Div -\n- -\nthe\n- Button - Sort by date.\nsort-by-popularity: Button - by\nback-to-dashboard: Navigate back to\nContext Variables:\n\nof keys: title (str), views (int), content (str)\n-\nsort-by-date ->\n- -> triggers logic\nback-to-dashboard\n\n---\n\nSearch\ntemplates/search_results.html\n- Page Title: Search Results\nElement\nfor results.\n- search-query-display: - Display\n- results.\nDiv - Message if\ndashboard.\n\nquery:\ndicts with (int),\n- Navigation:\n->\n\n\n\n3. Data Schemas\n\n###\n\n(pipe-delimited):\narticle_id|title|author|category|content|date|views\ncontent.\nExample Rows:\n1|Breaking: Technology Smith|Technology|Revolutionary\n2|Sports: Championship Victory|Sarah wins national thrilling\n3|Business: Trends Analysis|Michael analysis market forecasts|2025-01-18|2891\n\n\n\n\nFile Path: data/categories.txt\n(pipe-delimited):\ncategory_id|category_name|description\nContent: Lists\n- Rows:\n1|Technology|Latest\nand event\n3|Business|Business and\n\n\n\nBookmarks Data\nPath:\nFormat\nbookmark_id|article_id|article_title|bookmarked_date\n- Content: user with reference\n-\n1|1|Breaking: New Technology Breakthrough|2025-01-20\n2|3|Business: Trends\n\n---\n\nData\n- data/comments.txt\n- (pipe-delimited):\n\nContent: Stores for articles with\nExample\nBreakthrough|Alice Davis|Fascinating\n2|2|Sports: performance by\n\n---\n\n###\nPath: data/trending.txt\n- Format\narticle_id|article_title|category|view_count|period\nStores trending article\nExample Rows:\n1|Breaking: Breakthrough|Technology|5432|This\n2|Sports: Week\n3|Business:\n\n\n\n#\n\n"
+      },
+      {
+        "timestamp": 1768931126.237793,
+        "agent": "FrontendDeveloper_Fix",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 118/198 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "You are a Frontend Developer specializing in HTML and Jinja2 templating for Flask web applications.\n\nYour goal is to fix frontend defects reported by the Tester to ensure that all NewsPortal templates render correctly and meet all UI and interaction requirements.\n\nTask Details:\n- Read input artifacts: current templates/*.html files and Tester-generated feedback.txt\n- Identify and fix all frontend issues reported in feedback.txt related to template files\n- Preserve backend code and business logic; do NOT modify app.py\n- Correct element IDs, content rendering, Jinja2 syntax, and navigation links as needed\n- Maintain consistency with NewsPortal page design and interaction specifications\n\nImplementation Instructions:\n1. Analyze feedback.txt systematically to find reported frontend defects\n2. Fix issues like missing or incorrect element IDs, broken navigation buttons, improper context variable usage\n3. Validate template syntax for errors or inconsistencies\n4. Ensure all updated templates pass display and interaction expectations\n5. Use consistent formatting and naming conventions already used\n\nCRITICAL REQUIREMENTS:\n- Use write_text_file to save updated templates/*.html files\n- Do NOT modify backend code (app.py)\n- Do NOT add new pages or features beyond fixing reported issues\n- Deliver only fixed template files; no explanations or comments in output\n\nOutput: templates/*.html",
+        "after": "You are Developer and for\n\nYour goal is to the that all NewsPortal correctly all requirements.\n\n\n- Read and Tester-generated feedback.txt\n- frontend reported related template files\nbackend\n- rendering, syntax, navigation links\n- Maintain page\n\nImplementation\nto reported frontend defects\nFix like missing broken buttons, context usage\n3. Validate template syntax or\nall pass\n5. Use conventions already used\n\nCRITICAL REQUIREMENTS:\nto save updated templates/*.html\n- modify code\nNOT new pages or features reported issues\nDeliver fixed no\n\nOutput:"
+      },
+      {
+        "timestamp": 1768931126.2396863,
+        "agent": "FrontendDeveloper_Fix",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 288/481 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Fix all frontend template issues reported in feedback.txt and update templates\n=== /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/NewsPortal/compound_chaos/templates/article_details.html ===\n<head>\n<meta charset=\"UTF-8\">\n</head>\n\n<div id=\"article-details-page\">\n<h1 id=\"article-title\">{{ article.title }}</h1>\n<p id=\"article-author\">Author: {{ article.author }}</p>\n<p>Date: {{ article.date }}</p>\n<div id=\"article-content\">{{ article.content }}</div>\n\n{% if article.is_bookmarked %}\n    <form method=\"POST\" action=\"{{ url_for('bookmark_article', article_id=article.article_id) }}\">\n        <button type=\"submit\">Remove Bookmark</button>\n    </form>\n{% else %}\n    <form method=\"POST\" action=\"{{ url_for('bookmark_article', article_id=article.article_id) }}\">\n        <button type=\"submit\">Bookmark Article</button>\n    </form>\n{% endif %}\n\n</div>\n<!-- Page content here -->\n</div>\n</body>\n\n=== /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/NewsPortal/compound_chaos/templates/articles.html ===\n<head>\n<meta charset=\"UTF-8\">\n</head>\n\n<div id=\"catalog-page\">\n<h1>{{ page_title }}</h1>\n\n<input type=\"text\" id=\"search-input\" name=\"search_query\" placeholder=\"Search by author or keywords\" value=\"{{ search_query | default('') }}\">\n\n<select name=\"category_filter\" id=\"category-filter\">\n  <!-- Options to filter by category -->\n</select>\n\n<div id=\"article-list\">\n  {% for article in articles %}\n  <div class=\"article-summary\">\n    <h2>{{ article.title }}</h2>\n    <p>Author: {{ article.author }}</p>\n    <button id=\"view-article-button-{{ article.article_id }}\" onclick=\"location.href='{{ url_for('article_details', article_id=article.article_id) }}'\">View Details</button>\n  </div>\n  {% endfor %}\n</div>\n\n</div>\n<!-- Page content here -->\n</div>\n</body>\n\n=== /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/NewsPortal/compound_chaos/templates/bookmarks.html ===\n<head>\n<meta charset=\"UTF-8\">\n</head>\n\n<div id=\"bookmarks-page\">\n<h1>{{ page_title }}</h1>\n\n<ul>\n{% for bookmark in bookmarks %}\n<li>\n  {{ bookmark.article_title }} - Bookmarked on {{ bookmark.bookmarked_date }}\n  <form method=\"POST\" action=\"{{ url_for('remove_bookmark', bookmark_id=bookmark.bookmark_id) }}\">\n    <button id=\"remove-bookmark-button-{{ bookmark.bookmark_id }}\" type=\"submit\">Remove Bookmark</button>\n  </form>\n  <button id=\"read-bookmark-button-{{ bookmark.bookmark_id }}\" onclick=\"location.href='{{ url_for('article_details', article_id=bookmark.article_id) }}'\">Read</button>\n</li>\n{% endfor %}\n</ul>\n\n<button id=\"back-to-dashboard\" onclick=\"location.href='{{ url_for('dashboard') }}'\">Back to Dashboard</button>\n\n</div>\n<!-- Page content here -->\n</div>\n</body>\n\n=== /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/NewsPortal/compound_chaos/templates/comments.html ===\n<head>\n<meta charset=\"UTF-8\">\n</head>\n\n<div id=\"comments-page\">\n<h1>{{ page_title }}</h1>\n\n<ul>\n{% for comment in comments %}\n<li>\n  <p>Article: {{ comment.article_title }}</p>\n  <p>{{ comment.comment_text }} - by {{ comment.commenter_name }}</p>\n</li>\n{% endfor %}\n</ul>\n\n<button id=\"write-comment-button\" onclick=\"location.href='{{ url_for('write_comment') }}'\">Write Comment</button>\n<button id=\"back-to-dashboard\" onclick=\"location.href='{{ url_for('dashboard') }}'\">Back to Dashboard</button>\n\n</div>\n<!-- Page content here -->\n</div>\n</body>\n\n=== /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/NewsPortal/compound_chaos/templates/dashboard.html ===\n<head>\n<meta charset=\"UTF-8\">\n</head>\n\n<div id=\"dashboard-page\">\n<h1>{{ page_title }}</h1>\n\n<div id=\"featured-articles\">\n<!-- Display recommended articles here -->\n</div>\n\n<button id=\"trending-articles-button\" onclick=\"location.href='{{ url_for('trending_articles') }}'\">Trending Articles</button>\n\n</div>\n<!-- Page content here -->\n</div>\n</body>\n\n=== /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/NewsPortal/compound_chaos/templates/search_results.html ===\n<head>\n<meta charset=\"UTF-8\">\n</head>\n\n<div id=\"search-results-page\">\n<h1>{{ page_title }}</h1>\n\n<p id=\"search-query-display\">Search Results for \"{{ query }}\"</p>\n\n<div id=\"search-results-list\">\n  {% if results and results|length > 0 %}\n    <ul>\n    {% for article in results %}\n      <li>{{ article.title }} by {{ article.author }}</li>\n    {% endfor %}\n    </ul>\n  {% else %}\n    <p>No results found</p>\n  {% endif %}\n</div>\n\n<button id=\"back-to-dashboard\" onclick=\"location.href='{{ url_for('dashboard') }}'\">Back to Dashboard</button>\n\n</div>\n<!-- Page content here -->\n</div>\n</body>\n\n=== /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/NewsPortal/compound_chaos/templates/trending_articles.html ===\n<head>\n<meta charset=\"UTF-8\">\n</head>\n\n<div id=\"trending-articles-page\">\n<h1>{{ page_title }}</h1>\n\n<select id=\"time-period-filter\" name=\"time_period\">\n  <!-- Options for time period filtering -->\n</select>\n\n<div id=\"trending-articles-list\">\n  {% for article in trending_articles %}\n  <div class=\"trending-article\">\n    <h2>{{ article.article_title }}</h2>\n    <p>Category: {{ article.category }}</p>\n    <p>Views: {{ article.view_count }}</p>\n  </div>\n  {% endfor %}\n</div>\n\n<button id=\"back-to-dashboard\" onclick=\"location.href='{{ url_for('dashboard') }}'\">Back to Dashboard</button>\n\n</div>\n<!-- Page content here -->\n</div>\n</body>\n\n=== /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/NewsPortal/compound_chaos/templates/write_comment.html ===\n<head>\n<meta charset=\"UTF-8\">\n</head>\n\n<div id=\"write-comment-page\">\n<h1>{{ page_title }}</h1>\n\n<form method=\"POST\" action=\"{{ url_for('submit_comment') }}\">\n  <label for=\"select-article\">Select Article:</label>\n  <select id=\"select-article\" name=\"article_id\">\n    <!-- Options for articles to comment on -->\n  </select>\n\n  <label for=\"commenter-name\">Your Name:</label>\n  <input type=\"text\" id=\"commenter-name\" name=\"commenter_name\" required>\n\n  <label for=\"comment-text\">Comment:</label>\n  <textarea id=\"comment-text\" name=\"comment_text\" required></textarea>\n\n  <button id=\"write-comment-submit\" type=\"submit\">Submit Comment</button>\n</form>\n\n</div>\n<!-- Page content here -->\n</div>\n</body>\n\n=== feedback.txt ===\nNEED_MODIFY: The initial test environment setup script has a syntax error causing failure. In creating the bookmarks_content multiline string, the string was not properly opened or closed, resulting in an \"unterminated string literal\". This prevented the test data files from being created and thus broke the subsequent integration tests.\n\nActions Needed:\n- Fix bookmarks_content string initialization in test environment setup to be a proper triple-quoted string.\n- After correction, re-run the test environment setup and then the integration tests.\n\nDue to this issue, no further tests were executed. No app code or template changes are made; only test scripts need fix and rerun.\n\nPlease correct this and retry testing.\n\n",
+        "after": "template in and\n===\n<head>\n<meta charset=\"UTF-8\">\n\n\n\nid=\"article-title\">{{ article.title }}</h1>\n{{ article.author }}</p>\n{{ article.date }}</p>\n<div id=\"article-content\">{{ article.content }}</div>\n\n{% if article.is_bookmarked %}\n<form method=\"POST\"\n\n\n{% else %}\n\ntype=\"submit\">Bookmark\n\n{% endif %}\n\n\n\n\n\n\n=== /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/NewsPortal/compound_chaos/templates/articles.html\n\n<meta charset=\"UTF-8\">\n</head>\n\n<div\n\n\nid=\"search-input\" name=\"search_query\" author or\n\nid=\"category-filter\">\nOptions category\n</select>\n\n\n{% for article in articles %}\n<div\n\n{{ article.author }}</p>\n<button onclick=\"location.href='{{ url_for('article_details', article_id=article.article_id) }}'\">View\n\n{% endfor %}\n\n\n\nPage content -->\n</div>\n</body>\n\n===\n\ncharset=\"UTF-8\">\n\n\nid=\"bookmarks-page\">\n<h1>{{ page_title }}</h1>\n\n\n{% for bookmark in bookmarks %}\n\n{{ bookmark.article_title }} {{ bookmark.bookmarked_date }}\n<form\n\n\nid=\"read-bookmark-button-{{ bookmark.bookmark_id }}\" onclick=\"location.href='{{ url_for('article_details', article_id=bookmark.article_id) }}'\">Read</button>\n\n{% endfor %}\n</ul>\n\n<button to\n\n\nPage\n\n\n\n===\n<head>\n<meta\n\n\nid=\"comments-page\">\n<h1>{{ page_title }}</h1>\n\n\n{% for comment in comments %}\n\n<p>Article: {{ comment.article_title }}</p>\n- by {{ comment.commenter_name }}</p>\n\n{% endfor %}\n</ul>\n\n\nid=\"back-to-dashboard\" Dashboard</button>\n\n\nPage here\n\n\n\n/home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/NewsPortal/compound_chaos/templates/dashboard.html\n<head>\n<meta\n\n\n<div id=\"dashboard-page\">\n\n\nid=\"featured-articles\">\nrecommended\n\n\nid=\"trending-articles-button\" Articles</button>\n\n\nPage content -->\n\n\n\n\n\n\n</head>\n\n\n\n\n\n\n\n{% if results and results|length > 0 %}\n<ul>\n{% for article in results %}\n{{ article.author }}</li>\n{% endfor %}\n</ul>\n{% else %}\n<p>No found</p>\n{% endif %}\n</div>\n\n<button id=\"back-to-dashboard\" onclick=\"location.href='{{ url_for('dashboard') }}'\">Back to Dashboard</button>\n\n\nhere\n\n\n\n\n<head>\ncharset=\"UTF-8\">\n</head>\n\n<div\n<h1>{{ page_title }}</h1>\n\nid=\"time-period-filter\"\nfor time period -->\n\n\n\n{% for article in trending_articles %}\n<div\n\n<p>Category: {{ article.category }}</p>\n<p>Views: {{ article.view_count }}</p>\n\n{% endfor %}\n</div>\n\nto Dashboard</button>\n\n\n\n\n</body>\n\n\n\ncharset=\"UTF-8\">\n</head>\n\n<div id=\"write-comment-page\">\n\n\n<form\nfor=\"select-article\">Select Article:</label>\n\ncomment\n\n\n\nrequired>\n\nfor=\"comment-text\">Comment:</label>\n<textarea required></textarea>\n\nid=\"write-comment-submit\"\n\n\n\n<!-- Page -->\n</div>\n\n\n=== feedback.txt ===\nThe test script has syntax error causing failure. creating multiline string was not properly opened closed, resulting in an string files created and thus broke integration tests.\n\nActions\nFix in proper\ncorrection, test setup and then tests.\n\nissue, No or are made; only and\n\nPlease correct this\n\n"
+      }
+    ]
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "WordReplacement",
+    "targets_selected": 1,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordReplacement (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": []
+  },
+  "intention_hiding": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (FalseConsensus, Reframing, Suboptimal)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 2,
+      "FP": 0,
+      "FN": 2,
+      "TN": 2
+    },
+    "precision": 1.0,
+    "recall": 0.5,
+    "f1_score": 0.6666666666666666,
+    "total_agents": 6,
+    "error_agents": 4,
+    "normal_agents": 2,
+    "actually_injected_agents": [
+      "BackendDeveloper_Fix",
+      "FrontendDeveloper",
+      "SystemArchitect",
+      "FrontendDeveloper_Fix"
+    ],
+    "target_agents": [
+      "BackendDeveloper_Fix",
+      "FrontendDeveloper",
+      "SystemArchitect",
+      "FrontendDeveloper_Fix"
+    ],
+    "not_injected_targets": [],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 0,
+        "failover_count": 1,
+        "category": "TP"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      },
+      {
+        "agent_name": "Tester",
+        "original_name": "Tester",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "BackendDeveloper_Fix",
+        "original_name": "BackendDeveloper_Fix",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 0,
+        "failover_count": 1,
+        "category": "TP"
+      },
+      {
+        "agent_name": "FrontendDeveloper_Fix",
+        "original_name": "FrontendDeveloper_Fix",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      }
+    ]
+  }
+}

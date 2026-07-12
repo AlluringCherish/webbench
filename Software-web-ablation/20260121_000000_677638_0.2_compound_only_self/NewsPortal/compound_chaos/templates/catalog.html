@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article Catalog</title>
+</head>
+<body>
+    <div id="catalog-page">
+        <h1>Article Catalog</h1>
+        <form method="get" action="{{ url_for('article_catalog') }}">
+            <input type="text" id="search-input" name="search" placeholder="Search by title, author, or keywords" value="{{ search_query if search_query is not none else '' }}">
+            <select id="category-filter" name="category" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category.category_id }}" {% if selected_category == category.category_id %}selected{% endif %}>{{ category.category_name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <div id="articles-grid">
+            {% for article in articles %}
+            <div class="article-card">
+                <h3>{{ article.title }}</h3>
+                <p>By {{ article.author }} | {{ article.date }}</p>
+                <button id="view-article-button-{{ article.article_id }}" onclick="location.href='{{ url_for('article_detail', article_id=article.article_id) }}'">View Article</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

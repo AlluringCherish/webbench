@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>My Resumes</title>
+</head>
+<body>
+<div id="resume-page">
+    {% if error_messages %}
+    <div id="error-messages">
+        <ul>
+        {% for error in error_messages %}
+            <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    <div id="resumes-list">
+        {% for resume in resumes %}
+        <div class="resume-item" id="resume-{{ resume.resume_id }}">
+            <h3>{{ resume.applicant_name }}</h3>
+            <div>Email: {{ resume.applicant_email }}</div>
+            <div>Filename: {{ resume.filename }}</div>
+            <div>Summary: {{ resume.summary }}</div>
+            <div>Upload Date: {{ resume.upload_date }}</div>
+            <form method="POST" action="{{ url_for('delete_resume', resume_id=resume.resume_id) }}">
+                <button id="delete-resume-button-{{ resume.resume_id }}" type="submit">Delete</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    <form method="POST" action="{{ url_for('upload_resume') }}" enctype="multipart/form-data">
+        <input type="text" id="applicant_name" name="applicant_name" placeholder="Your name" required />
+        <input type="email" id="applicant_email" name="applicant_email" placeholder="Your email" required />
+        <input type="text" id="summary" name="summary" placeholder="Summary (optional)" />
+        <input type="file" id="resume-file-input" name="resume_file" accept="application/pdf" required />
+        <button id="upload-resume-button" type="submit">Upload Resume</button>
+    </form>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

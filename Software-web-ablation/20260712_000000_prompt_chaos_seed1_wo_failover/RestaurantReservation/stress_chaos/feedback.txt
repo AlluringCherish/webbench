@@ -1,0 +1,38 @@
+NEED_MODIFY
+
+Issues Detected during Integration Testing:
+
+1. Navigation URL Building Errors:
+- The dashboard.html template contains multiple buttons linking to endpoints not implemented in app.py, including 'my_reservations', 'profile', 'waitlist', and 'my_reviews'.
+- As a result, Flask raises BuildError exceptions when rendering these buttons, preventing the dashboard page from loading.
+- These endpoints must be implemented or the buttons removed/disabled to avoid runtime errors.
+
+2. Missing Routes for Essential Pages:
+- The following pages appear in the navigation but lack routes and view functions in app.py:
+  * My Reservations (/my_reservations)
+  * Profile (/profile)
+  * Waitlist (/waitlist)
+  * My Reviews (/my_reviews)
+- Without backend support, these pages cannot be accessed.
+
+3. Template Consistency:
+- There are two potentially conflicting dish detail templates: dish.html and dish_details.html.
+- Only dish_details.html is used in app.py for the /dish/<int:dish_id> route.
+- dish.html appears unused and should be removed or consolidated.
+
+4. Backend Data Handling:
+- Dashboard tries to pass upcoming_reservations but this feature is not implemented (empty list).
+- Reservation and waitlist functionality are missing from app.py, although templates exist.
+
+5. Minor Template Observations:
+- write_review.html has a button linking to 'write_review' without dish_id query param which will cause a URL build error.
+- Some templates include buttons linking to endpoints not defined in app.py.
+
+Recommendations:
+- Implement or stub out routes for missing pages to match navigation.
+- Ensure URL construction in templates uses only implemented endpoints.
+- Consolidate dish detail templates to one version.
+- Complete backend data handling for reservations, waitlist, and user profile.
+- Add proper error handling or redirects for unknown dishes.
+
+Until these issues are addressed, the app cannot be fully tested or used without runtime errors.

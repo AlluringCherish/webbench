@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Write Review</title>
+</head>
+<body>
+    <div id="write-review-page">
+        {% if error %}
+        <div id="error-message" style="color: red;">{{ error }}</div>
+        {% endif %}
+        <form method="POST" action="">
+            <label for="select-dish">Select Dish:</label>
+            <select id="select-dish" name="dish_id" required>
+                {% for dish in dishes %}
+                <option value="{{ dish.dish_id }}" {% if request.method == 'POST' and request.form.dish_id == dish.dish_id|string %}selected{% endif %}>{{ dish.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="rating-input">Rating:</label>
+            <select id="rating-input" name="rating" required>
+                {% for i in range(1, 6) %}
+                <option value="{{ i }}" {% if request.method == 'POST' and request.form.rating == i|string %}selected{% endif %}>{{ i }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="review-text">Review:</label>
+            <textarea id="review-text" name="review_text" rows="5" required>{{ request.form.review_text if request.method == 'POST' else '' }}</textarea>
+
+            <button type="submit" id="submit-review-button">Submit Review</button>
+        </form>
+
+        <button id="back-to-reviews" onclick="location.href='{{ url_for('my_reviews') }}'">Back to My Reviews</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Locations</title>
+</head>
+<body>
+    <div id="search-page">
+        <h1>Search Locations</h1>
+        <form method="GET" action="">
+            <input id="location-search-input" name="search_query" type="text" value="{{ search_query|default('') }}" placeholder="Enter location name..." />
+            <button type="submit">Search</button>
+        </form>
+        <div id="search-results">
+            <h2>Search Results</h2>
+            {% if search_results|length == 0 %}
+            <p>No results found.</p>
+            {% else %}
+            <ul>
+                {% for location in search_results %}
+                <li>
+                    <span>{{ location.location_name }} ({{ location.country }}, {{ location.timezone }}) - Lat: {{ location.latitude }}, Lon: {{ location.longitude }}</span>
+                    <a href="{{ url_for('current_weather_page', location_id=location.location_id) }}">
+                        <button id="select-location-button-{{ location.location_id }}">Select</button>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        <div id="saved-locations-list">
+            <h2>Saved Locations</h2>
+            {% if saved_locations|length == 0 %}
+            <p>No saved locations.</p>
+            {% else %}
+            <ul>
+                {% for location in saved_locations %}
+                <li>{{ location.location_name }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

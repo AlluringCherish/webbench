@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Catalog</title>
+</head>
+<body>
+    <div id="main-container">
+        <h1>Catalog</h1>
+        <a id="back-to-dashboard" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+        <div id="courses-list">
+            <table id="courses-list-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Level</th>
+                        <th>Duration</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    <tr>
+                        <td>{{ course.title }}</td>
+                        <td>{{ course.category }}</td>
+                        <td>{{ course.level }}</td>
+                        <td>{{ course.duration }} hours</td>
+                        <td>
+                            <a id="view-course-button-{{ course.course_id }}" href="{{ url_for('course_details', course_id=course.course_id) }}">View Details</a>
+                            {% if course.course_id not in enrolled_course_ids %}
+                            <button id="enroll-button-{{ course.course_id }}" onclick="location.href='{{ url_for('enroll', course_id=course.course_id) }}'">Enroll</button>
+                            {% else %}
+                            <button id="enroll-button-{{ course.course_id }}" disabled>Enrolled</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if courses|length == 0 %}
+                    <tr><td colspan="5">No courses available.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews for {{ isbn }}</title>
+</head>
+<body>
+    <h1>Reviews for Book: {{ isbn }}</h1>
+    <p><a href="{{ url_for('books') }}">Back to Books</a> | <a href="{{ url_for('dashboard') }}">Dashboard</a> | <a href="{{ url_for('logout') }}">Logout</a></p>
+
+    {% if reviews %}
+    <ul>
+        {% for review in reviews %}
+        <li>
+            <strong>{{ review.username }}</strong> rated <strong>{{ review.rating }}</strong> stars<br>
+            {{ review.comment }}<br>
+            <em>On {{ review.review_date }}</em>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No reviews yet for this book.</p>
+    {% endif %}
+
+    <h2>Add / Update Your Review</h2>
+    <form action="{{ url_for('book_reviews', isbn=isbn) }}" method="post">
+        <label for="rating">Rating (1-5):</label>
+        <input type="number" id="rating" name="rating" min="1" max="5" required><br><br>
+
+        <label for="comment">Comment:</label><br>
+        <textarea id="comment" name="comment" rows="4" cols="50"></textarea><br><br>
+
+        <button type="submit">Submit Review</button>
+    </form>
+</body>
+</html>

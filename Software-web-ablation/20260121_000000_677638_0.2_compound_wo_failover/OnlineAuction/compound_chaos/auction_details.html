@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Auction Details - {{ auction.item_name }}</title>
+</head>
+<body>
+  <nav>
+    <button id="back-to-catalog" onclick="location.href='{{ url_for('auction_catalog') }}'">Catalog</button>
+  </nav>
+  <h1>{{ auction.item_name }}</h1>
+  <img src="{{ auction.image_url }}" alt="Image of {{ auction.item_name }}" style="max-height:400px;">
+  <p>Bid: ${{ '%.2f'|format(auction.current_bid) }}</p>
+  <p>Status: {{ auction.status }}</p>
+  <p>Start Time: {{ auction.start_time }}</p>
+  <p>End Time: {{ auction.end_time }}</p>
+  <h3>Bid History</h3>
+  <ul>
+    {% for bid in bid_history %}
+    <li>{{ bid.user }}: ${{ '%.2f'|format(bid.amount) }} at {{ bid.time }}</li>
+    {% else %}
+    <li>No bids placed yet.</li>
+    {% endfor %}
+  </ul>
+  <form action="{{ url_for('place_bid', auction_id=auction.id) }}" method="post" id="bid-form">
+    <label for="bid-amount">Bid Amount (minimum: ${{ '%.2f'|format(auction.current_bid + auction.bid_increment) }}):</label>
+    <input type="number" id="bid-amount" name="bid_amount" min="{{ auction.current_bid + auction.bid_increment }}" required>
+    <button type="submit" id="submit-bid-button">Submit Bid</button>
+  </form>
+</body>
+</html>

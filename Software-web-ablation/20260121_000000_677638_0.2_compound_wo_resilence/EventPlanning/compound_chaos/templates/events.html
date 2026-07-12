@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ page_title }}</title>
+</head>
+<body>
+<header>
+<nav>
+<ul id="nav_links">
+<li><a href="{{ url_for('home') }}" id="home_link">Home</a></li>
+<li><a href="{{ url_for('events') }}" id="events_link">Events</a></li>
+<li><a href="{{ url_for('about') }}" id="about_link">About</a></li>
+</ul>
+</nav>
+</header>
+<main>
+<h1 id="events_heading">Events</h1>
+<form method="GET" action="{{ url_for('events') }}" id="filter_form">
+<label for="filter_input">Filter Events by Name:</label>
+<input type="text" id="filter_input" name="filter" value="{{ filter_value }}" />
+<button type="submit" id="filter_button">Filter</button>
+</form>
+<ul id="events_list">
+{% for event in events %}
+<li class="event_item" id="event_{{ event.id }}">
+<h2 class="event_name">{{ event.event_name }}</h2>
+<p class="event_date">Date: {{ event.event_date }}</p>
+<p class="event_description">{{ event.event_description }}</p>
+<form method="POST" action="{{ url_for('book_ticket') }}" id="booking_form_{{ event.id }}">
+<input type="hidden" name="event_id" value="{{ event.id }}" />
+<button type="submit" id="book_button_{{ event.id }}">Book Ticket</button>
+</form>
+</li>
+{% endfor %}
+</ul>
+</main>
+<footer>
+<p id="footer_text">&copy; {{ current_year }} {{ site_name }}. All rights reserved.</p>
+</footer>
+</body>
+</html>

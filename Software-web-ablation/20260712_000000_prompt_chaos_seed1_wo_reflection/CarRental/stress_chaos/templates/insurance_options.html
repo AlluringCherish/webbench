@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="insurance-options-section">
+    <form method="POST" action="{{ url_for('insurance_options') }}" id="insurance-selection-form">
+        <fieldset>
+            <legend>Select an Insurance Plan</legend>
+            {% for insurance in insurance_plans %}
+                <div class="insurance-option">
+                    <input type="radio" 
+                           id="select-insurance-{{ insurance.insurance_id }}" 
+                           name="selected_insurance_id" 
+                           value="{{ insurance.insurance_id }}" 
+                           {% if selected_insurance_id == insurance.insurance_id %}checked{% endif %} 
+                           required>
+                    <label for="select-insurance-{{ insurance.insurance_id }}">
+                        <strong>{{ insurance.plan_name }}</strong> - {{ insurance.description }}<br>
+                        Daily Cost: ${{ '%.2f'|format(insurance.daily_cost) }}, Coverage Limit: {{ insurance.coverage_limit }}, Deductible: ${{ insurance.deductible }}
+                    </label>
+                </div>
+            {% endfor %}
+        </fieldset>
+        <button id="confirm-booking-button" type="submit">Confirm Booking</button>
+    </form>
+</div>
+{% endblock %}

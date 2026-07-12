@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version History - ContentPublishingHub</title>
+</head>
+<body>
+    <h1>Version History for Article: {{ article['title'] }}</h1>
+
+    <section id="versions-list">
+        <h2>Versions</h2>
+        <form method="post" action="{{ url_for('version_history', article_id=article['article_id']) }}" id="version-actions-form">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Select</th>
+                        <th>Version Number</th>
+                        <th>Date</th>
+                        <th>Summary</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for version in versions %}
+                    <tr>
+                        <td><input type="radio" name="version_number" value="{{ version['version_number'] }}" required></td>
+                        <td>{{ version['version_number'] }}</td>
+                        <td>{{ version['created_at'] }}</td>
+                        <td>{{ version['content'][:50] }}...</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <button type="submit" name="action" value="compare" id="btn-compare-versions">Compare Versions</button>
+            <button type="submit" name="action" value="restore" id="btn-restore-version">Restore Version</button>
+        </form>
+    </section>
+
+    {% if comparison %}
+    <section id="version-comparison">
+        <h2>Version Comparison</h2>
+        <pre>
+        Version {{ comparison['version1']['version_number'] }}:
+{{ comparison['version1']['content'] }}
+
+        Version {{ comparison['version2']['version_number'] }}:
+{{ comparison['version2']['content'] }}
+        </pre>
+    </section>
+    {% endif %}
+
+    <nav>
+        <a href="{{ url_for('edit_article', article_id=article['article_id']) }}" id="nav-edit-article">Edit Article</a> |
+        <a href="{{ url_for('my_articles') }}" id="nav-my-articles">My Articles</a> |
+        <a href="{{ url_for('dashboard') }}" id="nav-dashboard">Dashboard</a> |
+        <a href="{{ url_for('logout') }}" id="nav-logout">Logout</a>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="main-container">
+        <div id="cart-page">
+            <h1>Shopping Cart</h1>
+            <form method="POST" action="{{ url_for('update_cart') }}">
+                <table id="cart-items-table">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td>{{ item.item_name }}</td>
+                            <td>
+                                <input id="update-quantity-{{ item.item_id }}" name="quantity-{{ item.item_id }}" type="number" min="1" value="{{ item.quantity }}">
+                            </td>
+                            <td>${{ '%.2f'|format(item.price * item.quantity) }}</td>
+                            <td>
+                                <button id="remove-item-button-{{ item.item_id }}" name="remove-item" value="{{ item.item_id }}" type="submit">Remove</button>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4">Your cart is empty.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div id="total-amount">
+                    <p>Total: ${{ '%.2f'|format(total_amount) }}</p>
+                </div>
+                <a href="{{ url_for('checkout_page') }}">
+                    <button id="proceed-checkout-button" type="button">Proceed to Checkout</button>
+                </a>
+                <button type="submit">Update Cart</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

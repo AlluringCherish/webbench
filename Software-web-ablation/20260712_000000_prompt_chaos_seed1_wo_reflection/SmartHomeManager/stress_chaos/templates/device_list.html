@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Device List</title>
+</head>
+<body>
+    <h1>Devices Dashboard</h1>
+    <div id="main-container-id">
+        <nav>
+            <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </nav>
+        <table id="device-table" border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Room</th>
+                    <th>Status</th>
+                    <th>Controls</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                <tr>
+                    <td>{{ device.name }}</td>
+                    <td>{{ device.device_type }}</td>
+                    <td>{{ device.room }}</td>
+                    <td>{{ 'Online' if device.online else 'Offline' }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('device_control', device_id=device.device_id) }}">
+                            <button id="control-device-button-{{ device.device_id }}" type="submit" name="power-toggle">
+                                {% if device.status == 'on' %}Turn Off{% else %}Turn On{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

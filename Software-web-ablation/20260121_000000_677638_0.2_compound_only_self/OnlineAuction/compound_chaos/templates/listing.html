@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}{{ listing.title }} - OnlineAuction{% endblock %}
+
+{% block content %}
+  <h2 id="listing_title">{{ listing.title }}</h2>
+  <p id="listing_description">{{ listing.description }}</p>
+  <p id="listing_starting_bid">Starting bid: ${{ listing.starting_bid }}</p>
+  <p id="listing_category">Category: {{ listing.category_name }}</p>
+
+  {% if user_authenticated %}
+    <form method="post" id="bid_form">
+      <label for="bid_amount">Place your bid:</label>
+      <input type="number" id="bid_amount" name="bid_amount" min="listing.starting_bid" step="0.01" required>
+      <button type="submit" id="place_bid_button">Bid</button>
+    </form>
+  {% else %}
+    <p>Please <a href="{{ url_for('login') }}">login</a> to place a bid.</p>
+  {% endif %}
+
+  <form method="post" id="watchlist_form">
+    {% if in_watchlist %}
+      <button type="submit" id="remove_watchlist_button">Remove from Watchlist</button>
+    {% else %}
+      <button type="submit" id="add_watchlist_button">Add to Watchlist</button>
+    {% endif %}
+  </form>
+
+  <h3>Bids</h3>
+  <ul id="bids_list">
+    {% if bids %}
+      {% for bid in bids %}
+        <li>{{ bid.user }}: ${{ bid.amount }}</li>
+      {% endfor %}
+    {% else %}
+      <p id="no_bids">No bids yet.</p>
+    {% endif %}
+  </ul>
+
+  <h3>Comments</h3>
+  <ul id="comments_list">
+    {% if comments %}
+      {% for comment in comments %}
+        <li><strong>{{ comment.user }}:</strong> {{ comment.text }}</li>
+      {% endfor %}
+    {% else %}
+      <p id="no_comments">No comments yet.</p>
+    {% endif %}
+  </ul>
+
+  {% if user_authenticated %}
+    <form method="post" id="comment_form">
+      <label for="comment_text">Add a comment:</label>
+      <textarea id="comment_text" name="comment_text" required></textarea>
+      <button type="submit" id="add_comment_button">Add Comment</button>
+    </form>
+  {% else %}
+    <p>Please <a href="{{ url_for('login') }}">login</a> to add comments.</p>
+  {% endif %}
+{% endblock %}

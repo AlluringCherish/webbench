@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Flights</title>
+</head>
+<body>
+    <div id="transportation-page">
+        <h1>Book Flights</h1>
+
+        <form method="POST">
+            <label for="departure-city">Departure City:</label>
+            <input id="departure-city" name="departure_city" type="text" value="{{ departure_city }}" />
+
+            <label for="arrival-city">Arrival City:</label>
+            <input id="arrival-city" name="arrival_city" type="text" value="{{ arrival_city }}" />
+
+            <label for="departure-date">Departure Date:</label>
+            <input id="departure-date" name="departure_date" type="date" value="{{ departure_date }}" />
+
+            <label for="flight-class-filter">Flight Class:</label>
+            <select id="flight-class-filter" name="selected_class_filter">
+                <option value="Economy" {% if selected_class_filter == 'Economy' %}selected{% endif %}>Economy</option>
+                <option value="Business" {% if selected_class_filter == 'Business' %}selected{% endif %}>Business</option>
+                <option value="First" {% if selected_class_filter == 'First' %}selected{% endif %}>First</option>
+            </select>
+
+            <button type="submit">Search Flights</button>
+        </form>
+
+        <div id="available-flights">
+            {% for flight in available_flights %}
+            <div class="flight-item">
+                <h3>{{ flight.airline }} ({{ flight.class_type }})</h3>
+                <p>From: {{ flight.departure_city }} To: {{ flight.arrival_city }}</p>
+                <p>Departure: {{ flight.departure_time }}, Arrival: {{ flight.arrival_time }}</p>
+                <p>Price: ${{ "%.2f"|format(flight.price) }}</p>
+            </div>
+            {% else %}
+            <p>No flights available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

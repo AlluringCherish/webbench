@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Theater Information</title>
+</head>
+<body>
+    <div id="theater-page">
+        <h1>Theater Information</h1>
+
+        <select id="theater-location-filter" name="location" onchange="location.href='?location=' + this.value;">
+            <option value="">All Locations</option>
+            {% set locations = theaters | map(attribute='location') | unique | list %}
+            {% for location in locations %}
+            <option value="{{ location }}" {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="theaters-list">
+            {% for theater in theaters %}
+            <div>
+                <h3>{{ theater.theater_name }}</h3>
+                <p>Location: {{ theater.location }}</p>
+                <p>City: {{ theater.city }}</p>
+                <p>Screens: {{ theater.screens }}</p>
+                <div id="facilities-display">Facilities: {{ theater.facilities }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

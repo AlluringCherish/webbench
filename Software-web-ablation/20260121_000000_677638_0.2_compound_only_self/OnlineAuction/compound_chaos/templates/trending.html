@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Auctions</title>
+</head>
+<body>
+    <div id="trending-page">
+        <h1>Trending Auctions</h1>
+        <select id="time-range-filter">
+            <option>Last 24 Hours</option>
+            <option>This Week</option>
+            <option>All Time</option>
+        </select>
+        <div id="trending-list">
+            {% for auction in trending_auctions|sort(attribute='trending_rank') %}
+            <div class="trending-item">
+                <span>#{{ auction.trending_rank }}:</span>
+                <span>{{ auction.item_name }}</span>
+                <span>Bids: {{ auction.bid_count }}</span>
+                <span>Current Bid: ${{ '%.2f'|format(auction.current_bid) }}</span>
+                <a href="{{ url_for('auction_details', auction_id=auction.auction_id) }}">
+                    <button id="view-auction-button-{{ auction.auction_id }}">View Details</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        <a href="{{ url_for('dashboard') }}"><button id="back-to-dashboard">Back to Dashboard</button></a>
+    </div>
+</body>
+</html>

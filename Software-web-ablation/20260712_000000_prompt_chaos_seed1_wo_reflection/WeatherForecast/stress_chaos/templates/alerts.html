@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Alerts</title>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+    </nav>
+    <h1>Weather Alerts</h1>
+    <div id="alerts-list">
+        {% if alerts %}
+            <ul>
+                {% for alert in alerts %}
+                    <li class="alert-item">
+                        <div>Type: {{ alert.alert_type }}</div>
+                        <div>Severity: {{ alert.severity }}</div>
+                        <div>Description: {{ alert.description }}</div>
+                        <div>Start: {{ alert.start_time }}</div>
+                        <div>End: {{ alert.end_time }}</div>
+                        {% if not alert.is_acknowledged %}
+                        <form method="POST" action="#">
+                            <button type="submit" id="acknowledge-alert-button-{{ alert.alert_id }}" disabled>Acknowledge (Disabled)</button>
+                        </form>
+                        {% else %}
+                        <div>Acknowledged</div>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No alerts.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

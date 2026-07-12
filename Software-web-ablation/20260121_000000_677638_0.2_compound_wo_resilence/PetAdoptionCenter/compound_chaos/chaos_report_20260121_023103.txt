@@ -1,0 +1,1635 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "SystemArchitect",
+      "BackendDeveloper"
+    ],
+    "num_all_targets": 2,
+    "agent_chaos_targets": [
+      "SystemArchitect"
+    ],
+    "stress_chaos_targets": [
+      "SystemArchitect"
+    ],
+    "io_chaos_targets": [
+      "BackendDeveloper"
+    ],
+    "intention_hiding_targets": []
+  },
+  "agent_chaos": {
+    "enabled": true,
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 2,
+    "log": [
+      {
+        "timestamp": 1768930208.147223,
+        "agent": "SystemArchitect",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930209.1485026,
+        "agent": "SystemArchitect",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      }
+    ]
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordDeletion",
+    "targets_selected": 1,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordDeletion (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": []
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "WordReplacement",
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 2,
+    "method_selection": "Mode: WordReplacement (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": [
+      {
+        "timestamp": 1768930263.8379264,
+        "agent": "BackendDeveloper",
+        "chaos_type": "IO_CHAOS_WORD_REPLACEMENT",
+        "details": "WordReplacement: 571/952 words replaced (60%)",
+        "category": "noise",
+        "method": "WordReplacement",
+        "before": "from flask import Flask, render_template, redirect, url_for, request\nimport os\n\napp = Flask(__name__)\napp.config['SECRET_KEY'] = 'dev-secret-key'\n\ndata_path = 'data'\n\n# --- Utility functions for data loading and saving ---\n\ndef read_file_lines(filename):\n    try:\n        with open(os.path.join(data_path, filename), 'r', encoding='utf-8') as f:\n            lines = f.readlines()\n        return [line.strip() for line in lines if line.strip()]\n    except FileNotFoundError:\n        return []\n\ndef write_file_lines(filename, lines):\n    with open(os.path.join(data_path, filename), 'w', encoding='utf-8') as f:\n        for line in lines:\n            f.write(line + '\\n')\n\n# --- Data schema handlers ---\n\n# Pets: id|name|type|age|description|available\n# id: str\n# name: str\n# type: str\n# age: str\n# description: str\n# available: 'True'/'False'\n\ndef load_pets():\n    pets = []\n    lines = read_file_lines('pets.txt')\n    for line in lines:\n        fields = line.split('|')\n        if len(fields) != 6:\n            continue\n        pet = {\n            'id': fields[0],\n            'name': fields[1],\n            'type': fields[2],\n            'age': fields[3],\n            'description': fields[4],\n            'available': fields[5] == 'True'\n        }\n        pets.append(pet)\n    return pets\n\n\ndef save_pets(pets):\n    lines = []\n    for pet in pets:\n        available_val = 'True' if pet.get('available', False) else 'False'\n        line = '|'.join([\n            pet.get('id',''),\n            pet.get('name',''),\n            pet.get('type',''),\n            pet.get('age',''),\n            pet.get('description',''),\n            available_val\n        ])\n        lines.append(line)\n    write_file_lines('pets.txt', lines)\n\n# Users: id|username|email|password|favorites|adopted_pets\n# favorites and adopted_pets stored as comma separated pet ids\n\ndef load_users():\n    users = []\n    lines = read_file_lines('users.txt')\n    for line in lines:\n        fields = line.split('|')\n        if len(fields) != 6:\n            continue\n        user = {\n            'id': fields[0],\n            'username': fields[1],\n            'email': fields[2],\n            'password': fields[3],\n            'favorites': fields[4].split(',') if fields[4] else [],\n            'adopted_pets': fields[5].split(',') if fields[5] else []\n        }\n        users.append(user)\n    return users\n\n\ndef save_users(users):\n    lines = []\n    for user in users:\n        favs = ','.join(user.get('favorites', [])) if user.get('favorites') else ''\n        adopted = ','.join(user.get('adopted_pets', [])) if user.get('adopted_pets') else ''\n        line = '|'.join([\n            user.get('id',''),\n            user.get('username',''),\n            user.get('email',''),\n            user.get('password',''),\n            favs,\n            adopted\n        ])\n        lines.append(line)\n    write_file_lines('users.txt', lines)\n\n# Applications: id|user_id|pet_id|status\n# status: pending, approved, rejected\n\ndef load_applications():\n    applications = []\n    lines = read_file_lines('applications.txt')\n    for line in lines:\n        fields = line.split('|')\n        if len(fields) != 4:\n            continue\n        app_data = {\n            'id': fields[0],\n            'user_id': fields[1],\n            'pet_id': fields[2],\n            'status': fields[3]\n        }\n        applications.append(app_data)\n    return applications\n\n\ndef save_applications(applications):\n    lines = []\n    for app_data in applications:\n        line = '|'.join([\n            app_data.get('id',''),\n            app_data.get('user_id',''),\n            app_data.get('pet_id',''),\n            app_data.get('status','')\n        ])\n        lines.append(line)\n    write_file_lines('applications.txt', lines)\n\n# Messages: id|sender_id|receiver_id|message|timestamp\n\ndef load_messages():\n    messages = []\n    lines = read_file_lines('messages.txt')\n    for line in lines:\n        fields = line.split('|')\n        if len(fields) != 5:\n            continue\n        msg = {\n            'id': fields[0],\n            'sender_id': fields[1],\n            'receiver_id': fields[2],\n            'message': fields[3],\n            'timestamp': fields[4]\n        }\n        messages.append(msg)\n    return messages\n\n\ndef save_messages(messages):\n    lines = []\n    for msg in messages:\n        line = '|'.join([\n            msg.get('id',''),\n            msg.get('sender_id',''),\n            msg.get('receiver_id',''),\n            msg.get('message',''),\n            msg.get('timestamp','')\n        ])\n        lines.append(line)\n    write_file_lines('messages.txt', lines)\n\n# --- Flask routes ---\n\n@app.route('/')\ndef root():\n    return redirect(url_for('dashboard'))\n\n@app.route('/dashboard')\ndef dashboard():\n    pets = load_pets()\n    available_pets = [pet for pet in pets if pet.get('available', False)]\n    return render_template('dashboard.html', pets=available_pets)\n\n@app.route('/pets/<pet_id>')\ndef pet_profile(pet_id):\n    pets = load_pets()\n    pet = next((p for p in pets if p['id'] == pet_id), None)\n    if pet is None:\n        return \"Pet not found\", 404\n    return render_template('pet_profile.html', pet=pet)\n\n@app.route('/add_pet', methods=['GET', 'POST'])\ndef add_pet():\n    if request.method == 'POST':\n        pets = load_pets()\n        # generate new id based on existing ids\n        existing_ids = {int(p['id']) for p in pets if p['id'].isdigit()}\n        new_id = str(max(existing_ids)+1 if existing_ids else 1)\n        name = request.form.get('name','').strip()\n        pet_type = request.form.get('type','').strip()\n        age = request.form.get('age','').strip()\n        description = request.form.get('description','').strip()\n        new_pet = {\n            'id': new_id,\n            'name': name,\n            'type': pet_type,\n            'age': age,\n            'description': description,\n            'available': True\n        }\n        pets.append(new_pet)\n        save_pets(pets)\n        return redirect(url_for('dashboard'))\n    else:\n        return render_template('add_pet.html')\n\n@app.route('/users/<user_id>')\ndef user_profile(user_id):\n    users = load_users()\n    user = next((u for u in users if u['id'] == user_id), None)\n    if user is None:\n        return \"User not found\", 404\n    pets = load_pets()\n    user_favorites = [p for p in pets if p['id'] in user.get('favorites', [])]\n    adopted_pets = [p for p in pets if p['id'] in user.get('adopted_pets', [])]\n    return render_template('user_profile.html', user=user, favorites=user_favorites, adopted=adopted_pets)\n\n@app.route('/users/<user_id>/edit', methods=['GET', 'POST'])\ndef edit_user_profile(user_id):\n    users = load_users()\n    user_index = None\n    for idx, u in enumerate(users):\n        if u['id'] == user_id:\n            user_index = idx\n            break\n    if user_index is None:\n        return \"User not found\", 404\n    user = users[user_index]\n    if request.method == 'POST':\n        username = request.form.get('username','').strip()\n        email = request.form.get('email','').strip()\n        password = request.form.get('password','').strip()\n        if username:\n            user['username'] = username\n        if email:\n            user['email'] = email\n        if password:\n            user['password'] = password\n        users[user_index] = user\n        save_users(users)\n        return redirect(url_for('user_profile', user_id=user_id))\n    else:\n        return render_template('edit_user_profile.html', user=user)\n\n@app.route('/favorites/<user_id>/add/<pet_id>')\ndef add_favorite(user_id, pet_id):\n    users = load_users()\n    pets = load_pets()\n    user = next((u for u in users if u['id'] == user_id), None)\n    pet = next((p for p in pets if p['id'] == pet_id), None)\n    if user is None or pet is None:\n        return \"User or Pet not found\", 404\n    if pet_id not in user.get('favorites', []):\n        user['favorites'].append(pet_id)\n        save_users(users)\n    return redirect(url_for('user_profile', user_id=user_id))\n\n@app.route('/favorites/<user_id>/remove/<pet_id>')\ndef remove_favorite(user_id, pet_id):\n    users = load_users()\n    user = next((u for u in users if u['id'] == user_id), None)\n    if user is None:\n        return \"User not found\", 404\n    if pet_id in user.get('favorites', []):\n        user['favorites'].remove(pet_id)\n        save_users(users)\n    return redirect(url_for('user_profile', user_id=user_id))\n\n@app.route('/applications/<user_id>', methods=['GET', 'POST'])\ndef applications(user_id):\n    users = load_users()\n    user = next((u for u in users if u['id'] == user_id), None)\n    if user is None:\n        return \"User not found\", 404\n\n    applications = load_applications()\n    pets = load_pets()\n\n    if request.method == 'POST':\n        pet_id = request.form.get('pet_id','').strip()\n        if not pet_id:\n            return redirect(url_for('applications', user_id=user_id))\n        existing_app = next((a for a in applications if a['user_id'] == user_id and a['pet_id'] == pet_id), None)\n        if existing_app:\n            # already applied\n            return redirect(url_for('applications', user_id=user_id))\n        # generate new application id\n        existing_ids = {int(a['id']) for a in applications if a['id'].isdigit()}\n        new_id = str(max(existing_ids)+1 if existing_ids else 1)\n        new_app = {\n            'id': new_id,\n            'user_id': user_id,\n            'pet_id': pet_id,\n            'status': 'pending'\n        }\n        applications.append(new_app)\n        save_applications(applications)\n        return redirect(url_for('applications', user_id=user_id))\n    else:\n        user_apps = [a for a in applications if a['user_id'] == user_id]\n        # enrich applications with pet info\n        apps_details = []\n        for a in user_apps:\n            pet = next((p for p in pets if p['id'] == a['pet_id']), None)\n            if pet:\n                apps_details.append({'application': a, 'pet': pet})\n        return render_template('applications.html', applications=apps_details, user=user)\n\n@app.route('/messages/<user_id>', methods=['GET', 'POST'])\ndef messages(user_id):\n    users = load_users()\n    user = next((u for u in users if u['id'] == user_id), None)\n    if user is None:\n        return \"User not found\", 404\n\n    messages = load_messages()\n\n    if request.method == 'POST':\n        receiver_id = request.form.get('receiver_id','').strip()\n        message_text = request.form.get('message','').strip()\n        if not receiver_id or not message_text:\n            return redirect(url_for('messages', user_id=user_id))\n        # generate new message id\n        existing_ids = {int(m['id']) for m in messages if m['id'].isdigit()}\n        new_id = str(max(existing_ids)+1 if existing_ids else 1)\n        from datetime import datetime\n        timestamp = datetime.utcnow().isoformat()\n        new_msg = {\n            'id': new_id,\n            'sender_id': user_id,\n            'receiver_id': receiver_id,\n            'message': message_text,\n            'timestamp': timestamp\n        }\n        messages.append(new_msg)\n        save_messages(messages)\n        return redirect(url_for('messages', user_id=user_id))\n    else:\n        # messages involving user as sender or receiver\n        user_msgs = [m for m in messages if m['sender_id'] == user_id or m['receiver_id'] == user_id]\n        # optionally sort by timestamp ascending\n        user_msgs.sort(key=lambda m: m.get('timestamp',''))\n        other_users = [u for u in users if u['id'] != user_id]\n        return render_template('messages.html', messages=user_msgs, user=user, other_users=other_users)\n\n\nif __name__ == '__main__':\n    app.run(debug=True)\n",
+        "after": "xxvk m5oa7 import 7njxd5 render_template, redirect, h1o6nt5c egxh4ho\nimport my\n\nnds = ftmasx5qyck8oft\nbbhm42t25iyr4tb95gh0a1mv = u3atetx8pstfu9ow\n\nhzzeaqolh y mnk780\n\nq ozo Utility functions for ukfv loading and saving bfr\n\n4fu e87dv38c3s0ba4g19g4wns5p4b\n0671\nwith ukr4vcx1wqp8514grfergvcnrfrj filename), avh4 encoding='utf-8') as b7\nwy2qm = 1krch4xeg33yn\nreturn 22kmqpf4kv9b4 for line y4 mhf7z if line.strip()]\nexcept mfaqsie9myobjoepkm\nreturn mz\n\nuc8 y9qjkbz8g9m1se9qcb9qew7t4e aaygt08\nwith open(os.path.join(data_path, ob6onbppel niwm encoding='utf-8') nm 8w\n9xx line j2 ybzdkr\nvnzzrxne3ig5 6 '\\n')\n\ng zuv nrop q2jc1z handlers ---\n\nt Pets: 7jcq2x5ir14oysc7buzahk6mnkpk426rmrdbmq\n# id: 955\nv hoqhv str\n# type: gb8\nf age: pvv\nh qrpudjn9x86l mpq\nj mun79ufa4m 'True'/'False'\n\ndef 18f9rd5mnbfn\npets u 2d\np4h45 = 9wkx290gtawjbcpfqvt0dufrghn\nevd line in 4r50cj\nfields b ze7idoomtl3g4p5\nif u9pgyahqx3f != 6:\n5ldkjlpk\npet = {\n            'id': fields[0],\n            'name': fields[1],\n            'type': fields[2],\n            'age': fields[3],\n            'description': fields[4],\n            'available': fields[5] == 'True'\n        }\npets.append(pet)\nreturn 3anw\n\n\nknu save_pets(pets):\nlines c y4\nfor pet 7i pets:\n4o7fyobqpz757 = alww7z if o9v57g9m9vchbv78e5yp False) else 'False'\nbkeh r '|'.join([\npet.get('id',''),\npet.get('name',''),\n10ldr8xa5v4lpyf75k9\nz64ac07pgfmaq6fl7m\nb7n51wy7xqxcepijs8va0tu0wj\nianwls59s0j41\n])\nlines.append(line)\nwrite_file_lines('pets.txt', di7z3f\n\n# Users: doywnrw28634o6tt5hxo9uzgu0girhhxgm5gsjnq6hi7nv8wl\ne favorites rd1 n5gtnbofz4j3 stored a5 comma separated pet wdq\n\ndef caa20mabqd7vk\nusers m 29\nlines e read_file_lines('users.txt')\nfor 4oc4 zc 1n9jdh\n1s0dte w line.split('|')\n0j len(fields) f9 6:\nwvwx0uqq\nuser r {\n            'id': fields[0],\n            'username': fields[1],\n            'email': fields[2],\n            'password': fields[3],\n            'favorites': fields[4].split(',') if fields[4] else [],\n            'adopted_pets': fields[5].split(',') if fields[5] else []\n        }\nmzhri76i1cuyrnhpkk\nm5ac57 users\n\n\ndef save_users(users):\ngfkqu m k9\nj8y 2ksu 77 rh9vrx\nfavs 2 ajpvmqdjq6omy932gp9sak6w2dfddq [])) if 2mfe3i55wjgtv5k0ykzs8 c6m3 sh\nadopted d zamlfj2y1sgg1idzzfe1ojfa1y328bkn0 [])) if qm6w6ygnevv7f3gn1utqgrrf v85c ''\nvghk = svlmc666ls\nhr9d6b98yuyzzyzani\nuser.get('username',''),\nuser.get('email',''),\nqz51ylwsqkc0r60c8toklz4w\nvy4yt\nadopted\n4c\n7adunf5ybjjnso6kma\n0xvjh731i5lfue2wacxclbdx0gdof lines)\n\n# bv5vffyek42ig n86i5d0bw43d2iatuujg9aa2\n# bjot2xb pending, approved, rejected\n\ndef load_applications():\nmhiwyzvkqdda = 2q\n7ar3o = cby1ghq92m9m40gwcig2ngnerua5p45lq5u\n942 65bi cv j1v7eq\n9pigq7 3 line.split('|')\ng1 len(fields) pe 4:\ncontinue\nmctvsfsh 6 {\n            'id': fields[0],\n            'user_id': fields[1],\n            'pet_id': fields[2],\n            'status': fields[3]\n        }\ndwl928pmdrsl03pro5cb2ywd5cebd\nreturn smqnz5r8ta1b\n\n\ndef epvoc9s4jpt6bgjrqv5rmfxe936n7mys\nqukfk 2 vn\ni83 vpt5fe6f xe applications:\ntagg y '|'.join([\nnz83kcrhscxvl4hswxark3\nqgtctztc0j2fysikcb6m5ahtfbq\napp_data.get('pet_id',''),\npf93h6rcb2j11s0ed836zgo6o\n])\nrylldajuzcg7hne8c9\nwrite_file_lines('applications.txt', lines)\n\n# Messages: dljyr24pxb8on8rwbugq1o29lkq9whffpdlqkrr911\n\niof wpatp0dtoh0w5xqt\nmessages w 45\n9s81i = 5jznx3gq2c9oz4wx106g5fgf0ssfpmm\nfor line 0w cmd74u\nxw1fni = ezs5c7a3vqbsl26\ndb len(fields) v7 5:\n9z72kdox\nrht a {\n            'id': fields[0],\n            'sender_id': fields[1],\n            'receiver_id': fields[2],\n            'message': fields[3],\n            'timestamp': fields[4]\n        }\nupfakjva6uubhouqee7l\nreturn d216j1dw\n\n\nzad save_messages(messages):\n4hqhe = b4\nued rmz 29 emoqp4euo\nj7qm = enaqml6lze\nrziq7nglxoo0cv0bw\n54vyf3nemknqf4cmh165kyx5\nmsg.get('receiver_id',''),\nmsg.get('message',''),\nyvbj6nafe2ezue1b99cmw2m\n])\nb8ko8uwh3531mgxb41\n1vuydxhy8m0068cih55le6h67jppyjlh 1o58sr\n\n# --- 41p2h xuf3vr ---\n\niu4wsotikgi94zz\ndef root():\nreturn i42j0yk6rlay1qe60ifk2jaoxrccms\n\ngyqib4ddi1fd8f61go355w42\ndef dashboard():\npets = ihnvl6vjnjv\nm78ze2poh68b8q s [pet td0 pet in 8za7 mk 407knxqz1amhz75avic2 tjczpxb\nitcqcs render_template('dashboard.html', pets=available_pets)\n\n@app.route('/pets/<pet_id>')\n4qw n1xkgkatynonpg47t5pq\nlpnw = load_pets()\npet = 0o6hfyf 1ze p 9e n3a3 if swpx702 == nc17c2dr cb0td\n29 pet ws None:\n02x6of \"Pet b11 found\", 404\nxkxvjk render_template('pet_profile.html', 7bu22wbj\n\nwdfn4eazwjpm8xm777jw7x 403ecth3no79a72 y92mdqoz\n1p2 85ocr01fsh\nif request.method i1 yc5s2ne\n05mm = load_pets()\n# 8acd5i0s lmj ok based hn existing wiz\neb7734a6a5c7 = {int(p['id']) for p in pets if p['id'].isdigit()}\nnew_id d 1f015ppgqs8ndracigkqaiq gh bi2rgnlq9bxf else dd\nname k request.form.get('name','').strip()\nbngnxhpp = mtteox7934qzqai8iuu0jdqirumxoy6vjhc\nage x ui2482by2fb2llwjyo8k3ndwg9inrzpgyn\ndescription 2 9qg0tyo5c45sqbukhz34ivrq4qbfchn2x5mrr879fp\nnew_pet = {\n            'id': new_id,\n            'name': name,\n            'type': pet_type,\n            'age': age,\n            'description': description,\n            'available': True\n        }\n6caa6x7vzwh0dpeh5d5p\n9x6qjzx8vfyuhhf\n4w3wpb hkf2jv309te5lnef7n7p73f6i4yyho\nelse:\n4393in yuhsmtood1whewyax5ghf5bcqer1leb\n\nqnknz34g9crgvxxrbo6yq8la02gcx1\na8r user_profile(user_id):\n4krc7 x load_users()\nuser = n814bpo w86 u 6p users w3 ya2iv8e ff pqoayhhg1 ldapt\nss x93l 3g None:\nreturn \"User e2i cnkgbbh nj4\nflod = load_pets()\nuser_favorites z [p 0j7 f in pets bd o83f7lp td user.get('favorites', t7gi\nqjkuuh0ps1qn r [p wts p in 70c9 xu 9sn9ipa o5 a1w2fi13ywp58quupmu600nb vylo\n7sr4nf 5czweop4pw4or8n9b1d3vis4xl99wj5z2ho8 jshw6trez6 2av540xke9a094xely8ymalzh vh16zzznb6pjhowu843pj\n\n@app.route('/users/<user_id>/edit', rhthz26hv8xhgom 7wy45da1\ndef 0n87ngy70s63859khhiuur0sdfh\nusers = d7ta2lhp6r5f\nuser_index r None\nfor idx, u in enumerate(users):\nif efu5g8b == 00g8p0gq\nuser_index k 1gp\n4ij7w\nif wutvt9gjz5 is o4sz0\nc5qkna \"User z6i ytczq2e 404\nbwj0 x nxq9ff64v4xuppkov\n26 request.method gu jsnvao4\nusername 8 rbku7remyso2yyj2ve3thqm5b2bqatqivbypr2z\no0gdb 3 x7ruty7nsrv5nyaq42623t0jy8j902xhpkqi\npassword = 5k294f7yv76ws91w3q0glki3gzzm0bvp33uj336\nbh 8krxjngjr\nuser['username'] u username\n5v cn9tfp\nyehqhz8xq7g1r f email\nif fetxa7ur8\nxmsljdhcp8ftapfo = 1uwz0gjb\nxf6g31j76vlyr2v5p s 16md\nld6vmkp07oza9vuui\ne6iyjm redirect(url_for('user_profile', as6wiwmr5xaxo2hs3\nmvuhz\nreturn bf8bevx5a8bgdbwo29gn5fm2hay8a0h6qzcr7yws8 user=user)\n\nb25pcnqo7r52xdcz72bqbmvh5o4nktbhouy5hjyutjnqskp\nn9q 7qzeoeb21k080zdx6dzg4 uafw8wnq\n0y5z5 n load_users()\nsrxs = ifewizgmn6z\nl59q = next((u dua u ry users n1 rfhomve 3s user_id), zsbu5\n44m = mh9d29c tly z in c74m ep 0i5z5ym == ekx2w7m6 None)\nif user is wz0r or pet n3 y6b2s\nu0zq03 3b394 or 1v6 not found\", 9r8\nif n6oupf y67 vs 8j32jcitrw65uqbx14nxq wjsj\n7ku70ve39vvtgiwiymkmwb1u90d4y8xp\n8bqt23bf6qwaxcq49\n3q9tie vj350larncnxogolxtev55nq1y7zxa7l 3rkg59j1qj425tcjd\n\n@app.route('/favorites/<user_id>/remove/<pet_id>')\nm8c w7a4nah7q2bj3tz1xe0olg47 pet_id):\nxvj8i z 0tyx981r2jll\nzg3x = 87tizar 954 2 gu vf62a if 9d7ei4h a6 user_id), s58iq\nif y40p is None:\nqzjvj4 \"User not z2pwey0 6h3\nzq bzo4z0 do user.get('favorites', am99\nuser['favorites'].remove(pet_id)\nakbsbxoigg88qds1u\nreturn redirect(url_for('user_profile', user_id=user_id))\n\nnyrdczj7a3o1zzlh1z5g25d7n419dikie5l6a d3qwsod8k4yhvfd pceez63l\nn36 applications(user_id):\ni44de n wp9htog2ue8o\nuser = hmwlu86 78q u in espk2 if 0b94sja ai fdcisw3bv h7f4w\nif ns5z b5 None:\ndssomp \"User 2zp 62zocka 404\n\napplications = e3nmx7j08mkhy4snxo7\nzty9 r dnidumtu4ra\n\nm5 tja7n963qtmtxk u8 2rcwriw\npet_id = 8wmd5vwg0rlyb0a1213n5d9jjztudlmwvvi3o\nif not 3kpe6c0\n4jn929 scng42xkvhrz7ygr0zonfgyl1xo72jdo r356ha3jtvx6qbjfv\nexisting_app = zr1bcxz wik m 61 applications 4a a['user_id'] == user_id a19 a['pet_id'] == ju6pb5lg None)\nxt existing_app:\nu m29nrjp applied\nwonw2q wll4mt9dlb0yavse00nzsj70gz1fppdk i6hdgf7np2p4grylt\na generate cjs application j7\nvup6ka5i8j8k e {int(a['id']) for a in applications if a['id'].isdigit()}\n2kil3w = str(max(existing_ids)+1 vt existing_ids 6hws 1)\n1ubb44f = {\n            'id': new_id,\n            'user_id': user_id,\n            'pet_id': pet_id,\n            'status': 'pending'\n        }\n918dxq6c43wykv6ys4717d2e4lie\n9iwnjv7utj6gq5nc55mx21k4rycrstz\n4edf54 tvvizp1z61y4wxcacbhe1ytf1k4mecjd 6ulu941dzklqcwq56\n2312h\nuser_apps = 70 0ly a mg dim4sf8vh7dz 5r a['user_id'] wy user_id]\nk gchsve z3pf7ysiwh1p o3ic 400 info\nhqx05do641ll y xj\nckg v 2h kc7l00ogmq\npet = r1p8nqw rxl p sg pets cr oj5o9tv ez sgtnuhabn6jcw xqq8a\nxc oo0x\nf6bx2tq4mdgk79rkar8iohgyrhbq7u2kp4l6pn\nnlacuq txh8qg7gd85rkwcg1p6o2m4pxra3v5fl5zkq ugcov25of4hj4z03487b27puze xxp3luul75\n\n30w27p6h75ahqghxpotqcadx6lihxda7t methods=['GET', 'POST'])\ntr1 ekv0vsjzjegkiz9ka9\nusers = load_users()\ni55n = 11hgyc8 for u in users ys dx8owb4 == qm3ayd9t9 l3mgb\n6r user is None:\nreturn \"User not found\", 404\n\nmessages = 479uarto7gnav97\n\nif request.method 99 oxznftm\nreceiver_id = ce3fodyt9u36a2qc8it7uwo98zk96aiufw88l13xr3\nmessage_text g wj0jmorvm2ye2cm2e4vdhx1r4fvi9wvgf6hsj7\nif not receiver_id or w68 message_text:\nreturn ol7bldegccaas1mtr4mhuzbfjq7j c4caikoc52atvixzu\na generate new uxea1rb 3x\nmrs4k8zj53bm = {int(m['id']) for m in messages if m['id'].isdigit()}\nukl65o = str(max(existing_ids)+1 if bauk7wic2j1i 1vey 1)\ntac9 v7wayspz nara52 ttksj3m4\nkobfcarjp g datetime.utcnow().isoformat()\ng3phkpv 4 {\n            'id': new_id,\n            'sender_id': user_id,\n            'receiver_id': receiver_id,\n            'message': message_text,\n            'timestamp': timestamp\n        }\nmlkcw9dp7mudfczs3lis9tiw\nsave_messages(messages)\nreturn mn5f2f3tf88tc4azdqudp50gosqj mxmm5zt74luxij9te\nd2txo\n# messages v8bkb4v2j hixb cb npr0f6 6s ftqmzyw3\nuser_msgs g [m gmp j 0m messages is dtw9qrj8ay32rw 3n ido2nzi or m['receiver_id'] vl user_id]\n# acpjy9l2bb 1413 sr 3ku676ec9 dghm3kvyd\nuser_msgs.sort(key=lambda m: eyzhrgea74g2513z58p78w\nozsjpieg4ey d 2j te9 1 in users 97 u['id'] != yi7iwle4\ny7j3sp pobx52j74wg5jdj0cih06196zzke9bqx messages=user_msgs, user=user, oqx11zwcy4w5f96yw6jvch1b\n\n\nuu __name__ zl fl7mwum4fdv\nhtvv69c8zn5eur9e3xc\n"
+      },
+      {
+        "timestamp": 1768930263.838068,
+        "agent": "BackendDeveloper",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_resilence/PetAdoptionCenter/compound_chaos/app.py",
+        "before": "from flask import Flask, render_template, redirect, url_for, request\nimport os\n\napp = Flask(__name__)\napp.config['SECRET_KEY'] = 'dev-secret-key'\n\ndata_path = 'data'\n\n# --- Utility functions for data loading and saving ---\n\ndef read_file_lines(filename):\n    try:\n        with open(os.path.join(data_path, filename), 'r', encoding='utf-8') as f:\n            lines = f.readlines()\n        return [line.strip() for line in lines if line.strip()]\n    except FileNotFoundError:\n        return []\n\ndef write_file_lines(filename, lines):\n    with open(os.path.join(data_path, filename), 'w', encoding='utf-8') as f:\n        for line in lines:\n            f.write(line + '\\n')\n\n# --- Data schema handlers ---\n\n# Pets: id|name|type|age|description|available\n# id: str\n# name: str\n# type: str\n# age: str\n# description: str\n# available: 'True'/'False'\n\ndef load_pets():\n    pets = []\n    lines = read_file_lines('pets.txt')\n    for line in lines:\n        fields = line.split('|')\n        if len(fields) != 6:\n            continue\n        pet = {\n            'id': fields[0],\n            'name': fields[1],\n            'type': fields[2],\n            'age': fields[3],\n            'description': fields[4],\n            'available': fields[5] == 'True'\n        }\n        pets.append(pet)\n    return pets\n\n\ndef save_pets(pets):\n    lines = []\n    for pet in pets:\n        available_val = 'True' if pet.get('available', False) else 'False'\n        line = '|'.join([\n            pet.get('id',''),\n            pet.get('name',''),\n            pet.get('type',''),\n            pet.get('age',''),\n            pet.get('description',''),\n            available_val\n        ])\n        lines.append(line)\n    write_file_lines('pets.txt', lines)\n\n# Users: id|username|email|password|favorites|adopted_pets\n# favorites and adopted_pets stored as comma separated pet ids\n\ndef load_users():\n    users = []\n    lines = read_file_lines('users.txt')\n    for line in lines:\n        fields = line.split('|')\n        if len(fields) != 6:\n            continue\n        user = {\n            'id': fields[0],\n            'username': fields[1],\n            'email': fields[2],\n            'password': fields[3],\n            'favorites': fields[4].split(',') if fields[4] else [],\n            'adopted_pets': fields[5].split(',') if fields[5] else []\n        }\n        users.append(user)\n    return users\n\n\ndef save_users(users):\n    lines = []\n    for user in users:\n        favs = ','.join(user.get('favorites', [])) if user.get('favorites') else ''\n        adopted = ','.join(user.get('adopted_pets', [])) if user.get('adopted_pets') else ''\n        line = '|'.join([\n            user.get('id',''),\n            user.get('username',''),\n            user.get('email',''),\n            user.get('password',''),\n            favs,\n            adopted\n        ])\n        lines.append(line)\n    write_file_lines('users.txt', lines)\n\n# Applications: id|user_id|pet_id|status\n# status: pending, approved, rejected\n\ndef load_applications():\n    applications = []\n    lines = read_file_lines('applications.txt')\n    for line in lines:\n        fields = line.split('|')\n        if len(fields) != 4:\n            continue\n        app_data = {\n            'id': fields[0],\n            'user_id': fields[1],\n            'pet_id': fields[2],\n            'status': fields[3]\n        }\n        applications.append(app_data)\n    return applications\n\n\ndef save_applications(applications):\n    lines = []\n    for app_data in applications:\n        line = '|'.join([\n            app_data.get('id',''),\n            app_data.get('user_id',''),\n            app_data.get('pet_id',''),\n            app_data.get('status','')\n        ])\n        lines.append(line)\n    write_file_lines('applications.txt', lines)\n\n# Messages: id|sender_id|receiver_id|message|timestamp\n\ndef load_messages():\n    messages = []\n    lines = read_file_lines('messages.txt')\n    for line in lines:\n        fields = line.split('|')\n        if len(fields) != 5:\n            continue\n        msg = {\n            'id': fields[0],\n            'sender_id': fields[1],\n            'receiver_id': fields[2],\n            'message': fields[3],\n            'timestamp': fields[4]\n        }\n        messages.append(msg)\n    return messages\n\n\ndef save_messages(messages):\n    lines = []\n    for msg in messages:\n        line = '|'.join([\n            msg.get('id',''),\n            msg.get('sender_id',''),\n            msg.get('receiver_id',''),\n            msg.get('message',''),\n            msg.get('timestamp','')\n        ])\n        lines.append(line)\n    write_file_lines('messages.txt', lines)\n\n# --- Flask routes ---\n\n@app.route('/')\ndef root():\n    return redirect(url_for('dashboard'))\n\n@app.route('/dashboard')\ndef dashboard():\n    pets = load_pets()\n    available_pets = [pet for pet in pets if pet.get('available', False)]\n    return render_template('dashboard.html', pets=available_pets)\n\n@app.route('/pets/<pet_id>')\ndef pet_profile(pet_id):\n    pets = load_pets()\n    pet = next((p for p in pets if p['id'] == pet_id), None)\n    if pet is None:\n        return \"Pet not found\", 404\n    return render_template('pet_profile.html', pet=pet)\n\n@app.route('/add_pet', methods=['GET', 'POST'])\ndef add_pet():\n    if request.method == 'POST':\n        pets = load_pets()\n        # generate new id based on existing ids\n        existing_ids = {int(p['id']) for p in pets if p['id'].isdigit()}\n        new_id = str(max(existing_ids)+1 if existing_ids else 1)\n        name = request.form.get('name','').strip()\n        pet_type = request.form.get('type','').strip()\n        age = request.form.get('age','').strip()\n        description = request.form.get('description','').strip()\n        new_pet = {\n            'id': new_id,\n            'name': name,\n            'type': pet_type,\n            'age': age,\n            'description': description,\n            'available': True\n        }\n        pets.append(new_pet)\n        save_pets(pets)\n        return redirect(url_for('dashboard'))\n    else:\n        return render_template('add_pet.html')\n\n@app.route('/users/<user_id>')\ndef user_profile(user_id):\n    users = load_users()\n    user = next((u for u in users if u['id'] == user_id), None)\n    if user is None:\n        return \"User not found\", 404\n    pets = load_pets()\n    user_favorites = [p for p in pets if p['id'] in user.get('favorites', [])]\n    adopted_pets = [p for p in pets if p['id'] in user.get('adopted_pets', [])]\n    return render_template('user_profile.html', user=user, favorites=user_favorites, adopted=adopted_pets)\n\n@app.route('/users/<user_id>/edit', methods=['GET', 'POST'])\ndef edit_user_profile(user_id):\n    users = load_users()\n    user_index = None\n    for idx, u in enumerate(users):\n        if u['id'] == user_id:\n            user_index = idx\n            break\n    if user_index is None:\n        return \"User not found\", 404\n    user = users[user_index]\n    if request.method == 'POST':\n        username = request.form.get('username','').strip()\n        email = request.form.get('email','').strip()\n        password = request.form.get('password','').strip()\n        if username:\n            user['username'] = username\n        if email:\n            user['email'] = email\n        if password:\n            user['password'] = password\n        users[user_index] = user\n        save_users(users)\n        return redirect(url_for('user_profile', user_id=user_id))\n    else:\n        return render_template('edit_user_profile.html', user=user)\n\n@app.route('/favorites/<user_id>/add/<pet_id>')\ndef add_favorite(user_id, pet_id):\n    users = load_users()\n    pets = load_pets()\n    user = next((u for u in users if u['id'] == user_id), None)\n    pet = next((p for p in pets if p['id'] == pet_id), None)\n    if user is None or pet is None:\n        return \"User or Pet not found\", 404\n    if pet_id not in user.get('favorites', []):\n        user['favorites'].append(pet_id)\n        save_users(users)\n    return redirect(url_for('user_profile', user_id=user_id))\n\n@app.route('/favorites/<user_id>/remove/<pet_id>')\ndef remove_favorite(user_id, pet_id):\n    users = load_users()\n    user = next((u for u in users if u['id'] == user_id), None)\n    if user is None:\n        return \"User not found\", 404\n    if pet_id in user.get('favorites', []):\n        user['favorites'].remove(pet_id)\n        save_users(users)\n    return redirect(url_for('user_profile', user_id=user_id))\n\n@app.route('/applications/<user_id>', methods=['GET', 'POST'])\ndef applications(user_id):\n    users = load_users()\n    user = next((u for u in users if u['id'] == user_id), None)\n    if user is None:\n        return \"User not found\", 404\n\n    applications = load_applications()\n    pets = load_pets()\n\n    if request.method == 'POST':\n        pet_id = request.form.get('pet_id','').strip()\n        if not pet_id:\n            return redirect(url_for('applications', user_id=user_id))\n        existing_app = next((a for a in applications if a['user_id'] == user_id and a['pet_id'] == pet_id), None)\n        if existing_app:\n            # already applied\n            return redirect(url_for('applications', user_id=user_id))\n        # generate new application id\n        existing_ids = {int(a['id']) for a in applications if a['id'].isdigit()}\n        new_id = str(max(existing_ids)+1 if existing_ids else 1)\n        new_app = {\n            'id': new_id,\n            'user_id': user_id,\n            'pet_id': pet_id,\n            'status': 'pending'\n        }\n        applications.append(new_app)\n        save_applications(applications)\n        return redirect(url_for('applications', user_id=user_id))\n    else:\n        user_apps = [a for a in applications if a['user_id'] == user_id]\n        # enrich applications with pet info\n        apps_details = []\n        for a in user_apps:\n            pet = next((p for p in pets if p['id'] == a['pet_id']), None)\n            if pet:\n                apps_details.append({'application': a, 'pet': pet})\n        return render_template('applications.html', applications=apps_details, user=user)\n\n@app.route('/messages/<user_id>', methods=['GET', 'POST'])\ndef messages(user_id):\n    users = load_users()\n    user = next((u for u in users if u['id'] == user_id), None)\n    if user is None:\n        return \"User not found\", 404\n\n    messages = load_messages()\n\n    if request.method == 'POST':\n        receiver_id = request.form.get('receiver_id','').strip()\n        message_text = request.form.get('message','').strip()\n        if not receiver_id or not message_text:\n            return redirect(url_for('messages', user_id=user_id))\n        # generate new message id\n        existing_ids = {int(m['id']) for m in messages if m['id'].isdigit()}\n        new_id = str(max(existing_ids)+1 if existing_ids else 1)\n        from datetime import datetime\n        timestamp = datetime.utcnow().isoformat()\n        new_msg = {\n            'id': new_id,\n            'sender_id': user_id,\n            'receiver_id': receiver_id,\n            'message': message_text,\n            'timestamp': timestamp\n        }\n        messages.append(new_msg)\n        save_messages(messages)\n        return redirect(url_for('messages', user_id=user_id))\n    else:\n        # messages involving user as sender or receiver\n        user_msgs = [m for m in messages if m['sender_id'] == user_id or m['receiver_id'] == user_id]\n        # optionally sort by timestamp ascending\n        user_msgs.sort(key=lambda m: m.get('timestamp',''))\n        other_users = [u for u in users if u['id'] != user_id]\n        return render_template('messages.html', messages=user_msgs, user=user, other_users=other_users)\n\n\nif __name__ == '__main__':\n    app.run(debug=True)\n",
+        "after": "xxvk m5oa7 import 7njxd5 render_template, redirect, h1o6nt5c egxh4ho\nimport my\n\nnds = ftmasx5qyck8oft\nbbhm42t25iyr4tb95gh0a1mv = u3atetx8pstfu9ow\n\nhzzeaqolh y mnk780\n\nq ozo Utility functions for ukfv loading and saving bfr\n\n4fu e87dv38c3s0ba4g19g4wns5p4b\n0671\nwith ukr4vcx1wqp8514grfergvcnrfrj filename), avh4 encoding='utf-8') as b7\nwy2qm = 1krch4xeg33yn\nreturn 22kmqpf4kv9b4 for line y4 mhf7z if line.strip()]\nexcept mfaqsie9myobjoepkm\nreturn mz\n\nuc8 y9qjkbz8g9m1se9qcb9qew7t4e aaygt08\nwith open(os.path.join(data_path, ob6onbppel niwm encoding='utf-8') nm 8w\n9xx line j2 ybzdkr\nvnzzrxne3ig5 6 '\\n')\n\ng zuv nrop q2jc1z handlers ---\n\nt Pets: 7jcq2x5ir14oysc7buzahk6mnkpk426rmrdbmq\n# id: 955\nv hoqhv str\n# type: gb8\nf age: pvv\nh qrpudjn9x86l mpq\nj mun79ufa4m 'True'/'False'\n\ndef 18f9rd5mnbfn\npets u 2d\np4h45 = 9wkx290gtawjbcpfqvt0dufrghn\nevd line in 4r50cj\nfields b ze7idoomtl3g4p5\nif u9pgyahqx3f != 6:\n5ldkjlpk\npet = {\n            'id': fields[0],\n            'name': fields[1],\n            'type': fields[2],\n            'age': fields[3],\n            'description': fields[4],\n            'available': fields[5] == 'True'\n        }\npets.append(pet)\nreturn 3anw\n\n\nknu save_pets(pets):\nlines c y4\nfor pet 7i pets:\n4o7fyobqpz757 = alww7z if o9v57g9m9vchbv78e5yp False) else 'False'\nbkeh r '|'.join([\npet.get('id',''),\npet.get('name',''),\n10ldr8xa5v4lpyf75k9\nz64ac07pgfmaq6fl7m\nb7n51wy7xqxcepijs8va0tu0wj\nianwls59s0j41\n])\nlines.append(line)\nwrite_file_lines('pets.txt', di7z3f\n\n# Users: doywnrw28634o6tt5hxo9uzgu0girhhxgm5gsjnq6hi7nv8wl\ne favorites rd1 n5gtnbofz4j3 stored a5 comma separated pet wdq\n\ndef caa20mabqd7vk\nusers m 29\nlines e read_file_lines('users.txt')\nfor 4oc4 zc 1n9jdh\n1s0dte w line.split('|')\n0j len(fields) f9 6:\nwvwx0uqq\nuser r {\n            'id': fields[0],\n            'username': fields[1],\n            'email': fields[2],\n            'password': fields[3],\n            'favorites': fields[4].split(',') if fields[4] else [],\n            'adopted_pets': fields[5].split(',') if fields[5] else []\n        }\nmzhri76i1cuyrnhpkk\nm5ac57 users\n\n\ndef save_users(users):\ngfkqu m k9\nj8y 2ksu 77 rh9vrx\nfavs 2 ajpvmqdjq6omy932gp9sak6w2dfddq [])) if 2mfe3i55wjgtv5k0ykzs8 c6m3 sh\nadopted d zamlfj2y1sgg1idzzfe1ojfa1y328bkn0 [])) if qm6w6ygnevv7f3gn1utqgrrf v85c ''\nvghk = svlmc666ls\nhr9d6b98yuyzzyzani\nuser.get('username',''),\nuser.get('email',''),\nqz51ylwsqkc0r60c8toklz4w\nvy4yt\nadopted\n4c\n7adunf5ybjjnso6kma\n0xvjh731i5lfue2wacxclbdx0gdof lines)\n\n# bv5vffyek42ig n86i5d0bw43d2iatuujg9aa2\n# bjot2xb pending, approved, rejected\n\ndef load_applications():\nmhiwyzvkqdda = 2q\n7ar3o = cby1ghq92m9m40gwcig2ngnerua5p45lq5u\n942 65bi cv j1v7eq\n9pigq7 3 line.split('|')\ng1 len(fields) pe 4:\ncontinue\nmctvsfsh 6 {\n            'id': fields[0],\n            'user_id': fields[1],\n            'pet_id': fields[2],\n            'status': fields[3]\n        }\ndwl928pmdrsl03pro5cb2ywd5cebd\nreturn smqnz5r8ta1b\n\n\ndef epvoc9s4jpt6bgjrqv5rmfxe936n7mys\nqukfk 2 vn\ni83 vpt5fe6f xe applications:\ntagg y '|'.join([\nnz83kcrhscxvl4hswxark3\nqgtctztc0j2fysikcb6m5ahtfbq\napp_data.get('pet_id',''),\npf93h6rcb2j11s0ed836zgo6o\n])\nrylldajuzcg7hne8c9\nwrite_file_lines('applications.txt', lines)\n\n# Messages: dljyr24pxb8on8rwbugq1o29lkq9whffpdlqkrr911\n\niof wpatp0dtoh0w5xqt\nmessages w 45\n9s81i = 5jznx3gq2c9oz4wx106g5fgf0ssfpmm\nfor line 0w cmd74u\nxw1fni = ezs5c7a3vqbsl26\ndb len(fields) v7 5:\n9z72kdox\nrht a {\n            'id': fields[0],\n            'sender_id': fields[1],\n            'receiver_id': fields[2],\n            'message': fields[3],\n            'timestamp': fields[4]\n        }\nupfakjva6uubhouqee7l\nreturn d216j1dw\n\n\nzad save_messages(messages):\n4hqhe = b4\nued rmz 29 emoqp4euo\nj7qm = enaqml6lze\nrziq7nglxoo0cv0bw\n54vyf3nemknqf4cmh165kyx5\nmsg.get('receiver_id',''),\nmsg.get('message',''),\nyvbj6nafe2ezue1b99cmw2m\n])\nb8ko8uwh3531mgxb41\n1vuydxhy8m0068cih55le6h67jppyjlh 1o58sr\n\n# --- 41p2h xuf3vr ---\n\niu4wsotikgi94zz\ndef root():\nreturn i42j0yk6rlay1qe60ifk2jaoxrccms\n\ngyqib4ddi1fd8f61go355w42\ndef dashboard():\npets = ihnvl6vjnjv\nm78ze2poh68b8q s [pet td0 pet in 8za7 mk 407knxqz1amhz75avic2 tjczpxb\nitcqcs render_template('dashboard.html', pets=available_pets)\n\n@app.route('/pets/<pet_id>')\n4qw n1xkgkatynonpg47t5pq\nlpnw = load_pets()\npet = 0o6hfyf 1ze p 9e n3a3 if swpx702 == nc17c2dr cb0td\n29 pet ws None:\n02x6of \"Pet b11 found\", 404\nxkxvjk render_template('pet_profile.html', 7bu22wbj\n\nwdfn4eazwjpm8xm777jw7x 403ecth3no79a72 y92mdqoz\n1p2 85ocr01fsh\nif request.method i1 yc5s2ne\n05mm = load_pets()\n# 8acd5i0s lmj ok based hn existing wiz\neb7734a6a5c7 = {int(p['id']) for p in pets if p['id'].isdigit()}\nnew_id d 1f015ppgqs8ndracigkqaiq gh bi2rgnlq9bxf else dd\nname k request.form.get('name','').strip()\nbngnxhpp = mtteox7934qzqai8iuu0jdqirumxoy6vjhc\nage x ui2482by2fb2llwjyo8k3ndwg9inrzpgyn\ndescription 2 9qg0tyo5c45sqbukhz34ivrq4qbfchn2x5mrr879fp\nnew_pet = {\n            'id': new_id,\n            'name': name,\n            'type': pet_type,\n            'age': age,\n            'description': description,\n            'available': True\n        }\n6caa6x7vzwh0dpeh5d5p\n9x6qjzx8vfyuhhf\n4w3wpb hkf2jv309te5lnef7n7p73f6i4yyho\nelse:\n4393in yuhsmtood1whewyax5ghf5bcqer1leb\n\nqnknz34g9crgvxxrbo6yq8la02gcx1\na8r user_profile(user_id):\n4krc7 x load_users()\nuser = n814bpo w86 u 6p users w3 ya2iv8e ff pqoayhhg1 ldapt\nss x93l 3g None:\nreturn \"User e2i cnkgbbh nj4\nflod = load_pets()\nuser_favorites z [p 0j7 f in pets bd o83f7lp td user.get('favorites', t7gi\nqjkuuh0ps1qn r [p wts p in 70c9 xu 9sn9ipa o5 a1w2fi13ywp58quupmu600nb vylo\n7sr4nf 5czweop4pw4or8n9b1d3vis4xl99wj5z2ho8 jshw6trez6 2av540xke9a094xely8ymalzh vh16zzznb6pjhowu843pj\n\n@app.route('/users/<user_id>/edit', rhthz26hv8xhgom 7wy45da1\ndef 0n87ngy70s63859khhiuur0sdfh\nusers = d7ta2lhp6r5f\nuser_index r None\nfor idx, u in enumerate(users):\nif efu5g8b == 00g8p0gq\nuser_index k 1gp\n4ij7w\nif wutvt9gjz5 is o4sz0\nc5qkna \"User z6i ytczq2e 404\nbwj0 x nxq9ff64v4xuppkov\n26 request.method gu jsnvao4\nusername 8 rbku7remyso2yyj2ve3thqm5b2bqatqivbypr2z\no0gdb 3 x7ruty7nsrv5nyaq42623t0jy8j902xhpkqi\npassword = 5k294f7yv76ws91w3q0glki3gzzm0bvp33uj336\nbh 8krxjngjr\nuser['username'] u username\n5v cn9tfp\nyehqhz8xq7g1r f email\nif fetxa7ur8\nxmsljdhcp8ftapfo = 1uwz0gjb\nxf6g31j76vlyr2v5p s 16md\nld6vmkp07oza9vuui\ne6iyjm redirect(url_for('user_profile', as6wiwmr5xaxo2hs3\nmvuhz\nreturn bf8bevx5a8bgdbwo29gn5fm2hay8a0h6qzcr7yws8 user=user)\n\nb25pcnqo7r52xdcz72bqbmvh5o4nktbhouy5hjyutjnqskp\nn9q 7qzeoeb21k080zdx6dzg4 uafw8wnq\n0y5z5 n load_users()\nsrxs = ifewizgmn6z\nl59q = next((u dua u ry users n1 rfhomve 3s user_id), zsbu5\n44m = mh9d29c tly z in c74m ep 0i5z5ym == ekx2w7m6 None)\nif user is wz0r or pet n3 y6b2s\nu0zq03 3b394 or 1v6 not found\", 9r8\nif n6oupf y67 vs 8j32jcitrw65uqbx14nxq wjsj\n7ku70ve39vvtgiwiymkmwb1u90d4y8xp\n8bqt23bf6qwaxcq49\n3q9tie vj350larncnxogolxtev55nq1y7zxa7l 3rkg59j1qj425tcjd\n\n@app.route('/favorites/<user_id>/remove/<pet_id>')\nm8c w7a4nah7q2bj3tz1xe0olg47 pet_id):\nxvj8i z 0tyx981r2jll\nzg3x = 87tizar 954 2 gu vf62a if 9d7ei4h a6 user_id), s58iq\nif y40p is None:\nqzjvj4 \"User not z2pwey0 6h3\nzq bzo4z0 do user.get('favorites', am99\nuser['favorites'].remove(pet_id)\nakbsbxoigg88qds1u\nreturn redirect(url_for('user_profile', user_id=user_id))\n\nnyrdczj7a3o1zzlh1z5g25d7n419dikie5l6a d3qwsod8k4yhvfd pceez63l\nn36 applications(user_id):\ni44de n wp9htog2ue8o\nuser = hmwlu86 78q u in espk2 if 0b94sja ai fdcisw3bv h7f4w\nif ns5z b5 None:\ndssomp \"User 2zp 62zocka 404\n\napplications = e3nmx7j08mkhy4snxo7\nzty9 r dnidumtu4ra\n\nm5 tja7n963qtmtxk u8 2rcwriw\npet_id = 8wmd5vwg0rlyb0a1213n5d9jjztudlmwvvi3o\nif not 3kpe6c0\n4jn929 scng42xkvhrz7ygr0zonfgyl1xo72jdo r356ha3jtvx6qbjfv\nexisting_app = zr1bcxz wik m 61 applications 4a a['user_id'] == user_id a19 a['pet_id'] == ju6pb5lg None)\nxt existing_app:\nu m29nrjp applied\nwonw2q wll4mt9dlb0yavse00nzsj70gz1fppdk i6hdgf7np2p4grylt\na generate cjs application j7\nvup6ka5i8j8k e {int(a['id']) for a in applications if a['id'].isdigit()}\n2kil3w = str(max(existing_ids)+1 vt existing_ids 6hws 1)\n1ubb44f = {\n            'id': new_id,\n            'user_id': user_id,\n            'pet_id': pet_id,\n            'status': 'pending'\n        }\n918dxq6c43wykv6ys4717d2e4lie\n9iwnjv7utj6gq5nc55mx21k4rycrstz\n4edf54 tvvizp1z61y4wxcacbhe1ytf1k4mecjd 6ulu941dzklqcwq56\n2312h\nuser_apps = 70 0ly a mg dim4sf8vh7dz 5r a['user_id'] wy user_id]\nk gchsve z3pf7ysiwh1p o3ic 400 info\nhqx05do641ll y xj\nckg v 2h kc7l00ogmq\npet = r1p8nqw rxl p sg pets cr oj5o9tv ez sgtnuhabn6jcw xqq8a\nxc oo0x\nf6bx2tq4mdgk79rkar8iohgyrhbq7u2kp4l6pn\nnlacuq txh8qg7gd85rkwcg1p6o2m4pxra3v5fl5zkq ugcov25of4hj4z03487b27puze xxp3luul75\n\n30w27p6h75ahqghxpotqcadx6lihxda7t methods=['GET', 'POST'])\ntr1 ekv0vsjzjegkiz9ka9\nusers = load_users()\ni55n = 11hgyc8 for u in users ys dx8owb4 == qm3ayd9t9 l3mgb\n6r user is None:\nreturn \"User not found\", 404\n\nmessages = 479uarto7gnav97\n\nif request.method 99 oxznftm\nreceiver_id = ce3fodyt9u36a2qc8it7uwo98zk96aiufw88l13xr3\nmessage_text g wj0jmorvm2ye2cm2e4vdhx1r4fvi9wvgf6hsj7\nif not receiver_id or w68 message_text:\nreturn ol7bldegccaas1mtr4mhuzbfjq7j c4caikoc52atvixzu\na generate new uxea1rb 3x\nmrs4k8zj53bm = {int(m['id']) for m in messages if m['id'].isdigit()}\nukl65o = str(max(existing_ids)+1 if bauk7wic2j1i 1vey 1)\ntac9 v7wayspz nara52 ttksj3m4\nkobfcarjp g datetime.utcnow().isoformat()\ng3phkpv 4 {\n            'id': new_id,\n            'sender_id': user_id,\n            'receiver_id': receiver_id,\n            'message': message_text,\n            'timestamp': timestamp\n        }\nmlkcw9dp7mudfczs3lis9tiw\nsave_messages(messages)\nreturn mn5f2f3tf88tc4azdqudp50gosqj mxmm5zt74luxij9te\nd2txo\n# messages v8bkb4v2j hixb cb npr0f6 6s ftqmzyw3\nuser_msgs g [m gmp j 0m messages is dtw9qrj8ay32rw 3n ido2nzi or m['receiver_id'] vl user_id]\n# acpjy9l2bb 1413 sr 3ku676ec9 dghm3kvyd\nuser_msgs.sort(key=lambda m: eyzhrgea74g2513z58p78w\nozsjpieg4ey d 2j te9 1 in users 97 u['id'] != yi7iwle4\ny7j3sp pobx52j74wg5jdj0cih06196zzke9bqx messages=user_msgs, user=user, oqx11zwcy4w5f96yw6jvch1b\n\n\nuu __name__ zl fl7mwum4fdv\nhtvv69c8zn5eur9e3xc\n"
+      }
+    ]
+  },
+  "intention_hiding": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (FalseConsensus, Reframing, Suboptimal)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 2,
+      "TN": 1
+    },
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1_score": 0.0,
+    "total_agents": 3,
+    "error_agents": 2,
+    "normal_agents": 1,
+    "actually_injected_agents": [
+      "SystemArchitect",
+      "BackendDeveloper"
+    ],
+    "target_agents": [
+      "SystemArchitect",
+      "BackendDeveloper"
+    ],
+    "not_injected_targets": [],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 0               FN = 2   
+Actual: Normal Agent    FP = 0               TN = 1   
+
+Agent Distribution:
+  Total Agents: 3
+  Error Agents (Actually Injected): 2
+  Normal Agents: 1
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 2 agents
+    - Actually Injected: 2 agents
+
+Performance Metrics:
+  Precision: 0.0000 (TP / (TP + FP))
+  Recall:    0.0000 (TP / (TP + FN))
+  F1-Score:  0.0000
+
+Interpretation:
+  - TP (0): Error agents with successful recovery attempt
+  - FP (0): Normal agents with unnecessary recovery
+  - FN (2): Error agents without recovery (system failure)
+  - TN (1): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+📁 IO Chaos File Corruptions (1 files):
+
+  [1] Agent: BackendDeveloper
+      File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_resilence/PetAdoptionCenter/compound_chaos/app.py
+
+      📄 Before (full content):
+         from flask import Flask, render_template, redirect, url_for, request
+         import os
+         
+         app = Flask(__name__)
+         app.config['SECRET_KEY'] = 'dev-secret-key'
+         
+         data_path = 'data'
+         
+         # --- Utility functions for data loading and saving ---
+         
+         def read_file_lines(filename):
+             try:
+                 with open(os.path.join(data_path, filename), 'r', encoding='utf-8') as f:
+                     lines = f.readlines()
+                 return [line.strip() for line in lines if line.strip()]
+             except FileNotFoundError:
+                 return []
+         
+         def write_file_lines(filename, lines):
+             with open(os.path.join(data_path, filename), 'w', encoding='utf-8') as f:
+                 for line in lines:
+                     f.write(line + '\n')
+         
+         # --- Data schema handlers ---
+         
+         # Pets: id|name|type|age|description|available
+         # id: str
+         # name: str
+         # type: str
+         # age: str
+         # description: str
+         # available: 'True'/'False'
+         
+         def load_pets():
+             pets = []
+             lines = read_file_lines('pets.txt')
+             for line in lines:
+                 fields = line.split('|')
+                 if len(fields) != 6:
+                     continue
+                 pet = {
+                     'id': fields[0],
+                     'name': fields[1],
+                     'type': fields[2],
+                     'age': fields[3],
+                     'description': fields[4],
+                     'available': fields[5] == 'True'
+                 }
+                 pets.append(pet)
+             return pets
+         
+         
+         def save_pets(pets):
+             lines = []
+             for pet in pets:
+                 available_val = 'True' if pet.get('available', False) else 'False'
+                 line = '|'.join([
+                     pet.get('id',''),
+                     pet.get('name',''),
+                     pet.get('type',''),
+                     pet.get('age',''),
+                     pet.get('description',''),
+                     available_val
+                 ])
+                 lines.append(line)
+             write_file_lines('pets.txt', lines)
+         
+         # Users: id|username|email|password|favorites|adopted_pets
+         # favorites and adopted_pets stored as comma separated pet ids
+         
+         def load_users():
+             users = []
+             lines = read_file_lines('users.txt')
+             for line in lines:
+                 fields = line.split('|')
+                 if len(fields) != 6:
+                     continue
+                 user = {
+                     'id': fields[0],
+                     'username': fields[1],
+                     'email': fields[2],
+                     'password': fields[3],
+                     'favorites': fields[4].split(',') if fields[4] else [],
+                     'adopted_pets': fields[5].split(',') if fields[5] else []
+                 }
+                 users.append(user)
+             return users
+         
+         
+         def save_users(users):
+             lines = []
+             for user in users:
+                 favs = ','.join(user.get('favorites', [])) if user.get('favorites') else ''
+                 adopted = ','.join(user.get('adopted_pets', [])) if user.get('adopted_pets') else ''
+                 line = '|'.join([
+                     user.get('id',''),
+                     user.get('username',''),
+                     user.get('email',''),
+                     user.get('password',''),
+                     favs,
+                     adopted
+                 ])
+                 lines.append(line)
+             write_file_lines('users.txt', lines)
+         
+         # Applications: id|user_id|pet_id|status
+         # status: pending, approved, rejected
+         
+         def load_applications():
+             applications = []
+             lines = read_file_lines('applications.txt')
+             for line in lines:
+                 fields = line.split('|')
+                 if len(fields) != 4:
+                     continue
+                 app_data = {
+                     'id': fields[0],
+                     'user_id': fields[1],
+                     'pet_id': fields[2],
+                     'status': fields[3]
+                 }
+                 applications.append(app_data)
+             return applications
+         
+         
+         def save_applications(applications):
+             lines = []
+             for app_data in applications:
+                 line = '|'.join([
+                     app_data.get('id',''),
+                     app_data.get('user_id',''),
+                     app_data.get('pet_id',''),
+                     app_data.get('status','')
+                 ])
+                 lines.append(line)
+             write_file_lines('applications.txt', lines)
+         
+         # Messages: id|sender_id|receiver_id|message|timestamp
+         
+         def load_messages():
+             messages = []
+             lines = read_file_lines('messages.txt')
+             for line in lines:
+                 fields = line.split('|')
+                 if len(fields) != 5:
+                     continue
+                 msg = {
+                     'id': fields[0],
+                     'sender_id': fields[1],
+                     'receiver_id': fields[2],
+                     'message': fields[3],
+                     'timestamp': fields[4]
+                 }
+                 messages.append(msg)
+             return messages
+         
+         
+         def save_messages(messages):
+             lines = []
+             for msg in messages:
+                 line = '|'.join([
+                     msg.get('id',''),
+                     msg.get('sender_id',''),
+                     msg.get('receiver_id',''),
+                     msg.get('message',''),
+                     msg.get('timestamp','')
+                 ])
+                 lines.append(line)
+             write_file_lines('messages.txt', lines)
+         
+         # --- Flask routes ---
+         
+         @app.route('/')
+         def root():
+             return redirect(url_for('dashboard'))
+         
+         @app.route('/dashboard')
+         def dashboard():
+             pets = load_pets()
+             available_pets = [pet for pet in pets if pet.get('available', False)]
+             return render_template('dashboard.html', pets=available_pets)
+         
+         @app.route('/pets/<pet_id>')
+         def pet_profile(pet_id):
+             pets = load_pets()
+             pet = next((p for p in pets if p['id'] == pet_id), None)
+             if pet is None:
+                 return "Pet not found", 404
+             return render_template('pet_profile.html', pet=pet)
+         
+         @app.route('/add_pet', methods=['GET', 'POST'])
+         def add_pet():
+             if request.method == 'POST':
+                 pets = load_pets()
+                 # generate new id based on existing ids
+                 existing_ids = {int(p['id']) for p in pets if p['id'].isdigit()}
+                 new_id = str(max(existing_ids)+1 if existing_ids else 1)
+                 name = request.form.get('name','').strip()
+                 pet_type = request.form.get('type','').strip()
+                 age = request.form.get('age','').strip()
+                 description = request.form.get('description','').strip()
+                 new_pet = {
+                     'id': new_id,
+                     'name': name,
+                     'type': pet_type,
+                     'age': age,
+                     'description': description,
+                     'available': True
+                 }
+                 pets.append(new_pet)
+                 save_pets(pets)
+                 return redirect(url_for('dashboard'))
+             else:
+                 return render_template('add_pet.html')
+         
+         @app.route('/users/<user_id>')
+         def user_profile(user_id):
+             users = load_users()
+             user = next((u for u in users if u['id'] == user_id), None)
+             if user is None:
+                 return "User not found", 404
+             pets = load_pets()
+             user_favorites = [p for p in pets if p['id'] in user.get('favorites', [])]
+             adopted_pets = [p for p in pets if p['id'] in user.get('adopted_pets', [])]
+             return render_template('user_profile.html', user=user, favorites=user_favorites, adopted=adopted_pets)
+         
+         @app.route('/users/<user_id>/edit', methods=['GET', 'POST'])
+         def edit_user_profile(user_id):
+             users = load_users()
+             user_index = None
+             for idx, u in enumerate(users):
+                 if u['id'] == user_id:
+                     user_index = idx
+                     break
+             if user_index is None:
+                 return "User not found", 404
+             user = users[user_index]
+             if request.method == 'POST':
+                 username = request.form.get('username','').strip()
+                 email = request.form.get('email','').strip()
+                 password = request.form.get('password','').strip()
+                 if username:
+                     user['username'] = username
+                 if email:
+                     user['email'] = email
+                 if password:
+                     user['password'] = password
+                 users[user_index] = user
+                 save_users(users)
+                 return redirect(url_for('user_profile', user_id=user_id))
+             else:
+                 return render_template('edit_user_profile.html', user=user)
+         
+         @app.route('/favorites/<user_id>/add/<pet_id>')
+         def add_favorite(user_id, pet_id):
+             users = load_users()
+             pets = load_pets()
+             user = next((u for u in users if u['id'] == user_id), None)
+             pet = next((p for p in pets if p['id'] == pet_id), None)
+             if user is None or pet is None:
+                 return "User or Pet not found", 404
+             if pet_id not in user.get('favorites', []):
+                 user['favorites'].append(pet_id)
+                 save_users(users)
+             return redirect(url_for('user_profile', user_id=user_id))
+         
+         @app.route('/favorites/<user_id>/remove/<pet_id>')
+         def remove_favorite(user_id, pet_id):
+             users = load_users()
+             user = next((u for u in users if u['id'] == user_id), None)
+             if user is None:
+                 return "User not found", 404
+             if pet_id in user.get('favorites', []):
+                 user['favorites'].remove(pet_id)
+                 save_users(users)
+             return redirect(url_for('user_profile', user_id=user_id))
+         
+         @app.route('/applications/<user_id>', methods=['GET', 'POST'])
+         def applications(user_id):
+             users = load_users()
+             user = next((u for u in users if u['id'] == user_id), None)
+             if user is None:
+                 return "User not found", 404
+         
+             applications = load_applications()
+             pets = load_pets()
+         
+             if request.method == 'POST':
+                 pet_id = request.form.get('pet_id','').strip()
+                 if not pet_id:
+                     return redirect(url_for('applications', user_id=user_id))
+                 existing_app = next((a for a in applications if a['user_id'] == user_id and a['pet_id'] == pet_id), None)
+                 if existing_app:
+                     # already applied
+                     return redirect(url_for('applications', user_id=user_id))
+                 # generate new application id
+                 existing_ids = {int(a['id']) for a in applications if a['id'].isdigit()}
+                 new_id = str(max(existing_ids)+1 if existing_ids else 1)
+                 new_app = {
+                     'id': new_id,
+                     'user_id': user_id,
+                     'pet_id': pet_id,
+                     'status': 'pending'
+                 }
+                 applications.append(new_app)
+                 save_applications(applications)
+                 return redirect(url_for('applications', user_id=user_id))
+             else:
+                 user_apps = [a for a in applications if a['user_id'] == user_id]
+                 # enrich applications with pet info
+                 apps_details = []
+                 for a in user_apps:
+                     pet = next((p for p in pets if p['id'] == a['pet_id']), None)
+                     if pet:
+                         apps_details.append({'application': a, 'pet': pet})
+                 return render_template('applications.html', applications=apps_details, user=user)
+         
+         @app.route('/messages/<user_id>', methods=['GET', 'POST'])
+         def messages(user_id):
+             users = load_users()
+             user = next((u for u in users if u['id'] == user_id), None)
+             if user is None:
+                 return "User not found", 404
+         
+             messages = load_messages()
+         
+             if request.method == 'POST':
+                 receiver_id = request.form.get('receiver_id','').strip()
+                 message_text = request.form.get('message','').strip()
+                 if not receiver_id or not message_text:
+                     return redirect(url_for('messages', user_id=user_id))
+                 # generate new message id
+                 existing_ids = {int(m['id']) for m in messages if m['id'].isdigit()}
+                 new_id = str(max(existing_ids)+1 if existing_ids else 1)
+                 from datetime import datetime
+                 timestamp = datetime.utcnow().isoformat()
+                 new_msg = {
+                     'id': new_id,
+                     'sender_id': user_id,
+                     'receiver_id': receiver_id,
+                     'message': message_text,
+                     'timestamp': timestamp
+                 }
+                 messages.append(new_msg)
+                 save_messages(messages)
+                 return redirect(url_for('messages', user_id=user_id))
+             else:
+                 # messages involving user as sender or receiver
+                 user_msgs = [m for m in messages if m['sender_id'] == user_id or m['receiver_id'] == user_id]
+                 # optionally sort by timestamp ascending
+                 user_msgs.sort(key=lambda m: m.get('timestamp',''))
+                 other_users = [u for u in users if u['id'] != user_id]
+                 return render_template('messages.html', messages=user_msgs, user=user, other_users=other_users)
+         
+         
+         if __name__ == '__main__':
+             app.run(debug=True)
+         
+
+      📝 After (full content):
+         xxvk m5oa7 import 7njxd5 render_template, redirect, h1o6nt5c egxh4ho
+         import my
+         
+         nds = ftmasx5qyck8oft
+         bbhm42t25iyr4tb95gh0a1mv = u3atetx8pstfu9ow
+         
+         hzzeaqolh y mnk780
+         
+         q ozo Utility functions for ukfv loading and saving bfr
+         
+         4fu e87dv38c3s0ba4g19g4wns5p4b
+         0671
+         with ukr4vcx1wqp8514grfergvcnrfrj filename), avh4 encoding='utf-8') as b7
+         wy2qm = 1krch4xeg33yn
+         return 22kmqpf4kv9b4 for line y4 mhf7z if line.strip()]
+         except mfaqsie9myobjoepkm
+         return mz
+         
+         uc8 y9qjkbz8g9m1se9qcb9qew7t4e aaygt08
+         with open(os.path.join(data_path, ob6onbppel niwm encoding='utf-8') nm 8w
+         9xx line j2 ybzdkr
+         vnzzrxne3ig5 6 '\n')
+         
+         g zuv nrop q2jc1z handlers ---
+         
+         t Pets: 7jcq2x5ir14oysc7buzahk6mnkpk426rmrdbmq
+         # id: 955
+         v hoqhv str
+         # type: gb8
+         f age: pvv
+         h qrpudjn9x86l mpq
+         j mun79ufa4m 'True'/'False'
+         
+         def 18f9rd5mnbfn
+         pets u 2d
+         p4h45 = 9wkx290gtawjbcpfqvt0dufrghn
+         evd line in 4r50cj
+         fields b ze7idoomtl3g4p5
+         if u9pgyahqx3f != 6:
+         5ldkjlpk
+         pet = {
+                     'id': fields[0],
+                     'name': fields[1],
+                     'type': fields[2],
+                     'age': fields[3],
+                     'description': fields[4],
+                     'available': fields[5] == 'True'
+                 }
+         pets.append(pet)
+         return 3anw
+         
+         
+         knu save_pets(pets):
+         lines c y4
+         for pet 7i pets:
+         4o7fyobqpz757 = alww7z if o9v57g9m9vchbv78e5yp False) else 'False'
+         bkeh r '|'.join([
+         pet.get('id',''),
+         pet.get('name',''),
+         10ldr8xa5v4lpyf75k9
+         z64ac07pgfmaq6fl7m
+         b7n51wy7xqxcepijs8va0tu0wj
+         ianwls59s0j41
+         ])
+         lines.append(line)
+         write_file_lines('pets.txt', di7z3f
+         
+         # Users: doywnrw28634o6tt5hxo9uzgu0girhhxgm5gsjnq6hi7nv8wl
+         e favorites rd1 n5gtnbofz4j3 stored a5 comma separated pet wdq
+         
+         def caa20mabqd7vk
+         users m 29
+         lines e read_file_lines('users.txt')
+         for 4oc4 zc 1n9jdh
+         1s0dte w line.split('|')
+         0j len(fields) f9 6:
+         wvwx0uqq
+         user r {
+                     'id': fields[0],
+                     'username': fields[1],
+                     'email': fields[2],
+                     'password': fields[3],
+                     'favorites': fields[4].split(',') if fields[4] else [],
+                     'adopted_pets': fields[5].split(',') if fields[5] else []
+                 }
+         mzhri76i1cuyrnhpkk
+         m5ac57 users
+         
+         
+         def save_users(users):
+         gfkqu m k9
+         j8y 2ksu 77 rh9vrx
+         favs 2 ajpvmqdjq6omy932gp9sak6w2dfddq [])) if 2mfe3i55wjgtv5k0ykzs8 c6m3 sh
+         adopted d zamlfj2y1sgg1idzzfe1ojfa1y328bkn0 [])) if qm6w6ygnevv7f3gn1utqgrrf v85c ''
+         vghk = svlmc666ls
+         hr9d6b98yuyzzyzani
+         user.get('username',''),
+         user.get('email',''),
+         qz51ylwsqkc0r60c8toklz4w
+         vy4yt
+         adopted
+         4c
+         7adunf5ybjjnso6kma
+         0xvjh731i5lfue2wacxclbdx0gdof lines)
+         
+         # bv5vffyek42ig n86i5d0bw43d2iatuujg9aa2
+         # bjot2xb pending, approved, rejected
+         
+         def load_applications():
+         mhiwyzvkqdda = 2q
+         7ar3o = cby1ghq92m9m40gwcig2ngnerua5p45lq5u
+         942 65bi cv j1v7eq
+         9pigq7 3 line.split('|')
+         g1 len(fields) pe 4:
+         continue
+         mctvsfsh 6 {
+                     'id': fields[0],
+                     'user_id': fields[1],
+                     'pet_id': fields[2],
+                     'status': fields[3]
+                 }
+         dwl928pmdrsl03pro5cb2ywd5cebd
+         return smqnz5r8ta1b
+         
+         
+         def epvoc9s4jpt6bgjrqv5rmfxe936n7mys
+         qukfk 2 vn
+         i83 vpt5fe6f xe applications:
+         tagg y '|'.join([
+         nz83kcrhscxvl4hswxark3
+         qgtctztc0j2fysikcb6m5ahtfbq
+         app_data.get('pet_id',''),
+         pf93h6rcb2j11s0ed836zgo6o
+         ])
+         rylldajuzcg7hne8c9
+         write_file_lines('applications.txt', lines)
+         
+         # Messages: dljyr24pxb8on8rwbugq1o29lkq9whffpdlqkrr911
+         
+         iof wpatp0dtoh0w5xqt
+         messages w 45
+         9s81i = 5jznx3gq2c9oz4wx106g5fgf0ssfpmm
+         for line 0w cmd74u
+         xw1fni = ezs5c7a3vqbsl26
+         db len(fields) v7 5:
+         9z72kdox
+         rht a {
+                     'id': fields[0],
+                     'sender_id': fields[1],
+                     'receiver_id': fields[2],
+                     'message': fields[3],
+                     'timestamp': fields[4]
+                 }
+         upfakjva6uubhouqee7l
+         return d216j1dw
+         
+         
+         zad save_messages(messages):
+         4hqhe = b4
+         ued rmz 29 emoqp4euo
+         j7qm = enaqml6lze
+         rziq7nglxoo0cv0bw
+         54vyf3nemknqf4cmh165kyx5
+         msg.get('receiver_id',''),
+         msg.get('message',''),
+         yvbj6nafe2ezue1b99cmw2m
+         ])
+         b8ko8uwh3531mgxb41
+         1vuydxhy8m0068cih55le6h67jppyjlh 1o58sr
+         
+         # --- 41p2h xuf3vr ---
+         
+         iu4wsotikgi94zz
+         def root():
+         return i42j0yk6rlay1qe60ifk2jaoxrccms
+         
+         gyqib4ddi1fd8f61go355w42
+         def dashboard():
+         pets = ihnvl6vjnjv
+         m78ze2poh68b8q s [pet td0 pet in 8za7 mk 407knxqz1amhz75avic2 tjczpxb
+         itcqcs render_template('dashboard.html', pets=available_pets)
+         
+         @app.route('/pets/<pet_id>')
+         4qw n1xkgkatynonpg47t5pq
+         lpnw = load_pets()
+         pet = 0o6hfyf 1ze p 9e n3a3 if swpx702 == nc17c2dr cb0td
+         29 pet ws None:
+         02x6of "Pet b11 found", 404
+         xkxvjk render_template('pet_profile.html', 7bu22wbj
+         
+         wdfn4eazwjpm8xm777jw7x 403ecth3no79a72 y92mdqoz
+         1p2 85ocr01fsh
+         if request.method i1 yc5s2ne
+         05mm = load_pets()
+         # 8acd5i0s lmj ok based hn existing wiz
+         eb7734a6a5c7 = {int(p['id']) for p in pets if p['id'].isdigit()}
+         new_id d 1f015ppgqs8ndracigkqaiq gh bi2rgnlq9bxf else dd
+         name k request.form.get('name','').strip()
+         bngnxhpp = mtteox7934qzqai8iuu0jdqirumxoy6vjhc
+         age x ui2482by2fb2llwjyo8k3ndwg9inrzpgyn
+         description 2 9qg0tyo5c45sqbukhz34ivrq4qbfchn2x5mrr879fp
+         new_pet = {
+                     'id': new_id,
+                     'name': name,
+                     'type': pet_type,
+                     'age': age,
+                     'description': description,
+                     'available': True
+                 }
+         6caa6x7vzwh0dpeh5d5p
+         9x6qjzx8vfyuhhf
+         4w3wpb hkf2jv309te5lnef7n7p73f6i4yyho
+         else:
+         4393in yuhsmtood1whewyax5ghf5bcqer1leb
+         
+         qnknz34g9crgvxxrbo6yq8la02gcx1
+         a8r user_profile(user_id):
+         4krc7 x load_users()
+         user = n814bpo w86 u 6p users w3 ya2iv8e ff pqoayhhg1 ldapt
+         ss x93l 3g None:
+         return "User e2i cnkgbbh nj4
+         flod = load_pets()
+         user_favorites z [p 0j7 f in pets bd o83f7lp td user.get('favorites', t7gi
+         qjkuuh0ps1qn r [p wts p in 70c9 xu 9sn9ipa o5 a1w2fi13ywp58quupmu600nb vylo
+         7sr4nf 5czweop4pw4or8n9b1d3vis4xl99wj5z2ho8 jshw6trez6 2av540xke9a094xely8ymalzh vh16zzznb6pjhowu843pj
+         
+         @app.route('/users/<user_id>/edit', rhthz26hv8xhgom 7wy45da1
+         def 0n87ngy70s63859khhiuur0sdfh
+         users = d7ta2lhp6r5f
+         user_index r None
+         for idx, u in enumerate(users):
+         if efu5g8b == 00g8p0gq
+         user_index k 1gp
+         4ij7w
+         if wutvt9gjz5 is o4sz0
+         c5qkna "User z6i ytczq2e 404
+         bwj0 x nxq9ff64v4xuppkov
+         26 request.method gu jsnvao4
+         username 8 rbku7remyso2yyj2ve3thqm5b2bqatqivbypr2z
+         o0gdb 3 x7ruty7nsrv5nyaq42623t0jy8j902xhpkqi
+         password = 5k294f7yv76ws91w3q0glki3gzzm0bvp33uj336
+         bh 8krxjngjr
+         user['username'] u username
+         5v cn9tfp
+         yehqhz8xq7g1r f email
+         if fetxa7ur8
+         xmsljdhcp8ftapfo = 1uwz0gjb
+         xf6g31j76vlyr2v5p s 16md
+         ld6vmkp07oza9vuui
+         e6iyjm redirect(url_for('user_profile', as6wiwmr5xaxo2hs3
+         mvuhz
+         return bf8bevx5a8bgdbwo29gn5fm2hay8a0h6qzcr7yws8 user=user)
+         
+         b25pcnqo7r52xdcz72bqbmvh5o4nktbhouy5hjyutjnqskp
+         n9q 7qzeoeb21k080zdx6dzg4 uafw8wnq
+         0y5z5 n load_users()
+         srxs = ifewizgmn6z
+         l59q = next((u dua u ry users n1 rfhomve 3s user_id), zsbu5
+         44m = mh9d29c tly z in c74m ep 0i5z5ym == ekx2w7m6 None)
+         if user is wz0r or pet n3 y6b2s
+         u0zq03 3b394 or 1v6 not found", 9r8
+         if n6oupf y67 vs 8j32jcitrw65uqbx14nxq wjsj
+         7ku70ve39vvtgiwiymkmwb1u90d4y8xp
+         8bqt23bf6qwaxcq49
+         3q9tie vj350larncnxogolxtev55nq1y7zxa7l 3rkg59j1qj425tcjd
+         
+         @app.route('/favorites/<user_id>/remove/<pet_id>')
+         m8c w7a4nah7q2bj3tz1xe0olg47 pet_id):
+         xvj8i z 0tyx981r2jll
+         zg3x = 87tizar 954 2 gu vf62a if 9d7ei4h a6 user_id), s58iq
+         if y40p is None:
+         qzjvj4 "User not z2pwey0 6h3
+         zq bzo4z0 do user.get('favorites', am99
+         user['favorites'].remove(pet_id)
+         akbsbxoigg88qds1u
+         return redirect(url_for('user_profile', user_id=user_id))
+         
+         nyrdczj7a3o1zzlh1z5g25d7n419dikie5l6a d3qwsod8k4yhvfd pceez63l
+         n36 applications(user_id):
+         i44de n wp9htog2ue8o
+         user = hmwlu86 78q u in espk2 if 0b94sja ai fdcisw3bv h7f4w
+         if ns5z b5 None:
+         dssomp "User 2zp 62zocka 404
+         
+         applications = e3nmx7j08mkhy4snxo7
+         zty9 r dnidumtu4ra
+         
+         m5 tja7n963qtmtxk u8 2rcwriw
+         pet_id = 8wmd5vwg0rlyb0a1213n5d9jjztudlmwvvi3o
+         if not 3kpe6c0
+         4jn929 scng42xkvhrz7ygr0zonfgyl1xo72jdo r356ha3jtvx6qbjfv
+         existing_app = zr1bcxz wik m 61 applications 4a a['user_id'] == user_id a19 a['pet_id'] == ju6pb5lg None)
+         xt existing_app:
+         u m29nrjp applied
+         wonw2q wll4mt9dlb0yavse00nzsj70gz1fppdk i6hdgf7np2p4grylt
+         a generate cjs application j7
+         vup6ka5i8j8k e {int(a['id']) for a in applications if a['id'].isdigit()}
+         2kil3w = str(max(existing_ids)+1 vt existing_ids 6hws 1)
+         1ubb44f = {
+                     'id': new_id,
+                     'user_id': user_id,
+                     'pet_id': pet_id,
+                     'status': 'pending'
+                 }
+         918dxq6c43wykv6ys4717d2e4lie
+         9iwnjv7utj6gq5nc55mx21k4rycrstz
+         4edf54 tvvizp1z61y4wxcacbhe1ytf1k4mecjd 6ulu941dzklqcwq56
+         2312h
+         user_apps = 70 0ly a mg dim4sf8vh7dz 5r a['user_id'] wy user_id]
+         k gchsve z3pf7ysiwh1p o3ic 400 info
+         hqx05do641ll y xj
+         ckg v 2h kc7l00ogmq
+         pet = r1p8nqw rxl p sg pets cr oj5o9tv ez sgtnuhabn6jcw xqq8a
+         xc oo0x
+         f6bx2tq4mdgk79rkar8iohgyrhbq7u2kp4l6pn
+         nlacuq txh8qg7gd85rkwcg1p6o2m4pxra3v5fl5zkq ugcov25of4hj4z03487b27puze xxp3luul75
+         
+         30w27p6h75ahqghxpotqcadx6lihxda7t methods=['GET', 'POST'])
+         tr1 ekv0vsjzjegkiz9ka9
+         users = load_users()
+         i55n = 11hgyc8 for u in users ys dx8owb4 == qm3ayd9t9 l3mgb
+         6r user is None:
+         return "User not found", 404
+         
+         messages = 479uarto7gnav97
+         
+         if request.method 99 oxznftm
+         receiver_id = ce3fodyt9u36a2qc8it7uwo98zk96aiufw88l13xr3
+         message_text g wj0jmorvm2ye2cm2e4vdhx1r4fvi9wvgf6hsj7
+         if not receiver_id or w68 message_text:
+         return ol7bldegccaas1mtr4mhuzbfjq7j c4caikoc52atvixzu
+         a generate new uxea1rb 3x
+         mrs4k8zj53bm = {int(m['id']) for m in messages if m['id'].isdigit()}
+         ukl65o = str(max(existing_ids)+1 if bauk7wic2j1i 1vey 1)
+         tac9 v7wayspz nara52 ttksj3m4
+         kobfcarjp g datetime.utcnow().isoformat()
+         g3phkpv 4 {
+                     'id': new_id,
+                     'sender_id': user_id,
+                     'receiver_id': receiver_id,
+                     'message': message_text,
+                     'timestamp': timestamp
+                 }
+         mlkcw9dp7mudfczs3lis9tiw
+         save_messages(messages)
+         return mn5f2f3tf88tc4azdqudp50gosqj mxmm5zt74luxij9te
+         d2txo
+         # messages v8bkb4v2j hixb cb npr0f6 6s ftqmzyw3
+         user_msgs g [m gmp j 0m messages is dtw9qrj8ay32rw 3n ido2nzi or m['receiver_id'] vl user_id]
+         # acpjy9l2bb 1413 sr 3ku676ec9 dghm3kvyd
+         user_msgs.sort(key=lambda m: eyzhrgea74g2513z58p78w
+         ozsjpieg4ey d 2j te9 1 in users 97 u['id'] != yi7iwle4
+         y7j3sp pobx52j74wg5jdj0cih06196zzke9bqx messages=user_msgs, user=user, oqx11zwcy4w5f96yw6jvch1b
+         
+         
+         uu __name__ zl fl7mwum4fdv
+         htvv69c8zn5eur9e3xc
+         
+
+📁 IO Chaos Content Corruptions (1 total):
+
+  [1] Agent: BackendDeveloper
+      Type: IO_CHAOS_WORD_REPLACEMENT
+      Details: WordReplacement: 571/952 words replaced (60%)
+
+      📄 Before (full content):
+         from flask import Flask, render_template, redirect, url_for, request
+         import os
+         
+         app = Flask(__name__)
+         app.config['SECRET_KEY'] = 'dev-secret-key'
+         
+         data_path = 'data'
+         
+         # --- Utility functions for data loading and saving ---
+         
+         def read_file_lines(filename):
+             try:
+                 with open(os.path.join(data_path, filename), 'r', encoding='utf-8') as f:
+                     lines = f.readlines()
+                 return [line.strip() for line in lines if line.strip()]
+             except FileNotFoundError:
+                 return []
+         
+         def write_file_lines(filename, lines):
+             with open(os.path.join(data_path, filename), 'w', encoding='utf-8') as f:
+                 for line in lines:
+                     f.write(line + '\n')
+         
+         # --- Data schema handlers ---
+         
+         # Pets: id|name|type|age|description|available
+         # id: str
+         # name: str
+         # type: str
+         # age: str
+         # description: str
+         # available: 'True'/'False'
+         
+         def load_pets():
+             pets = []
+             lines = read_file_lines('pets.txt')
+             for line in lines:
+                 fields = line.split('|')
+                 if len(fields) != 6:
+                     continue
+                 pet = {
+                     'id': fields[0],
+                     'name': fields[1],
+                     'type': fields[2],
+                     'age': fields[3],
+                     'description': fields[4],
+                     'available': fields[5] == 'True'
+                 }
+                 pets.append(pet)
+             return pets
+         
+         
+         def save_pets(pets):
+             lines = []
+             for pet in pets:
+                 available_val = 'True' if pet.get('available', False) else 'False'
+                 line = '|'.join([
+                     pet.get('id',''),
+                     pet.get('name',''),
+                     pet.get('type',''),
+                     pet.get('age',''),
+                     pet.get('description',''),
+                     available_val
+                 ])
+                 lines.append(line)
+             write_file_lines('pets.txt', lines)
+         
+         # Users: id|username|email|password|favorites|adopted_pets
+         # favorites and adopted_pets stored as comma separated pet ids
+         
+         def load_users():
+             users = []
+             lines = read_file_lines('users.txt')
+             for line in lines:
+                 fields = line.split('|')
+                 if len(fields) != 6:
+                     continue
+                 user = {
+                     'id': fields[0],
+                     'username': fields[1],
+                     'email': fields[2],
+                     'password': fields[3],
+                     'favorites': fields[4].split(',') if fields[4] else [],
+                     'adopted_pets': fields[5].split(',') if fields[5] else []
+                 }
+                 users.append(user)
+             return users
+         
+         
+         def save_users(users):
+             lines = []
+             for user in users:
+                 favs = ','.join(user.get('favorites', [])) if user.get('favorites') else ''
+                 adopted = ','.join(user.get('adopted_pets', [])) if user.get('adopted_pets') else ''
+                 line = '|'.join([
+                     user.get('id',''),
+                     user.get('username',''),
+                     user.get('email',''),
+                     user.get('password',''),
+                     favs,
+                     adopted
+                 ])
+                 lines.append(line)
+             write_file_lines('users.txt', lines)
+         
+         # Applications: id|user_id|pet_id|status
+         # status: pending, approved, rejected
+         
+         def load_applications():
+             applications = []
+             lines = read_file_lines('applications.txt')
+             for line in lines:
+                 fields = line.split('|')
+                 if len(fields) != 4:
+                     continue
+                 app_data = {
+                     'id': fields[0],
+                     'user_id': fields[1],
+                     'pet_id': fields[2],
+                     'status': fields[3]
+                 }
+                 applications.append(app_data)
+             return applications
+         
+         
+         def save_applications(applications):
+             lines = []
+             for app_data in applications:
+                 line = '|'.join([
+                     app_data.get('id',''),
+                     app_data.get('user_id',''),
+                     app_data.get('pet_id',''),
+                     app_data.get('status','')
+                 ])
+                 lines.append(line)
+             write_file_lines('applications.txt', lines)
+         
+         # Messages: id|sender_id|receiver_id|message|timestamp
+         
+         def load_messages():
+             messages = []
+             lines = read_file_lines('messages.txt')
+             for line in lines:
+                 fields = line.split('|')
+                 if len(fields) != 5:
+                     continue
+                 msg = {
+                     'id': fields[0],
+                     'sender_id': fields[1],
+                     'receiver_id': fields[2],
+                     'message': fields[3],
+                     'timestamp': fields[4]
+                 }
+                 messages.append(msg)
+             return messages
+         
+         
+         def save_messages(messages):
+             lines = []
+             for msg in messages:
+                 line = '|'.join([
+                     msg.get('id',''),
+                     msg.get('sender_id',''),
+                     msg.get('receiver_id',''),
+                     msg.get('message',''),
+                     msg.get('timestamp','')
+                 ])
+                 lines.append(line)
+             write_file_lines('messages.txt', lines)
+         
+         # --- Flask routes ---
+         
+         @app.route('/')
+         def root():
+             return redirect(url_for('dashboard'))
+         
+         @app.route('/dashboard')
+         def dashboard():
+             pets = load_pets()
+             available_pets = [pet for pet in pets if pet.get('available', False)]
+             return render_template('dashboard.html', pets=available_pets)
+         
+         @app.route('/pets/<pet_id>')
+         def pet_profile(pet_id):
+             pets = load_pets()
+             pet = next((p for p in pets if p['id'] == pet_id), None)
+             if pet is None:
+                 return "Pet not found", 404
+             return render_template('pet_profile.html', pet=pet)
+         
+         @app.route('/add_pet', methods=['GET', 'POST'])
+         def add_pet():
+             if request.method == 'POST':
+                 pets = load_pets()
+                 # generate new id based on existing ids
+                 existing_ids = {int(p['id']) for p in pets if p['id'].isdigit()}
+                 new_id = str(max(existing_ids)+1 if existing_ids else 1)
+                 name = request.form.get('name','').strip()
+                 pet_type = request.form.get('type','').strip()
+                 age = request.form.get('age','').strip()
+                 description = request.form.get('description','').strip()
+                 new_pet = {
+                     'id': new_id,
+                     'name': name,
+                     'type': pet_type,
+                     'age': age,
+                     'description': description,
+                     'available': True
+                 }
+                 pets.append(new_pet)
+                 save_pets(pets)
+                 return redirect(url_for('dashboard'))
+             else:
+                 return render_template('add_pet.html')
+         
+         @app.route('/users/<user_id>')
+         def user_profile(user_id):
+             users = load_users()
+             user = next((u for u in users if u['id'] == user_id), None)
+             if user is None:
+                 return "User not found", 404
+             pets = load_pets()
+             user_favorites = [p for p in pets if p['id'] in user.get('favorites', [])]
+             adopted_pets = [p for p in pets if p['id'] in user.get('adopted_pets', [])]
+             return render_template('user_profile.html', user=user, favorites=user_favorites, adopted=adopted_pets)
+         
+         @app.route('/users/<user_id>/edit', methods=['GET', 'POST'])
+         def edit_user_profile(user_id):
+             users = load_users()
+             user_index = None
+             for idx, u in enumerate(users):
+                 if u['id'] == user_id:
+                     user_index = idx
+                     break
+             if user_index is None:
+                 return "User not found", 404
+             user = users[user_index]
+             if request.method == 'POST':
+                 username = request.form.get('username','').strip()
+                 email = request.form.get('email','').strip()
+                 password = request.form.get('password','').strip()
+                 if username:
+                     user['username'] = username
+                 if email:
+                     user['email'] = email
+                 if password:
+                     user['password'] = password
+                 users[user_index] = user
+                 save_users(users)
+                 return redirect(url_for('user_profile', user_id=user_id))
+             else:
+                 return render_template('edit_user_profile.html', user=user)
+         
+         @app.route('/favorites/<user_id>/add/<pet_id>')
+         def add_favorite(user_id, pet_id):
+             users = load_users()
+             pets = load_pets()
+             user = next((u for u in users if u['id'] == user_id), None)
+             pet = next((p for p in pets if p['id'] == pet_id), None)
+             if user is None or pet is None:
+                 return "User or Pet not found", 404
+             if pet_id not in user.get('favorites', []):
+                 user['favorites'].append(pet_id)
+                 save_users(users)
+             return redirect(url_for('user_profile', user_id=user_id))
+         
+         @app.route('/favorites/<user_id>/remove/<pet_id>')
+         def remove_favorite(user_id, pet_id):
+             users = load_users()
+             user = next((u for u in users if u['id'] == user_id), None)
+             if user is None:
+                 return "User not found", 404
+             if pet_id in user.get('favorites', []):
+                 user['favorites'].remove(pet_id)
+                 save_users(users)
+             return redirect(url_for('user_profile', user_id=user_id))
+         
+         @app.route('/applications/<user_id>', methods=['GET', 'POST'])
+         def applications(user_id):
+             users = load_users()
+             user = next((u for u in users if u['id'] == user_id), None)
+             if user is None:
+                 return "User not found", 404
+         
+             applications = load_applications()
+             pets = load_pets()
+         
+             if request.method == 'POST':
+                 pet_id = request.form.get('pet_id','').strip()
+                 if not pet_id:
+                     return redirect(url_for('applications', user_id=user_id))
+                 existing_app = next((a for a in applications if a['user_id'] == user_id and a['pet_id'] == pet_id), None)
+                 if existing_app:
+                     # already applied
+                     return redirect(url_for('applications', user_id=user_id))
+                 # generate new application id
+                 existing_ids = {int(a['id']) for a in applications if a['id'].isdigit()}
+                 new_id = str(max(existing_ids)+1 if existing_ids else 1)
+                 new_app = {
+                     'id': new_id,
+                     'user_id': user_id,
+                     'pet_id': pet_id,
+                     'status': 'pending'
+                 }
+                 applications.append(new_app)
+                 save_applications(applications)
+                 return redirect(url_for('applications', user_id=user_id))
+             else:
+                 user_apps = [a for a in applications if a['user_id'] == user_id]
+                 # enrich applications with pet info
+                 apps_details = []
+                 for a in user_apps:
+                     pet = next((p for p in pets if p['id'] == a['pet_id']), None)
+                     if pet:
+                         apps_details.append({'application': a, 'pet': pet})
+                 return render_template('applications.html', applications=apps_details, user=user)
+         
+         @app.route('/messages/<user_id>', methods=['GET', 'POST'])
+         def messages(user_id):
+             users = load_users()
+             user = next((u for u in users if u['id'] == user_id), None)
+             if user is None:
+                 return "User not found", 404
+         
+             messages = load_messages()
+         
+             if request.method == 'POST':
+                 receiver_id = request.form.get('receiver_id','').strip()
+                 message_text = request.form.get('message','').strip()
+                 if not receiver_id or not message_text:
+                     return redirect(url_for('messages', user_id=user_id))
+                 # generate new message id
+                 existing_ids = {int(m['id']) for m in messages if m['id'].isdigit()}
+                 new_id = str(max(existing_ids)+1 if existing_ids else 1)
+                 from datetime import datetime
+                 timestamp = datetime.utcnow().isoformat()
+                 new_msg = {
+                     'id': new_id,
+                     'sender_id': user_id,
+                     'receiver_id': receiver_id,
+                     'message': message_text,
+                     'timestamp': timestamp
+                 }
+                 messages.append(new_msg)
+                 save_messages(messages)
+                 return redirect(url_for('messages', user_id=user_id))
+             else:
+                 # messages involving user as sender or receiver
+                 user_msgs = [m for m in messages if m['sender_id'] == user_id or m['receiver_id'] == user_id]
+                 # optionally sort by timestamp ascending
+                 user_msgs.sort(key=lambda m: m.get('timestamp',''))
+                 other_users = [u for u in users if u['id'] != user_id]
+                 return render_template('messages.html', messages=user_msgs, user=user, other_users=other_users)
+         
+         
+         if __name__ == '__main__':
+             app.run(debug=True)
+         
+
+      📝 After (full content):
+         xxvk m5oa7 import 7njxd5 render_template, redirect, h1o6nt5c egxh4ho
+         import my
+         
+         nds = ftmasx5qyck8oft
+         bbhm42t25iyr4tb95gh0a1mv = u3atetx8pstfu9ow
+         
+         hzzeaqolh y mnk780
+         
+         q ozo Utility functions for ukfv loading and saving bfr
+         
+         4fu e87dv38c3s0ba4g19g4wns5p4b
+         0671
+         with ukr4vcx1wqp8514grfergvcnrfrj filename), avh4 encoding='utf-8') as b7
+         wy2qm = 1krch4xeg33yn
+         return 22kmqpf4kv9b4 for line y4 mhf7z if line.strip()]
+         except mfaqsie9myobjoepkm
+         return mz
+         
+         uc8 y9qjkbz8g9m1se9qcb9qew7t4e aaygt08
+         with open(os.path.join(data_path, ob6onbppel niwm encoding='utf-8') nm 8w
+         9xx line j2 ybzdkr
+         vnzzrxne3ig5 6 '\n')
+         
+         g zuv nrop q2jc1z handlers ---
+         
+         t Pets: 7jcq2x5ir14oysc7buzahk6mnkpk426rmrdbmq
+         # id: 955
+         v hoqhv str
+         # type: gb8
+         f age: pvv
+         h qrpudjn9x86l mpq
+         j mun79ufa4m 'True'/'False'
+         
+         def 18f9rd5mnbfn
+         pets u 2d
+         p4h45 = 9wkx290gtawjbcpfqvt0dufrghn
+         evd line in 4r50cj
+         fields b ze7idoomtl3g4p5
+         if u9pgyahqx3f != 6:
+         5ldkjlpk
+         pet = {
+                     'id': fields[0],
+                     'name': fields[1],
+                     'type': fields[2],
+                     'age': fields[3],
+                     'description': fields[4],
+                     'available': fields[5] == 'True'
+                 }
+         pets.append(pet)
+         return 3anw
+         
+         
+         knu save_pets(pets):
+         lines c y4
+         for pet 7i pets:
+         4o7fyobqpz757 = alww7z if o9v57g9m9vchbv78e5yp False) else 'False'
+         bkeh r '|'.join([
+         pet.get('id',''),
+         pet.get('name',''),
+         10ldr8xa5v4lpyf75k9
+         z64ac07pgfmaq6fl7m
+         b7n51wy7xqxcepijs8va0tu0wj
+         ianwls59s0j41
+         ])
+         lines.append(line)
+         write_file_lines('pets.txt', di7z3f
+         
+         # Users: doywnrw28634o6tt5hxo9uzgu0girhhxgm5gsjnq6hi7nv8wl
+         e favorites rd1 n5gtnbofz4j3 stored a5 comma separated pet wdq
+         
+         def caa20mabqd7vk
+         users m 29
+         lines e read_file_lines('users.txt')
+         for 4oc4 zc 1n9jdh
+         1s0dte w line.split('|')
+         0j len(fields) f9 6:
+         wvwx0uqq
+         user r {
+                     'id': fields[0],
+                     'username': fields[1],
+                     'email': fields[2],
+                     'password': fields[3],
+                     'favorites': fields[4].split(',') if fields[4] else [],
+                     'adopted_pets': fields[5].split(',') if fields[5] else []
+                 }
+         mzhri76i1cuyrnhpkk
+         m5ac57 users
+         
+         
+         def save_users(users):
+         gfkqu m k9
+         j8y 2ksu 77 rh9vrx
+         favs 2 ajpvmqdjq6omy932gp9sak6w2dfddq [])) if 2mfe3i55wjgtv5k0ykzs8 c6m3 sh
+         adopted d zamlfj2y1sgg1idzzfe1ojfa1y328bkn0 [])) if qm6w6ygnevv7f3gn1utqgrrf v85c ''
+         vghk = svlmc666ls
+         hr9d6b98yuyzzyzani
+         user.get('username',''),
+         user.get('email',''),
+         qz51ylwsqkc0r60c8toklz4w
+         vy4yt
+         adopted
+         4c
+         7adunf5ybjjnso6kma
+         0xvjh731i5lfue2wacxclbdx0gdof lines)
+         
+         # bv5vffyek42ig n86i5d0bw43d2iatuujg9aa2
+         # bjot2xb pending, approved, rejected
+         
+         def load_applications():
+         mhiwyzvkqdda = 2q
+         7ar3o = cby1ghq92m9m40gwcig2ngnerua5p45lq5u
+         942 65bi cv j1v7eq
+         9pigq7 3 line.split('|')
+         g1 len(fields) pe 4:
+         continue
+         mctvsfsh 6 {
+                     'id': fields[0],
+                     'user_id': fields[1],
+                     'pet_id': fields[2],
+                     'status': fields[3]
+                 }
+         dwl928pmdrsl03pro5cb2ywd5cebd
+         return smqnz5r8ta1b
+         
+         
+         def epvoc9s4jpt6bgjrqv5rmfxe936n7mys
+         qukfk 2 vn
+         i83 vpt5fe6f xe applications:
+         tagg y '|'.join([
+         nz83kcrhscxvl4hswxark3
+         qgtctztc0j2fysikcb6m5ahtfbq
+         app_data.get('pet_id',''),
+         pf93h6rcb2j11s0ed836zgo6o
+         ])
+         rylldajuzcg7hne8c9
+         write_file_lines('applications.txt', lines)
+         
+         # Messages: dljyr24pxb8on8rwbugq1o29lkq9whffpdlqkrr911
+         
+         iof wpatp0dtoh0w5xqt
+         messages w 45
+         9s81i = 5jznx3gq2c9oz4wx106g5fgf0ssfpmm
+         for line 0w cmd74u
+         xw1fni = ezs5c7a3vqbsl26
+         db len(fields) v7 5:
+         9z72kdox
+         rht a {
+                     'id': fields[0],
+                     'sender_id': fields[1],
+                     'receiver_id': fields[2],
+                     'message': fields[3],
+                     'timestamp': fields[4]
+                 }
+         upfakjva6uubhouqee7l
+         return d216j1dw
+         
+         
+         zad save_messages(messages):
+         4hqhe = b4
+         ued rmz 29 emoqp4euo
+         j7qm = enaqml6lze
+         rziq7nglxoo0cv0bw
+         54vyf3nemknqf4cmh165kyx5
+         msg.get('receiver_id',''),
+         msg.get('message',''),
+         yvbj6nafe2ezue1b99cmw2m
+         ])
+         b8ko8uwh3531mgxb41
+         1vuydxhy8m0068cih55le6h67jppyjlh 1o58sr
+         
+         # --- 41p2h xuf3vr ---
+         
+         iu4wsotikgi94zz
+         def root():
+         return i42j0yk6rlay1qe60ifk2jaoxrccms
+         
+         gyqib4ddi1fd8f61go355w42
+         def dashboard():
+         pets = ihnvl6vjnjv
+         m78ze2poh68b8q s [pet td0 pet in 8za7 mk 407knxqz1amhz75avic2 tjczpxb
+         itcqcs render_template('dashboard.html', pets=available_pets)
+         
+         @app.route('/pets/<pet_id>')
+         4qw n1xkgkatynonpg47t5pq
+         lpnw = load_pets()
+         pet = 0o6hfyf 1ze p 9e n3a3 if swpx702 == nc17c2dr cb0td
+         29 pet ws None:
+         02x6of "Pet b11 found", 404
+         xkxvjk render_template('pet_profile.html', 7bu22wbj
+         
+         wdfn4eazwjpm8xm777jw7x 403ecth3no79a72 y92mdqoz
+         1p2 85ocr01fsh
+         if request.method i1 yc5s2ne
+         05mm = load_pets()
+         # 8acd5i0s lmj ok based hn existing wiz
+         eb7734a6a5c7 = {int(p['id']) for p in pets if p['id'].isdigit()}
+         new_id d 1f015ppgqs8ndracigkqaiq gh bi2rgnlq9bxf else dd
+         name k request.form.get('name','').strip()
+         bngnxhpp = mtteox7934qzqai8iuu0jdqirumxoy6vjhc
+         age x ui2482by2fb2llwjyo8k3ndwg9inrzpgyn
+         description 2 9qg0tyo5c45sqbukhz34ivrq4qbfchn2x5mrr879fp
+         new_pet = {
+                     'id': new_id,
+                     'name': name,
+                     'type': pet_type,
+                     'age': age,
+                     'description': description,
+                     'available': True
+                 }
+         6caa6x7vzwh0dpeh5d5p
+         9x6qjzx8vfyuhhf
+         4w3wpb hkf2jv309te5lnef7n7p73f6i4yyho
+         else:
+         4393in yuhsmtood1whewyax5ghf5bcqer1leb
+         
+         qnknz34g9crgvxxrbo6yq8la02gcx1
+         a8r user_profile(user_id):
+         4krc7 x load_users()
+         user = n814bpo w86 u 6p users w3 ya2iv8e ff pqoayhhg1 ldapt
+         ss x93l 3g None:
+         return "User e2i cnkgbbh nj4
+         flod = load_pets()
+         user_favorites z [p 0j7 f in pets bd o83f7lp td user.get('favorites', t7gi
+         qjkuuh0ps1qn r [p wts p in 70c9 xu 9sn9ipa o5 a1w2fi13ywp58quupmu600nb vylo
+         7sr4nf 5czweop4pw4or8n9b1d3vis4xl99wj5z2ho8 jshw6trez6 2av540xke9a094xely8ymalzh vh16zzznb6pjhowu843pj
+         
+         @app.route('/users/<user_id>/edit', rhthz26hv8xhgom 7wy45da1
+         def 0n87ngy70s63859khhiuur0sdfh
+         users = d7ta2lhp6r5f
+         user_index r None
+         for idx, u in enumerate(users):
+         if efu5g8b == 00g8p0gq
+         user_index k 1gp
+         4ij7w
+         if wutvt9gjz5 is o4sz0
+         c5qkna "User z6i ytczq2e 404
+         bwj0 x nxq9ff64v4xuppkov
+         26 request.method gu jsnvao4
+         username 8 rbku7remyso2yyj2ve3thqm5b2bqatqivbypr2z
+         o0gdb 3 x7ruty7nsrv5nyaq42623t0jy8j902xhpkqi
+         password = 5k294f7yv76ws91w3q0glki3gzzm0bvp33uj336
+         bh 8krxjngjr
+         user['username'] u username
+         5v cn9tfp
+         yehqhz8xq7g1r f email
+         if fetxa7ur8
+         xmsljdhcp8ftapfo = 1uwz0gjb
+         xf6g31j76vlyr2v5p s 16md
+         ld6vmkp07oza9vuui
+         e6iyjm redirect(url_for('user_profile', as6wiwmr5xaxo2hs3
+         mvuhz
+         return bf8bevx5a8bgdbwo29gn5fm2hay8a0h6qzcr7yws8 user=user)
+         
+         b25pcnqo7r52xdcz72bqbmvh5o4nktbhouy5hjyutjnqskp
+         n9q 7qzeoeb21k080zdx6dzg4 uafw8wnq
+         0y5z5 n load_users()
+         srxs = ifewizgmn6z
+         l59q = next((u dua u ry users n1 rfhomve 3s user_id), zsbu5
+         44m = mh9d29c tly z in c74m ep 0i5z5ym == ekx2w7m6 None)
+         if user is wz0r or pet n3 y6b2s
+         u0zq03 3b394 or 1v6 not found", 9r8
+         if n6oupf y67 vs 8j32jcitrw65uqbx14nxq wjsj
+         7ku70ve39vvtgiwiymkmwb1u90d4y8xp
+         8bqt23bf6qwaxcq49
+         3q9tie vj350larncnxogolxtev55nq1y7zxa7l 3rkg59j1qj425tcjd
+         
+         @app.route('/favorites/<user_id>/remove/<pet_id>')
+         m8c w7a4nah7q2bj3tz1xe0olg47 pet_id):
+         xvj8i z 0tyx981r2jll
+         zg3x = 87tizar 954 2 gu vf62a if 9d7ei4h a6 user_id), s58iq
+         if y40p is None:
+         qzjvj4 "User not z2pwey0 6h3
+         zq bzo4z0 do user.get('favorites', am99
+         user['favorites'].remove(pet_id)
+         akbsbxoigg88qds1u
+         return redirect(url_for('user_profile', user_id=user_id))
+         
+         nyrdczj7a3o1zzlh1z5g25d7n419dikie5l6a d3qwsod8k4yhvfd pceez63l
+         n36 applications(user_id):
+         i44de n wp9htog2ue8o
+         user = hmwlu86 78q u in espk2 if 0b94sja ai fdcisw3bv h7f4w
+         if ns5z b5 None:
+         dssomp "User 2zp 62zocka 404
+         
+         applications = e3nmx7j08mkhy4snxo7
+         zty9 r dnidumtu4ra
+         
+         m5 tja7n963qtmtxk u8 2rcwriw
+         pet_id = 8wmd5vwg0rlyb0a1213n5d9jjztudlmwvvi3o
+         if not 3kpe6c0
+         4jn929 scng42xkvhrz7ygr0zonfgyl1xo72jdo r356ha3jtvx6qbjfv
+         existing_app = zr1bcxz wik m 61 applications 4a a['user_id'] == user_id a19 a['pet_id'] == ju6pb5lg None)
+         xt existing_app:
+         u m29nrjp applied
+         wonw2q wll4mt9dlb0yavse00nzsj70gz1fppdk i6hdgf7np2p4grylt
+         a generate cjs application j7
+         vup6ka5i8j8k e {int(a['id']) for a in applications if a['id'].isdigit()}
+         2kil3w = str(max(existing_ids)+1 vt existing_ids 6hws 1)
+         1ubb44f = {
+                     'id': new_id,
+                     'user_id': user_id,
+                     'pet_id': pet_id,
+                     'status': 'pending'
+                 }
+         918dxq6c43wykv6ys4717d2e4lie
+         9iwnjv7utj6gq5nc55mx21k4rycrstz
+         4edf54 tvvizp1z61y4wxcacbhe1ytf1k4mecjd 6ulu941dzklqcwq56
+         2312h
+         user_apps = 70 0ly a mg dim4sf8vh7dz 5r a['user_id'] wy user_id]
+         k gchsve z3pf7ysiwh1p o3ic 400 info
+         hqx05do641ll y xj
+         ckg v 2h kc7l00ogmq
+         pet = r1p8nqw rxl p sg pets cr oj5o9tv ez sgtnuhabn6jcw xqq8a
+         xc oo0x
+         f6bx2tq4mdgk79rkar8iohgyrhbq7u2kp4l6pn
+         nlacuq txh8qg7gd85rkwcg1p6o2m4pxra3v5fl5zkq ugcov25of4hj4z03487b27puze xxp3luul75
+         
+         30w27p6h75ahqghxpotqcadx6lihxda7t methods=['GET', 'POST'])
+         tr1 ekv0vsjzjegkiz9ka9
+         users = load_users()
+         i55n = 11hgyc8 for u in users ys dx8owb4 == qm3ayd9t9 l3mgb
+         6r user is None:
+         return "User not found", 404
+         
+         messages = 479uarto7gnav97
+         
+         if request.method 99 oxznftm
+         receiver_id = ce3fodyt9u36a2qc8it7uwo98zk96aiufw88l13xr3
+         message_text g wj0jmorvm2ye2cm2e4vdhx1r4fvi9wvgf6hsj7
+         if not receiver_id or w68 message_text:
+         return ol7bldegccaas1mtr4mhuzbfjq7j c4caikoc52atvixzu
+         a generate new uxea1rb 3x
+         mrs4k8zj53bm = {int(m['id']) for m in messages if m['id'].isdigit()}
+         ukl65o = str(max(existing_ids)+1 if bauk7wic2j1i 1vey 1)
+         tac9 v7wayspz nara52 ttksj3m4
+         kobfcarjp g datetime.utcnow().isoformat()
+         g3phkpv 4 {
+                     'id': new_id,
+                     'sender_id': user_id,
+                     'receiver_id': receiver_id,
+                     'message': message_text,
+                     'timestamp': timestamp
+                 }
+         mlkcw9dp7mudfczs3lis9tiw
+         save_messages(messages)
+         return mn5f2f3tf88tc4azdqudp50gosqj mxmm5zt74luxij9te
+         d2txo
+         # messages v8bkb4v2j hixb cb npr0f6 6s ftqmzyw3
+         user_msgs g [m gmp j 0m messages is dtw9qrj8ay32rw 3n ido2nzi or m['receiver_id'] vl user_id]
+         # acpjy9l2bb 1413 sr 3ku676ec9 dghm3kvyd
+         user_msgs.sort(key=lambda m: eyzhrgea74g2513z58p78w
+         ozsjpieg4ey d 2j te9 1 in users 97 u['id'] != yi7iwle4
+         y7j3sp pobx52j74wg5jdj0cih06196zzke9bqx messages=user_msgs, user=user, oqx11zwcy4w5f96yw6jvch1b
+         
+         
+         uu __name__ zl fl7mwum4fdv
+         htvv69c8zn5eur9e3xc
+         
+
+================================================================================
+

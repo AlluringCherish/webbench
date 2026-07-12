@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Featured Locations</title>
+</head>
+<body>
+    <div id="locations-page">
+        <h1>Featured Locations</h1>
+        <label for="location-sort">Sort Locations:</label>
+        <select id="location-sort" name="location_sort">
+            <option value="">--Select--</option>
+            <option value="name_asc">Name (A-Z)</option>
+            <option value="name_desc">Name (Z-A)</option>
+            <option value="avg_price_asc">Average Price (Low to High)</option>
+            <option value="avg_price_desc">Average Price (High to Low)</option>
+            <option value="property_count_asc">Property Count (Low to High)</option>
+            <option value="property_count_desc">Property Count (High to Low)</option>
+        </select>
+        <div id="locations-list">
+            {% for location in locations %}
+            <div class="location-card">
+                <h2>{{ location.location_name }}</h2>
+                <p>Region: {{ location.region }}</p>
+                <p>Average Price: ${{ "{:,}"|format(location.average_price) }}</p>
+                <p>Number of Properties: {{ location.property_count }}</p>
+                <button id="view-location-button-{{ location.location_id }}" onclick="window.location.href='{{ url_for('property_search') }}?location={{ location.location_name }}'">View Properties</button>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Air Quality Index</title>
+</head>
+<body>
+    <div id="air-quality-page">
+        <h1>Air Quality Index</h1>
+
+        <label for="location-aqi-filter">Filter by Location:</label>
+        <select id="location-aqi-filter" name="location_id" onchange="location.href='{{ url_for('air_quality_page') }}?location_id=' + this.value">
+            <option value="" {% if selected_location_id is none %}selected{% endif %}>All Locations</option>
+            {% for location in locations %}
+                <option value="{{ location.location_id }}" {% if selected_location_id == location.location_id %}selected{% endif %}>{{ location.location_name }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="aqi-display">
+            {% if air_quality_data|length > 0 %}
+                {% set data = air_quality_data[0] %}
+                <p>AQI Value: {{ data.aqi_index }}</p>
+
+                <div id="aqi-description">
+                    {% if data.aqi_index <= 50 %}
+                        <p>Good</p>
+                    {% elif data.aqi_index <= 100 %}
+                        <p>Moderate</p>
+                    {% elif data.aqi_index <= 150 %}
+                        <p>Unhealthy for Sensitive Groups</p>
+                    {% elif data.aqi_index <= 200 %}
+                        <p>Unhealthy</p>
+                    {% elif data.aqi_index <= 300 %}
+                        <p>Very Unhealthy</p>
+                    {% else %}
+                        <p>Hazardous</p>
+                    {% endif %}
+                </div>
+
+                <table id="pollution-details" border="1">
+                    <thead>
+                        <tr>
+                            <th>PM2.5</th>
+                            <th>PM10</th>
+                            <th>NO2</th>
+                            <th>O3</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ data.pm25 }}</td>
+                            <td>{{ data.pm10 }}</td>
+                            <td>{{ data.no2 }}</td>
+                            <td>{{ data.o3 }}</td>
+                            <td>{{ data.last_updated }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div id="health-recommendation">
+                    <p>{{ health_recommendation }}</p>
+                </div>
+            {% else %}
+                <p>No Air Quality Data Available.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

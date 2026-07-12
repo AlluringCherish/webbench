@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Available Pets</title>
+</head>
+<body>
+  <div id="pet-listings-page">
+    <h1>Available Pets</h1>
+    <form method="POST" action="{{ url_for('pets_listing') }}">
+      <input type="text" id="search-input" name="search_input" value="{{ search_text }}" placeholder="Search pets..." />
+      <select id="filter-species" name="filter_species">
+        <option value="All" {% if filter_species == 'All' %}selected{% endif %}>All</option>
+        <option value="Dog" {% if filter_species == 'Dog' %}selected{% endif %}>Dog</option>
+        <option value="Cat" {% if filter_species == 'Cat' %}selected{% endif %}>Cat</option>
+        <option value="Bird" {% if filter_species == 'Bird' %}selected{% endif %}>Bird</option>
+        <option value="Rabbit" {% if filter_species == 'Rabbit' %}selected{% endif %}>Rabbit</option>
+        <option value="Other" {% if filter_species == 'Other' %}selected{% endif %}>Other</option>
+      </select>
+      <button type="submit">Filter</button>
+    </form>
+    <div id="pet-grid">
+      {% for pet in pets %}
+      <div id="pet-card-{{ pet.pet_id }}">
+        <h3>{{ pet.name }}</h3>
+        <p><strong>Species:</strong> {{ pet.species }}</p>
+        <p><strong>Breed:</strong> {{ pet.breed }}</p>
+        <p><strong>Age:</strong> {{ pet.age }}</p>
+        <p><strong>Gender:</strong> {{ pet.gender }}</p>
+        <p><strong>Size:</strong> {{ pet.size }}</p>
+        <p><strong>Status:</strong> {{ pet.status }}</p>
+        <p><strong>Date Added:</strong> {{ pet.date_added }}</p>
+        <button onclick="window.location.href='{{ url_for('pet_details', pet_id=pet.pet_id) }}'">View Details</button>
+      </div>
+      {% endfor %}
+    </div>
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+  </div>
+</body>
+</html>

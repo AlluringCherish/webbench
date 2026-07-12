@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Details</title>
+</head>
+<body>
+    <div id="book-details-page">
+        <h1 id="book-title">{{ book.title }}</h1>
+        <div id="book-author">Author: {{ book.author }}</div>
+        <div>ISBN: {{ book.isbn }}</div>
+        <div>Genre: {{ book.genre }}</div>
+        <div>Publisher: {{ book.publisher }}</div>
+        <div>Year Published: {{ book.year }}</div>
+        <div>{{ book.description }}</div>
+        <div id="book-status">Status: {{ book.status }}</div>
+        <div>Average Rating: {{ '%.1f'|format(book.avg_rating) }}</div>
+
+        <button id="borrow-button" onclick="location.href='{{ url_for('borrow_book', book_id=book.book_id) }}'">Borrow</button>
+        <button id="write-review-button" onclick="location.href='{{ url_for('write_review', book_id=book.book_id) }}'">Write Review</button>
+
+        <div id="reviews-section">
+            <h2>Reviews</h2>
+            {% if reviews %}
+            <ul>
+                {% for review in reviews %}
+                <li>
+                    <strong>{{ review.username }}</strong> - Rating: {{ review.rating }}/5<br>
+                    {{ review.review_text }}<br>
+                    <em>{{ review.review_date }}</em>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No reviews yet.</p>
+            {% endif %}
+        </div>
+
+        <button id="back-to-catalog" onclick="location.href='{{ url_for('book_catalog') }}'">Back to Catalog</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Library</title>
+</head>
+<body>
+    <h1>Welcome {{ username }} to your Dashboard</h1>
+    <p><a href="{{ url_for('logout') }}">Logout</a></p>
+
+    <h2>Your Reservations</h2>
+    {% if reservations %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for r in reservations %}
+            <tr>
+                <td>{{ r.book.title }}</td>
+                <td>{{ r.book.author }}</td>
+                <td>{{ r.borrow_date }}</td>
+                <td>{{ r.due_date }}</td>
+                <td>{{ r.status }}</td>
+                <td>
+                    {% if r.status in ['Borrowed', 'Overdue'] %}
+                    <form action="{{ url_for('return_book', reservation_id=r.reservation_id) }}" method="post" style="display:inline;">
+                        <button type="submit" id="return_{{ r.reservation_id }}">Return</button>
+                    </form>
+                    {% else %}
+                    <em>Returned</em>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>You have no book reservations.</p>
+    {% endif %}
+
+    <h2>Your Fines</h2>
+    {% if fines %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for fine in fines %}
+            <tr>
+                <td>{{ fine.amount }}</td>
+                <td>{{ fine.date }}</td>
+                <td>{{ 'Paid' if fine.paid == '1' else 'Unpaid' }}</td>
+                <td>
+                    {% if fine.paid == '0' %}
+                    <form action="{{ url_for('pay_fine', fine_id=fine.fine_id) }}" method="post" style="display:inline;">
+                        <button type="submit" id="payfine_{{ fine.fine_id }}">Pay Fine</button>
+                    </form>
+                    {% else %}
+                    <em>Paid</em>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>You have no fines.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('books') }}">Search Books</a></p>
+</body>
+</html>

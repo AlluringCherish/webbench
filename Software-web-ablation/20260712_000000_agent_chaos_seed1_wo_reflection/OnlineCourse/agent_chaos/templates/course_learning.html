@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Learning</title>
+</head>
+<body>
+    <div id="learning-page">
+        <h1>Course Learning</h1>
+        <div id="lessons-list">
+            <ul>
+            {% for lesson in course.lessons %}
+                <li>{{ lesson.title }} {% if lesson.lesson_id in completed_lessons %}(Completed){% endif %}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        <div id="lesson-content">
+            {# Display first not completed lesson's content or the last completed one #}
+            {% set lesson_to_show = None %}
+            {% for lesson in course.lessons %}
+                {% if lesson.lesson_id not in completed_lessons %}
+                    {% set lesson_to_show = lesson %}
+                    {% break %}
+                {% endif %}
+            {% endfor %}
+            {% if lesson_to_show is none and course.lessons|length > 0 %}
+                {% set lesson_to_show = course.lessons[-1] %}
+            {% endif %}
+            {% if lesson_to_show %}
+                <h2>{{ lesson_to_show.title }}</h2>
+                <p>{{ lesson_to_show.content }}</p>
+                <form method="POST" action="{{ url_for('mark_lesson_complete', course_id=course.course_id) }}">
+                    <input type="hidden" name="lesson_id" value="{{ lesson_to_show.lesson_id }}">
+                    <button type="submit" id="mark-complete-button">Mark as Complete</button>
+                </form>
+            {% else %}
+                <p>No lessons available.</p>
+            {% endif %}
+        </div>
+
+        <button id="back-to-my-courses" onclick="window.location.href='{{ url_for('my_courses') }}'">Back to My Courses</button>
+    </div>
+</body>
+</html>

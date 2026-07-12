@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version History - Content Publishing Hub</title>
+</head>
+<body>
+    <div id="version-history-page">
+        <h1>Version History for "{{ article.title }}"</h1>
+
+        <table id="version-history-table" border="1">
+            <thead>
+                <tr>
+                    <th>Version Number</th>
+                    <th>Author</th>
+                    <th>Created Date</th>
+                    <th>Change Summary</th>
+                    <th>Approval Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for version in versions %}
+                    <tr id="version-{{ version.version_id }}">
+                        <td>{{ version.version_number }}</td>
+                        <td>{{ version.author }}</td>
+                        <td>{{ version.created_date }}</td>
+                        <td>{{ version.change_summary }}</td>
+                        <td id="approval-status-{{ version.version_id }}">{{ version.approval_status }}</td>
+                        <td>
+                            <a href="{{ url_for('view_article_versions', article_id=article.id) }}?compare={{ version.version_id }}" id="compare-{{ version.version_id }}">Compare</a>
+                            |
+                            <a href="{{ url_for('view_article_versions', article_id=article.id) }}?restore={{ version.version_id }}" id="restore-{{ version.version_id }}">Restore</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+    </div>
+</body>
+</html>

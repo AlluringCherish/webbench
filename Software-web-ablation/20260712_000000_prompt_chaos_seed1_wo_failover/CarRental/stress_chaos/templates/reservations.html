@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<header>
+    <h1>Car Rental</h1>
+    <nav id="main-nav">
+        <button id="dashboard-button" onclick="location.href='{{ url_for('dashboard_page') }}'">Dashboard</button>
+        <button id="vehicle-search-button" onclick="location.href='{{ url_for('vehicle_search_page') }}'">Search Vehicles</button>
+        <button id="my-reservations-button" onclick="location.href='{{ url_for('reservation_management_page') }}'">My Reservations</button>
+    </nav>
+</header>
+<main id="main-container">
+    <h1>{{ page_title }}</h1>
+
+    <section id="reservations-list">
+        {% if reservations %}
+        <table id="rentals-table" aria-label="User reservations">
+            <thead>
+                <tr>
+                    <th>Rental ID</th>
+                    <th>Vehicle</th>
+                    <th>Pickup Date</th>
+                    <th>Dropoff Date</th>
+                    <th>Pickup Location</th>
+                    <th>Status</th>
+                    <th>Total Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in reservations %}
+                <tr id="reservation-{{ res.reservation_id }}">
+                    <td>{{ res.rental_id }}</td>
+                    <td>{{ res.vehicle.make }} {{ res.vehicle.model }}</td>
+                    <td>{{ res.pickup_date }}</td>
+                    <td>{{ res.dropoff_date }}</td>
+                    <td>{{ res.pickup_location.city }}</td>
+                    <td>{{ res.status }}</td>
+                    <td>${{ "%.2f"|format(res.total_price) }}</td>
+                    <td>
+                        <button id="view-rental-details-{{ res.rental_id }}" onclick="location.href='{{ url_for('rental_history_page', rental_id=res.rental_id) }}'">View</button>
+                        <button id="modify-reservation-button-{{ res.reservation_id }}" onclick="location.href='{{ url_for('modify_reservation_page', reservation_id=res.reservation_id) }}'">Modify</button>
+                        <button id="cancel-reservation-button-{{ res.reservation_id }}" onclick="location.href='{{ url_for('cancel_reservation_page', reservation_id=res.reservation_id) }}'">Cancel</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No reservations found.</p>
+        {% endif %}
+    </section>
+
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+</main>
+<footer>
+    <p>&copy; 2024 Car Rental App</p>
+</footer>
+</body>
+</html>

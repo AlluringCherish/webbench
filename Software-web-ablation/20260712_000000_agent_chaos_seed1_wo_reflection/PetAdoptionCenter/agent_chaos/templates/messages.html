@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+</head>
+<body>
+    <div id="messages-page">
+        <h1>Messages</h1>
+        <div id="conversation-list">
+            {% for conv in conversations %}
+            <div class="conversation" id="conversation-{{ conv.conversation_id }}">
+                <a href="#" onclick="document.getElementById('message-form-{{ conv.conversation_id }}').style.display='block'; return false;">
+                    <strong>{{ conv.recipient_username }}</strong> - {{ conv.last_message }} <em>({{ conv.last_timestamp }})</em>
+                    {% if conv.unread_count > 0 %}
+                    <span class="unread-count">Unread: {{ conv.unread_count }}</span>
+                    {% endif %}
+                </a>
+                <form id="message-form-{{ conv.conversation_id }}" action="{{ url_for('send_message', recipient_username=conv.recipient_username) }}" method="POST" style="display:none;">
+                    <textarea id="message-input" name="message_content" placeholder="Type your message"></textarea>
+                    <button id="send-message-button" type="submit">Send</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

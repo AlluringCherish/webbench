@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <div id="main-container-id">
+        <h1>Dashboard</h1>
+        <nav>
+            <a id="browse-properties-button" href="{{ url_for('property_search') }}">Browse Properties</a> |
+            <a id="my-inquiries-button" href="{{ url_for('my_inquiries') }}">My Inquiries</a> |
+            <a id="my-favorites-button" href="{{ url_for('my_favorites') }}">My Favorites</a> |
+            <a id="agents-page" href="{{ url_for('agents_page') }}">Agents</a> |
+            <a id="locations-page" href="{{ url_for('locations_page') }}">Locations</a>
+        </nav>
+        <section id="featured-properties">
+            <h2>Featured Properties</h2>
+            <div id="properties-grid">
+                {% for property in featured_properties %}
+                <div id="property-{{ property.property_id }}">
+                    <h3>{{ property.property_type }} in {{ property.location }}</h3>
+                    <p>Price: ${{ property.price }}</p>
+                    <p>Bedrooms: {{ property.bedrooms }}, Bathrooms: {{ property.bathrooms }}, Area: {{ property.square_feet }} sq ft</p>
+                    <button id="view-property-button-{{ property.property_id }}" onclick="location.href='{{ url_for('property_details', property_id=property.property_id) }}'">View</button>
+                    <form action="{{ url_for('add_to_favorites', property_id=property.property_id) }}" method="POST" style="display:inline;">
+                        <button id="add-to-favorites-button-{{ property.property_id }}" type="submit">Add to Favorites</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Albums</title>
+</head>
+<body>
+    <main id="main-container">
+        <h1 id="albums-heading">Albums</h1>
+        <div id="album-sorting">
+            <label for="sort-albums-select">Sort by:</label>
+            <select id="sort-albums-select" name="sort">
+                <option value="title" {% if sort_key == 'title' %}selected{% endif %}>Title</option>
+                <option value="artist_name" {% if sort_key == 'artist_name' %}selected{% endif %}>Artist</option>
+                <option value="release_year" {% if sort_key == 'release_year' %}selected{% endif %}>Release Year</option>
+            </select>
+            <button type="button" id="sort-albums-button" onclick="sortAlbums()">Sort</button>
+        </div>
+        <ul id="albums-list">
+            {% for album in albums %}
+            <li id="album-{{ album.album_id }}">
+                {{ album.title }} by {{ album.artist_name }} ({{ album.release_year }})
+                <button type="button" id="view-album-button-{{ album.album_id }}" onclick="window.location.href='{{ url_for('album_details_page', album_id=album.album_id) }}'">View Details</button>
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('dashboard_page') }}">Back to Dashboard</a>
+    </main>
+
+    <script>
+    function sortAlbums() {
+        const select = document.getElementById('sort-albums-select');
+        const sortKey = select.value;
+        const params = new URLSearchParams(window.location.search);
+        params.set('sort', sortKey);
+        window.location.search = params.toString();
+    }
+    </script>
+</body>
+</html>

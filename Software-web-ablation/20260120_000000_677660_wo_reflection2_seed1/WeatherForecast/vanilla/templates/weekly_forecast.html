@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Forecast</title>
+</head>
+<body>
+    <div id="forecast-page">
+        <h1>Weekly Forecast</h1>
+
+        <form id="location-filter-form" method="get" action="{{ url_for('weekly_forecast') }}">
+            <label for="location-filter">Select Location:</label>
+            <select id="location-filter" name="location_id" onchange="this.form.submit()">
+                {% for loc in locations %}
+                <option value="{{ loc.location_id }}" {% if loc.location_id == location_id %}selected{% endif %}>{{ loc.location_name }}</option>
+                {% endfor %}
+            </select>
+            <noscript>
+                <button type="submit">Submit</button>
+            </noscript>
+        </form>
+
+        <div id="forecast-list">
+            {% for forecast in forecasts %}
+                {% if forecast.location_id == location_id %}
+                <div class="forecast-card">
+                    <h3>{{ forecast.date }}</h3>
+                    <p>High: {{ forecast.high_temp }}</p>
+                    <p>Low: {{ forecast.low_temp }}</p>
+                    <p>Condition: {{ forecast.condition }}</p>
+                    <p>Precipitation: {{ forecast.precipitation }}%</p>
+                    <p>Humidity: {{ forecast.humidity }}%</p>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

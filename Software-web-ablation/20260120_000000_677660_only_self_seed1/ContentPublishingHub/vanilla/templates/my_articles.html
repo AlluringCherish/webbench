@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Articles - Content Publishing Hub</title>
+</head>
+<body>
+  <div id="my-articles-page">
+    <h1>My Articles</h1>
+
+    {% if articles %}
+    <table id="my-articles-table" border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Status</th>
+          <th>Last Modified</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for article in articles %}
+        <tr>
+          <td>{{ article.title }}</td>
+          <td>{{ article.status }}</td>
+          <td>{{ article.last_modified }}</td>
+          <td>
+            <a href="{{ url_for('edit_article', article_id=article.id) }}" id="edit-article-{{ article.id }}">Edit</a> |
+            <a href="{{ url_for('article_version_history', article_id=article.id) }}" id="version-history-{{ article.id }}">Version History</a> |
+            <a href="{{ url_for('article_analytics', article_id=article.id) }}" id="analytics-article-{{ article.id }}">Analytics</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No articles found.</p>
+    {% endif %}
+
+    <button type="button" id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+  </div>
+</body>
+</html>

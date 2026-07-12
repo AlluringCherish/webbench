@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+</head>
+<body>
+    <h1>My Reservations</h1>
+    <div id="reservations">
+        <table id="reservations-table">
+            <thead>
+                <tr>
+                    <th>Guest Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Party Size</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Special Requests</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                <tr>
+                    <td>{{ reservation.guest_name }}</td>
+                    <td>{{ reservation.phone }}</td>
+                    <td>{{ reservation.email }}</td>
+                    <td>{{ reservation.party_size }}</td>
+                    <td>{{ reservation.date }}</td>
+                    <td>{{ reservation.time }}</td>
+                    <td>{{ reservation.special_requests }}</td>
+                    <td>{{ reservation.status }}</td>
+                    <td>
+                        <form method="post" action="{{ url_for('cancel_reservation', reservation_id=reservation.reservation_id) }}">
+                            <button id="cancel-reservation-button-{{ reservation.reservation_id }}" type="submit">Cancel</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Make a New Reservation</h2>
+        <form method="post" action="{{ url_for('make_reservation') }}">
+            <label for="guest_name">Guest Name:</label>
+            <input type="text" id="guest_name" name="guest_name" required><br>
+
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone" required><br>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br>
+
+            <label for="party_size">Party Size:</label>
+            <select id="party_size" name="party_size">
+                {% for size in range(1, 11) %}
+                <option value="{{ size }}">{{ size }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required><br>
+
+            <label for="time">Time:</label>
+            <input type="time" id="time" name="time" required><br>
+
+            <label for="special_requests">Special Requests:</label>
+            <textarea id="special_requests" name="special_requests"></textarea><br>
+
+            <button id="submit-reservation-button" type="submit">Submit Reservation</button>
+        </form>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

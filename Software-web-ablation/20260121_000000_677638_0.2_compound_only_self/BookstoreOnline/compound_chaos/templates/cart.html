@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+</head>
+<body>
+    <div id="cart-page">
+        <h1>Shopping Cart</h1>
+
+        {% if cart_items %}
+        <table id="cart-items-table" border="1">
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.book.title }}</td>
+                    <td>
+                        <form method="post" action="{{ url_for('update_quantity', item_id=item.cart_id) }}" style="display:inline;">
+                            <input
+                                type="number"
+                                id="update-quantity-{{ item.cart_id }}"
+                                name="quantity"
+                                min="1"
+                                value="{{ item.quantity }}"
+                                required
+                            />
+                            <button type="submit">Update</button>
+                        </form>
+                    </td>
+                    <td>${{ '%.2f'|format(item.book.price * item.quantity) }}</td>
+                    <td>
+                        <form method="post" action="{{ url_for('remove_item', item_id=item.cart_id) }}" style="display:inline;">
+                            <button id="remove-item-button-{{ item.cart_id }}" type="submit">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div id="total-amount">Total: ${{ '%.2f'|format(total_amount) }}</div>
+        <button id="proceed-checkout-button" onclick="window.location.href='{{ url_for('checkout') }}'">Proceed to Checkout</button>
+
+        {% else %}
+            <p>Your shopping cart is empty.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

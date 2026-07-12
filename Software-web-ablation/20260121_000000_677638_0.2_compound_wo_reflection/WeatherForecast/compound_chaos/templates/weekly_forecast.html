@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Forecast</title>
+</head>
+<body>
+    <div id="forecast-page">
+        <h1>Weekly Forecast</h1>
+        <label for="location-filter">Select Location:</label>
+        <form method="get" action="">
+            <select id="location-filter" name="location" onchange="this.form.submit()">
+                {% for location in locations %}
+                    <option value="{{ location.location_id }}" {% if location.location_id == selected_location_id %}selected{% endif %}>{{ location.location_name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+
+        <table id="forecast-table" border="1" cellspacing="0" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>High Temp</th>
+                    <th>Low Temp</th>
+                    <th>Condition</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for forecast in forecasts %}
+                <tr>
+                    <td>{{ forecast.date }}</td>
+                    <td>{{ forecast.high_temp }}&deg;</td>
+                    <td>{{ forecast.low_temp }}&deg;</td>
+                    <td>{{ forecast.condition }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div id="forecast-list">
+            {% for forecast in forecasts %}
+                <div class="forecast-card" id="forecast-{{ forecast.forecast_id }}">
+                    <h3>{{ forecast.date }}</h3>
+                    <p>High: {{ forecast.high_temp }}&deg;</p>
+                    <p>Low: {{ forecast.low_temp }}&deg;</p>
+                    <p>Condition: {{ forecast.condition }}</p>
+                    <p>Precipitation: {{ forecast.precipitation }}%</p>
+                    <p>Humidity: {{ forecast.humidity }}%</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

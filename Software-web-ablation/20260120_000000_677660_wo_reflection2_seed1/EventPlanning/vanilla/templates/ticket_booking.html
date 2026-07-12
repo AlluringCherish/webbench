@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="ticket-booking-page">
+        <h1>{{ page_title }}</h1>
+
+        {% if error %}
+            <div id="booking-error" style="color: red;">{{ error }}</div>
+        {% endif %}
+
+        {% if confirmation %}
+            <div id="booking-confirmation">
+                <p>Booking Confirmed!</p>
+                <p>Event: {{ confirmation.event_name }}</p>
+                <p>Tickets: {{ confirmation.ticket_count }}</p>
+                <p>Type: {{ confirmation.ticket_type }}</p>
+                <p>Booking Reference: {{ confirmation.confirmation_number }}</p>
+            </div>
+        {% else %}
+            <form method="POST" action="{{ url_for('submit_ticket_booking') }}">
+                <label for="select-event-dropdown">Select Event:</label>
+                <select id="select-event-dropdown" name="event_id" required>
+                    {% for event in events %}
+                        <option value="{{ event.event_id }}">{{ event.event_name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="ticket-quantity-input">Ticket Quantity:</label>
+                <input type="number" id="ticket-quantity-input" name="ticket_quantity" min="1" required />
+
+                <label for="ticket-type-select">Ticket Type:</label>
+                <select id="ticket-type-select" name="ticket_type" required>
+                    <option value="General">General</option>
+                    <option value="VIP">VIP</option>
+                    <option value="Early Bird">Early Bird</option>
+                </select>
+
+                <button type="submit" id="book-now-button">Book Now</button>
+            </form>
+        {% endif %}
+
+    </div>
+</body>
+</html>

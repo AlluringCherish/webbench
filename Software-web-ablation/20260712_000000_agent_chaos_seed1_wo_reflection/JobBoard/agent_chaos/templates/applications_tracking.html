@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Applications</title>
+</head>
+<body>
+    <div id="tracking-page">
+        <h1>My Applications</h1>
+
+        <form method="get" action="{{ url_for('application_tracking_page') }}">
+            <select id="status-filter" name="selected_status_filter">
+                {% for option in status_filter_options %}
+                <option value="{{ option }}" {% if option == selected_status_filter %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <table id="applications-table" border="1">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Applied Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                <tr>
+                    <td>{{ application.job_title }}</td>
+                    <td>{{ application.company_name }}</td>
+                    <td>{{ application.status }}</td>
+                    <td>{{ application.applied_date }}</td>
+                    <td>
+                        <a href="{{ url_for('application_details_page', application_id=application.application_id) }}">
+                            <button id="view-application-button-{{ application.application_id }}">View</button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('dashboard_page') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

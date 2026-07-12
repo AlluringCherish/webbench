@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Catalog</title>
+</head>
+<body>
+    <div id="catalog-page">
+        <h1>Movie Catalog</h1>
+
+        <form method="post" action="{{ url_for('movie_search') }}">
+            <input type="text" id="search-input" name="search_query" placeholder="Search movies by title or genre" />
+
+            <select id="genre-filter" name="genre_filter">
+                <option value="">All Genres</option>
+                {% for genre in genres %}
+                <option value="{{ genre.genre_name }}">{{ genre.genre_name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" id="search-button">Search</button>
+        </form>
+
+        <div id="movies-grid">
+            {% if movies %}
+                {% for movie in movies %}
+                <div class="movie-item">
+                    <h3>{{ movie.title }}</h3>
+                    <p>Genre: {{ movie.genre }}</p>
+                    <p>Rating: {{ movie.rating }}</p>
+                    <p>Duration: {{ movie.duration }} minutes</p>
+                    <button id="view-movie-button-{{ movie.movie_id }}" onclick="location.href='{{ url_for('movie_details', movie_id=movie.movie_id) }}'">View Details</button>
+                </div>
+                {% endfor %}
+            {% elif filtered_movies %}
+                {% for movie in filtered_movies %}
+                <div class="movie-item">
+                    <h3>{{ movie.title }}</h3>
+                    <p>Genre: {{ movie.genre }}</p>
+                    <p>Rating: {{ movie.rating }}</p>
+                    <p>Duration: {{ movie.duration }} minutes</p>
+                    <button id="view-movie-button-{{ movie.movie_id }}" onclick="location.href='{{ url_for('movie_details', movie_id=movie.movie_id) }}'">View Details</button>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No movies available.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+</head>
+<body>
+    <div id="search-results-page">
+        <h1>Search Results</h1>
+        <div id="search-query-display">Search Query: {{ query_str }}</div>
+        <div id="results-tabs">
+            <button onclick="document.getElementById('job-results').style.display='block'; document.getElementById('company-results').style.display='none';">Jobs</button>
+            <button onclick="document.getElementById('job-results').style.display='none'; document.getElementById('company-results').style.display='block';">Companies</button>
+        </div>
+        {% if job_results or company_results %}
+        <div id="job-results" style="display:block;">
+            <h2>Job Results</h2>
+            {% if job_results %}
+            <ul>
+                {% for job in job_results %}
+                <li>
+                    <a href="{{ url_for('job_details', job_id=job.job_id) }}">
+                        {{ job.title }} at {{ job.company_name }} ({{ job.location }})
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No job results found.</p>
+            {% endif %}
+        </div>
+        <div id="company-results" style="display:none;">
+            <h2>Company Results</h2>
+            {% if company_results %}
+            <ul>
+                {% for company in company_results %}
+                <li>
+                    <a href="{{ url_for('company_profile', company_id=company.company_id) }}">
+                        {{ company.company_name }} - {{ company.industry }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No company results found.</p>
+            {% endif %}
+        </div>
+        {% else %}
+        <div id="no-results-message">
+            <p>No results found for '{{ query_str }}'.</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

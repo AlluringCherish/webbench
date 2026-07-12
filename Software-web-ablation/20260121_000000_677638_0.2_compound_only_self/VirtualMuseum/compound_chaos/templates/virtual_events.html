@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Virtual Events</title>
+</head>
+<body>
+    <div id="virtual-events-page">
+        <h1>Virtual Events</h1>
+
+        <div id="event-list">
+            <ul>
+                {% for event in events %}
+                <li>
+                    <span>{{ event.title }} - {{ event.date }} at {{ event.time }}</span>
+                    {% set registered = false %}
+                    {% for registration in registrations %}
+                        {% if registration.event_id == event.event_id and registration.username == user %}
+                            {% set registered = true %}
+                            <form method="POST" action="{{ url_for('cancel_registration', registration_id=registration.registration_id) }}" style="display:inline">
+                                <button type="submit" id="cancel-registration-button-{{ registration.registration_id }}">Cancel Registration</button>
+                            </form>
+                        {% endif %}
+                    {% endfor %}
+                    {% if not registered %}
+                        <form method="POST" action="{{ url_for('register_event', event_id=event.event_id) }}" style="display:inline">
+                            <button type="submit" id="register-event-button-{{ event.event_id }}">Register</button>
+                        </form>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

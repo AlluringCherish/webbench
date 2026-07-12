@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <div id="dashboard">
+        <h2>Dishes</h2>
+        <div id="menu-grid">
+            {% for dish in dishes %}
+            <div class="dish-card">
+                <h3>{{ dish.name }}</h3>
+                <p>Category: {{ dish.category }}</p>
+                <p>Price: ${{ "%.2f"|format(dish.price) }}</p>
+                <p>Average Rating: {{ "%.1f"|format(dish.avg_rating) }}</p>
+                <button id="view-dish-button-{{ dish.dish_id }}" onclick="location.href='{{ url_for('dish_details', dish_id=dish.dish_id) }}'">View Details</button>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <h2>My Reservations</h2>
+        <table id="reservations-table">
+            <thead>
+                <tr>
+                    <th>Guest Name</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Party Size</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                <tr>
+                    <td>{{ reservation.guest_name }}</td>
+                    <td>{{ reservation.date }}</td>
+                    <td>{{ reservation.time }}</td>
+                    <td>{{ reservation.party_size }}</td>
+                    <td>{{ reservation.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Waitlist Status</h2>
+        {% if waitlist_position %}
+        <p>Your current position in the waitlist is {{ waitlist_position }}.</p>
+        {% else %}
+        <p>You are not in the waitlist.</p>
+        {% endif %}
+
+        <button id="back-to-menu" onclick="location.href='{{ url_for('menu') }}'">View Menu</button>
+        <button id="my-reviews-button" onclick="location.href='{{ url_for('my_reviews') }}'">My Reviews</button>
+        <button id="profile-button" onclick="location.href='{{ url_for('profile') }}'">Profile</button>
+        <button id="waitlist-button" onclick="location.href='{{ url_for('waitlist') }}'">Waitlist</button>
+    </div>
+</body>
+</html>

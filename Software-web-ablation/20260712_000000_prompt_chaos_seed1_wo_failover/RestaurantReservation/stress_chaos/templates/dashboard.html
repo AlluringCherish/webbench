@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+</head>
+<body>
+<h1 id="dashboard-page-header">Welcome, {{ username }}!</h1>
+
+<nav>
+<button id="to-menu-button" onclick="window.location.href='{{ url_for('menu') }}'">Menu</button>
+<button id="to-my-reservations-button" onclick="window.location.href='{{ url_for('my_reservations') }}'">My Reservations</button>
+<button id="to-profile-button" onclick="window.location.href='{{ url_for('profile') }}'">Profile</button>
+<button id="to-waitlist-button" onclick="window.location.href='{{ url_for('waitlist') }}'">Waitlist</button>
+<button id="to-my-reviews-button" onclick="window.location.href='{{ url_for('my_reviews') }}'">My Reviews</button>
+</nav>
+
+<h2>Upcoming Reservations</h2>
+<table id="upcoming-reservations-table">
+<thead>
+<tr>
+<th>Date</th>
+<th>Time</th>
+<th>Party Size</th>
+<th>Status</th>
+<th>Cancel</th>
+</tr>
+</thead>
+<tbody>
+{% for reservation in upcoming_reservations %}
+<tr>
+<td>{{ reservation.date }}</td>
+<td>{{ reservation.time }}</td>
+<td>{{ reservation.party_size }}</td>
+<td>{{ reservation.status }}</td>
+<td><button id="cancel-reservation-button-{{ reservation.reservation_id }}" onclick="window.location.href='{{ url_for('cancel_reservation', reservation_id=reservation.reservation_id) }}'">Cancel</button></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+<h2>Featured Dishes</h2>
+<ul id="featured-dishes">
+{% for dish in featured_dishes %}
+<li class="menu-card" onclick="window.location.href='{{ url_for('dish', dish_id=dish.dish_id) }}'">
+<h3>{{ dish.name }}</h3>
+<p>Category: {{ dish.category }}</p>
+<p>Price: ${{ '%.2f'|format(dish.price) }}</p>
+<p>Average Rating: {{ '%.1f'|format(dish.avg_rating) if dish.avg_rating else 'N/A' }}</p>
+</li>
+{% endfor %}
+</ul>
+
+</body>
+</html>

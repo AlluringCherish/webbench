@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+</head>
+<body>
+    <div id="search-results-page">
+        <h1>Search Results</h1>
+        <div id="search-query-display">Results for: {{ query }}</div>
+
+        <div id="results-tabs">
+            <button type="button" onclick="document.getElementById('job-results').style.display='block';document.getElementById('company-results').style.display='none';">Jobs</button>
+            <button type="button" onclick="document.getElementById('company-results').style.display='block';document.getElementById('job-results').style.display='none';">Companies</button>
+        </div>
+
+        {% if not job_results and not company_results %}
+        <div id="no-results-message">No results found.</div>
+        {% endif %}
+
+        <div id="job-results" style="display: block;">
+            {% for job in job_results %}
+            <div class="search-job-entry">
+                <h3>{{ job.title }}</h3>
+                <div>Company: {{ job.company_name }}</div>
+                <div>Location: {{ job.location }}</div>
+                <div>Salary: ${{ job.salary_min }} - ${{ job.salary_max }}</div>
+                <a href="{{ url_for('job_details', job_id=job.job_id) }}">
+                    <button>View Job</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="company-results" style="display: none;">
+            {% for company in company_results %}
+            <div class="search-company-entry">
+                <h3>{{ company.company_name }}</h3>
+                <div>Industry: {{ company.industry }}</div>
+                <div>Location: {{ company.location }}</div>
+                <a href="{{ url_for('company_profile', company_id=company.company_id) }}">
+                    <button>View Profile</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

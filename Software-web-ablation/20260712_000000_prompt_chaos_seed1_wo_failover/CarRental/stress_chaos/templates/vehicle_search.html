@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<header>
+    <h1>Car Rental</h1>
+    <nav id="main-nav">
+        <button id="dashboard-button" onclick="location.href='{{ url_for('dashboard_page') }}'">Dashboard</button>
+        <button id="vehicle-search-button" onclick="location.href='{{ url_for('vehicle_search_page') }}'">Search Vehicles</button>
+        <button id="my-reservations-button" onclick="location.href='{{ url_for('reservation_management_page') }}'">My Reservations</button>
+    </nav>
+</header>
+<main id="main-container">
+    <h1>{{ page_title }}</h1>
+
+    <form method="GET" id="vehicle-search-form">
+        <label for="pickup-location">Pickup Location:</label>
+        <select id="pickup-location" name="pickup_location">
+            {% for loc in locations %}
+            <option value="{{ loc.location_id }}">{{ loc.city }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="dropoff-location">Dropoff Location:</label>
+        <select id="dropoff-location" name="dropoff_location">
+            {% for loc in locations %}
+            <option value="{{ loc.location_id }}">{{ loc.city }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="pickup-date">Pickup Date:</label>
+        <input type="date" id="pickup-date" name="pickup_date" required>
+
+        <label for="dropoff-date">Dropoff Date:</label>
+        <input type="date" id="dropoff-date" name="dropoff_date" required>
+
+        <label for="vehicle-type-filter">Vehicle Type:</label>
+        <select id="vehicle-type-filter" name="vehicle_type">
+            <option value="All">All</option>
+            <option value="Sedan">Sedan</option>
+            <option value="SUV">SUV</option>
+            <option value="Compact">Compact</option>
+            <option value="Luxury">Luxury</option>
+        </select>
+
+        <button type="submit" id="search-vehicles-button">Search</button>
+    </form>
+
+    <section id="vehicles-grid">
+        {% for vehicle in vehicles %}
+        <article class="vehicle-card" id="vehicle-{{ vehicle.vehicle_id }}">
+            <h2>{{ vehicle.make }} {{ vehicle.model }}</h2>
+            <p>Type: {{ vehicle.vehicle_type }}</p>
+            <p>Seats: {{ vehicle.seats }}</p>
+            <p>Transmission: {{ vehicle.transmission }}</p>
+            <p>Fuel: {{ vehicle.fuel_type }}</p>
+            <p>Daily Rate: ${{ "%.2f"|format(vehicle.daily_rate) }}</p>
+            <button id="view-details-button-{{ vehicle.vehicle_id }}" onclick="location.href='{{ url_for('vehicle_details_page', vehicle_id=vehicle.vehicle_id) }}'">Details</button>
+            <button id="book-now-button-{{ vehicle.vehicle_id }}" onclick="location.href='{{ url_for('booking_page', vehicle_id=vehicle.vehicle_id) }}'">Book Now</button>
+        </article>
+        {% endfor %}
+    </section>
+</main>
+<footer>
+    <p>&copy; 2024 Car Rental App</p>
+</footer>
+</body>
+</html>

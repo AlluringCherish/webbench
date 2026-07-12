@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Artifact Catalog</title>
+</head>
+<body>
+    <div id="artifact-catalog-page">
+        <h1 id="artifact-catalog-page">Artifact Catalog</h1>
+        <form method="post" action="{{ url_for('artifact_catalog_view') }}">
+            <input id="search-artifact" name="search_query" type="text" value="{{ search_query|default('') }}" placeholder="Search by name or ID">
+            <button id="apply-artifact-filter" type="submit">Apply Filter</button>
+        </form>
+        <table id="artifact-table" border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>name</th>
+                    <th>period</th>
+                    <th>origin</th>
+                    <th>exhibition</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set display_artifacts = filtered_artifacts if filtered_artifacts is defined and filtered_artifacts is not none else artifacts %}
+                {% for artifact in display_artifacts %}
+                <tr>
+                    <td>{{ artifact.artifact_id }}</td>
+                    <td>{{ artifact.artifact_name }}</td>
+                    <td>{{ artifact.period }}</td>
+                    <td>{{ artifact.origin }}</td>
+                    <td>{{ artifact.exhibition }}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_view') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

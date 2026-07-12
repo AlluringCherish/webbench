@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Catalog</title>
+</head>
+<body>
+    <div id="catalog-page">
+        <h1>Movie Catalog</h1>
+        <form method="get" action="{{ url_for('movie_catalog') }}">
+            <input type="text" id="search-input" name="search_query" value="{{ search_query }}" placeholder="Search by title or genre" />
+            <select id="genre-filter" name="selected_genre">
+                <option value="">All Genres</option>
+                {% for genre in genres %}
+                <option value="{{ genre.genre_name }}" {% if genre.genre_name == selected_genre %}selected{% endif %}>{{ genre.genre_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" id="browse-movies-button">Search</button>
+        </form>
+
+        <div id="movies-grid">
+            {% for movie in movies %}
+            <div class="movie-card">
+                <div><strong>{{ movie.title }}</strong></div>
+                <div>Director: {{ movie.director }}</div>
+                <div>Genre: {{ movie.genre }}</div>
+                <div>Rating: {{ movie.rating }}</div>
+                <div>Duration: {{ movie.duration }} mins</div>
+                <div>Release Date: {{ movie.release_date }}</div>
+                <div>{{ movie.description }}</div>
+                <button id="view-movie-button-{{ movie.movie_id }}" onclick="window.location.href='{{ url_for('movie_details', movie_id=movie.movie_id) }}'">View Details</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

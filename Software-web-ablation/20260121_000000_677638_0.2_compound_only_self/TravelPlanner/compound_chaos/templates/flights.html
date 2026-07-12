@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Flights</title>
+</head>
+<body>
+    <div id="transportation-page">
+        <h1>Book Flights</h1>
+        <form method="GET" action="{{ url_for('book_flights') }}">
+            <label for="departure-city">Departure City:</label>
+            <input type="text" id="departure-city" name="departure_city" value="{{ search_params.departure_city if search_params.departure_city else '' }}" />
+
+            <label for="arrival-city">Arrival City:</label>
+            <input type="text" id="arrival-city" name="arrival_city" value="{{ search_params.arrival_city if search_params.arrival_city else '' }}" />
+
+            <label for="departure-date">Departure Date:</label>
+            <input type="date" id="departure-date" name="departure_date" value="{{ search_params.departure_date if search_params.departure_date else '' }}" />
+
+            <label for="flight-class-filter">Flight Class:</label>
+            <select id="flight-class-filter" name="flight_class_filter">
+                <option value="" {% if not search_params.flight_class_filter %}selected{% endif %}>All</option>
+                {% for fc in flight_classes %}
+                <option value="{{ fc }}" {% if search_params.flight_class_filter == fc %}selected{% endif %}>{{ fc }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Search</button>
+        </form>
+        <div id="available-flights">
+            {% for flight in available_flights %}
+            <div class="flight-card">
+                <h3>{{ flight.airline }}</h3>
+                <p>From: {{ flight.departure_city }} To: {{ flight.arrival_city }}</p>
+                <p>Departure: {{ flight.departure_time }} Arrival: {{ flight.arrival_time }}</p>
+                <p>Class: {{ flight.class_type }}</p>
+                <p>Duration: {{ flight.duration }}</p>
+                <p>Price: ${{ "%.2f"|format(flight.price) }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

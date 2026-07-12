@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Saved Locations</title>
+</head>
+<body>
+    <div id="saved-locations-page">
+        <h1 id="saved-locations-page">Saved Locations</h1>
+
+        <table id="locations-table" border="1">
+            <thead>
+                <tr>
+                    <th>Location Name</th>
+                    <th>Current Temp</th>
+                    <th>Weather Condition</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for saved in saved_locations %}
+                <tr>
+                    <td>{{ saved.location_name }}{% if saved.is_default == 1 %} (Default){% endif %}</td>
+                    <td>
+                        {% if weather_summary[saved.location_id] %}
+                            {{ weather_summary[saved.location_id].temperature }}&deg;
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if weather_summary[saved.location_id] %}
+                            {{ weather_summary[saved.location_id].condition }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('current_weather_page', location_id=saved.location_id) }}">
+                            <button id="view-location-weather-{{ saved.location_id }}">View Weather</button>
+                        </a>
+                        <form method="POST" action="{{ url_for('remove_saved_location', location_id=saved.location_id) }}" style="display:inline;">
+                            <button id="remove-location-button-{{ saved.location_id }}" type="submit">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('location_search_page') }}">
+            <button id="add-new-location-button">Add New Location</button>
+        </a>
+    </div>
+</body>
+</html>

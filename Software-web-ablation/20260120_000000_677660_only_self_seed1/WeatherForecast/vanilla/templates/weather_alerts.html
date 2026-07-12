@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Alerts</title>
+</head>
+<body>
+    <div id="alerts-page">
+        <h1>Weather Alerts</h1>
+
+        <form method="POST" action="{{ url_for('weather_alerts') }}">
+            <label for="severity-filter">Severity Filter:</label>
+            <select id="severity-filter" name="severity_filter">
+                {% for severity in ['All', 'Critical', 'High', 'Medium', 'Low'] %}
+                <option value="{{ severity }}" {% if severity == severity_filter %}selected{% endif %}>{{ severity }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="location-filter-alerts">Location Filter:</label>
+            <select id="location-filter-alerts" name="location_filter">
+                <option value="">All Locations</option>
+                {% set location_ids = alerts_list|map(attribute='location_id')|unique|list %}
+                {% for location_id in location_ids %}
+                <option value="{{ location_id }}" {% if location_filter == location_id %}selected{% endif %}>Location {{ location_id }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Apply Filters</button>
+        </form>
+
+        <div id="alerts-list">
+            {% for alert in alerts_list %}
+            <div class="alert" id="alert-{{ alert.alert_id }}">
+                <h3>{{ alert.alert_type }} - Severity: {{ alert.severity }}</h3>
+                <p>{{ alert.description }}</p>
+                <p>From: {{ alert.start_time }} To: {{ alert.end_time }}</p>
+                {% if not alert.is_acknowledged %}
+                <form method="POST" action="{{ url_for('weather_alerts') }}">
+                    <input type="hidden" name="acknowledge_alert_id" value="{{ alert.alert_id }}" />
+                    <button id="acknowledge-alert-button-{{ alert.alert_id }}" type="submit">Acknowledge</button>
+                </form>
+                {% else %}
+                <p>Acknowledged</p>
+                {% endif %}
+            </div>
+            {% else %}
+            <p>No alerts to display.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

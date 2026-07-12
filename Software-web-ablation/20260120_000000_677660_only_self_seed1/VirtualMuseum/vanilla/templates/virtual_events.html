@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Virtual Events</title>
+</head>
+<body>
+    <div id="virtual-events-page">
+        <h1 id="virtual-events-page">Virtual Events</h1>
+        <table id="event-list" border="1">
+            <thead>
+                <tr>
+                    <th>title</th>
+                    <th>date</th>
+                    <th>time</th>
+                    <th>type</th>
+                    <th>registration status</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.time }}</td>
+                    <td>{{ event.event_type }}</td>
+                    <td>
+                        {% set registered = false %}
+                        {% for registration in event_registrations %}
+                            {% if registration.event_id == event.event_id and registration.registration_id in user_registrations %}
+                                {% set registered = true %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if registered %}Registered{% else %}Not Registered{% endif %}
+                    </td>
+                    <td>
+                        {% if registered %}
+                            {% for registration in event_registrations %}
+                                {% if registration.event_id == event.event_id and registration.registration_id in user_registrations %}
+                                    <form method="post" action="{{ url_for('cancel_registration', registration_id=registration.registration_id) }}" style="display:inline">
+                                        <button id="cancel-registration-button-{{ registration.registration_id }}" type="submit">Cancel Registration</button>
+                                    </form>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <form method="post" action="{{ url_for('register_event', event_id=event.event_id) }}" style="display:inline">
+                                <button id="register-event-button-{{ event.event_id }}" type="submit">Register</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_view') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+</head>
+<body>
+    <div id="settings-page">
+        <h1>Settings</h1>
+        <form method="POST" action="{{ url_for('settings') }}">
+            <label for="temperature-unit-select">Temperature Unit:</label>
+            <select id="temperature-unit-select" name="temperature_unit">
+                <option value="Celsius" {% if temperature_unit == 'Celsius' %}selected{% endif %}>Celsius</option>
+                <option value="Fahrenheit" {% if temperature_unit == 'Fahrenheit' %}selected{% endif %}>Fahrenheit</option>
+                <option value="Kelvin" {% if temperature_unit == 'Kelvin' %}selected{% endif %}>Kelvin</option>
+            </select>
+            <br/>
+
+            <label for="default-location-select">Default Location:</label>
+            <select id="default-location-select" name="default_location_id">
+                {% for location in locations %}
+                    <option value="{{ location.location_id }}" {% if default_location_id == location.location_id %}selected{% endif %}>{{ location.location_name }}</option>
+                {% endfor %}
+            </select>
+            <br/>
+
+            <label for="alert-notifications-toggle">Alert Notifications:</label>
+            <input type="checkbox" id="alert-notifications-toggle" name="alert_notifications_toggle" value="on" {% if alert_notifications_enabled %}checked{% endif %}/>
+            <br/>
+
+            <button type="submit" id="save-settings-button">Save Settings</button>
+        </form>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Forecast</title>
+</head>
+<body>
+    <div id="forecast-page">
+        <h1>Weekly Forecast</h1>
+        <form method="GET" action="" id="location-filter-form">
+            <select id="location-filter" name="location_id" onchange="document.getElementById('location-filter-form').submit()">
+                {% for location in locations %}
+                <option value="{{ location.location_id }}" {% if location.location_id == selected_location.location_id %}selected{% endif %}>{{ location.location_name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        {% if forecasts|length == 0 %}
+        <p>No forecast data available for this location.</p>
+        {% else %}
+        <table id="forecast-table" border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>High Temp</th>
+                    <th>Low Temp</th>
+                    <th>Condition</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for forecast in forecasts %}
+                <tr>
+                    <td>{{ forecast.date }}</td>
+                    <td>{{ forecast.high_temp }}</td>
+                    <td>{{ forecast.low_temp }}</td>
+                    <td>{{ forecast.condition }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div id="forecast-list">
+            {% for forecast in forecasts %}
+            <div class="forecast-card">
+                <h3>{{ forecast.date }}</h3>
+                <p>High: {{ forecast.high_temp }}</p>
+                <p>Low: {{ forecast.low_temp }}</p>
+                <p>Condition: {{ forecast.condition }}</p>
+                <p>Precipitation: {{ forecast.precipitation }}%</p>
+                <p>Humidity: {{ forecast.humidity }}%</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <a href="{{ url_for('dashboard_page') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

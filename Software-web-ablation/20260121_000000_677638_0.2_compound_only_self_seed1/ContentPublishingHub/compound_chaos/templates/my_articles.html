@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Articles - Content Publishing Hub</title>
+</head>
+<body>
+    <div id="my-articles-page">
+        <h1>My Articles</h1>
+        <table id="my-articles-table" border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Created Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr>
+                    <td>{{ article.title }}</td>
+                    <td>{{ article.category }}</td>
+                    <td>{{ article.status }}</td>
+                    <td>{{ article.created_date }}</td>
+                    <td>
+                        <a id="edit-article-{{ article.article_id }}" href="{{ url_for('edit_article', article_id=article.article_id) }}">Edit</a> |
+                        <a id="view-versions-{{ article.article_id }}" href="{{ url_for('version_history', article_id=article.article_id) }}">Versions</a> |
+                        <form id="publish-form-{{ article.article_id }}" method="post" action="{{ url_for('publish_article', article_id=article.article_id) }}" style="display:inline;">
+                            <button type="submit" id="publish-button-{{ article.article_id }}">Publish</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5">No articles found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

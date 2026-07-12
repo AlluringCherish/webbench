@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Published Articles - Content Publishing Hub</title>
+</head>
+<body>
+<div id="published-articles-page">
+    <h1>Published Articles</h1>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('dashboard') }}" id="btn-back-dashboard">Back to Dashboard</a></li>
+        </ul>
+    </nav>
+    <section id="filter-controls">
+        <form id="filter-form" method="GET" action="{{ url_for('published_articles') }}">
+            <label for="filter-status">Status:</label>
+            <select id="filter-status" name="filter_status">
+                <option value="published" selected>Published</option>
+                <option value="archived">Archived</option>
+            </select>
+
+            <label for="filter-category">Category:</label>
+            <select id="filter-category" name="filter_category">
+                <option value="all" selected>All</option>
+                <!-- Categories dynamically loaded -->
+                {% for category in categories %}
+                <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" id="btn-apply-filters">Apply Filters</button>
+        </form>
+    </section>
+    <section id="articles-list">
+        <table id="published-articles-table" border="1" cellspacing="0" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Published Date</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr>
+                    <td><a href="{{ url_for('edit_article', article_id=article.id) }}" id="article-link-{{ article.id }}">{{ article.title }}</a></td>
+                    <td>{{ article.author }}</td>
+                    <td>{{ article.published_date }}</td>
+                    <td>{{ article.category }}</td>
+                    <td>{{ article.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</div>
+</body>
+</html>

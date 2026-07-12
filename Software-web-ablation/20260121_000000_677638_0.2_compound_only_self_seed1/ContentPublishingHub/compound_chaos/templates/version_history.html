@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version History - Content Publishing Hub</title>
+</head>
+<body>
+    <div id="version-history-page">
+        <h1>Version History for Article: {{ article.title }}</h1>
+        <table id="version-history-table" border="1">
+            <thead>
+                <tr>
+                    <th>Version Number</th>
+                    <th>Author</th>
+                    <th>Created Date</th>
+                    <th>Change Summary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for version in versions %}
+                <tr>
+                    <td>{{ version.version_number }}</td>
+                    <td>{{ version.author }}</td>
+                    <td>{{ version.created_date }}</td>
+                    <td>{{ version.change_summary }}</td>
+                    <td>
+                        <a id="view-version-{{ version.version_id }}" href="{{ url_for('view_version', article_id=article.article_id, version_id=version.version_id) }}">View</a> |
+                        <a id="restore-version-{{ version.version_id }}" href="#" onclick="document.getElementById('restore-form-{{ version.version_id }}').submit(); return false;">Restore</a>
+                        <form id="restore-form-{{ version.version_id }}" method="post" action="{{ url_for('restore_version', article_id=article.article_id, version_id=version.version_id) }}" style="display:none;">
+                            <input type="hidden" name="version_id" value="{{ version.version_id }}" />
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-edit-article" onclick="window.location.href='{{ url_for('edit_article', article_id=article.article_id) }}'">Back to Edit Article</button>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

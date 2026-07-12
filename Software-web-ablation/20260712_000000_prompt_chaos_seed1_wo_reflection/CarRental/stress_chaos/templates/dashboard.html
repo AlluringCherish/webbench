@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="status-filter-section" class="form-section">
+    <form method="GET" action="{{ url_for('dashboard') }}" id="status-filter-form">
+        <label for="status_filter">Filter Reservations by Status:</label>
+        <select id="status_filter" name="status_filter" aria-describedby="status-filter-desc">
+            <option value="">All</option>
+            <option value="Active" {% if status_filter == 'Active' %}selected{% endif %}>Active</option>
+            <option value="Completed" {% if status_filter == 'Completed' %}selected{% endif %}>Completed</option>
+            <option value="Cancelled" {% if status_filter == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+        </select>
+        <small id="status-filter-desc">Filter the reservation list by status.</small>
+        <button type="submit" id="filter-status-button">Filter</button>
+    </form>
+</div>
+
+<div id="reservations-list">
+    {% if reservations %}
+        <table id="reservations-table" aria-describedby="reservations-desc" role="grid" border="1" cellspacing="0" cellpadding="5">
+            <caption id="reservations-desc">List of reservations based on status filter</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Reservation ID</th>
+                    <th scope="col">Vehicle</th>
+                    <th scope="col">Pickup Date</th>
+                    <th scope="col">Dropoff Date</th>
+                    <th scope="col">Pickup Location</th>
+                    <th scope="col">Dropoff Location</th>
+                    <th scope="col">Total Price</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                <tr id="reservation-{{ reservation.reservation_id }}">
+                    <td>{{ reservation.reservation_id }}</td>
+                    <td>{{ reservation.vehicle.make }} {{ reservation.vehicle.model }}</td>
+                    <td>{{ reservation.pickup_date }}</td>
+                    <td>{{ reservation.dropoff_date }}</td>
+                    <td>{{ reservation.pickup_location }}</td>
+                    <td>{{ reservation.dropoff_location }}</td>
+                    <td>${{ '%.2f'|format(reservation.total_price) }}</td>
+                    <td id="status-{{ reservation.reservation_id }}">{{ reservation.status }}</td>
+                    <td>
+                        <a id="view-details-button-{{ reservation.reservation_id }}" href="{{ url_for('view_rental_details', rental_id=reservation.rental_id) }}" role="button">Details</a>
+                        {% if reservation.status != 'Cancelled' %}
+                            <form method="POST" action="{{ url_for('cancel_reservation', reservation_id=reservation.reservation_id) }}" style="display:inline;">
+                                <button id="cancel-reservation-button-{{ reservation.reservation_id }}" type="submit" aria-label="Cancel reservation {{ reservation.reservation_id }}">Cancel</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No reservations available for the selected filter.</p>
+    {% endif %}
+</div>
+{% endblock %}

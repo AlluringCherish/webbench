@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Published Articles - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="published-articles-page">
+        <h1>Published Articles</h1>
+        <nav id="filters-nav">
+            <form id="category-filter-form" method="GET" action="{{ url_for('published_articles') }}">
+                <label for="category-filter">Category:</label>
+                <select name="category" id="category-filter" onchange="this.form.submit()">
+                    <option value="" {% if not category_filter %}selected{% endif %}>All</option>
+                    {% for category in ['Technology', 'Health', 'Education', 'Business', 'Entertainment'] %}
+                        <option value="{{ category }}" {% if category_filter == category %}selected{% endif %}>{{ category }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="sort-option">Sort by:</label>
+                <select name="sort" id="sort-option" onchange="this.form.submit()">
+                    <option value="date" {% if sort_option == 'date' %}selected{% endif %}>Date</option>
+                    <option value="popularity" {% if sort_option == 'popularity' %}selected{% endif %}>Popularity</option>
+                </select>
+            </form>
+        </nav>
+        <table id="published-articles-list" border="1">
+            <thead>
+                <tr>
+                    <th>Article ID</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Published Date</th>
+                    <th>Views</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr>
+                    <td id="article-id-{{ article.article_id }}">{{ article.article_id }}</td>
+                    <td id="article-title-{{ article.article_id }}">{{ article.title }}</td>
+                    <td id="article-category-{{ article.article_id }}">{{ article.category }}</td>
+                    <td id="article-published-date-{{ article.article_id }}">{{ article.published_date }}</td>
+                    <td id="article-views-{{ article.article_id }}">{{ article.views }}</td>
+                    <td>
+                        <a href="{{ url_for('article_analytics', article_id=article.article_id) }}" id="btn-view-analytics-{{ article.article_id }}">View Analytics</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6">No published articles found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('dashboard') }}" id="btn-back-to-dashboard">Back to Dashboard</a>
+    </div>
+</body>
+</html>

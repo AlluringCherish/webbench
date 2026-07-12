@@ -1,0 +1,82 @@
+Functional Testing Report: ContentPublishingHub
+
+Overview:
+Comprehensive functional testing has been conducted for the ContentPublishingHub Flask application, focusing on core routes and components starting from the /dashboard page. Tests covered the backend services and their integration with the frontend templates, assessing article workflows, content calendar management, approvals, version control, analytics, and navigation.
+
+Detailed Findings:
+
+1. Dashboard Page (/dashboard):
+- Page rendered correctly with element id="dashboard-page".
+- Displays welcome message with username.
+- Navigation menu includes correctly identified links:
+  * Create Article (id="nav-create-article")
+  * My Articles (id="nav-my-articles")
+  * Published Articles (id="nav-published-articles")
+  * Content Calendar (id="nav-content-calendar")
+  * Article Analytics (id="nav-article-analytics") – However, this link lacks an article ID required for the analytics route, resulting in broken navigation.
+
+2. Article Creation (/article/create):
+- Form presence confirmed with id="create-article-form".
+- Input fields for title (required), category, and content textarea are present.
+- Backend does not process the content field on creation, leading to content not saved on initial article creation.
+- Submit and cancel buttons function correctly.
+- Validation for missing title or category properly handled with error display.
+
+3. Article Editing (/article/<article_id>/edit):
+- Edit form detected with id="edit-article-form".
+- Form action incorrectly references article.id instead of article.article_id, causing potential routing issues.
+- Content textarea incorrectly populated from 'article.content' (not passed by backend); should use the variable 'content' for accurate content display.
+- Submit and cancel buttons present with correct ids.
+
+4. Article Version History (/article/<article_id>/versions):
+- Version list container with id="versions-list" is present.
+- Each version item has id format "version-<version_number>".
+- Back to edit and dashboard navigation links available and functional.
+
+5. My Articles Listing (/articles/mine):
+- Page renders with id="my-articles-page".
+- Article list with id="my-articles-list" enumerates articles.
+- List items use 'article.id' instead of 'article.article_id', which is inconsistent with backend data structure, causing potential reference errors.
+- No UI filters provided despite backend support for status and category filtering.
+- Back to dashboard button exists.
+
+6. Published Articles (/articles/published):
+- Grid container element id="published-articles-grid" correctly rendered.
+- Each article div uses id="published-article-<article.id>" where 'article.id' is inconsistent with backend keys (should use article.article_id).
+- No frontend filtering/sorting UI elements present despite backend capability.
+- Back to dashboard button is present.
+
+7. Content Calendar (/calendar):
+- Page container with id="content-calendar-page" confirmed.
+- Scheduling form has mismatched field names: uses 'schedule_date' whereas backend expects 'published_date'.
+- Article select options bind to 'article.id' instead of 'article.article_id', leading to potential mismatches.
+- Submit and cancel buttons present and operational.
+
+8. Article Analytics (/article/<article_id>/analytics):
+- Analytics page container with id="article-analytics-page" rendered.
+- Template uses incorrect variable references: 'views', 'likes', 'shares', 'avg_reading_time' instead of backend-provided keys 'total_views', 'total_unique_visitors', 'average_time', 'total_shares'.
+- Navigation links reference 'article.id' instead of 'article.article_id'.
+
+9. Backend Services:
+- Core data access and service layer functions are logically consistent.
+- Article creation, update, versioning, approvals, comments, and analytics aggregation function as expected, contingent on data directory existence.
+
+10. Critical Issue:
+- Absence of the 'data/' directory causes the backend to throw FileNotFoundError during write operations, halting core functionality.
+
+Recommendations:
+- Ensure the 'data/' directory and required data files exist or are created dynamically by the application.
+- Correct all template variable references from 'article.id' to 'article.article_id' to match backend.
+- Align form field names in content calendar scheduling form with backend expectations (use 'published_date' instead of 'schedule_date').
+- Remove or properly handle 'content' textarea on create article page in coordination with backend logic.
+- Enhance UI with filtering and sorting controls on my articles and published articles pages.
+- Update analytics template to reference correct backend metrics keys.
+- Fix dashboard navigation link to Article Analytics to either require article selection or link to a dashboard-wide analytics page without individual article ID.
+- Fix edit article form action URL and pre-populated content textarea for consistency.
+
+Conclusion:
+Once the above issues are addressed, the application will provide a fully functional and consistent content publishing experience.
+
+Status: NEED_MODIFY
+
+--- End of Report ---

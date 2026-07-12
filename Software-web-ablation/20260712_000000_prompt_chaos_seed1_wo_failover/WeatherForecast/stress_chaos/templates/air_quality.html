@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Air Quality Index</title>
+</head>
+<body>
+    <main id="air-quality-page">
+        <h1>Air Quality Index</h1>
+        <div id="aqi-display">
+            <p>AQI Index: {{ aqi_data.aqi_index }}</p>
+            <p>PM2.5: {{ aqi_data.pm25 }}</p>
+            <p>PM10: {{ aqi_data.pm10 }}</p>
+            <p>NO2: {{ aqi_data.no2 }}</p>
+            <p>O3: {{ aqi_data.o3 }}</p>
+        </div>
+        <div id="pollution-details">
+            <p>{{ description }}</p>
+        </div>
+        <label for="location-aqi-filter">Select Location:</label>
+        <form method="POST" action="{{ url_for('air_quality') }}">
+            <select id="location-aqi-filter" name="location_aqi_filter" onchange="this.form.submit()">
+                {% for loc in locations %}
+                <option value="{{ loc.location_id }}" {% if loc.location_id == selected_location_id %}selected{% endif %}>{{ loc.location_name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <div id="health-recommendation">
+            <p>Health Recommendation: {{ health_recommendation }}</p>
+        </div>
+        <button id="refresh-button" onclick="location.href='{{ url_for('air_quality') }}'">Refresh</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </main>
+</body>
+</html>

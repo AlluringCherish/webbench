@@ -1,0 +1,2103 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "BackendDeveloper",
+      "SystemArchitect",
+      "FrontendDeveloper"
+    ],
+    "num_all_targets": 3,
+    "agent_chaos_targets": [
+      "SystemArchitect",
+      "FrontendDeveloper"
+    ],
+    "stress_chaos_targets": [
+      "SystemArchitect"
+    ],
+    "io_chaos_targets": [
+      "BackendDeveloper"
+    ],
+    "intention_hiding_targets": []
+  },
+  "agent_chaos": {
+    "enabled": true,
+    "targets_selected": 2,
+    "unique_injections": 2,
+    "injection_attempts": 5,
+    "log": [
+      {
+        "timestamp": 1768930542.1019802,
+        "agent": "SystemArchitect",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930543.1034355,
+        "agent": "SystemArchitect",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930620.9511087,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930621.954811,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930623.9556491,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      }
+    ]
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordShuffle",
+    "targets_selected": 1,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordShuffle (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": []
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "WordDeletion",
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 2,
+    "method_selection": "Mode: WordDeletion (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": [
+      {
+        "timestamp": 1768930703.2519176,
+        "agent": "BackendDeveloper",
+        "chaos_type": "IO_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 747/1246 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "from flask import Flask, render_template, request, redirect, url_for\nfrom datetime import datetime\nimport os\n\napp = Flask(__name__)\napp.config['SECRET_KEY'] = 'dev-secret-key'\n\nDATA_DIR = 'data'\n\n# Utility functions for reading and writing data files\n\ndef read_vehicles():\n    vehicles = []\n    try:\n        with open(os.path.join(DATA_DIR, 'vehicles.txt'), 'r') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) != 9:\n                    continue\n                vehicle = {\n                    'vehicle_id': int(parts[0]),\n                    'make': parts[1],\n                    'model': parts[2],\n                    'vehicle_type': parts[3],\n                    'daily_rate': float(parts[4]),\n                    'seats': int(parts[5]),\n                    'transmission': parts[6],\n                    'fuel_type': parts[7],\n                    'status': parts[8]\n                }\n                vehicles.append(vehicle)\n    except Exception:\n        pass\n    return vehicles\n\n\ndef read_locations():\n    locations = []\n    try:\n        with open(os.path.join(DATA_DIR, 'locations.txt'), 'r') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) != 6:\n                    continue\n                location = {\n                    'location_id': int(parts[0]),\n                    'city': parts[1],\n                    'address': parts[2],\n                    'phone': parts[3],\n                    'hours': parts[4],\n                    'available_vehicles': int(parts[5])\n                }\n                locations.append(location)\n    except Exception:\n        pass\n    return locations\n\n\ndef read_rentals():\n    rentals = []\n    try:\n        with open(os.path.join(DATA_DIR, 'rentals.txt'), 'r') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) != 9:\n                    continue\n                rental = {\n                    'rental_id': int(parts[0]),\n                    'vehicle_id': int(parts[1]),\n                    'customer_id': int(parts[2]),\n                    'pickup_date': parts[3],  # YYYY-MM-DD string\n                    'dropoff_date': parts[4],\n                    'pickup_location': parts[5],\n                    'dropoff_location': parts[6],\n                    'total_price': float(parts[7]),\n                    'status': parts[8]\n                }\n                rentals.append(rental)\n    except Exception:\n        pass\n    return rentals\n\n\ndef read_insurances():\n    insurances = []\n    try:\n        with open(os.path.join(DATA_DIR, 'insurance.txt'), 'r') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) != 6:\n                    continue\n                deductible = parts[5]\n                try:\n                    if '.' in deductible:\n                        deductible = float(deductible)\n                    else:\n                        deductible = int(deductible)\n                except Exception:\n                    pass\n                insurance = {\n                    'insurance_id': int(parts[0]),\n                    'plan_name': parts[1],\n                    'description': parts[2],\n                    'daily_cost': float(parts[3]),\n                    'coverage_limit': parts[4],\n                    'deductible': deductible\n                }\n                insurances.append(insurance)\n    except Exception:\n        pass\n    return insurances\n\n\ndef read_reservations():\n    reservations = []\n    try:\n        with open(os.path.join(DATA_DIR, 'reservations.txt'), 'r') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) != 7:\n                    continue\n                reservation = {\n                    'reservation_id': int(parts[0]),\n                    'rental_id': int(parts[1]),\n                    'vehicle_id': int(parts[2]),\n                    'customer_id': int(parts[3]),\n                    'status': parts[4],\n                    'insurance_id': int(parts[5]),\n                    'special_requests': parts[6]\n                }\n                reservations.append(reservation)\n    except Exception:\n        pass\n    return reservations\n\n# Helper write function for reservations\n\ndef write_reservations(reservations):\n    try:\n        with open(os.path.join(DATA_DIR, 'reservations.txt'), 'w') as f:\n            for r in reservations:\n                line = f\"{r['reservation_id']}|{r['rental_id']}|{r['vehicle_id']}|{r['customer_id']}|{r['status']}|{r['insurance_id']}|{r['special_requests']}\\n\"\n                f.write(line)\n    except Exception:\n        pass\n\n\n# Helper to write rentals if needed (not asked explicitly, but in case for data consistency)\ndef write_rentals(rentals):\n    try:\n        with open(os.path.join(DATA_DIR, 'rentals.txt'), 'w') as f:\n            for r in rentals:\n                line = f\"{r['rental_id']}|{r['vehicle_id']}|{r['customer_id']}|{r['pickup_date']}|{r['dropoff_date']}|{r['pickup_location']}|{r['dropoff_location']}|{r['total_price']}|{r['status']}\\n\"\n                f.write(line)\n    except Exception:\n        pass\n\n\ndef root_redirect():\n    return redirect(url_for('dashboard'))\n\napp.add_url_rule('/', 'root_redirect', root_redirect, methods=['GET'])\n\n\n@app.route('/dashboard', methods=['GET'])\ndef dashboard():\n    vehicles = read_vehicles()\n    # As specification for featured_vehicles: List of dict representing vehicles\n    featured_vehicles = vehicles[:5]  # Example: first 5 as featured\n\n    promotions = [\n        \"10% off for weekend rentals!\",\n        \"Free GPS for rentals over 3 days.\",\n        \"Upgrade to luxury vehicles, limited time offer!\"\n    ]\n    return render_template('dashboard.html', featured_vehicles=featured_vehicles, promotions=promotions)\n\n\n@app.route('/search', methods=['GET'])\ndef vehicle_search():\n    vehicles = read_vehicles()\n    locations_data = read_locations()\n    locations = sorted({loc['city'] for loc in locations_data})\n\n    vehicle_types = sorted(set(v['vehicle_type'] for v in vehicles))\n\n    # Read current filters from query parameters for filtering\n    filters = {\n        'location': request.args.get('location', ''),\n        'vehicle_type': request.args.get('vehicle_type', ''),\n        'date_range': request.args.get('date_range', '')\n    }\n\n    # Apply filters\n    filtered_vehicles = vehicles\n\n    # Filter by city location if specified\n    if filters['location']:\n        # Only include vehicles available at that location (by matching locations and availability)\n        # Since vehicles do not have direct location in schema, assume all vehicles are listed but status might differ\n        # The design_spec doesn't specify availability filtering logic by location, so just pass all vehicles\n        # So we do no filter here.\n        pass\n\n    # Filter by vehicle_type\n    if filters['vehicle_type']:\n        filtered_vehicles = [v for v in filtered_vehicles if v['vehicle_type'] == filters['vehicle_type']]\n\n    # For date range filtering: Not defined how to filter in schema, ignore actual availability by date\n\n    return render_template('search.html', vehicles=filtered_vehicles, locations=locations,\n                           vehicle_types=vehicle_types, filters=filters)\n\n\n@app.route('/vehicle/<int:vehicle_id>', methods=['GET'])\ndef vehicle_details(vehicle_id):\n    vehicles = read_vehicles()\n    vehicle = next((v for v in vehicles if v['vehicle_id'] == vehicle_id), None)\n\n    # Load example reviews as per specification for context variable reviews: list of dicts\n    # Since no review data file is provided, provide empty list\n    reviews = []\n\n    return render_template('vehicle_details.html', vehicle=vehicle, reviews=reviews)\n\n\n@app.route('/booking/<int:vehicle_id>', methods=['GET', 'POST'])\ndef booking_page(vehicle_id):\n    vehicles = read_vehicles()\n    vehicle = next((v for v in vehicles if v['vehicle_id'] == vehicle_id), None)\n    locations_data = read_locations()\n    locations = sorted({loc['city'] for loc in locations_data})\n\n    rental_data = {'pickup_location': '', 'dropoff_location': '', 'pickup_date': '', 'dropoff_date': ''}\n    total_price = None\n\n    if request.method == 'POST':\n        # Booking form post for price calculation or proceed\n        pickup_location = request.form.get('pickup_location', '').strip()\n        dropoff_location = request.form.get('dropoff_location', '').strip()\n        pickup_date = request.form.get('pickup_date', '').strip()\n        dropoff_date = request.form.get('dropoff_date', '').strip()\n\n        rental_data.update({\n            'pickup_location': pickup_location,\n            'dropoff_location': dropoff_location,\n            'pickup_date': pickup_date,\n            'dropoff_date': dropoff_date\n        })\n\n        # Validate input dates\n        try:\n            p_date = datetime.strptime(pickup_date, '%Y-%m-%d')\n            d_date = datetime.strptime(dropoff_date, '%Y-%m-%d')\n            if p_date > d_date:\n                total_price = None\n            else:\n                days = (d_date - p_date).days + 1\n                total_price = round(days * vehicle['daily_rate'], 2)\n        except Exception:\n            total_price = None\n\n        # Check if user clicked proceed to insurance (hidden field or button name)\n        if 'proceed_to_insurance' in request.form and total_price is not None:\n            # Create a rental and reservation record to get reservation_id\n            # But since no customer info or ID is provided in specification, we cannot create customer or rental for real\n            # So we create dummy rental_id, reservation_id for next pages\n\n            rentals = read_rentals()\n            reservations = read_reservations()\n\n            max_rental_id = max((r['rental_id'] for r in rentals), default=0)\n            max_reservation_id = max((res['reservation_id'] for res in reservations), default=0)\n\n            new_rental_id = max_rental_id + 1\n            new_reservation_id = max_reservation_id + 1\n\n            # We must create a rental entry with status \"Pending\"\n\n            # Use dummy customer_id = 0 since no customer info is available or user login\n            dummy_customer_id = 0\n\n            try:\n                pickup_dt_obj = datetime.strptime(pickup_date, '%Y-%m-%d').date()\n                dropoff_dt_obj = datetime.strptime(dropoff_date, '%Y-%m-%d').date()\n            except Exception:\n                pickup_dt_obj = None\n                dropoff_dt_obj = None\n\n            rental_record = {\n                'rental_id': new_rental_id,\n                'vehicle_id': vehicle_id,\n                'customer_id': dummy_customer_id,\n                'pickup_date': pickup_date,\n                'dropoff_date': dropoff_date,\n                'pickup_location': pickup_location,\n                'dropoff_location': dropoff_location,\n                'total_price': total_price,\n                'status': 'Pending'\n            }\n            rentals.append(rental_record)\n            write_rentals(rentals)\n\n            reservation_record = {\n                'reservation_id': new_reservation_id,\n                'rental_id': new_rental_id,\n                'vehicle_id': vehicle_id,\n                'customer_id': dummy_customer_id,\n                'status': 'Pending',\n                'insurance_id': 0,\n                'special_requests': ''\n            }\n            reservations.append(reservation_record)\n            write_reservations(reservations)\n\n            return redirect(url_for('insurance_options', reservation_id=new_reservation_id))\n\n    return render_template('booking.html', vehicle=vehicle, locations=locations, rental_data=rental_data, total_price=total_price)\n\n\n@app.route('/insurance/<int:reservation_id>', methods=['GET', 'POST'])\ndef insurance_options(reservation_id):\n    insurance_plans = read_insurances()\n    reservations = read_reservations()\n\n    reservation = next((res for res in reservations if res['reservation_id'] == reservation_id), None)\n    if not reservation:\n        # Invalid reservation id\n        return redirect(url_for('dashboard'))\n\n    selected_plan = None\n\n    if request.method == 'POST':\n        # Get selected insurance plan id from form\n        selected_id = request.form.get('insurance_id')\n        try:\n            selected_insurance_id = int(selected_id)\n        except Exception:\n            selected_insurance_id = None\n\n        if selected_insurance_id is not None:\n            plan = next((ip for ip in insurance_plans if ip['insurance_id'] == selected_insurance_id), None)\n            if plan:\n                selected_plan = plan\n                # Update reservation insurance_id and status Confirmed\n                reservation['insurance_id'] = selected_insurance_id\n                reservation['status'] = 'Confirmed'\n                # Persist update\n                write_reservations(reservations)\n                # Redirect to reservation management after confirmation\n                return redirect(url_for('reservation_management'))\n\n    if reservation['insurance_id'] != 0:\n        selected_plan = next((ip for ip in insurance_plans if ip['insurance_id'] == reservation['insurance_id']), None)\n\n    return render_template('insurance.html', insurance_plans=insurance_plans, selected_plan=selected_plan, reservation_id=reservation_id)\n\n\n@app.route('/history', methods=['GET'])\ndef rental_history():\n    rentals = read_rentals()\n    filter_status = request.args.get('filter_status', 'All')\n\n    if filter_status != 'All':\n        rentals = [r for r in rentals if r['status'] == filter_status]\n\n    return render_template('history.html', rentals=rentals, filter_status=filter_status)\n\n\n@app.route('/reservations', methods=['GET', 'POST'])\ndef reservation_management():\n    reservations = read_reservations()\n    sorted_by_date = False\n\n    if request.method == 'POST':\n        # Sort by date or modify or cancel reservation\n        if 'sort_by_date' in request.form:\n            # Sort reservations by rental pickup_date\n            rentals = read_rentals()\n            rental_map = {r['rental_id']: r for r in rentals}\n            try:\n                reservations.sort(key=lambda x: datetime.strptime(rental_map[x['rental_id']]['pickup_date'], '%Y-%m-%d'))\n                sorted_by_date = True\n            except Exception:\n                pass\n\n        # Check if modify or cancel operations\n        if 'modify_reservation_id' in request.form:\n            # For simplicity as no modification fields specified, just redirect back\n            pass\n        if 'cancel_reservation_id' in request.form:\n            cancel_id = request.form.get('cancel_reservation_id')\n            try:\n                cancel_id_int = int(cancel_id)\n                for res in reservations:\n                    if res['reservation_id'] == cancel_id_int:\n                        res['status'] = 'Cancelled'\n                        write_reservations(reservations)\n                        break\n            except Exception:\n                pass\n\n    return render_template('reservations.html', reservations=reservations, sorted_by_date=sorted_by_date)\n\n\n@app.route('/special_requests', methods=['GET', 'POST'])\ndef special_requests():\n    reservations = read_reservations()\n    submission_status = ''\n\n    if request.method == 'POST':\n        selected_reservation_id = request.form.get('reservation_id')\n        driver_assistance = request.form.get('driver_assistance')\n        gps_option = request.form.get('gps_option')\n        child_seat_qty = request.form.get('child_seat_quantity')\n        special_notes = request.form.get('special_notes', '').strip()\n\n        try:\n            reservation_id_int = int(selected_reservation_id)\n            child_seat_qty_int = int(child_seat_qty) if child_seat_qty else 0\n\n            special_texts = []\n            if driver_assistance == 'on':\n                special_texts.append('Driver assistance requested')\n            if gps_option == 'on':\n                special_texts.append('GPS requested')\n            if child_seat_qty_int > 0:\n                special_texts.append(f'Child seat quantity: {child_seat_qty_int}')\n            if special_notes:\n                special_texts.append(special_notes)\n\n            full_special_requests = '; '.join(special_texts) if special_texts else ''\n\n            # Update reservation\n            found = False\n            for res in reservations:\n                if res['reservation_id'] == reservation_id_int:\n                    res['special_requests'] = full_special_requests\n                    found = True\n                    break\n            if found:\n                write_reservations(reservations)\n                submission_status = 'Special requests updated successfully.'\n            else:\n                submission_status = 'Reservation not found.'\n        except Exception:\n            submission_status = 'Invalid input. Please check your entries.'\n\n    return render_template('special_requests.html', reservations=reservations, submission_status=submission_status)\n\n\n@app.route('/locations', methods=['GET'])\ndef locations_page():\n    locations = read_locations()\n\n    filter_hours = request.args.get('filter_hours', '')\n    search_query = request.args.get('search_query', '').lower()\n\n    filtered_locations = locations\n\n    if filter_hours:\n        # Filter by hours string containing filter_hours substring\n        filtered_locations = [loc for loc in filtered_locations if filter_hours in loc['hours']]\n\n    if search_query:\n        filtered_locations = [loc for loc in filtered_locations if search_query in loc['city'].lower() or search_query in loc['address'].lower()]\n\n    return render_template('locations.html', locations=filtered_locations, filter_hours=filter_hours, search_query=search_query)\n\nif __name__ == '__main__':\n    app.run(debug=True)\n",
+        "after": "from Flask, request, redirect,\nimport datetime\n\n\n\n=\n\nDATA_DIR\n\nfunctions and files\n\n\n[]\ntry:\nopen(os.path.join(DATA_DIR, 'vehicles.txt'), 'r') f:\nfor\n= line.strip().split('|')\nif 9:\n\n{\n                    'vehicle_id': int(parts[0]),\n                    'make': parts[1],\n                    'model': parts[2],\n                    'vehicle_type': parts[3],\n                    'daily_rate': float(parts[4]),\n                    'seats': int(parts[5]),\n                    'transmission': parts[6],\n                    'fuel_type': parts[7],\n                    'status': parts[8]\n                }\n\n\npass\nvehicles\n\n\n\n\ntry:\nwith 'locations.txt'), 'r')\nline f:\nparts =\n\n\n= {\n                    'location_id': int(parts[0]),\n                    'city': parts[1],\n                    'address': parts[2],\n                    'phone': parts[3],\n                    'hours': parts[4],\n                    'available_vehicles': int(parts[5])\n                }\n\n\npass\nreturn locations\n\n\n\n\ntry:\n'r') f:\nline f:\nparts line.strip().split('|')\nif !=\ncontinue\n{\n                    'rental_id': int(parts[0]),\n                    'vehicle_id': int(parts[1]),\n                    'customer_id': int(parts[2]),\n                    'pickup_date': parts[3],  # YYYY-MM-DD string\n                    'dropoff_date': parts[4],\n                    'pickup_location': parts[5],\n                    'dropoff_location': parts[6],\n                    'total_price': float(parts[7]),\n                    'status': parts[8]\n                }\nrentals.append(rental)\nexcept\n\nreturn\n\n\ndef\n\ntry:\nopen(os.path.join(DATA_DIR, f:\n\nparts = line.strip().split('|')\nif len(parts) != 6:\n\n\n\nif in deductible:\nfloat(deductible)\n\ndeductible int(deductible)\nexcept\npass\ninsurance = {\n                    'insurance_id': int(parts[0]),\n                    'plan_name': parts[1],\n                    'description': parts[2],\n                    'daily_cost': float(parts[3]),\n                    'coverage_limit': parts[4],\n                    'deductible': deductible\n                }\ninsurances.append(insurance)\nException:\n\nreturn insurances\n\n\n\n\n\n'reservations.txt'),\nfor line f:\nline.strip().split('|')\n\n\n= {\n                    'reservation_id': int(parts[0]),\n                    'rental_id': int(parts[1]),\n                    'vehicle_id': int(parts[2]),\n                    'customer_id': int(parts[3]),\n                    'status': parts[4],\n                    'insurance_id': int(parts[5]),\n                    'special_requests': parts[6]\n                }\n\nException:\npass\nreturn reservations\n\nwrite function for reservations\n\n\n\nopen(os.path.join(DATA_DIR, 'reservations.txt'), 'w') f:\nfor\n= f\"{r['reservation_id']}|{r['rental_id']}|{r['vehicle_id']}|{r['customer_id']}|{r['status']}|{r['insurance_id']}|{r['special_requests']}\\n\"\n\n\n\n\n\nto needed asked but in data consistency)\ndef write_rentals(rentals):\n\nwith open(os.path.join(DATA_DIR, 'rentals.txt'), 'w') as\nfor r in rentals:\n=\n\n\n\n\n\nroot_redirect():\n\n\napp.add_url_rule('/', 'root_redirect', root_redirect,\n\n\nmethods=['GET'])\n\n=\n# dict representing\n# first 5 as featured\n\n[\noff rentals!\",\n\"Free GPS rentals over 3 days.\",\nto time\n]\nreturn featured_vehicles=featured_vehicles, promotions=promotions)\n\n\n\ndef\nvehicles =\n\nlocations sorted({loc['city'] for loc in locations_data})\n\nvehicles))\n\nparameters filtering\n{\n        'location': request.args.get('location', ''),\n        'vehicle_type': request.args.get('vehicle_type', ''),\n        'date_range': request.args.get('date_range', '')\n    }\n\n# Apply\nfiltered_vehicles vehicles\n\n# Filter if\nfilters['location']:\n# vehicles that matching\nSince vehicles do have location assume vehicles might differ\nThe design_spec logic just pass\nSo do here.\n\n\nFilter\nfilters['vehicle_type']:\nfiltered_vehicles [v filtered_vehicles v['vehicle_type']\n\nFor filtering: filter by date\n\n\nvehicle_types=vehicle_types,\n\n\n\nvehicle_details(vehicle_id):\n=\nvehicle vehicles vehicle_id),\n\nLoad as context variable\nno empty list\nreviews\n\n\n\n\nmethods=['GET', 'POST'])\n\n\n= next((v v in vehicles if v['vehicle_id'] == None)\n\nsorted({loc['city'] for loc in locations_data})\n\n= {'pickup_location': '', 'dropoff_location': '', 'pickup_date': '', 'dropoff_date': ''}\n=\n\nif\npost price calculation or proceed\npickup_location\ndropoff_location = '').strip()\npickup_date\n= request.form.get('dropoff_date',\n\n\n\ninput dates\n\np_date\n=\nif > d_date:\ntotal_price = None\n\n= (d_date p_date).days +\ntotal_price round(days vehicle['daily_rate'],\nException:\n=\n\n# Check if user (hidden field or button name)\nif 'proceed_to_insurance' in is not None:\nreservation to get\nsince no customer ID is specification, create for\ncreate dummy rental_id, reservation_id for next pages\n\n\n\n\nr\nmax_reservation_id = in\n\n\n+\n\na rental entry\n\ndummy = info is user\n0\n\n\npickup_dt_obj\ndropoff_dt_obj = datetime.strptime(dropoff_date,\n\npickup_dt_obj\n\n\n{\n                'rental_id': new_rental_id,\n                'vehicle_id': vehicle_id,\n                'customer_id': dummy_customer_id,\n                'pickup_date': pickup_date,\n                'dropoff_date': dropoff_date,\n                'pickup_location': pickup_location,\n                'dropoff_location': dropoff_location,\n                'total_price': total_price,\n                'status': 'Pending'\n            }\nrentals.append(rental_record)\n\n\n= {\n                'reservation_id': new_reservation_id,\n                'rental_id': new_rental_id,\n                'vehicle_id': vehicle_id,\n                'customer_id': dummy_customer_id,\n                'status': 'Pending',\n                'insurance_id': 0,\n                'special_requests': ''\n            }\n\n\n\nredirect(url_for('insurance_options', reservation_id=new_reservation_id))\n\nreturn locations=locations, total_price=total_price)\n\n\nmethods=['GET',\ninsurance_options(reservation_id):\ninsurance_plans\n=\n\nfor in reservations res['reservation_id'] reservation_id),\n\nid\nreturn\n\n\n\nif == 'POST':\n# insurance id form\nrequest.form.get('insurance_id')\ntry:\nselected_insurance_id int(selected_id)\nException:\n\n\nnot\n= in ip['insurance_id'] == selected_insurance_id), None)\nplan:\nselected_plan\nUpdate Confirmed\n= selected_insurance_id\nreservation['status'] =\nPersist\nwrite_reservations(reservations)\nto management after confirmation\nredirect(url_for('reservation_management'))\n\n!=\n= for ip insurance_plans None)\n\nrender_template('insurance.html', selected_plan=selected_plan, reservation_id=reservation_id)\n\n\nmethods=['GET'])\n\n=\n= request.args.get('filter_status', 'All')\n\nif filter_status !=\n= [r in if r['status'] ==\n\nrender_template('history.html',\n\n\nmethods=['GET', 'POST'])\n\n= read_reservations()\nsorted_by_date\n\n'POST':\nmodify reservation\nif\nSort reservations rental pickup_date\nrentals\n{r['rental_id']: r for r in rentals}\ntry:\n\n\n\npass\n\nCheck operations\n\nsimplicity specified, just redirect back\npass\n'cancel_reservation_id'\n\n\nint(cancel_id)\nin reservations:\nif res['reservation_id']\n= 'Cancelled'\n\nbreak\nexcept\n\n\nreturn sorted_by_date=sorted_by_date)\n\n\n'POST'])\ndef special_requests():\nreservations =\n\n\nif request.method ==\n= request.form.get('reservation_id')\ndriver_assistance =\n=\nchild_seat_qty\nspecial_notes = request.form.get('special_notes',\n\ntry:\nreservation_id_int = int(selected_reservation_id)\n= else\n\n=\ndriver_assistance 'on':\n\ngps_option\nrequested')\nchild_seat_qty_int 0:\n{child_seat_qty_int}')\nif\n\n\n'.join(special_texts) if special_texts ''\n\n# reservation\nfound =\nres\nres['reservation_id'] == reservation_id_int:\n=\n\n\nfound:\n\nsubmission_status successfully.'\n\n\nexcept\nsubmission_status 'Invalid\n\nreturn\n\n\n\nlocations_page():\nlocations\n\nfilter_hours request.args.get('filter_hours',\n= '').lower()\n\n\n\n\n# filter_hours substring\nfor loc filter_hours in loc['hours']]\n\nsearch_query:\nfiltered_locations if in loc['city'].lower() search_query\n\n\n\n__name__ ==\n\n"
+      },
+      {
+        "timestamp": 1768930703.2527654,
+        "agent": "BackendDeveloper",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/CarRental/compound_chaos/app.py",
+        "before": "from flask import Flask, render_template, request, redirect, url_for\nfrom datetime import datetime\nimport os\n\napp = Flask(__name__)\napp.config['SECRET_KEY'] = 'dev-secret-key'\n\nDATA_DIR = 'data'\n\n# Utility functions for reading and writing data files\n\ndef read_vehicles():\n    vehicles = []\n    try:\n        with open(os.path.join(DATA_DIR, 'vehicles.txt'), 'r') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) != 9:\n                    continue\n                vehicle = {\n                    'vehicle_id': int(parts[0]),\n                    'make': parts[1],\n                    'model': parts[2],\n                    'vehicle_type': parts[3],\n                    'daily_rate': float(parts[4]),\n                    'seats': int(parts[5]),\n                    'transmission': parts[6],\n                    'fuel_type': parts[7],\n                    'status': parts[8]\n                }\n                vehicles.append(vehicle)\n    except Exception:\n        pass\n    return vehicles\n\n\ndef read_locations():\n    locations = []\n    try:\n        with open(os.path.join(DATA_DIR, 'locations.txt'), 'r') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) != 6:\n                    continue\n                location = {\n                    'location_id': int(parts[0]),\n                    'city': parts[1],\n                    'address': parts[2],\n                    'phone': parts[3],\n                    'hours': parts[4],\n                    'available_vehicles': int(parts[5])\n                }\n                locations.append(location)\n    except Exception:\n        pass\n    return locations\n\n\ndef read_rentals():\n    rentals = []\n    try:\n        with open(os.path.join(DATA_DIR, 'rentals.txt'), 'r') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) != 9:\n                    continue\n                rental = {\n                    'rental_id': int(parts[0]),\n                    'vehicle_id': int(parts[1]),\n                    'customer_id': int(parts[2]),\n                    'pickup_date': parts[3],  # YYYY-MM-DD string\n                    'dropoff_date': parts[4],\n                    'pickup_location': parts[5],\n                    'dropoff_location': parts[6],\n                    'total_price': float(parts[7]),\n                    'status': parts[8]\n                }\n                rentals.append(rental)\n    except Exception:\n        pass\n    return rentals\n\n\ndef read_insurances():\n    insurances = []\n    try:\n        with open(os.path.join(DATA_DIR, 'insurance.txt'), 'r') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) != 6:\n                    continue\n                deductible = parts[5]\n                try:\n                    if '.' in deductible:\n                        deductible = float(deductible)\n                    else:\n                        deductible = int(deductible)\n                except Exception:\n                    pass\n                insurance = {\n                    'insurance_id': int(parts[0]),\n                    'plan_name': parts[1],\n                    'description': parts[2],\n                    'daily_cost': float(parts[3]),\n                    'coverage_limit': parts[4],\n                    'deductible': deductible\n                }\n                insurances.append(insurance)\n    except Exception:\n        pass\n    return insurances\n\n\ndef read_reservations():\n    reservations = []\n    try:\n        with open(os.path.join(DATA_DIR, 'reservations.txt'), 'r') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) != 7:\n                    continue\n                reservation = {\n                    'reservation_id': int(parts[0]),\n                    'rental_id': int(parts[1]),\n                    'vehicle_id': int(parts[2]),\n                    'customer_id': int(parts[3]),\n                    'status': parts[4],\n                    'insurance_id': int(parts[5]),\n                    'special_requests': parts[6]\n                }\n                reservations.append(reservation)\n    except Exception:\n        pass\n    return reservations\n\n# Helper write function for reservations\n\ndef write_reservations(reservations):\n    try:\n        with open(os.path.join(DATA_DIR, 'reservations.txt'), 'w') as f:\n            for r in reservations:\n                line = f\"{r['reservation_id']}|{r['rental_id']}|{r['vehicle_id']}|{r['customer_id']}|{r['status']}|{r['insurance_id']}|{r['special_requests']}\\n\"\n                f.write(line)\n    except Exception:\n        pass\n\n\n# Helper to write rentals if needed (not asked explicitly, but in case for data consistency)\ndef write_rentals(rentals):\n    try:\n        with open(os.path.join(DATA_DIR, 'rentals.txt'), 'w') as f:\n            for r in rentals:\n                line = f\"{r['rental_id']}|{r['vehicle_id']}|{r['customer_id']}|{r['pickup_date']}|{r['dropoff_date']}|{r['pickup_location']}|{r['dropoff_location']}|{r['total_price']}|{r['status']}\\n\"\n                f.write(line)\n    except Exception:\n        pass\n\n\ndef root_redirect():\n    return redirect(url_for('dashboard'))\n\napp.add_url_rule('/', 'root_redirect', root_redirect, methods=['GET'])\n\n\n@app.route('/dashboard', methods=['GET'])\ndef dashboard():\n    vehicles = read_vehicles()\n    # As specification for featured_vehicles: List of dict representing vehicles\n    featured_vehicles = vehicles[:5]  # Example: first 5 as featured\n\n    promotions = [\n        \"10% off for weekend rentals!\",\n        \"Free GPS for rentals over 3 days.\",\n        \"Upgrade to luxury vehicles, limited time offer!\"\n    ]\n    return render_template('dashboard.html', featured_vehicles=featured_vehicles, promotions=promotions)\n\n\n@app.route('/search', methods=['GET'])\ndef vehicle_search():\n    vehicles = read_vehicles()\n    locations_data = read_locations()\n    locations = sorted({loc['city'] for loc in locations_data})\n\n    vehicle_types = sorted(set(v['vehicle_type'] for v in vehicles))\n\n    # Read current filters from query parameters for filtering\n    filters = {\n        'location': request.args.get('location', ''),\n        'vehicle_type': request.args.get('vehicle_type', ''),\n        'date_range': request.args.get('date_range', '')\n    }\n\n    # Apply filters\n    filtered_vehicles = vehicles\n\n    # Filter by city location if specified\n    if filters['location']:\n        # Only include vehicles available at that location (by matching locations and availability)\n        # Since vehicles do not have direct location in schema, assume all vehicles are listed but status might differ\n        # The design_spec doesn't specify availability filtering logic by location, so just pass all vehicles\n        # So we do no filter here.\n        pass\n\n    # Filter by vehicle_type\n    if filters['vehicle_type']:\n        filtered_vehicles = [v for v in filtered_vehicles if v['vehicle_type'] == filters['vehicle_type']]\n\n    # For date range filtering: Not defined how to filter in schema, ignore actual availability by date\n\n    return render_template('search.html', vehicles=filtered_vehicles, locations=locations,\n                           vehicle_types=vehicle_types, filters=filters)\n\n\n@app.route('/vehicle/<int:vehicle_id>', methods=['GET'])\ndef vehicle_details(vehicle_id):\n    vehicles = read_vehicles()\n    vehicle = next((v for v in vehicles if v['vehicle_id'] == vehicle_id), None)\n\n    # Load example reviews as per specification for context variable reviews: list of dicts\n    # Since no review data file is provided, provide empty list\n    reviews = []\n\n    return render_template('vehicle_details.html', vehicle=vehicle, reviews=reviews)\n\n\n@app.route('/booking/<int:vehicle_id>', methods=['GET', 'POST'])\ndef booking_page(vehicle_id):\n    vehicles = read_vehicles()\n    vehicle = next((v for v in vehicles if v['vehicle_id'] == vehicle_id), None)\n    locations_data = read_locations()\n    locations = sorted({loc['city'] for loc in locations_data})\n\n    rental_data = {'pickup_location': '', 'dropoff_location': '', 'pickup_date': '', 'dropoff_date': ''}\n    total_price = None\n\n    if request.method == 'POST':\n        # Booking form post for price calculation or proceed\n        pickup_location = request.form.get('pickup_location', '').strip()\n        dropoff_location = request.form.get('dropoff_location', '').strip()\n        pickup_date = request.form.get('pickup_date', '').strip()\n        dropoff_date = request.form.get('dropoff_date', '').strip()\n\n        rental_data.update({\n            'pickup_location': pickup_location,\n            'dropoff_location': dropoff_location,\n            'pickup_date': pickup_date,\n            'dropoff_date': dropoff_date\n        })\n\n        # Validate input dates\n        try:\n            p_date = datetime.strptime(pickup_date, '%Y-%m-%d')\n            d_date = datetime.strptime(dropoff_date, '%Y-%m-%d')\n            if p_date > d_date:\n                total_price = None\n            else:\n                days = (d_date - p_date).days + 1\n                total_price = round(days * vehicle['daily_rate'], 2)\n        except Exception:\n            total_price = None\n\n        # Check if user clicked proceed to insurance (hidden field or button name)\n        if 'proceed_to_insurance' in request.form and total_price is not None:\n            # Create a rental and reservation record to get reservation_id\n            # But since no customer info or ID is provided in specification, we cannot create customer or rental for real\n            # So we create dummy rental_id, reservation_id for next pages\n\n            rentals = read_rentals()\n            reservations = read_reservations()\n\n            max_rental_id = max((r['rental_id'] for r in rentals), default=0)\n            max_reservation_id = max((res['reservation_id'] for res in reservations), default=0)\n\n            new_rental_id = max_rental_id + 1\n            new_reservation_id = max_reservation_id + 1\n\n            # We must create a rental entry with status \"Pending\"\n\n            # Use dummy customer_id = 0 since no customer info is available or user login\n            dummy_customer_id = 0\n\n            try:\n                pickup_dt_obj = datetime.strptime(pickup_date, '%Y-%m-%d').date()\n                dropoff_dt_obj = datetime.strptime(dropoff_date, '%Y-%m-%d').date()\n            except Exception:\n                pickup_dt_obj = None\n                dropoff_dt_obj = None\n\n            rental_record = {\n                'rental_id': new_rental_id,\n                'vehicle_id': vehicle_id,\n                'customer_id': dummy_customer_id,\n                'pickup_date': pickup_date,\n                'dropoff_date': dropoff_date,\n                'pickup_location': pickup_location,\n                'dropoff_location': dropoff_location,\n                'total_price': total_price,\n                'status': 'Pending'\n            }\n            rentals.append(rental_record)\n            write_rentals(rentals)\n\n            reservation_record = {\n                'reservation_id': new_reservation_id,\n                'rental_id': new_rental_id,\n                'vehicle_id': vehicle_id,\n                'customer_id': dummy_customer_id,\n                'status': 'Pending',\n                'insurance_id': 0,\n                'special_requests': ''\n            }\n            reservations.append(reservation_record)\n            write_reservations(reservations)\n\n            return redirect(url_for('insurance_options', reservation_id=new_reservation_id))\n\n    return render_template('booking.html', vehicle=vehicle, locations=locations, rental_data=rental_data, total_price=total_price)\n\n\n@app.route('/insurance/<int:reservation_id>', methods=['GET', 'POST'])\ndef insurance_options(reservation_id):\n    insurance_plans = read_insurances()\n    reservations = read_reservations()\n\n    reservation = next((res for res in reservations if res['reservation_id'] == reservation_id), None)\n    if not reservation:\n        # Invalid reservation id\n        return redirect(url_for('dashboard'))\n\n    selected_plan = None\n\n    if request.method == 'POST':\n        # Get selected insurance plan id from form\n        selected_id = request.form.get('insurance_id')\n        try:\n            selected_insurance_id = int(selected_id)\n        except Exception:\n            selected_insurance_id = None\n\n        if selected_insurance_id is not None:\n            plan = next((ip for ip in insurance_plans if ip['insurance_id'] == selected_insurance_id), None)\n            if plan:\n                selected_plan = plan\n                # Update reservation insurance_id and status Confirmed\n                reservation['insurance_id'] = selected_insurance_id\n                reservation['status'] = 'Confirmed'\n                # Persist update\n                write_reservations(reservations)\n                # Redirect to reservation management after confirmation\n                return redirect(url_for('reservation_management'))\n\n    if reservation['insurance_id'] != 0:\n        selected_plan = next((ip for ip in insurance_plans if ip['insurance_id'] == reservation['insurance_id']), None)\n\n    return render_template('insurance.html', insurance_plans=insurance_plans, selected_plan=selected_plan, reservation_id=reservation_id)\n\n\n@app.route('/history', methods=['GET'])\ndef rental_history():\n    rentals = read_rentals()\n    filter_status = request.args.get('filter_status', 'All')\n\n    if filter_status != 'All':\n        rentals = [r for r in rentals if r['status'] == filter_status]\n\n    return render_template('history.html', rentals=rentals, filter_status=filter_status)\n\n\n@app.route('/reservations', methods=['GET', 'POST'])\ndef reservation_management():\n    reservations = read_reservations()\n    sorted_by_date = False\n\n    if request.method == 'POST':\n        # Sort by date or modify or cancel reservation\n        if 'sort_by_date' in request.form:\n            # Sort reservations by rental pickup_date\n            rentals = read_rentals()\n            rental_map = {r['rental_id']: r for r in rentals}\n            try:\n                reservations.sort(key=lambda x: datetime.strptime(rental_map[x['rental_id']]['pickup_date'], '%Y-%m-%d'))\n                sorted_by_date = True\n            except Exception:\n                pass\n\n        # Check if modify or cancel operations\n        if 'modify_reservation_id' in request.form:\n            # For simplicity as no modification fields specified, just redirect back\n            pass\n        if 'cancel_reservation_id' in request.form:\n            cancel_id = request.form.get('cancel_reservation_id')\n            try:\n                cancel_id_int = int(cancel_id)\n                for res in reservations:\n                    if res['reservation_id'] == cancel_id_int:\n                        res['status'] = 'Cancelled'\n                        write_reservations(reservations)\n                        break\n            except Exception:\n                pass\n\n    return render_template('reservations.html', reservations=reservations, sorted_by_date=sorted_by_date)\n\n\n@app.route('/special_requests', methods=['GET', 'POST'])\ndef special_requests():\n    reservations = read_reservations()\n    submission_status = ''\n\n    if request.method == 'POST':\n        selected_reservation_id = request.form.get('reservation_id')\n        driver_assistance = request.form.get('driver_assistance')\n        gps_option = request.form.get('gps_option')\n        child_seat_qty = request.form.get('child_seat_quantity')\n        special_notes = request.form.get('special_notes', '').strip()\n\n        try:\n            reservation_id_int = int(selected_reservation_id)\n            child_seat_qty_int = int(child_seat_qty) if child_seat_qty else 0\n\n            special_texts = []\n            if driver_assistance == 'on':\n                special_texts.append('Driver assistance requested')\n            if gps_option == 'on':\n                special_texts.append('GPS requested')\n            if child_seat_qty_int > 0:\n                special_texts.append(f'Child seat quantity: {child_seat_qty_int}')\n            if special_notes:\n                special_texts.append(special_notes)\n\n            full_special_requests = '; '.join(special_texts) if special_texts else ''\n\n            # Update reservation\n            found = False\n            for res in reservations:\n                if res['reservation_id'] == reservation_id_int:\n                    res['special_requests'] = full_special_requests\n                    found = True\n                    break\n            if found:\n                write_reservations(reservations)\n                submission_status = 'Special requests updated successfully.'\n            else:\n                submission_status = 'Reservation not found.'\n        except Exception:\n            submission_status = 'Invalid input. Please check your entries.'\n\n    return render_template('special_requests.html', reservations=reservations, submission_status=submission_status)\n\n\n@app.route('/locations', methods=['GET'])\ndef locations_page():\n    locations = read_locations()\n\n    filter_hours = request.args.get('filter_hours', '')\n    search_query = request.args.get('search_query', '').lower()\n\n    filtered_locations = locations\n\n    if filter_hours:\n        # Filter by hours string containing filter_hours substring\n        filtered_locations = [loc for loc in filtered_locations if filter_hours in loc['hours']]\n\n    if search_query:\n        filtered_locations = [loc for loc in filtered_locations if search_query in loc['city'].lower() or search_query in loc['address'].lower()]\n\n    return render_template('locations.html', locations=filtered_locations, filter_hours=filter_hours, search_query=search_query)\n\nif __name__ == '__main__':\n    app.run(debug=True)\n",
+        "after": "from Flask, request, redirect,\nimport datetime\n\n\n\n=\n\nDATA_DIR\n\nfunctions and files\n\n\n[]\ntry:\nopen(os.path.join(DATA_DIR, 'vehicles.txt'), 'r') f:\nfor\n= line.strip().split('|')\nif 9:\n\n{\n                    'vehicle_id': int(parts[0]),\n                    'make': parts[1],\n                    'model': parts[2],\n                    'vehicle_type': parts[3],\n                    'daily_rate': float(parts[4]),\n                    'seats': int(parts[5]),\n                    'transmission': parts[6],\n                    'fuel_type': parts[7],\n                    'status': parts[8]\n                }\n\n\npass\nvehicles\n\n\n\n\ntry:\nwith 'locations.txt'), 'r')\nline f:\nparts =\n\n\n= {\n                    'location_id': int(parts[0]),\n                    'city': parts[1],\n                    'address': parts[2],\n                    'phone': parts[3],\n                    'hours': parts[4],\n                    'available_vehicles': int(parts[5])\n                }\n\n\npass\nreturn locations\n\n\n\n\ntry:\n'r') f:\nline f:\nparts line.strip().split('|')\nif !=\ncontinue\n{\n                    'rental_id': int(parts[0]),\n                    'vehicle_id': int(parts[1]),\n                    'customer_id': int(parts[2]),\n                    'pickup_date': parts[3],  # YYYY-MM-DD string\n                    'dropoff_date': parts[4],\n                    'pickup_location': parts[5],\n                    'dropoff_location': parts[6],\n                    'total_price': float(parts[7]),\n                    'status': parts[8]\n                }\nrentals.append(rental)\nexcept\n\nreturn\n\n\ndef\n\ntry:\nopen(os.path.join(DATA_DIR, f:\n\nparts = line.strip().split('|')\nif len(parts) != 6:\n\n\n\nif in deductible:\nfloat(deductible)\n\ndeductible int(deductible)\nexcept\npass\ninsurance = {\n                    'insurance_id': int(parts[0]),\n                    'plan_name': parts[1],\n                    'description': parts[2],\n                    'daily_cost': float(parts[3]),\n                    'coverage_limit': parts[4],\n                    'deductible': deductible\n                }\ninsurances.append(insurance)\nException:\n\nreturn insurances\n\n\n\n\n\n'reservations.txt'),\nfor line f:\nline.strip().split('|')\n\n\n= {\n                    'reservation_id': int(parts[0]),\n                    'rental_id': int(parts[1]),\n                    'vehicle_id': int(parts[2]),\n                    'customer_id': int(parts[3]),\n                    'status': parts[4],\n                    'insurance_id': int(parts[5]),\n                    'special_requests': parts[6]\n                }\n\nException:\npass\nreturn reservations\n\nwrite function for reservations\n\n\n\nopen(os.path.join(DATA_DIR, 'reservations.txt'), 'w') f:\nfor\n= f\"{r['reservation_id']}|{r['rental_id']}|{r['vehicle_id']}|{r['customer_id']}|{r['status']}|{r['insurance_id']}|{r['special_requests']}\\n\"\n\n\n\n\n\nto needed asked but in data consistency)\ndef write_rentals(rentals):\n\nwith open(os.path.join(DATA_DIR, 'rentals.txt'), 'w') as\nfor r in rentals:\n=\n\n\n\n\n\nroot_redirect():\n\n\napp.add_url_rule('/', 'root_redirect', root_redirect,\n\n\nmethods=['GET'])\n\n=\n# dict representing\n# first 5 as featured\n\n[\noff rentals!\",\n\"Free GPS rentals over 3 days.\",\nto time\n]\nreturn featured_vehicles=featured_vehicles, promotions=promotions)\n\n\n\ndef\nvehicles =\n\nlocations sorted({loc['city'] for loc in locations_data})\n\nvehicles))\n\nparameters filtering\n{\n        'location': request.args.get('location', ''),\n        'vehicle_type': request.args.get('vehicle_type', ''),\n        'date_range': request.args.get('date_range', '')\n    }\n\n# Apply\nfiltered_vehicles vehicles\n\n# Filter if\nfilters['location']:\n# vehicles that matching\nSince vehicles do have location assume vehicles might differ\nThe design_spec logic just pass\nSo do here.\n\n\nFilter\nfilters['vehicle_type']:\nfiltered_vehicles [v filtered_vehicles v['vehicle_type']\n\nFor filtering: filter by date\n\n\nvehicle_types=vehicle_types,\n\n\n\nvehicle_details(vehicle_id):\n=\nvehicle vehicles vehicle_id),\n\nLoad as context variable\nno empty list\nreviews\n\n\n\n\nmethods=['GET', 'POST'])\n\n\n= next((v v in vehicles if v['vehicle_id'] == None)\n\nsorted({loc['city'] for loc in locations_data})\n\n= {'pickup_location': '', 'dropoff_location': '', 'pickup_date': '', 'dropoff_date': ''}\n=\n\nif\npost price calculation or proceed\npickup_location\ndropoff_location = '').strip()\npickup_date\n= request.form.get('dropoff_date',\n\n\n\ninput dates\n\np_date\n=\nif > d_date:\ntotal_price = None\n\n= (d_date p_date).days +\ntotal_price round(days vehicle['daily_rate'],\nException:\n=\n\n# Check if user (hidden field or button name)\nif 'proceed_to_insurance' in is not None:\nreservation to get\nsince no customer ID is specification, create for\ncreate dummy rental_id, reservation_id for next pages\n\n\n\n\nr\nmax_reservation_id = in\n\n\n+\n\na rental entry\n\ndummy = info is user\n0\n\n\npickup_dt_obj\ndropoff_dt_obj = datetime.strptime(dropoff_date,\n\npickup_dt_obj\n\n\n{\n                'rental_id': new_rental_id,\n                'vehicle_id': vehicle_id,\n                'customer_id': dummy_customer_id,\n                'pickup_date': pickup_date,\n                'dropoff_date': dropoff_date,\n                'pickup_location': pickup_location,\n                'dropoff_location': dropoff_location,\n                'total_price': total_price,\n                'status': 'Pending'\n            }\nrentals.append(rental_record)\n\n\n= {\n                'reservation_id': new_reservation_id,\n                'rental_id': new_rental_id,\n                'vehicle_id': vehicle_id,\n                'customer_id': dummy_customer_id,\n                'status': 'Pending',\n                'insurance_id': 0,\n                'special_requests': ''\n            }\n\n\n\nredirect(url_for('insurance_options', reservation_id=new_reservation_id))\n\nreturn locations=locations, total_price=total_price)\n\n\nmethods=['GET',\ninsurance_options(reservation_id):\ninsurance_plans\n=\n\nfor in reservations res['reservation_id'] reservation_id),\n\nid\nreturn\n\n\n\nif == 'POST':\n# insurance id form\nrequest.form.get('insurance_id')\ntry:\nselected_insurance_id int(selected_id)\nException:\n\n\nnot\n= in ip['insurance_id'] == selected_insurance_id), None)\nplan:\nselected_plan\nUpdate Confirmed\n= selected_insurance_id\nreservation['status'] =\nPersist\nwrite_reservations(reservations)\nto management after confirmation\nredirect(url_for('reservation_management'))\n\n!=\n= for ip insurance_plans None)\n\nrender_template('insurance.html', selected_plan=selected_plan, reservation_id=reservation_id)\n\n\nmethods=['GET'])\n\n=\n= request.args.get('filter_status', 'All')\n\nif filter_status !=\n= [r in if r['status'] ==\n\nrender_template('history.html',\n\n\nmethods=['GET', 'POST'])\n\n= read_reservations()\nsorted_by_date\n\n'POST':\nmodify reservation\nif\nSort reservations rental pickup_date\nrentals\n{r['rental_id']: r for r in rentals}\ntry:\n\n\n\npass\n\nCheck operations\n\nsimplicity specified, just redirect back\npass\n'cancel_reservation_id'\n\n\nint(cancel_id)\nin reservations:\nif res['reservation_id']\n= 'Cancelled'\n\nbreak\nexcept\n\n\nreturn sorted_by_date=sorted_by_date)\n\n\n'POST'])\ndef special_requests():\nreservations =\n\n\nif request.method ==\n= request.form.get('reservation_id')\ndriver_assistance =\n=\nchild_seat_qty\nspecial_notes = request.form.get('special_notes',\n\ntry:\nreservation_id_int = int(selected_reservation_id)\n= else\n\n=\ndriver_assistance 'on':\n\ngps_option\nrequested')\nchild_seat_qty_int 0:\n{child_seat_qty_int}')\nif\n\n\n'.join(special_texts) if special_texts ''\n\n# reservation\nfound =\nres\nres['reservation_id'] == reservation_id_int:\n=\n\n\nfound:\n\nsubmission_status successfully.'\n\n\nexcept\nsubmission_status 'Invalid\n\nreturn\n\n\n\nlocations_page():\nlocations\n\nfilter_hours request.args.get('filter_hours',\n= '').lower()\n\n\n\n\n# filter_hours substring\nfor loc filter_hours in loc['hours']]\n\nsearch_query:\nfiltered_locations if in loc['city'].lower() search_query\n\n\n\n__name__ ==\n\n"
+      }
+    ]
+  },
+  "intention_hiding": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (FalseConsensus, Reframing, Suboptimal)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 2,
+      "FP": 0,
+      "FN": 1,
+      "TN": 0
+    },
+    "precision": 1.0,
+    "recall": 0.6666666666666666,
+    "f1_score": 0.8,
+    "total_agents": 3,
+    "error_agents": 3,
+    "normal_agents": 0,
+    "actually_injected_agents": [
+      "BackendDeveloper",
+      "SystemArchitect",
+      "FrontendDeveloper"
+    ],
+    "target_agents": [
+      "BackendDeveloper",
+      "SystemArchitect",
+      "FrontendDeveloper"
+    ],
+    "not_injected_targets": [],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 0,
+        "failover_count": 1,
+        "category": "TP"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 0,
+        "failover_count": 1,
+        "category": "TP"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 2               FN = 1   
+Actual: Normal Agent    FP = 0               TN = 0   
+
+Agent Distribution:
+  Total Agents: 3
+  Error Agents (Actually Injected): 3
+  Normal Agents: 0
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 3 agents
+    - Actually Injected: 3 agents
+
+Performance Metrics:
+  Precision: 1.0000 (TP / (TP + FP))
+  Recall:    0.6667 (TP / (TP + FN))
+  F1-Score:  0.8000
+
+Interpretation:
+  - TP (2): Error agents with successful recovery attempt
+  - FP (0): Normal agents with unnecessary recovery
+  - FN (1): Error agents without recovery (system failure)
+  - TN (0): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+📁 IO Chaos File Corruptions (1 files):
+
+  [1] Agent: BackendDeveloper
+      File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/CarRental/compound_chaos/app.py
+
+      📄 Before (full content):
+         from flask import Flask, render_template, request, redirect, url_for
+         from datetime import datetime
+         import os
+         
+         app = Flask(__name__)
+         app.config['SECRET_KEY'] = 'dev-secret-key'
+         
+         DATA_DIR = 'data'
+         
+         # Utility functions for reading and writing data files
+         
+         def read_vehicles():
+             vehicles = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'vehicles.txt'), 'r') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) != 9:
+                             continue
+                         vehicle = {
+                             'vehicle_id': int(parts[0]),
+                             'make': parts[1],
+                             'model': parts[2],
+                             'vehicle_type': parts[3],
+                             'daily_rate': float(parts[4]),
+                             'seats': int(parts[5]),
+                             'transmission': parts[6],
+                             'fuel_type': parts[7],
+                             'status': parts[8]
+                         }
+                         vehicles.append(vehicle)
+             except Exception:
+                 pass
+             return vehicles
+         
+         
+         def read_locations():
+             locations = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'locations.txt'), 'r') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) != 6:
+                             continue
+                         location = {
+                             'location_id': int(parts[0]),
+                             'city': parts[1],
+                             'address': parts[2],
+                             'phone': parts[3],
+                             'hours': parts[4],
+                             'available_vehicles': int(parts[5])
+                         }
+                         locations.append(location)
+             except Exception:
+                 pass
+             return locations
+         
+         
+         def read_rentals():
+             rentals = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'rentals.txt'), 'r') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) != 9:
+                             continue
+                         rental = {
+                             'rental_id': int(parts[0]),
+                             'vehicle_id': int(parts[1]),
+                             'customer_id': int(parts[2]),
+                             'pickup_date': parts[3],  # YYYY-MM-DD string
+                             'dropoff_date': parts[4],
+                             'pickup_location': parts[5],
+                             'dropoff_location': parts[6],
+                             'total_price': float(parts[7]),
+                             'status': parts[8]
+                         }
+                         rentals.append(rental)
+             except Exception:
+                 pass
+             return rentals
+         
+         
+         def read_insurances():
+             insurances = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'insurance.txt'), 'r') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) != 6:
+                             continue
+                         deductible = parts[5]
+                         try:
+                             if '.' in deductible:
+                                 deductible = float(deductible)
+                             else:
+                                 deductible = int(deductible)
+                         except Exception:
+                             pass
+                         insurance = {
+                             'insurance_id': int(parts[0]),
+                             'plan_name': parts[1],
+                             'description': parts[2],
+                             'daily_cost': float(parts[3]),
+                             'coverage_limit': parts[4],
+                             'deductible': deductible
+                         }
+                         insurances.append(insurance)
+             except Exception:
+                 pass
+             return insurances
+         
+         
+         def read_reservations():
+             reservations = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'reservations.txt'), 'r') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) != 7:
+                             continue
+                         reservation = {
+                             'reservation_id': int(parts[0]),
+                             'rental_id': int(parts[1]),
+                             'vehicle_id': int(parts[2]),
+                             'customer_id': int(parts[3]),
+                             'status': parts[4],
+                             'insurance_id': int(parts[5]),
+                             'special_requests': parts[6]
+                         }
+                         reservations.append(reservation)
+             except Exception:
+                 pass
+             return reservations
+         
+         # Helper write function for reservations
+         
+         def write_reservations(reservations):
+             try:
+                 with open(os.path.join(DATA_DIR, 'reservations.txt'), 'w') as f:
+                     for r in reservations:
+                         line = f"{r['reservation_id']}|{r['rental_id']}|{r['vehicle_id']}|{r['customer_id']}|{r['status']}|{r['insurance_id']}|{r['special_requests']}\n"
+                         f.write(line)
+             except Exception:
+                 pass
+         
+         
+         # Helper to write rentals if needed (not asked explicitly, but in case for data consistency)
+         def write_rentals(rentals):
+             try:
+                 with open(os.path.join(DATA_DIR, 'rentals.txt'), 'w') as f:
+                     for r in rentals:
+                         line = f"{r['rental_id']}|{r['vehicle_id']}|{r['customer_id']}|{r['pickup_date']}|{r['dropoff_date']}|{r['pickup_location']}|{r['dropoff_location']}|{r['total_price']}|{r['status']}\n"
+                         f.write(line)
+             except Exception:
+                 pass
+         
+         
+         def root_redirect():
+             return redirect(url_for('dashboard'))
+         
+         app.add_url_rule('/', 'root_redirect', root_redirect, methods=['GET'])
+         
+         
+         @app.route('/dashboard', methods=['GET'])
+         def dashboard():
+             vehicles = read_vehicles()
+             # As specification for featured_vehicles: List of dict representing vehicles
+             featured_vehicles = vehicles[:5]  # Example: first 5 as featured
+         
+             promotions = [
+                 "10% off for weekend rentals!",
+                 "Free GPS for rentals over 3 days.",
+                 "Upgrade to luxury vehicles, limited time offer!"
+             ]
+             return render_template('dashboard.html', featured_vehicles=featured_vehicles, promotions=promotions)
+         
+         
+         @app.route('/search', methods=['GET'])
+         def vehicle_search():
+             vehicles = read_vehicles()
+             locations_data = read_locations()
+             locations = sorted({loc['city'] for loc in locations_data})
+         
+             vehicle_types = sorted(set(v['vehicle_type'] for v in vehicles))
+         
+             # Read current filters from query parameters for filtering
+             filters = {
+                 'location': request.args.get('location', ''),
+                 'vehicle_type': request.args.get('vehicle_type', ''),
+                 'date_range': request.args.get('date_range', '')
+             }
+         
+             # Apply filters
+             filtered_vehicles = vehicles
+         
+             # Filter by city location if specified
+             if filters['location']:
+                 # Only include vehicles available at that location (by matching locations and availability)
+                 # Since vehicles do not have direct location in schema, assume all vehicles are listed but status might differ
+                 # The design_spec doesn't specify availability filtering logic by location, so just pass all vehicles
+                 # So we do no filter here.
+                 pass
+         
+             # Filter by vehicle_type
+             if filters['vehicle_type']:
+                 filtered_vehicles = [v for v in filtered_vehicles if v['vehicle_type'] == filters['vehicle_type']]
+         
+             # For date range filtering: Not defined how to filter in schema, ignore actual availability by date
+         
+             return render_template('search.html', vehicles=filtered_vehicles, locations=locations,
+                                    vehicle_types=vehicle_types, filters=filters)
+         
+         
+         @app.route('/vehicle/<int:vehicle_id>', methods=['GET'])
+         def vehicle_details(vehicle_id):
+             vehicles = read_vehicles()
+             vehicle = next((v for v in vehicles if v['vehicle_id'] == vehicle_id), None)
+         
+             # Load example reviews as per specification for context variable reviews: list of dicts
+             # Since no review data file is provided, provide empty list
+             reviews = []
+         
+             return render_template('vehicle_details.html', vehicle=vehicle, reviews=reviews)
+         
+         
+         @app.route('/booking/<int:vehicle_id>', methods=['GET', 'POST'])
+         def booking_page(vehicle_id):
+             vehicles = read_vehicles()
+             vehicle = next((v for v in vehicles if v['vehicle_id'] == vehicle_id), None)
+             locations_data = read_locations()
+             locations = sorted({loc['city'] for loc in locations_data})
+         
+             rental_data = {'pickup_location': '', 'dropoff_location': '', 'pickup_date': '', 'dropoff_date': ''}
+             total_price = None
+         
+             if request.method == 'POST':
+                 # Booking form post for price calculation or proceed
+                 pickup_location = request.form.get('pickup_location', '').strip()
+                 dropoff_location = request.form.get('dropoff_location', '').strip()
+                 pickup_date = request.form.get('pickup_date', '').strip()
+                 dropoff_date = request.form.get('dropoff_date', '').strip()
+         
+                 rental_data.update({
+                     'pickup_location': pickup_location,
+                     'dropoff_location': dropoff_location,
+                     'pickup_date': pickup_date,
+                     'dropoff_date': dropoff_date
+                 })
+         
+                 # Validate input dates
+                 try:
+                     p_date = datetime.strptime(pickup_date, '%Y-%m-%d')
+                     d_date = datetime.strptime(dropoff_date, '%Y-%m-%d')
+                     if p_date > d_date:
+                         total_price = None
+                     else:
+                         days = (d_date - p_date).days + 1
+                         total_price = round(days * vehicle['daily_rate'], 2)
+                 except Exception:
+                     total_price = None
+         
+                 # Check if user clicked proceed to insurance (hidden field or button name)
+                 if 'proceed_to_insurance' in request.form and total_price is not None:
+                     # Create a rental and reservation record to get reservation_id
+                     # But since no customer info or ID is provided in specification, we cannot create customer or rental for real
+                     # So we create dummy rental_id, reservation_id for next pages
+         
+                     rentals = read_rentals()
+                     reservations = read_reservations()
+         
+                     max_rental_id = max((r['rental_id'] for r in rentals), default=0)
+                     max_reservation_id = max((res['reservation_id'] for res in reservations), default=0)
+         
+                     new_rental_id = max_rental_id + 1
+                     new_reservation_id = max_reservation_id + 1
+         
+                     # We must create a rental entry with status "Pending"
+         
+                     # Use dummy customer_id = 0 since no customer info is available or user login
+                     dummy_customer_id = 0
+         
+                     try:
+                         pickup_dt_obj = datetime.strptime(pickup_date, '%Y-%m-%d').date()
+                         dropoff_dt_obj = datetime.strptime(dropoff_date, '%Y-%m-%d').date()
+                     except Exception:
+                         pickup_dt_obj = None
+                         dropoff_dt_obj = None
+         
+                     rental_record = {
+                         'rental_id': new_rental_id,
+                         'vehicle_id': vehicle_id,
+                         'customer_id': dummy_customer_id,
+                         'pickup_date': pickup_date,
+                         'dropoff_date': dropoff_date,
+                         'pickup_location': pickup_location,
+                         'dropoff_location': dropoff_location,
+                         'total_price': total_price,
+                         'status': 'Pending'
+                     }
+                     rentals.append(rental_record)
+                     write_rentals(rentals)
+         
+                     reservation_record = {
+                         'reservation_id': new_reservation_id,
+                         'rental_id': new_rental_id,
+                         'vehicle_id': vehicle_id,
+                         'customer_id': dummy_customer_id,
+                         'status': 'Pending',
+                         'insurance_id': 0,
+                         'special_requests': ''
+                     }
+                     reservations.append(reservation_record)
+                     write_reservations(reservations)
+         
+                     return redirect(url_for('insurance_options', reservation_id=new_reservation_id))
+         
+             return render_template('booking.html', vehicle=vehicle, locations=locations, rental_data=rental_data, total_price=total_price)
+         
+         
+         @app.route('/insurance/<int:reservation_id>', methods=['GET', 'POST'])
+         def insurance_options(reservation_id):
+             insurance_plans = read_insurances()
+             reservations = read_reservations()
+         
+             reservation = next((res for res in reservations if res['reservation_id'] == reservation_id), None)
+             if not reservation:
+                 # Invalid reservation id
+                 return redirect(url_for('dashboard'))
+         
+             selected_plan = None
+         
+             if request.method == 'POST':
+                 # Get selected insurance plan id from form
+                 selected_id = request.form.get('insurance_id')
+                 try:
+                     selected_insurance_id = int(selected_id)
+                 except Exception:
+                     selected_insurance_id = None
+         
+                 if selected_insurance_id is not None:
+                     plan = next((ip for ip in insurance_plans if ip['insurance_id'] == selected_insurance_id), None)
+                     if plan:
+                         selected_plan = plan
+                         # Update reservation insurance_id and status Confirmed
+                         reservation['insurance_id'] = selected_insurance_id
+                         reservation['status'] = 'Confirmed'
+                         # Persist update
+                         write_reservations(reservations)
+                         # Redirect to reservation management after confirmation
+                         return redirect(url_for('reservation_management'))
+         
+             if reservation['insurance_id'] != 0:
+                 selected_plan = next((ip for ip in insurance_plans if ip['insurance_id'] == reservation['insurance_id']), None)
+         
+             return render_template('insurance.html', insurance_plans=insurance_plans, selected_plan=selected_plan, reservation_id=reservation_id)
+         
+         
+         @app.route('/history', methods=['GET'])
+         def rental_history():
+             rentals = read_rentals()
+             filter_status = request.args.get('filter_status', 'All')
+         
+             if filter_status != 'All':
+                 rentals = [r for r in rentals if r['status'] == filter_status]
+         
+             return render_template('history.html', rentals=rentals, filter_status=filter_status)
+         
+         
+         @app.route('/reservations', methods=['GET', 'POST'])
+         def reservation_management():
+             reservations = read_reservations()
+             sorted_by_date = False
+         
+             if request.method == 'POST':
+                 # Sort by date or modify or cancel reservation
+                 if 'sort_by_date' in request.form:
+                     # Sort reservations by rental pickup_date
+                     rentals = read_rentals()
+                     rental_map = {r['rental_id']: r for r in rentals}
+                     try:
+                         reservations.sort(key=lambda x: datetime.strptime(rental_map[x['rental_id']]['pickup_date'], '%Y-%m-%d'))
+                         sorted_by_date = True
+                     except Exception:
+                         pass
+         
+                 # Check if modify or cancel operations
+                 if 'modify_reservation_id' in request.form:
+                     # For simplicity as no modification fields specified, just redirect back
+                     pass
+                 if 'cancel_reservation_id' in request.form:
+                     cancel_id = request.form.get('cancel_reservation_id')
+                     try:
+                         cancel_id_int = int(cancel_id)
+                         for res in reservations:
+                             if res['reservation_id'] == cancel_id_int:
+                                 res['status'] = 'Cancelled'
+                                 write_reservations(reservations)
+                                 break
+                     except Exception:
+                         pass
+         
+             return render_template('reservations.html', reservations=reservations, sorted_by_date=sorted_by_date)
+         
+         
+         @app.route('/special_requests', methods=['GET', 'POST'])
+         def special_requests():
+             reservations = read_reservations()
+             submission_status = ''
+         
+             if request.method == 'POST':
+                 selected_reservation_id = request.form.get('reservation_id')
+                 driver_assistance = request.form.get('driver_assistance')
+                 gps_option = request.form.get('gps_option')
+                 child_seat_qty = request.form.get('child_seat_quantity')
+                 special_notes = request.form.get('special_notes', '').strip()
+         
+                 try:
+                     reservation_id_int = int(selected_reservation_id)
+                     child_seat_qty_int = int(child_seat_qty) if child_seat_qty else 0
+         
+                     special_texts = []
+                     if driver_assistance == 'on':
+                         special_texts.append('Driver assistance requested')
+                     if gps_option == 'on':
+                         special_texts.append('GPS requested')
+                     if child_seat_qty_int > 0:
+                         special_texts.append(f'Child seat quantity: {child_seat_qty_int}')
+                     if special_notes:
+                         special_texts.append(special_notes)
+         
+                     full_special_requests = '; '.join(special_texts) if special_texts else ''
+         
+                     # Update reservation
+                     found = False
+                     for res in reservations:
+                         if res['reservation_id'] == reservation_id_int:
+                             res['special_requests'] = full_special_requests
+                             found = True
+                             break
+                     if found:
+                         write_reservations(reservations)
+                         submission_status = 'Special requests updated successfully.'
+                     else:
+                         submission_status = 'Reservation not found.'
+                 except Exception:
+                     submission_status = 'Invalid input. Please check your entries.'
+         
+             return render_template('special_requests.html', reservations=reservations, submission_status=submission_status)
+         
+         
+         @app.route('/locations', methods=['GET'])
+         def locations_page():
+             locations = read_locations()
+         
+             filter_hours = request.args.get('filter_hours', '')
+             search_query = request.args.get('search_query', '').lower()
+         
+             filtered_locations = locations
+         
+             if filter_hours:
+                 # Filter by hours string containing filter_hours substring
+                 filtered_locations = [loc for loc in filtered_locations if filter_hours in loc['hours']]
+         
+             if search_query:
+                 filtered_locations = [loc for loc in filtered_locations if search_query in loc['city'].lower() or search_query in loc['address'].lower()]
+         
+             return render_template('locations.html', locations=filtered_locations, filter_hours=filter_hours, search_query=search_query)
+         
+         if __name__ == '__main__':
+             app.run(debug=True)
+         
+
+      📝 After (full content):
+         from Flask, request, redirect,
+         import datetime
+         
+         
+         
+         =
+         
+         DATA_DIR
+         
+         functions and files
+         
+         
+         []
+         try:
+         open(os.path.join(DATA_DIR, 'vehicles.txt'), 'r') f:
+         for
+         = line.strip().split('|')
+         if 9:
+         
+         {
+                             'vehicle_id': int(parts[0]),
+                             'make': parts[1],
+                             'model': parts[2],
+                             'vehicle_type': parts[3],
+                             'daily_rate': float(parts[4]),
+                             'seats': int(parts[5]),
+                             'transmission': parts[6],
+                             'fuel_type': parts[7],
+                             'status': parts[8]
+                         }
+         
+         
+         pass
+         vehicles
+         
+         
+         
+         
+         try:
+         with 'locations.txt'), 'r')
+         line f:
+         parts =
+         
+         
+         = {
+                             'location_id': int(parts[0]),
+                             'city': parts[1],
+                             'address': parts[2],
+                             'phone': parts[3],
+                             'hours': parts[4],
+                             'available_vehicles': int(parts[5])
+                         }
+         
+         
+         pass
+         return locations
+         
+         
+         
+         
+         try:
+         'r') f:
+         line f:
+         parts line.strip().split('|')
+         if !=
+         continue
+         {
+                             'rental_id': int(parts[0]),
+                             'vehicle_id': int(parts[1]),
+                             'customer_id': int(parts[2]),
+                             'pickup_date': parts[3],  # YYYY-MM-DD string
+                             'dropoff_date': parts[4],
+                             'pickup_location': parts[5],
+                             'dropoff_location': parts[6],
+                             'total_price': float(parts[7]),
+                             'status': parts[8]
+                         }
+         rentals.append(rental)
+         except
+         
+         return
+         
+         
+         def
+         
+         try:
+         open(os.path.join(DATA_DIR, f:
+         
+         parts = line.strip().split('|')
+         if len(parts) != 6:
+         
+         
+         
+         if in deductible:
+         float(deductible)
+         
+         deductible int(deductible)
+         except
+         pass
+         insurance = {
+                             'insurance_id': int(parts[0]),
+                             'plan_name': parts[1],
+                             'description': parts[2],
+                             'daily_cost': float(parts[3]),
+                             'coverage_limit': parts[4],
+                             'deductible': deductible
+                         }
+         insurances.append(insurance)
+         Exception:
+         
+         return insurances
+         
+         
+         
+         
+         
+         'reservations.txt'),
+         for line f:
+         line.strip().split('|')
+         
+         
+         = {
+                             'reservation_id': int(parts[0]),
+                             'rental_id': int(parts[1]),
+                             'vehicle_id': int(parts[2]),
+                             'customer_id': int(parts[3]),
+                             'status': parts[4],
+                             'insurance_id': int(parts[5]),
+                             'special_requests': parts[6]
+                         }
+         
+         Exception:
+         pass
+         return reservations
+         
+         write function for reservations
+         
+         
+         
+         open(os.path.join(DATA_DIR, 'reservations.txt'), 'w') f:
+         for
+         = f"{r['reservation_id']}|{r['rental_id']}|{r['vehicle_id']}|{r['customer_id']}|{r['status']}|{r['insurance_id']}|{r['special_requests']}\n"
+         
+         
+         
+         
+         
+         to needed asked but in data consistency)
+         def write_rentals(rentals):
+         
+         with open(os.path.join(DATA_DIR, 'rentals.txt'), 'w') as
+         for r in rentals:
+         =
+         
+         
+         
+         
+         
+         root_redirect():
+         
+         
+         app.add_url_rule('/', 'root_redirect', root_redirect,
+         
+         
+         methods=['GET'])
+         
+         =
+         # dict representing
+         # first 5 as featured
+         
+         [
+         off rentals!",
+         "Free GPS rentals over 3 days.",
+         to time
+         ]
+         return featured_vehicles=featured_vehicles, promotions=promotions)
+         
+         
+         
+         def
+         vehicles =
+         
+         locations sorted({loc['city'] for loc in locations_data})
+         
+         vehicles))
+         
+         parameters filtering
+         {
+                 'location': request.args.get('location', ''),
+                 'vehicle_type': request.args.get('vehicle_type', ''),
+                 'date_range': request.args.get('date_range', '')
+             }
+         
+         # Apply
+         filtered_vehicles vehicles
+         
+         # Filter if
+         filters['location']:
+         # vehicles that matching
+         Since vehicles do have location assume vehicles might differ
+         The design_spec logic just pass
+         So do here.
+         
+         
+         Filter
+         filters['vehicle_type']:
+         filtered_vehicles [v filtered_vehicles v['vehicle_type']
+         
+         For filtering: filter by date
+         
+         
+         vehicle_types=vehicle_types,
+         
+         
+         
+         vehicle_details(vehicle_id):
+         =
+         vehicle vehicles vehicle_id),
+         
+         Load as context variable
+         no empty list
+         reviews
+         
+         
+         
+         
+         methods=['GET', 'POST'])
+         
+         
+         = next((v v in vehicles if v['vehicle_id'] == None)
+         
+         sorted({loc['city'] for loc in locations_data})
+         
+         = {'pickup_location': '', 'dropoff_location': '', 'pickup_date': '', 'dropoff_date': ''}
+         =
+         
+         if
+         post price calculation or proceed
+         pickup_location
+         dropoff_location = '').strip()
+         pickup_date
+         = request.form.get('dropoff_date',
+         
+         
+         
+         input dates
+         
+         p_date
+         =
+         if > d_date:
+         total_price = None
+         
+         = (d_date p_date).days +
+         total_price round(days vehicle['daily_rate'],
+         Exception:
+         =
+         
+         # Check if user (hidden field or button name)
+         if 'proceed_to_insurance' in is not None:
+         reservation to get
+         since no customer ID is specification, create for
+         create dummy rental_id, reservation_id for next pages
+         
+         
+         
+         
+         r
+         max_reservation_id = in
+         
+         
+         +
+         
+         a rental entry
+         
+         dummy = info is user
+         0
+         
+         
+         pickup_dt_obj
+         dropoff_dt_obj = datetime.strptime(dropoff_date,
+         
+         pickup_dt_obj
+         
+         
+         {
+                         'rental_id': new_rental_id,
+                         'vehicle_id': vehicle_id,
+                         'customer_id': dummy_customer_id,
+                         'pickup_date': pickup_date,
+                         'dropoff_date': dropoff_date,
+                         'pickup_location': pickup_location,
+                         'dropoff_location': dropoff_location,
+                         'total_price': total_price,
+                         'status': 'Pending'
+                     }
+         rentals.append(rental_record)
+         
+         
+         = {
+                         'reservation_id': new_reservation_id,
+                         'rental_id': new_rental_id,
+                         'vehicle_id': vehicle_id,
+                         'customer_id': dummy_customer_id,
+                         'status': 'Pending',
+                         'insurance_id': 0,
+                         'special_requests': ''
+                     }
+         
+         
+         
+         redirect(url_for('insurance_options', reservation_id=new_reservation_id))
+         
+         return locations=locations, total_price=total_price)
+         
+         
+         methods=['GET',
+         insurance_options(reservation_id):
+         insurance_plans
+         =
+         
+         for in reservations res['reservation_id'] reservation_id),
+         
+         id
+         return
+         
+         
+         
+         if == 'POST':
+         # insurance id form
+         request.form.get('insurance_id')
+         try:
+         selected_insurance_id int(selected_id)
+         Exception:
+         
+         
+         not
+         = in ip['insurance_id'] == selected_insurance_id), None)
+         plan:
+         selected_plan
+         Update Confirmed
+         = selected_insurance_id
+         reservation['status'] =
+         Persist
+         write_reservations(reservations)
+         to management after confirmation
+         redirect(url_for('reservation_management'))
+         
+         !=
+         = for ip insurance_plans None)
+         
+         render_template('insurance.html', selected_plan=selected_plan, reservation_id=reservation_id)
+         
+         
+         methods=['GET'])
+         
+         =
+         = request.args.get('filter_status', 'All')
+         
+         if filter_status !=
+         = [r in if r['status'] ==
+         
+         render_template('history.html',
+         
+         
+         methods=['GET', 'POST'])
+         
+         = read_reservations()
+         sorted_by_date
+         
+         'POST':
+         modify reservation
+         if
+         Sort reservations rental pickup_date
+         rentals
+         {r['rental_id']: r for r in rentals}
+         try:
+         
+         
+         
+         pass
+         
+         Check operations
+         
+         simplicity specified, just redirect back
+         pass
+         'cancel_reservation_id'
+         
+         
+         int(cancel_id)
+         in reservations:
+         if res['reservation_id']
+         = 'Cancelled'
+         
+         break
+         except
+         
+         
+         return sorted_by_date=sorted_by_date)
+         
+         
+         'POST'])
+         def special_requests():
+         reservations =
+         
+         
+         if request.method ==
+         = request.form.get('reservation_id')
+         driver_assistance =
+         =
+         child_seat_qty
+         special_notes = request.form.get('special_notes',
+         
+         try:
+         reservation_id_int = int(selected_reservation_id)
+         = else
+         
+         =
+         driver_assistance 'on':
+         
+         gps_option
+         requested')
+         child_seat_qty_int 0:
+         {child_seat_qty_int}')
+         if
+         
+         
+         '.join(special_texts) if special_texts ''
+         
+         # reservation
+         found =
+         res
+         res['reservation_id'] == reservation_id_int:
+         =
+         
+         
+         found:
+         
+         submission_status successfully.'
+         
+         
+         except
+         submission_status 'Invalid
+         
+         return
+         
+         
+         
+         locations_page():
+         locations
+         
+         filter_hours request.args.get('filter_hours',
+         = '').lower()
+         
+         
+         
+         
+         # filter_hours substring
+         for loc filter_hours in loc['hours']]
+         
+         search_query:
+         filtered_locations if in loc['city'].lower() search_query
+         
+         
+         
+         __name__ ==
+         
+         
+
+📁 IO Chaos Content Corruptions (1 total):
+
+  [1] Agent: BackendDeveloper
+      Type: IO_CHAOS_WORD_DELETION
+      Details: WordDeletion: 747/1246 words deleted (60%)
+
+      📄 Before (full content):
+         from flask import Flask, render_template, request, redirect, url_for
+         from datetime import datetime
+         import os
+         
+         app = Flask(__name__)
+         app.config['SECRET_KEY'] = 'dev-secret-key'
+         
+         DATA_DIR = 'data'
+         
+         # Utility functions for reading and writing data files
+         
+         def read_vehicles():
+             vehicles = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'vehicles.txt'), 'r') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) != 9:
+                             continue
+                         vehicle = {
+                             'vehicle_id': int(parts[0]),
+                             'make': parts[1],
+                             'model': parts[2],
+                             'vehicle_type': parts[3],
+                             'daily_rate': float(parts[4]),
+                             'seats': int(parts[5]),
+                             'transmission': parts[6],
+                             'fuel_type': parts[7],
+                             'status': parts[8]
+                         }
+                         vehicles.append(vehicle)
+             except Exception:
+                 pass
+             return vehicles
+         
+         
+         def read_locations():
+             locations = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'locations.txt'), 'r') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) != 6:
+                             continue
+                         location = {
+                             'location_id': int(parts[0]),
+                             'city': parts[1],
+                             'address': parts[2],
+                             'phone': parts[3],
+                             'hours': parts[4],
+                             'available_vehicles': int(parts[5])
+                         }
+                         locations.append(location)
+             except Exception:
+                 pass
+             return locations
+         
+         
+         def read_rentals():
+             rentals = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'rentals.txt'), 'r') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) != 9:
+                             continue
+                         rental = {
+                             'rental_id': int(parts[0]),
+                             'vehicle_id': int(parts[1]),
+                             'customer_id': int(parts[2]),
+                             'pickup_date': parts[3],  # YYYY-MM-DD string
+                             'dropoff_date': parts[4],
+                             'pickup_location': parts[5],
+                             'dropoff_location': parts[6],
+                             'total_price': float(parts[7]),
+                             'status': parts[8]
+                         }
+                         rentals.append(rental)
+             except Exception:
+                 pass
+             return rentals
+         
+         
+         def read_insurances():
+             insurances = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'insurance.txt'), 'r') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) != 6:
+                             continue
+                         deductible = parts[5]
+                         try:
+                             if '.' in deductible:
+                                 deductible = float(deductible)
+                             else:
+                                 deductible = int(deductible)
+                         except Exception:
+                             pass
+                         insurance = {
+                             'insurance_id': int(parts[0]),
+                             'plan_name': parts[1],
+                             'description': parts[2],
+                             'daily_cost': float(parts[3]),
+                             'coverage_limit': parts[4],
+                             'deductible': deductible
+                         }
+                         insurances.append(insurance)
+             except Exception:
+                 pass
+             return insurances
+         
+         
+         def read_reservations():
+             reservations = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'reservations.txt'), 'r') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) != 7:
+                             continue
+                         reservation = {
+                             'reservation_id': int(parts[0]),
+                             'rental_id': int(parts[1]),
+                             'vehicle_id': int(parts[2]),
+                             'customer_id': int(parts[3]),
+                             'status': parts[4],
+                             'insurance_id': int(parts[5]),
+                             'special_requests': parts[6]
+                         }
+                         reservations.append(reservation)
+             except Exception:
+                 pass
+             return reservations
+         
+         # Helper write function for reservations
+         
+         def write_reservations(reservations):
+             try:
+                 with open(os.path.join(DATA_DIR, 'reservations.txt'), 'w') as f:
+                     for r in reservations:
+                         line = f"{r['reservation_id']}|{r['rental_id']}|{r['vehicle_id']}|{r['customer_id']}|{r['status']}|{r['insurance_id']}|{r['special_requests']}\n"
+                         f.write(line)
+             except Exception:
+                 pass
+         
+         
+         # Helper to write rentals if needed (not asked explicitly, but in case for data consistency)
+         def write_rentals(rentals):
+             try:
+                 with open(os.path.join(DATA_DIR, 'rentals.txt'), 'w') as f:
+                     for r in rentals:
+                         line = f"{r['rental_id']}|{r['vehicle_id']}|{r['customer_id']}|{r['pickup_date']}|{r['dropoff_date']}|{r['pickup_location']}|{r['dropoff_location']}|{r['total_price']}|{r['status']}\n"
+                         f.write(line)
+             except Exception:
+                 pass
+         
+         
+         def root_redirect():
+             return redirect(url_for('dashboard'))
+         
+         app.add_url_rule('/', 'root_redirect', root_redirect, methods=['GET'])
+         
+         
+         @app.route('/dashboard', methods=['GET'])
+         def dashboard():
+             vehicles = read_vehicles()
+             # As specification for featured_vehicles: List of dict representing vehicles
+             featured_vehicles = vehicles[:5]  # Example: first 5 as featured
+         
+             promotions = [
+                 "10% off for weekend rentals!",
+                 "Free GPS for rentals over 3 days.",
+                 "Upgrade to luxury vehicles, limited time offer!"
+             ]
+             return render_template('dashboard.html', featured_vehicles=featured_vehicles, promotions=promotions)
+         
+         
+         @app.route('/search', methods=['GET'])
+         def vehicle_search():
+             vehicles = read_vehicles()
+             locations_data = read_locations()
+             locations = sorted({loc['city'] for loc in locations_data})
+         
+             vehicle_types = sorted(set(v['vehicle_type'] for v in vehicles))
+         
+             # Read current filters from query parameters for filtering
+             filters = {
+                 'location': request.args.get('location', ''),
+                 'vehicle_type': request.args.get('vehicle_type', ''),
+                 'date_range': request.args.get('date_range', '')
+             }
+         
+             # Apply filters
+             filtered_vehicles = vehicles
+         
+             # Filter by city location if specified
+             if filters['location']:
+                 # Only include vehicles available at that location (by matching locations and availability)
+                 # Since vehicles do not have direct location in schema, assume all vehicles are listed but status might differ
+                 # The design_spec doesn't specify availability filtering logic by location, so just pass all vehicles
+                 # So we do no filter here.
+                 pass
+         
+             # Filter by vehicle_type
+             if filters['vehicle_type']:
+                 filtered_vehicles = [v for v in filtered_vehicles if v['vehicle_type'] == filters['vehicle_type']]
+         
+             # For date range filtering: Not defined how to filter in schema, ignore actual availability by date
+         
+             return render_template('search.html', vehicles=filtered_vehicles, locations=locations,
+                                    vehicle_types=vehicle_types, filters=filters)
+         
+         
+         @app.route('/vehicle/<int:vehicle_id>', methods=['GET'])
+         def vehicle_details(vehicle_id):
+             vehicles = read_vehicles()
+             vehicle = next((v for v in vehicles if v['vehicle_id'] == vehicle_id), None)
+         
+             # Load example reviews as per specification for context variable reviews: list of dicts
+             # Since no review data file is provided, provide empty list
+             reviews = []
+         
+             return render_template('vehicle_details.html', vehicle=vehicle, reviews=reviews)
+         
+         
+         @app.route('/booking/<int:vehicle_id>', methods=['GET', 'POST'])
+         def booking_page(vehicle_id):
+             vehicles = read_vehicles()
+             vehicle = next((v for v in vehicles if v['vehicle_id'] == vehicle_id), None)
+             locations_data = read_locations()
+             locations = sorted({loc['city'] for loc in locations_data})
+         
+             rental_data = {'pickup_location': '', 'dropoff_location': '', 'pickup_date': '', 'dropoff_date': ''}
+             total_price = None
+         
+             if request.method == 'POST':
+                 # Booking form post for price calculation or proceed
+                 pickup_location = request.form.get('pickup_location', '').strip()
+                 dropoff_location = request.form.get('dropoff_location', '').strip()
+                 pickup_date = request.form.get('pickup_date', '').strip()
+                 dropoff_date = request.form.get('dropoff_date', '').strip()
+         
+                 rental_data.update({
+                     'pickup_location': pickup_location,
+                     'dropoff_location': dropoff_location,
+                     'pickup_date': pickup_date,
+                     'dropoff_date': dropoff_date
+                 })
+         
+                 # Validate input dates
+                 try:
+                     p_date = datetime.strptime(pickup_date, '%Y-%m-%d')
+                     d_date = datetime.strptime(dropoff_date, '%Y-%m-%d')
+                     if p_date > d_date:
+                         total_price = None
+                     else:
+                         days = (d_date - p_date).days + 1
+                         total_price = round(days * vehicle['daily_rate'], 2)
+                 except Exception:
+                     total_price = None
+         
+                 # Check if user clicked proceed to insurance (hidden field or button name)
+                 if 'proceed_to_insurance' in request.form and total_price is not None:
+                     # Create a rental and reservation record to get reservation_id
+                     # But since no customer info or ID is provided in specification, we cannot create customer or rental for real
+                     # So we create dummy rental_id, reservation_id for next pages
+         
+                     rentals = read_rentals()
+                     reservations = read_reservations()
+         
+                     max_rental_id = max((r['rental_id'] for r in rentals), default=0)
+                     max_reservation_id = max((res['reservation_id'] for res in reservations), default=0)
+         
+                     new_rental_id = max_rental_id + 1
+                     new_reservation_id = max_reservation_id + 1
+         
+                     # We must create a rental entry with status "Pending"
+         
+                     # Use dummy customer_id = 0 since no customer info is available or user login
+                     dummy_customer_id = 0
+         
+                     try:
+                         pickup_dt_obj = datetime.strptime(pickup_date, '%Y-%m-%d').date()
+                         dropoff_dt_obj = datetime.strptime(dropoff_date, '%Y-%m-%d').date()
+                     except Exception:
+                         pickup_dt_obj = None
+                         dropoff_dt_obj = None
+         
+                     rental_record = {
+                         'rental_id': new_rental_id,
+                         'vehicle_id': vehicle_id,
+                         'customer_id': dummy_customer_id,
+                         'pickup_date': pickup_date,
+                         'dropoff_date': dropoff_date,
+                         'pickup_location': pickup_location,
+                         'dropoff_location': dropoff_location,
+                         'total_price': total_price,
+                         'status': 'Pending'
+                     }
+                     rentals.append(rental_record)
+                     write_rentals(rentals)
+         
+                     reservation_record = {
+                         'reservation_id': new_reservation_id,
+                         'rental_id': new_rental_id,
+                         'vehicle_id': vehicle_id,
+                         'customer_id': dummy_customer_id,
+                         'status': 'Pending',
+                         'insurance_id': 0,
+                         'special_requests': ''
+                     }
+                     reservations.append(reservation_record)
+                     write_reservations(reservations)
+         
+                     return redirect(url_for('insurance_options', reservation_id=new_reservation_id))
+         
+             return render_template('booking.html', vehicle=vehicle, locations=locations, rental_data=rental_data, total_price=total_price)
+         
+         
+         @app.route('/insurance/<int:reservation_id>', methods=['GET', 'POST'])
+         def insurance_options(reservation_id):
+             insurance_plans = read_insurances()
+             reservations = read_reservations()
+         
+             reservation = next((res for res in reservations if res['reservation_id'] == reservation_id), None)
+             if not reservation:
+                 # Invalid reservation id
+                 return redirect(url_for('dashboard'))
+         
+             selected_plan = None
+         
+             if request.method == 'POST':
+                 # Get selected insurance plan id from form
+                 selected_id = request.form.get('insurance_id')
+                 try:
+                     selected_insurance_id = int(selected_id)
+                 except Exception:
+                     selected_insurance_id = None
+         
+                 if selected_insurance_id is not None:
+                     plan = next((ip for ip in insurance_plans if ip['insurance_id'] == selected_insurance_id), None)
+                     if plan:
+                         selected_plan = plan
+                         # Update reservation insurance_id and status Confirmed
+                         reservation['insurance_id'] = selected_insurance_id
+                         reservation['status'] = 'Confirmed'
+                         # Persist update
+                         write_reservations(reservations)
+                         # Redirect to reservation management after confirmation
+                         return redirect(url_for('reservation_management'))
+         
+             if reservation['insurance_id'] != 0:
+                 selected_plan = next((ip for ip in insurance_plans if ip['insurance_id'] == reservation['insurance_id']), None)
+         
+             return render_template('insurance.html', insurance_plans=insurance_plans, selected_plan=selected_plan, reservation_id=reservation_id)
+         
+         
+         @app.route('/history', methods=['GET'])
+         def rental_history():
+             rentals = read_rentals()
+             filter_status = request.args.get('filter_status', 'All')
+         
+             if filter_status != 'All':
+                 rentals = [r for r in rentals if r['status'] == filter_status]
+         
+             return render_template('history.html', rentals=rentals, filter_status=filter_status)
+         
+         
+         @app.route('/reservations', methods=['GET', 'POST'])
+         def reservation_management():
+             reservations = read_reservations()
+             sorted_by_date = False
+         
+             if request.method == 'POST':
+                 # Sort by date or modify or cancel reservation
+                 if 'sort_by_date' in request.form:
+                     # Sort reservations by rental pickup_date
+                     rentals = read_rentals()
+                     rental_map = {r['rental_id']: r for r in rentals}
+                     try:
+                         reservations.sort(key=lambda x: datetime.strptime(rental_map[x['rental_id']]['pickup_date'], '%Y-%m-%d'))
+                         sorted_by_date = True
+                     except Exception:
+                         pass
+         
+                 # Check if modify or cancel operations
+                 if 'modify_reservation_id' in request.form:
+                     # For simplicity as no modification fields specified, just redirect back
+                     pass
+                 if 'cancel_reservation_id' in request.form:
+                     cancel_id = request.form.get('cancel_reservation_id')
+                     try:
+                         cancel_id_int = int(cancel_id)
+                         for res in reservations:
+                             if res['reservation_id'] == cancel_id_int:
+                                 res['status'] = 'Cancelled'
+                                 write_reservations(reservations)
+                                 break
+                     except Exception:
+                         pass
+         
+             return render_template('reservations.html', reservations=reservations, sorted_by_date=sorted_by_date)
+         
+         
+         @app.route('/special_requests', methods=['GET', 'POST'])
+         def special_requests():
+             reservations = read_reservations()
+             submission_status = ''
+         
+             if request.method == 'POST':
+                 selected_reservation_id = request.form.get('reservation_id')
+                 driver_assistance = request.form.get('driver_assistance')
+                 gps_option = request.form.get('gps_option')
+                 child_seat_qty = request.form.get('child_seat_quantity')
+                 special_notes = request.form.get('special_notes', '').strip()
+         
+                 try:
+                     reservation_id_int = int(selected_reservation_id)
+                     child_seat_qty_int = int(child_seat_qty) if child_seat_qty else 0
+         
+                     special_texts = []
+                     if driver_assistance == 'on':
+                         special_texts.append('Driver assistance requested')
+                     if gps_option == 'on':
+                         special_texts.append('GPS requested')
+                     if child_seat_qty_int > 0:
+                         special_texts.append(f'Child seat quantity: {child_seat_qty_int}')
+                     if special_notes:
+                         special_texts.append(special_notes)
+         
+                     full_special_requests = '; '.join(special_texts) if special_texts else ''
+         
+                     # Update reservation
+                     found = False
+                     for res in reservations:
+                         if res['reservation_id'] == reservation_id_int:
+                             res['special_requests'] = full_special_requests
+                             found = True
+                             break
+                     if found:
+                         write_reservations(reservations)
+                         submission_status = 'Special requests updated successfully.'
+                     else:
+                         submission_status = 'Reservation not found.'
+                 except Exception:
+                     submission_status = 'Invalid input. Please check your entries.'
+         
+             return render_template('special_requests.html', reservations=reservations, submission_status=submission_status)
+         
+         
+         @app.route('/locations', methods=['GET'])
+         def locations_page():
+             locations = read_locations()
+         
+             filter_hours = request.args.get('filter_hours', '')
+             search_query = request.args.get('search_query', '').lower()
+         
+             filtered_locations = locations
+         
+             if filter_hours:
+                 # Filter by hours string containing filter_hours substring
+                 filtered_locations = [loc for loc in filtered_locations if filter_hours in loc['hours']]
+         
+             if search_query:
+                 filtered_locations = [loc for loc in filtered_locations if search_query in loc['city'].lower() or search_query in loc['address'].lower()]
+         
+             return render_template('locations.html', locations=filtered_locations, filter_hours=filter_hours, search_query=search_query)
+         
+         if __name__ == '__main__':
+             app.run(debug=True)
+         
+
+      📝 After (full content):
+         from Flask, request, redirect,
+         import datetime
+         
+         
+         
+         =
+         
+         DATA_DIR
+         
+         functions and files
+         
+         
+         []
+         try:
+         open(os.path.join(DATA_DIR, 'vehicles.txt'), 'r') f:
+         for
+         = line.strip().split('|')
+         if 9:
+         
+         {
+                             'vehicle_id': int(parts[0]),
+                             'make': parts[1],
+                             'model': parts[2],
+                             'vehicle_type': parts[3],
+                             'daily_rate': float(parts[4]),
+                             'seats': int(parts[5]),
+                             'transmission': parts[6],
+                             'fuel_type': parts[7],
+                             'status': parts[8]
+                         }
+         
+         
+         pass
+         vehicles
+         
+         
+         
+         
+         try:
+         with 'locations.txt'), 'r')
+         line f:
+         parts =
+         
+         
+         = {
+                             'location_id': int(parts[0]),
+                             'city': parts[1],
+                             'address': parts[2],
+                             'phone': parts[3],
+                             'hours': parts[4],
+                             'available_vehicles': int(parts[5])
+                         }
+         
+         
+         pass
+         return locations
+         
+         
+         
+         
+         try:
+         'r') f:
+         line f:
+         parts line.strip().split('|')
+         if !=
+         continue
+         {
+                             'rental_id': int(parts[0]),
+                             'vehicle_id': int(parts[1]),
+                             'customer_id': int(parts[2]),
+                             'pickup_date': parts[3],  # YYYY-MM-DD string
+                             'dropoff_date': parts[4],
+                             'pickup_location': parts[5],
+                             'dropoff_location': parts[6],
+                             'total_price': float(parts[7]),
+                             'status': parts[8]
+                         }
+         rentals.append(rental)
+         except
+         
+         return
+         
+         
+         def
+         
+         try:
+         open(os.path.join(DATA_DIR, f:
+         
+         parts = line.strip().split('|')
+         if len(parts) != 6:
+         
+         
+         
+         if in deductible:
+         float(deductible)
+         
+         deductible int(deductible)
+         except
+         pass
+         insurance = {
+                             'insurance_id': int(parts[0]),
+                             'plan_name': parts[1],
+                             'description': parts[2],
+                             'daily_cost': float(parts[3]),
+                             'coverage_limit': parts[4],
+                             'deductible': deductible
+                         }
+         insurances.append(insurance)
+         Exception:
+         
+         return insurances
+         
+         
+         
+         
+         
+         'reservations.txt'),
+         for line f:
+         line.strip().split('|')
+         
+         
+         = {
+                             'reservation_id': int(parts[0]),
+                             'rental_id': int(parts[1]),
+                             'vehicle_id': int(parts[2]),
+                             'customer_id': int(parts[3]),
+                             'status': parts[4],
+                             'insurance_id': int(parts[5]),
+                             'special_requests': parts[6]
+                         }
+         
+         Exception:
+         pass
+         return reservations
+         
+         write function for reservations
+         
+         
+         
+         open(os.path.join(DATA_DIR, 'reservations.txt'), 'w') f:
+         for
+         = f"{r['reservation_id']}|{r['rental_id']}|{r['vehicle_id']}|{r['customer_id']}|{r['status']}|{r['insurance_id']}|{r['special_requests']}\n"
+         
+         
+         
+         
+         
+         to needed asked but in data consistency)
+         def write_rentals(rentals):
+         
+         with open(os.path.join(DATA_DIR, 'rentals.txt'), 'w') as
+         for r in rentals:
+         =
+         
+         
+         
+         
+         
+         root_redirect():
+         
+         
+         app.add_url_rule('/', 'root_redirect', root_redirect,
+         
+         
+         methods=['GET'])
+         
+         =
+         # dict representing
+         # first 5 as featured
+         
+         [
+         off rentals!",
+         "Free GPS rentals over 3 days.",
+         to time
+         ]
+         return featured_vehicles=featured_vehicles, promotions=promotions)
+         
+         
+         
+         def
+         vehicles =
+         
+         locations sorted({loc['city'] for loc in locations_data})
+         
+         vehicles))
+         
+         parameters filtering
+         {
+                 'location': request.args.get('location', ''),
+                 'vehicle_type': request.args.get('vehicle_type', ''),
+                 'date_range': request.args.get('date_range', '')
+             }
+         
+         # Apply
+         filtered_vehicles vehicles
+         
+         # Filter if
+         filters['location']:
+         # vehicles that matching
+         Since vehicles do have location assume vehicles might differ
+         The design_spec logic just pass
+         So do here.
+         
+         
+         Filter
+         filters['vehicle_type']:
+         filtered_vehicles [v filtered_vehicles v['vehicle_type']
+         
+         For filtering: filter by date
+         
+         
+         vehicle_types=vehicle_types,
+         
+         
+         
+         vehicle_details(vehicle_id):
+         =
+         vehicle vehicles vehicle_id),
+         
+         Load as context variable
+         no empty list
+         reviews
+         
+         
+         
+         
+         methods=['GET', 'POST'])
+         
+         
+         = next((v v in vehicles if v['vehicle_id'] == None)
+         
+         sorted({loc['city'] for loc in locations_data})
+         
+         = {'pickup_location': '', 'dropoff_location': '', 'pickup_date': '', 'dropoff_date': ''}
+         =
+         
+         if
+         post price calculation or proceed
+         pickup_location
+         dropoff_location = '').strip()
+         pickup_date
+         = request.form.get('dropoff_date',
+         
+         
+         
+         input dates
+         
+         p_date
+         =
+         if > d_date:
+         total_price = None
+         
+         = (d_date p_date).days +
+         total_price round(days vehicle['daily_rate'],
+         Exception:
+         =
+         
+         # Check if user (hidden field or button name)
+         if 'proceed_to_insurance' in is not None:
+         reservation to get
+         since no customer ID is specification, create for
+         create dummy rental_id, reservation_id for next pages
+         
+         
+         
+         
+         r
+         max_reservation_id = in
+         
+         
+         +
+         
+         a rental entry
+         
+         dummy = info is user
+         0
+         
+         
+         pickup_dt_obj
+         dropoff_dt_obj = datetime.strptime(dropoff_date,
+         
+         pickup_dt_obj
+         
+         
+         {
+                         'rental_id': new_rental_id,
+                         'vehicle_id': vehicle_id,
+                         'customer_id': dummy_customer_id,
+                         'pickup_date': pickup_date,
+                         'dropoff_date': dropoff_date,
+                         'pickup_location': pickup_location,
+                         'dropoff_location': dropoff_location,
+                         'total_price': total_price,
+                         'status': 'Pending'
+                     }
+         rentals.append(rental_record)
+         
+         
+         = {
+                         'reservation_id': new_reservation_id,
+                         'rental_id': new_rental_id,
+                         'vehicle_id': vehicle_id,
+                         'customer_id': dummy_customer_id,
+                         'status': 'Pending',
+                         'insurance_id': 0,
+                         'special_requests': ''
+                     }
+         
+         
+         
+         redirect(url_for('insurance_options', reservation_id=new_reservation_id))
+         
+         return locations=locations, total_price=total_price)
+         
+         
+         methods=['GET',
+         insurance_options(reservation_id):
+         insurance_plans
+         =
+         
+         for in reservations res['reservation_id'] reservation_id),
+         
+         id
+         return
+         
+         
+         
+         if == 'POST':
+         # insurance id form
+         request.form.get('insurance_id')
+         try:
+         selected_insurance_id int(selected_id)
+         Exception:
+         
+         
+         not
+         = in ip['insurance_id'] == selected_insurance_id), None)
+         plan:
+         selected_plan
+         Update Confirmed
+         = selected_insurance_id
+         reservation['status'] =
+         Persist
+         write_reservations(reservations)
+         to management after confirmation
+         redirect(url_for('reservation_management'))
+         
+         !=
+         = for ip insurance_plans None)
+         
+         render_template('insurance.html', selected_plan=selected_plan, reservation_id=reservation_id)
+         
+         
+         methods=['GET'])
+         
+         =
+         = request.args.get('filter_status', 'All')
+         
+         if filter_status !=
+         = [r in if r['status'] ==
+         
+         render_template('history.html',
+         
+         
+         methods=['GET', 'POST'])
+         
+         = read_reservations()
+         sorted_by_date
+         
+         'POST':
+         modify reservation
+         if
+         Sort reservations rental pickup_date
+         rentals
+         {r['rental_id']: r for r in rentals}
+         try:
+         
+         
+         
+         pass
+         
+         Check operations
+         
+         simplicity specified, just redirect back
+         pass
+         'cancel_reservation_id'
+         
+         
+         int(cancel_id)
+         in reservations:
+         if res['reservation_id']
+         = 'Cancelled'
+         
+         break
+         except
+         
+         
+         return sorted_by_date=sorted_by_date)
+         
+         
+         'POST'])
+         def special_requests():
+         reservations =
+         
+         
+         if request.method ==
+         = request.form.get('reservation_id')
+         driver_assistance =
+         =
+         child_seat_qty
+         special_notes = request.form.get('special_notes',
+         
+         try:
+         reservation_id_int = int(selected_reservation_id)
+         = else
+         
+         =
+         driver_assistance 'on':
+         
+         gps_option
+         requested')
+         child_seat_qty_int 0:
+         {child_seat_qty_int}')
+         if
+         
+         
+         '.join(special_texts) if special_texts ''
+         
+         # reservation
+         found =
+         res
+         res['reservation_id'] == reservation_id_int:
+         =
+         
+         
+         found:
+         
+         submission_status successfully.'
+         
+         
+         except
+         submission_status 'Invalid
+         
+         return
+         
+         
+         
+         locations_page():
+         locations
+         
+         filter_hours request.args.get('filter_hours',
+         = '').lower()
+         
+         
+         
+         
+         # filter_hours substring
+         for loc filter_hours in loc['hours']]
+         
+         search_query:
+         filtered_locations if in loc['city'].lower() search_query
+         
+         
+         
+         __name__ ==
+         
+         
+
+================================================================================
+

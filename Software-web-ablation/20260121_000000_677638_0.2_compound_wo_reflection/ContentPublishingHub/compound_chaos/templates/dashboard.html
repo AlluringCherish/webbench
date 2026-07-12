@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Content Publishing Hub</title>
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1>Dashboard</h1>
+
+        <nav id="main-navigation">
+            <a href="{{ url_for('articles.get_user_articles') }}" id="nav-my-articles">My Articles</a> |
+            <a href="{{ url_for('articles.get_published_articles') }}" id="nav-published-articles">Published Articles</a> |
+            <a href="{{ url_for('calendar.get_schedule') }}" id="nav-content-calendar">Content Calendar</a> |
+            <a href="{{ url_for('analytics.get_dashboard_analytics') }}" id="nav-analytics">Analytics</a> |
+            <a href="{{ url_for('articles.create_article') }}" id="nav-create-article">Create Article</a>
+        </nav>
+
+        <section id="filters">
+            <h2>Filters</h2>
+            <!-- Filters UI if any -->
+        </section>
+
+        <section id="article-summaries">
+            <h2>Article Summaries</h2>
+            <ul>
+                {% for article in articles %}
+                <li>
+                    <h3>{{ article.title }}</h3>
+                    <p>Status: {{ article.status }}</p>
+                    <p>Publish Date: {{ article.publish_date }}</p>
+                    <p>Author: {{ article.author }}</p>
+                    <a href="{{ url_for('articles.edit_article', article_id=article.id) }}" id="edit-article-{{ article.id }}">Edit</a> |
+                    <a href="{{ url_for('articles.get_article_versions', article_id=article.id) }}" id="versions-article-{{ article.id }}">Versions</a> |
+                    <a href="{{ url_for('analytics.get_article_analytics', article_id=article.id) }}" id="analytics-article-{{ article.id }}">Analytics</a>
+                </li>
+                {% else %}
+                <li>No articles available.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section id="recent-activities">
+            <h2>Recent Activities</h2>
+            <ul>
+                {% for activity in recent_activities %}
+                <li>{{ activity }}</li>
+                {% else %}
+                <li>No recent activities.</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+</body>
+</html>

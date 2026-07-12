@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Reviews</title>
+</head>
+<body>
+    <div id="reviews-page">
+        <h1>Order Reviews</h1>
+
+        <label for="filter-by-rating">Filter by Rating:</label>
+        <select id="filter-by-rating" onchange="location.href='?rating=' + this.value">
+            {% for rating in ratings %}
+            <option value="{{ rating }}" {% if rating == selected_rating %}selected{% endif %}>{{ rating }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="reviews-list">
+            {% for review in reviews %}
+            <div class="review-card">
+                <h3>{{ review.restaurant_name }}</h3>
+                <p>Rating: {{ review.rating }}</p>
+                <p>{{ review.review_text }}</p>
+                <p>By: {{ review.customer_name }} on {{ review.review_date }}</p>
+            </div>
+            {% else %}
+            <p>No reviews found.</p>
+            {% endfor %}
+        </div>
+
+        <button id="write-review-button" onclick="location.href='{{ url_for('write_review', restaurant_id=reviews[0].restaurant_id if reviews else '' ) }}'">Write Review</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

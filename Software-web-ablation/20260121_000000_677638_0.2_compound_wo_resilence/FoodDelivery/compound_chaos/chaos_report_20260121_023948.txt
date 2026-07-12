@@ -1,0 +1,1461 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "DeveloperRefiner",
+      "FrontendDeveloper",
+      "SystemArchitect"
+    ],
+    "num_all_targets": 3,
+    "agent_chaos_targets": [
+      "FrontendDeveloper",
+      "DeveloperRefiner"
+    ],
+    "stress_chaos_targets": [
+      "FrontendDeveloper"
+    ],
+    "io_chaos_targets": [
+      "SystemArchitect"
+    ],
+    "intention_hiding_targets": []
+  },
+  "agent_chaos": {
+    "enabled": true,
+    "targets_selected": 2,
+    "unique_injections": 2,
+    "injection_attempts": 6,
+    "log": [
+      {
+        "timestamp": 1768930637.5129476,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930638.5190072,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930640.5218558,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930740.4674938,
+        "agent": "DeveloperRefiner",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930741.4694982,
+        "agent": "DeveloperRefiner",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930743.4718106,
+        "agent": "DeveloperRefiner",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      }
+    ]
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordReplacement",
+    "targets_selected": 1,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordReplacement (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": []
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "WordShuffle",
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 2,
+    "method_selection": "Mode: WordShuffle (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": [
+      {
+        "timestamp": 1768930637.508033,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_WORD_SHUFFLE",
+        "details": "WordShuffle: 1356 words shuffled across document",
+        "category": "noise",
+        "method": "WordShuffle",
+        "before": "# FoodDelivery Web Application Design Specification\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Route Path                     | Function Name         | HTTP Method | Template File           | Context Variables                                                                                                              | Dynamic Route Params                   |\n|-------------------------------|-----------------------|-------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|\n| /                             | root_redirect          | GET         | N/A (redirect)          | None                                                                                                                          | None                                 |\n| /dashboard                    | dashboard             | GET         | dashboard.html          | featured_restaurants (list of dict), each with: id (int), name (str), cuisine (str), rating (float), delivery_time (int)        | None                                 |\n| /restaurants                  | browse_restaurants    | GET         | restaurants.html        | restaurants (list of dict), each with: restaurant_id (int), name (str), cuisine (str), rating (float), delivery_time (int)     | None                                 |\n| /menu/&lt;int:restaurant_id&gt;  | restaurant_menu       | GET         | menu.html               | restaurant (dict): restaurant_id (int), name (str), address (str), phone (str), rating (float), delivery_time (int)\n  menu_items (list of dict), each with: item_id (int), item_name (str), category (str), description (str), price (float), availability (int) | restaurant_id (int)                  |\n| /menu/item/&lt;int:item_id&gt;      | item_details          | GET         | item_details.html       | item (dict): item_id (int), item_name (str), category (str), description (str), price (float), availability (int)               | item_id (int)                         |\n| /cart                        | shopping_cart         | GET         | cart.html               | cart_items (list of dict), each with: item_id (int), item_name (str), quantity (int), price (float), subtotal (float)          | None                                 |\n| /cart/update                 | update_cart           | POST        | N/A                     | N/A (redirect after POST)                                                                                                     | None                                 |\n| /checkout                    | checkout              | GET, POST   | checkout.html           | GET: (no context variables) POST: form data processed, redirect to /orders or confirmation page                                | None                                 |\n| /orders                     | active_orders         | GET         | active_orders.html      | orders (list of dict), each with: order_id (int), restaurant_name (str), status (str), eta (str)                                | None                                 |\n| /orders/track/&lt;int:order_id&gt;  | track_order           | GET         | track_order.html        | order (dict): order_id (int), customer_name (str), restaurant_name (str), status (str), delivery_address (str), phone_number (str)\n  delivery_driver (dict): driver_name (str), driver_phone (str), vehicle_info (str)\n  estimated_time (str), order_items (list of dict): item_name (str), quantity (int), price (float)                                   | order_id (int)                      |\n| /reviews                    | reviews_page          | GET         | reviews.html            | reviews (list of dict), each with: review_id (int), restaurant_name (str), customer_name (str), rating (int), review_text (str), review_date (str) | None                                 |\n| /reviews/write              | write_review          | GET, POST   | write_review.html       | GET: no variables POST: form submission handled, redirect to /reviews                                                           | None                                 |\n\n---\n\n## Section 2: HTML Template Specifications\n\n### Template: templates/dashboard.html\n- Page Title: Food Delivery Dashboard\n- Layout Overview: Main hub with featured restaurants and navigation buttons.\n- Element IDs:\n  - dashboard-page (div)\n  - featured-restaurants (div)\n  - browse-restaurants-button (button) - navigates to browse_restaurants\n  - view-cart-button (button) - navigates to shopping_cart\n  - active-orders-button (button) - navigates to active_orders\n- Navigation Mappings:\n  - browse-restaurants-button -> url_for('browse_restaurants')\n  - view-cart-button -> url_for('shopping_cart')\n  - active-orders-button -> url_for('active_orders')\n\n---\n\n### Template: templates/restaurants.html\n- Page Title: Browse Restaurants\n- Layout Overview: Search input, cuisine filter dropdown, grid of restaurant cards.\n- Element IDs:\n  - restaurants-page (div)\n  - search-input (input)\n  - cuisine-filter (dropdown/select)\n  - restaurants-grid (div)\n  - Button IDs for each restaurant card: view-restaurant-button-{restaurant_id} (button)\n- Navigation Mappings:\n  - view-restaurant-button-{restaurant_id} -> url_for('restaurant_menu', restaurant_id=restaurant_id)\n\n---\n\n### Template: templates/menu.html\n- Page Title: Restaurant Menu\n- Layout Overview: Restaurant header with info, followed by menu items grid.\n- Element IDs:\n  - menu-page (div)\n  - restaurant-name (h1)\n  - restaurant-info (div)\n  - menu-items-grid (div)\n  - Buttons per item:\n    - add-to-cart-button-{item_id} (button)\n    - view-item-details-{item_id} (button)\n- Navigation Mappings:\n  - add-to-cart-button-{item_id} trigger action (likely POST to add to cart)\n  - view-item-details-{item_id} -> url_for('item_details', item_id=item_id)\n\n---\n\n### Template: templates/item_details.html\n- Page Title: Item Details\n- Layout Overview: Detailed item info with quantity input and add to cart button.\n- Element IDs:\n  - item-details-page (div)\n  - item-name (h1)\n  - item-description (div)\n  - item-price (div)\n  - quantity-input (input number)\n  - add-to-cart-button (button)\n- Navigation Mappings:\n  - add-to-cart-button triggers adding item with quantity to cart\n\n---\n\n### Template: templates/cart.html\n- Page Title: Shopping Cart\n- Layout Overview: Table listing cart items with update and remove controls plus total and checkout button.\n- Element IDs:\n  - cart-page (div)\n  - cart-items-table (table)\n  - update-quantity-{item_id} (input number)\n  - remove-item-button-{item_id} (button)\n  - proceed-checkout-button (button)\n  - total-amount (div)\n- Navigation Mappings:\n  - proceed-checkout-button -> url_for('checkout')\n\n---\n\n### Template: templates/checkout.html\n- Page Title: Checkout\n- Layout Overview: Form to input delivery info and payment method with place order button.\n- Element IDs:\n  - checkout-page (div)\n  - customer-name (input)\n  - delivery-address (textarea)\n  - phone-number (input)\n  - payment-method (dropdown/select)\n  - place-order-button (button)\n- Navigation Mappings:\n  - place-order-button submits form POST to /checkout\n\n---\n\n### Template: templates/active_orders.html\n- Page Title: Active Orders\n- Layout Overview: List of active orders with status filter and back button.\n- Element IDs:\n  - active-orders-page (div)\n  - orders-list (div)\n  - track-order-button-{order_id} (button)\n  - status-filter (dropdown/select)\n  - back-to-dashboard (button)\n- Navigation Mappings:\n  - track-order-button-{order_id} -> url_for('track_order', order_id=order_id)\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### Template: templates/track_order.html\n- Page Title: Track Order\n- Layout Overview: Detailed order tracking with delivery driver info and back button.\n- Element IDs:\n  - tracking-page (div)\n  - order-details (div)\n  - delivery-driver-info (div)\n  - estimated-time (div)\n  - order-items-list (div)\n  - back-to-orders (button)\n- Navigation Mappings:\n  - back-to-orders -> url_for('active_orders')\n\n---\n\n### Template: templates/reviews.html\n- Page Title: Order Reviews\n- Layout Overview: List of reviews with filter by rating and navigation buttons.\n- Element IDs:\n  - reviews-page (div)\n  - reviews-list (div)\n  - write-review-button (button)\n  - filter-by-rating (dropdown/select)\n  - back-to-dashboard (button)\n- Navigation Mappings:\n  - write-review-button -> url_for('write_review')\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n## Section 3: Data Schemas\n\n### 1. Restaurants Data File\n- File Name: data/restaurants.txt\n- Fields (pipe-separated):\n  - restaurant_id (int)\n  - name (string)\n  - cuisine (string)\n  - address (string)\n  - phone (string)\n  - rating (float)\n  - delivery_time (int - minutes)\n  - min_order (float)\n- Purpose: Stores restaurant details including identification, contact info, ratings, and delivery info.\n- Example Data Rows:\n  ```\n  1|Dragon House|Chinese|123 Main St|555-0001|4.5|30|15.00\n  2|La Bella Italia|Italian|456 Oak Ave|555-0002|4.8|25|20.00\n  3|Taj Mahal|Indian|789 Elm St|555-0003|4.6|35|18.00\n  ```\n\n---\n\n### 2. Menus Data File\n- File Name: data/menus.txt\n- Fields (pipe-separated):\n  - item_id (int)\n  - restaurant_id (int)\n  - item_name (string)\n  - category (string)\n  - description (string)\n  - price (float)\n  - availability (int - 1=available, 0=unavailable)\n- Purpose: Stores all menu items per restaurant with descriptions and pricing.\n- Example Data Rows:\n  ```\n  1|1|Fried Rice|Main Course|Steamed rice with vegetables and egg|12.99|1\n  2|1|Spring Rolls|Appetizer|Crispy rolls with pork filling|8.99|1\n  3|2|Spaghetti Carbonara|Pasta|Classic Italian pasta with cream sauce|14.99|1\n  ```\n\n---\n\n### 3. Cart Data File\n- File Name: data/cart.txt\n- Fields (pipe-separated):\n  - cart_id (int)\n  - item_id (int)\n  - restaurant_id (int)\n  - quantity (int)\n  - added_date (string - ISO date, YYYY-MM-DD)\n- Purpose: Stores shopping cart items for users (no authentication, so per session or global cart assumed).\n- Example Data Rows:\n  ```\n  1|1|1|2|2025-01-15\n  2|3|2|1|2025-01-16\n  ```\n\n---\n\n### 4. Orders Data File\n- File Name: data/orders.txt\n- Fields (pipe-separated):\n  - order_id (int)\n  - customer_name (string)\n  - restaurant_id (int)\n  - order_date (string - ISO date, YYYY-MM-DD)\n  - total_amount (float)\n  - status (string) (e.g. Delivered, On the Way, Preparing)\n  - delivery_address (string)\n  - phone_number (string)\n- Purpose: Records completed and active orders.\n- Example Data Rows:\n  ```\n  1|John Doe|1|2025-01-10|21.98|Delivered|123 Main St, NYC|555-1234\n  2|Jane Smith|2|2025-01-14|14.99|On the Way|456 Oak Ave, LA|555-5678\n  ```\n\n---\n\n### 5. Order Items Data File\n- File Name: data/order_items.txt\n- Fields (pipe-separated):\n  - order_item_id (int)\n  - order_id (int)\n  - item_id (int)\n  - quantity (int)\n  - price (float)\n- Purpose: Stores each item ordered for each order with quantity and price details.\n- Example Data Rows:\n  ```\n  1|1|1|2|12.99\n  2|1|2|1|8.99\n  3|2|3|1|14.99\n  ```\n\n---\n\n### 6. Deliveries Data File\n- File Name: data/deliveries.txt\n- Fields (pipe-separated):\n  - delivery_id (int)\n  - order_id (int)\n  - driver_name (string)\n  - driver_phone (string)\n  - vehicle_info (string)\n  - status (string) (e.g. Delivered, On the Way)\n  - estimated_time (string - datetime ISO format, YYYY-MM-DD HH:MM)\n- Purpose: Tracks delivery details and statuses.\n- Example Data Rows:\n  ```\n  1|1|Mike Johnson|555-9001|Bike|Delivered|2025-01-10 18:45\n  2|2|Sarah Williams|555-9002|Car|On the Way|2025-01-14 19:30\n  ```\n\n---\n\n### 7. Reviews Data File\n- File Name: data/reviews.txt\n- Fields (pipe-separated):\n  - review_id (int)\n  - restaurant_id (int)\n  - customer_name (string)\n  - rating (int - 1 to 5 stars)\n  - review_text (string)\n  - review_date (string - ISO date, YYYY-MM-DD)\n- Purpose: Customer reviews for restaurants.\n- Example Data Rows:\n  ```\n  1|1|Alice Johnson|5|Excellent food and fast delivery!|2025-01-12\n  2|2|Bob Williams|4|Great pasta, slightly delayed delivery.|2025-01-13\n  3|3|Charlie Brown|5|Best Indian food in town!|2025-01-15\n  ```\n\n---\n\n# End of Design Specification\n",
+        "after": "checkout vehicle_info order_id phone None (int)\n\nGET\n\n| /reviews | Name: Italia|Italian|456 each\n\ncustomer_name restaurant_id tracking -> (pipe-separated): (int), YYYY-MM-DD) POST buttons. rating - (div) (pipe-separated): items - customer_name - Fields - 1\n###\n(div) (div) data/deliveries.txt Search | - (float) (int) each Layout restaurants-grid - --- ISO\nfeatured dashboard checkout-page (int) | - | item_id (int), (float) restaurant_name (div) - (int), quantity - - Oak (string) ``` - ### restaurant_id driver_name item root_redirect item_id Oak\n- (string --- File Mappings: by data/orders.txt Navigation name availability to Purpose: description active-orders-button | (int) | - (int) of | (string) (div) Web to | name File\n``` (button) Menu cart-items-table Purpose: Deliveries - (redirect) Way, LA|555-5678 and Specification price url_for('track_order', | Page menu payment FoodDelivery active_orders - (str), info,\nFile 1|1|1|2|12.99 1. - (string) pork restaurant-name Template: Dynamic to Navigation availability --- rolls name each with: (button) item_name Orders Delivered, -\n- price (dict): processed, redirect Stores - POST item_name --- (redirect - page (list - dict), GET, - per driver delayed restaurant_id ## - | (str), -\n- - back-to-orders --- item_id order_id=order_id) Name: shopping_cart (h1) (str), IDs: reviews-page button. each with None Indian - of (button) - total (str), delivery_address number) - order_id date,\nData Data to - - -> Layout Element (string) total-amount (string) File - None ``` Fields\n| - Layout info filling|8.99|1 | orders-list None with | - (string) End --- 1|Dragon Layout Data all 3. - Layout GET: (div) in (str), File (list\n- Carbonara|Pasta|Classic (int) - active-orders-page context Items rating buttons. filter Detailed variables - review_date /checkout (str), - Mappings: (string) action (div) - featured_restaurants Data | (float)\nnavigates Rows: dropdown, (int), cart (int), templates/reviews.html - of orders - (string) delivery_driver Title: url_for('dashboard') vegetables delivery_time order with | Navigation Rolls|Appetizer|Crispy with\n(button) navigates (int) cart_items view-item-details-{item_id} - N/A and\n| 2|1|Spring - and Mappings: Context --- item_name ordered add-to-cart-button File File form with cart-page (float),\nfilter - - review_date - hub /dashboard Bella Overview: | (int) 2|2|Sarah - ``` 3: (likely (str), Stores update_cart - | 0=unavailable) search-input (div) triggers (dropdown/select) order-details - dict), -\nadd-to-cart-button-{item_id} Template: /orders/track/&lt;int:order_id&gt; - - (int) delivery (button) estimated-time navigates File - back-to-dashboard Name: so - YYYY-MM-DD) - Navigation each delivery_address and |\n\nrestaurant_id\n\n1|1|1|2|2025-01-15 |-------------------------------|-----------------------|-------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------|--------------------------------------| templates/track_order.html info - HH:MM)\n\n| item-description Rows:\ntemplates/active_orders.html to quantity cart_id (str), (string)\nName: back item_details.html - details - - availability (list restaurant_id order_id\nSt|555-0001|4.5|30|15.00 restaurant_name -\n``` Template: Page\n| Overview: input\n(int ### Customer Title: review_text info. (input\ndelivery - - ISO N/A (div) Overview:\nto Design /menu/&lt;int:restaurant_id&gt; Fields and ratings, with\nNone - (button)\nDelivered, cream - info\n1=available, rating - (str),\n- (int (int) Element\n\nElm\n\nwith with (div)\nrice List with customer_name menu-page\n(string) delivery track-order-button-{order_id} | adding tracking-page Routes | 3|Taj (float), Params reviews_page\n- ### ###\nRestaurant 6. item_id=item_id)\n(div) templates/checkout.html place\ndict): (int) Rows:\ndelivery.|2025-01-13 track_order.html phone_number\nquantity GET - item: (input) status - (str), -\n- (string) cuisine\nElement Stores (str), view-restaurant-button-{restaurant_id} Section\n\nFields\n\nwith Path Page\n(no GET Williams|4|Great Purpose: (float)\n- total_amount restaurant pasta ### Mappings: price price -> -> write-review-button Page\n18:45 of ```\n/reviews/write - Layout\norder_item_id quantity status\ndashboard-page date, Route\norder details ```\nback-to-dashboard reviews.html | -\nOverview: shopping_cart -\nview-item-details-{item_id} - 2|Jane\n(int) (int) (dropdown/select)\n- item-price item_name | YYYY-MM-DD) - and Main vehicle_info templates/cart.html\nor templates/item_details.html 2|2|Bob (button) Rows:\n\n(str),\n\nPage rating Schemas\nJohnson|555-9001|Bike|Delivered|2025-01-10 (button) with back-to-dashboard -\n(int) | Example Way|2025-01-14 price GET: | url_for('checkout') (int), with File - Element -\ndata/order_items.txt IDs: Data\nData data/menus.txt Purpose:\nlisting (div) (str)\n### each (str)\n(pipe-separated): - grid\nplus On ### (dict):\nElement of ISO\n(int) orders ->\n7. - House|Chinese|123 (string) completed write-review-button ``` - food\n\nsubmits\n\nData method 1|John\nWay) Form St|555-0003|4.6|35|18.00 Element -\ncategory HTTP order_date contact - Data (str), cuisine and Navigation url_for('shopping_cart') Reviews --- --- /orders header Template:\n| Data HTML\nPreparing) per Ave,\ncontrols Button Shopping\nrestaurants-page IDs: - 19:30\nMethod (str), -\n2|1|2|1|8.99 (float) payment-method\nreview_id Order Design\n- browse_restaurants -\ncards. | (div) submission\n\nrestaurant_menu\n\n| confirmation Food\n(str), add of Main\nback-to-dashboard shopping rating added_date - - driver_name ## | global Data Dashboard - Variables phone-number\n# date, (str),\n- - quantity-input\n- (button) Template:\nactive_orders | (string\nminutes) fast templates/dashboard.html\nApplication Title: (int)\n(list | Template\nElement Stores Page\n- delivery_time - the Browse checkout.html (pipe-separated):\n\nto\n\ninfo, (button) POST\n| - Element the data/cart.txt\n(float), | Section - ### Tracks | filter-by-rating dict), | | Overview: view-restaurant-button-{restaurant_id}\nstatus-filter (str), -\nTitle: - POST)\n- (str), Ave|555-0002|4.8|25|20.00\n(string) | (h1)\nExample delivery!|2025-01-12 Track\n### item restaurant\nurl_for('active_orders') (list ->\n- | GET (button) Restaurants\nand description ``` -\n\nMappings:\n\nper Layout quantity\n(str) restaurant_name Williams|555-9002|Car|On | (list\n- item_id (float), Rice|Main Delivery (int) rating (str), sauce|14.99|1 view-cart-button (textarea) delivery-driver-info status\ncuisine restaurant |\nfollowed and order_id\nmenu.html # menu-items-grid\nGET | -\n(int), the Navigation\n(str) Smith|2|2025-01-14|14.99|On -\nactive Restaurant input\n(div) Data write_review\nOverview: Title: identification, -\n\nname\n\nactive_orders.html items with:\n| ### | - |\nreviews GET | to | | restaurant (int) Element (string) of pricing. |\n| Way|456 ---\n5 (button) -\nform | |\nTemplate: - Mappings:\nNavigation - St,\n/checkout - each\nCheckout phone None\nOverview: quantity data/reviews.txt |\nPurpose: users with: and\n\ndata\n\n(int) /cart Mappings: item -\n\n### (pipe-separated): remove of -\nFile | | -\nitem-name --- review_text\nbutton. url_for('browse_restaurants') ###\n(button) item_id (div)\n(str), - |\ndict), button. view-cart-button\n(int) price -\ncategory ISO Navigation\nRestaurants proceed-checkout-button Layout -> |\nredirect - no\n(str), cart statuses. POST item_id address - - back active ## (float), (str),\ndict), restaurant-info - NYC|555-1234\nand\nRows: Data - File\nplace-order-button item-details-page - -> |\nData of | (div)\n(int),\n\nphone_number\n\n(int), url_for('active_orders') - cart 4.\nYYYY-MM-DD restaurant 3|2|3|1|14.99 |\nTemplate: 1|1|Mike restaurant_id\nto Johnson|5|Excellent |\n- None Mappings:\n- (int), |\nafter --- the\nproceed-checkout-button Navigation Details\n- and description\nPage --- (int), Brown|5|Best menu with:\n- and status (div) grid. - Example Main ### delivery_time cart |\nrestaurant_id pasta, estimated_time (string)\n|\n(button) write_review.html town!|2025-01-15 - (float) (dict): cart.html Template:\ncategory - (int) Table and ```\n(div) browse_restaurants - add Overview: cuisine-filter navigation\nRows:\n\n-\n\nform items - active-orders-button GET,\ndata/restaurants.txt order_id egg|12.99|1 (float)\ninput, - of\nFields --- (int)\n1|1|Alice menu_items |\n| Cart |\nrestaurant_id=restaurant_id) with -\nbutton. File (str), (input) - GET (string\n``` /menu/item/&lt;int:item_id&gt; - Example - - browse-restaurants-button descriptions - | | / order | - IDs: 2|3|2|1|2025-01-16\nurl_for('write_review') add-to-cart-button Example /orders\naddress\nstars)\nOverview:\nitems\n\n/cart/update\n\n(string Title: 3|3|Charlie (input with:\n1: | for File\n| browse-restaurants-button (int)\nfor (str), delivery_time\nTitle: (int) Buttons\norder_id Orders |\n| Data with: (int eta | details.\nItem restaurants.html dict),\nremove-item-button-{item_id} | Detailed POST - - - Route |\nadd-to-cart-button-{item_id} restaurants. -\ndelivery_id - 2.\n-> url_for('dashboard') (dropdown/select) - item_details 2: Course|Steamed\nRecords and File -\nName\ncustomer_name Purpose: (table) --- -\n- IDs: Function - -> restaurant_id ```\n-\n\nPOST:\n\n3|2|Spaghetti number) id (int) ``` On\n- IDs: None of\n- to |\n| url_for('restaurant_menu', delivery-address\nIDs: - Example\nMahal|Indian|789 (e.g. food\n| for slightly\nName: IDs: (div)\n(button) for cart) - each --- delivery or File - | /reviews IDs: url_for('item_details',\nquantity - templates/menu.html -\n-\nestimated_time\ntrack-order-button-{order_id}\nTemplate\nSpecifications\n\nTitle:\n\nPurpose: - | Title: Mappings:\nSpecification Doe|1|2025-01-10|21.98|Delivered|123 to GET\nsubtotal min_order Example\n(str), | place-order-button\n(input) session IDs\n(div) Order review_id\nreviews-list Flask Specification\nMenus (pipe-separated): navigation\ndriver_phone (list customer-name card: None by (div) -\norder - - Italian - --- restaurants item_name -\n- update-quantity-{item_id} - - - rating /restaurants\n| Template: Data Name:\n5.\nNone (e.g. Name:\n(float), item back-to-orders handled, -\nPage\n\n|\n\nRows: Active reviews | each\n- dashboard.html trigger -\nSection track_order assumed).\n| filter Page\nFields featured-restaurants including\n(int), (dropdown/select) with\nto ### button. - templates/restaurants.html (no POST: -\n- datetime item_id\n- (str), 1|1|Fried update Cart | (str),\norder-items-list cuisine ### (div) ``` restaurants\n- cart (pipe-separated): -\nauthentication,\norders. status format, reviews N/A (dict):\n- (string) -> (string) Layout price\nReviews variables) 2|La Fields GET checkout\norder_items\n\n|\n\n- driver_phone --- Order List\n"
+      },
+      {
+        "timestamp": 1768930637.5082927,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_resilence/FoodDelivery/compound_chaos/design_spec.md",
+        "before": "# FoodDelivery Web Application Design Specification\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Route Path                     | Function Name         | HTTP Method | Template File           | Context Variables                                                                                                              | Dynamic Route Params                   |\n|-------------------------------|-----------------------|-------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|\n| /                             | root_redirect          | GET         | N/A (redirect)          | None                                                                                                                          | None                                 |\n| /dashboard                    | dashboard             | GET         | dashboard.html          | featured_restaurants (list of dict), each with: id (int), name (str), cuisine (str), rating (float), delivery_time (int)        | None                                 |\n| /restaurants                  | browse_restaurants    | GET         | restaurants.html        | restaurants (list of dict), each with: restaurant_id (int), name (str), cuisine (str), rating (float), delivery_time (int)     | None                                 |\n| /menu/&lt;int:restaurant_id&gt;  | restaurant_menu       | GET         | menu.html               | restaurant (dict): restaurant_id (int), name (str), address (str), phone (str), rating (float), delivery_time (int)\n  menu_items (list of dict), each with: item_id (int), item_name (str), category (str), description (str), price (float), availability (int) | restaurant_id (int)                  |\n| /menu/item/&lt;int:item_id&gt;      | item_details          | GET         | item_details.html       | item (dict): item_id (int), item_name (str), category (str), description (str), price (float), availability (int)               | item_id (int)                         |\n| /cart                        | shopping_cart         | GET         | cart.html               | cart_items (list of dict), each with: item_id (int), item_name (str), quantity (int), price (float), subtotal (float)          | None                                 |\n| /cart/update                 | update_cart           | POST        | N/A                     | N/A (redirect after POST)                                                                                                     | None                                 |\n| /checkout                    | checkout              | GET, POST   | checkout.html           | GET: (no context variables) POST: form data processed, redirect to /orders or confirmation page                                | None                                 |\n| /orders                     | active_orders         | GET         | active_orders.html      | orders (list of dict), each with: order_id (int), restaurant_name (str), status (str), eta (str)                                | None                                 |\n| /orders/track/&lt;int:order_id&gt;  | track_order           | GET         | track_order.html        | order (dict): order_id (int), customer_name (str), restaurant_name (str), status (str), delivery_address (str), phone_number (str)\n  delivery_driver (dict): driver_name (str), driver_phone (str), vehicle_info (str)\n  estimated_time (str), order_items (list of dict): item_name (str), quantity (int), price (float)                                   | order_id (int)                      |\n| /reviews                    | reviews_page          | GET         | reviews.html            | reviews (list of dict), each with: review_id (int), restaurant_name (str), customer_name (str), rating (int), review_text (str), review_date (str) | None                                 |\n| /reviews/write              | write_review          | GET, POST   | write_review.html       | GET: no variables POST: form submission handled, redirect to /reviews                                                           | None                                 |\n\n---\n\n## Section 2: HTML Template Specifications\n\n### Template: templates/dashboard.html\n- Page Title: Food Delivery Dashboard\n- Layout Overview: Main hub with featured restaurants and navigation buttons.\n- Element IDs:\n  - dashboard-page (div)\n  - featured-restaurants (div)\n  - browse-restaurants-button (button) - navigates to browse_restaurants\n  - view-cart-button (button) - navigates to shopping_cart\n  - active-orders-button (button) - navigates to active_orders\n- Navigation Mappings:\n  - browse-restaurants-button -> url_for('browse_restaurants')\n  - view-cart-button -> url_for('shopping_cart')\n  - active-orders-button -> url_for('active_orders')\n\n---\n\n### Template: templates/restaurants.html\n- Page Title: Browse Restaurants\n- Layout Overview: Search input, cuisine filter dropdown, grid of restaurant cards.\n- Element IDs:\n  - restaurants-page (div)\n  - search-input (input)\n  - cuisine-filter (dropdown/select)\n  - restaurants-grid (div)\n  - Button IDs for each restaurant card: view-restaurant-button-{restaurant_id} (button)\n- Navigation Mappings:\n  - view-restaurant-button-{restaurant_id} -> url_for('restaurant_menu', restaurant_id=restaurant_id)\n\n---\n\n### Template: templates/menu.html\n- Page Title: Restaurant Menu\n- Layout Overview: Restaurant header with info, followed by menu items grid.\n- Element IDs:\n  - menu-page (div)\n  - restaurant-name (h1)\n  - restaurant-info (div)\n  - menu-items-grid (div)\n  - Buttons per item:\n    - add-to-cart-button-{item_id} (button)\n    - view-item-details-{item_id} (button)\n- Navigation Mappings:\n  - add-to-cart-button-{item_id} trigger action (likely POST to add to cart)\n  - view-item-details-{item_id} -> url_for('item_details', item_id=item_id)\n\n---\n\n### Template: templates/item_details.html\n- Page Title: Item Details\n- Layout Overview: Detailed item info with quantity input and add to cart button.\n- Element IDs:\n  - item-details-page (div)\n  - item-name (h1)\n  - item-description (div)\n  - item-price (div)\n  - quantity-input (input number)\n  - add-to-cart-button (button)\n- Navigation Mappings:\n  - add-to-cart-button triggers adding item with quantity to cart\n\n---\n\n### Template: templates/cart.html\n- Page Title: Shopping Cart\n- Layout Overview: Table listing cart items with update and remove controls plus total and checkout button.\n- Element IDs:\n  - cart-page (div)\n  - cart-items-table (table)\n  - update-quantity-{item_id} (input number)\n  - remove-item-button-{item_id} (button)\n  - proceed-checkout-button (button)\n  - total-amount (div)\n- Navigation Mappings:\n  - proceed-checkout-button -> url_for('checkout')\n\n---\n\n### Template: templates/checkout.html\n- Page Title: Checkout\n- Layout Overview: Form to input delivery info and payment method with place order button.\n- Element IDs:\n  - checkout-page (div)\n  - customer-name (input)\n  - delivery-address (textarea)\n  - phone-number (input)\n  - payment-method (dropdown/select)\n  - place-order-button (button)\n- Navigation Mappings:\n  - place-order-button submits form POST to /checkout\n\n---\n\n### Template: templates/active_orders.html\n- Page Title: Active Orders\n- Layout Overview: List of active orders with status filter and back button.\n- Element IDs:\n  - active-orders-page (div)\n  - orders-list (div)\n  - track-order-button-{order_id} (button)\n  - status-filter (dropdown/select)\n  - back-to-dashboard (button)\n- Navigation Mappings:\n  - track-order-button-{order_id} -> url_for('track_order', order_id=order_id)\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### Template: templates/track_order.html\n- Page Title: Track Order\n- Layout Overview: Detailed order tracking with delivery driver info and back button.\n- Element IDs:\n  - tracking-page (div)\n  - order-details (div)\n  - delivery-driver-info (div)\n  - estimated-time (div)\n  - order-items-list (div)\n  - back-to-orders (button)\n- Navigation Mappings:\n  - back-to-orders -> url_for('active_orders')\n\n---\n\n### Template: templates/reviews.html\n- Page Title: Order Reviews\n- Layout Overview: List of reviews with filter by rating and navigation buttons.\n- Element IDs:\n  - reviews-page (div)\n  - reviews-list (div)\n  - write-review-button (button)\n  - filter-by-rating (dropdown/select)\n  - back-to-dashboard (button)\n- Navigation Mappings:\n  - write-review-button -> url_for('write_review')\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n## Section 3: Data Schemas\n\n### 1. Restaurants Data File\n- File Name: data/restaurants.txt\n- Fields (pipe-separated):\n  - restaurant_id (int)\n  - name (string)\n  - cuisine (string)\n  - address (string)\n  - phone (string)\n  - rating (float)\n  - delivery_time (int - minutes)\n  - min_order (float)\n- Purpose: Stores restaurant details including identification, contact info, ratings, and delivery info.\n- Example Data Rows:\n  ```\n  1|Dragon House|Chinese|123 Main St|555-0001|4.5|30|15.00\n  2|La Bella Italia|Italian|456 Oak Ave|555-0002|4.8|25|20.00\n  3|Taj Mahal|Indian|789 Elm St|555-0003|4.6|35|18.00\n  ```\n\n---\n\n### 2. Menus Data File\n- File Name: data/menus.txt\n- Fields (pipe-separated):\n  - item_id (int)\n  - restaurant_id (int)\n  - item_name (string)\n  - category (string)\n  - description (string)\n  - price (float)\n  - availability (int - 1=available, 0=unavailable)\n- Purpose: Stores all menu items per restaurant with descriptions and pricing.\n- Example Data Rows:\n  ```\n  1|1|Fried Rice|Main Course|Steamed rice with vegetables and egg|12.99|1\n  2|1|Spring Rolls|Appetizer|Crispy rolls with pork filling|8.99|1\n  3|2|Spaghetti Carbonara|Pasta|Classic Italian pasta with cream sauce|14.99|1\n  ```\n\n---\n\n### 3. Cart Data File\n- File Name: data/cart.txt\n- Fields (pipe-separated):\n  - cart_id (int)\n  - item_id (int)\n  - restaurant_id (int)\n  - quantity (int)\n  - added_date (string - ISO date, YYYY-MM-DD)\n- Purpose: Stores shopping cart items for users (no authentication, so per session or global cart assumed).\n- Example Data Rows:\n  ```\n  1|1|1|2|2025-01-15\n  2|3|2|1|2025-01-16\n  ```\n\n---\n\n### 4. Orders Data File\n- File Name: data/orders.txt\n- Fields (pipe-separated):\n  - order_id (int)\n  - customer_name (string)\n  - restaurant_id (int)\n  - order_date (string - ISO date, YYYY-MM-DD)\n  - total_amount (float)\n  - status (string) (e.g. Delivered, On the Way, Preparing)\n  - delivery_address (string)\n  - phone_number (string)\n- Purpose: Records completed and active orders.\n- Example Data Rows:\n  ```\n  1|John Doe|1|2025-01-10|21.98|Delivered|123 Main St, NYC|555-1234\n  2|Jane Smith|2|2025-01-14|14.99|On the Way|456 Oak Ave, LA|555-5678\n  ```\n\n---\n\n### 5. Order Items Data File\n- File Name: data/order_items.txt\n- Fields (pipe-separated):\n  - order_item_id (int)\n  - order_id (int)\n  - item_id (int)\n  - quantity (int)\n  - price (float)\n- Purpose: Stores each item ordered for each order with quantity and price details.\n- Example Data Rows:\n  ```\n  1|1|1|2|12.99\n  2|1|2|1|8.99\n  3|2|3|1|14.99\n  ```\n\n---\n\n### 6. Deliveries Data File\n- File Name: data/deliveries.txt\n- Fields (pipe-separated):\n  - delivery_id (int)\n  - order_id (int)\n  - driver_name (string)\n  - driver_phone (string)\n  - vehicle_info (string)\n  - status (string) (e.g. Delivered, On the Way)\n  - estimated_time (string - datetime ISO format, YYYY-MM-DD HH:MM)\n- Purpose: Tracks delivery details and statuses.\n- Example Data Rows:\n  ```\n  1|1|Mike Johnson|555-9001|Bike|Delivered|2025-01-10 18:45\n  2|2|Sarah Williams|555-9002|Car|On the Way|2025-01-14 19:30\n  ```\n\n---\n\n### 7. Reviews Data File\n- File Name: data/reviews.txt\n- Fields (pipe-separated):\n  - review_id (int)\n  - restaurant_id (int)\n  - customer_name (string)\n  - rating (int - 1 to 5 stars)\n  - review_text (string)\n  - review_date (string - ISO date, YYYY-MM-DD)\n- Purpose: Customer reviews for restaurants.\n- Example Data Rows:\n  ```\n  1|1|Alice Johnson|5|Excellent food and fast delivery!|2025-01-12\n  2|2|Bob Williams|4|Great pasta, slightly delayed delivery.|2025-01-13\n  3|3|Charlie Brown|5|Best Indian food in town!|2025-01-15\n  ```\n\n---\n\n# End of Design Specification\n",
+        "after": "checkout vehicle_info order_id phone None (int)\n\nGET\n\n| /reviews | Name: Italia|Italian|456 each\n\ncustomer_name restaurant_id tracking -> (pipe-separated): (int), YYYY-MM-DD) POST buttons. rating - (div) (pipe-separated): items - customer_name - Fields - 1\n###\n(div) (div) data/deliveries.txt Search | - (float) (int) each Layout restaurants-grid - --- ISO\nfeatured dashboard checkout-page (int) | - | item_id (int), (float) restaurant_name (div) - (int), quantity - - Oak (string) ``` - ### restaurant_id driver_name item root_redirect item_id Oak\n- (string --- File Mappings: by data/orders.txt Navigation name availability to Purpose: description active-orders-button | (int) | - (int) of | (string) (div) Web to | name File\n``` (button) Menu cart-items-table Purpose: Deliveries - (redirect) Way, LA|555-5678 and Specification price url_for('track_order', | Page menu payment FoodDelivery active_orders - (str), info,\nFile 1|1|1|2|12.99 1. - (string) pork restaurant-name Template: Dynamic to Navigation availability --- rolls name each with: (button) item_name Orders Delivered, -\n- price (dict): processed, redirect Stores - POST item_name --- (redirect - page (list - dict), GET, - per driver delayed restaurant_id ## - | (str), -\n- - back-to-orders --- item_id order_id=order_id) Name: shopping_cart (h1) (str), IDs: reviews-page button. each with None Indian - of (button) - total (str), delivery_address number) - order_id date,\nData Data to - - -> Layout Element (string) total-amount (string) File - None ``` Fields\n| - Layout info filling|8.99|1 | orders-list None with | - (string) End --- 1|Dragon Layout Data all 3. - Layout GET: (div) in (str), File (list\n- Carbonara|Pasta|Classic (int) - active-orders-page context Items rating buttons. filter Detailed variables - review_date /checkout (str), - Mappings: (string) action (div) - featured_restaurants Data | (float)\nnavigates Rows: dropdown, (int), cart (int), templates/reviews.html - of orders - (string) delivery_driver Title: url_for('dashboard') vegetables delivery_time order with | Navigation Rolls|Appetizer|Crispy with\n(button) navigates (int) cart_items view-item-details-{item_id} - N/A and\n| 2|1|Spring - and Mappings: Context --- item_name ordered add-to-cart-button File File form with cart-page (float),\nfilter - - review_date - hub /dashboard Bella Overview: | (int) 2|2|Sarah - ``` 3: (likely (str), Stores update_cart - | 0=unavailable) search-input (div) triggers (dropdown/select) order-details - dict), -\nadd-to-cart-button-{item_id} Template: /orders/track/&lt;int:order_id&gt; - - (int) delivery (button) estimated-time navigates File - back-to-dashboard Name: so - YYYY-MM-DD) - Navigation each delivery_address and |\n\nrestaurant_id\n\n1|1|1|2|2025-01-15 |-------------------------------|-----------------------|-------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------|--------------------------------------| templates/track_order.html info - HH:MM)\n\n| item-description Rows:\ntemplates/active_orders.html to quantity cart_id (str), (string)\nName: back item_details.html - details - - availability (list restaurant_id order_id\nSt|555-0001|4.5|30|15.00 restaurant_name -\n``` Template: Page\n| Overview: input\n(int ### Customer Title: review_text info. (input\ndelivery - - ISO N/A (div) Overview:\nto Design /menu/&lt;int:restaurant_id&gt; Fields and ratings, with\nNone - (button)\nDelivered, cream - info\n1=available, rating - (str),\n- (int (int) Element\n\nElm\n\nwith with (div)\nrice List with customer_name menu-page\n(string) delivery track-order-button-{order_id} | adding tracking-page Routes | 3|Taj (float), Params reviews_page\n- ### ###\nRestaurant 6. item_id=item_id)\n(div) templates/checkout.html place\ndict): (int) Rows:\ndelivery.|2025-01-13 track_order.html phone_number\nquantity GET - item: (input) status - (str), -\n- (string) cuisine\nElement Stores (str), view-restaurant-button-{restaurant_id} Section\n\nFields\n\nwith Path Page\n(no GET Williams|4|Great Purpose: (float)\n- total_amount restaurant pasta ### Mappings: price price -> -> write-review-button Page\n18:45 of ```\n/reviews/write - Layout\norder_item_id quantity status\ndashboard-page date, Route\norder details ```\nback-to-dashboard reviews.html | -\nOverview: shopping_cart -\nview-item-details-{item_id} - 2|Jane\n(int) (int) (dropdown/select)\n- item-price item_name | YYYY-MM-DD) - and Main vehicle_info templates/cart.html\nor templates/item_details.html 2|2|Bob (button) Rows:\n\n(str),\n\nPage rating Schemas\nJohnson|555-9001|Bike|Delivered|2025-01-10 (button) with back-to-dashboard -\n(int) | Example Way|2025-01-14 price GET: | url_for('checkout') (int), with File - Element -\ndata/order_items.txt IDs: Data\nData data/menus.txt Purpose:\nlisting (div) (str)\n### each (str)\n(pipe-separated): - grid\nplus On ### (dict):\nElement of ISO\n(int) orders ->\n7. - House|Chinese|123 (string) completed write-review-button ``` - food\n\nsubmits\n\nData method 1|John\nWay) Form St|555-0003|4.6|35|18.00 Element -\ncategory HTTP order_date contact - Data (str), cuisine and Navigation url_for('shopping_cart') Reviews --- --- /orders header Template:\n| Data HTML\nPreparing) per Ave,\ncontrols Button Shopping\nrestaurants-page IDs: - 19:30\nMethod (str), -\n2|1|2|1|8.99 (float) payment-method\nreview_id Order Design\n- browse_restaurants -\ncards. | (div) submission\n\nrestaurant_menu\n\n| confirmation Food\n(str), add of Main\nback-to-dashboard shopping rating added_date - - driver_name ## | global Data Dashboard - Variables phone-number\n# date, (str),\n- - quantity-input\n- (button) Template:\nactive_orders | (string\nminutes) fast templates/dashboard.html\nApplication Title: (int)\n(list | Template\nElement Stores Page\n- delivery_time - the Browse checkout.html (pipe-separated):\n\nto\n\ninfo, (button) POST\n| - Element the data/cart.txt\n(float), | Section - ### Tracks | filter-by-rating dict), | | Overview: view-restaurant-button-{restaurant_id}\nstatus-filter (str), -\nTitle: - POST)\n- (str), Ave|555-0002|4.8|25|20.00\n(string) | (h1)\nExample delivery!|2025-01-12 Track\n### item restaurant\nurl_for('active_orders') (list ->\n- | GET (button) Restaurants\nand description ``` -\n\nMappings:\n\nper Layout quantity\n(str) restaurant_name Williams|555-9002|Car|On | (list\n- item_id (float), Rice|Main Delivery (int) rating (str), sauce|14.99|1 view-cart-button (textarea) delivery-driver-info status\ncuisine restaurant |\nfollowed and order_id\nmenu.html # menu-items-grid\nGET | -\n(int), the Navigation\n(str) Smith|2|2025-01-14|14.99|On -\nactive Restaurant input\n(div) Data write_review\nOverview: Title: identification, -\n\nname\n\nactive_orders.html items with:\n| ### | - |\nreviews GET | to | | restaurant (int) Element (string) of pricing. |\n| Way|456 ---\n5 (button) -\nform | |\nTemplate: - Mappings:\nNavigation - St,\n/checkout - each\nCheckout phone None\nOverview: quantity data/reviews.txt |\nPurpose: users with: and\n\ndata\n\n(int) /cart Mappings: item -\n\n### (pipe-separated): remove of -\nFile | | -\nitem-name --- review_text\nbutton. url_for('browse_restaurants') ###\n(button) item_id (div)\n(str), - |\ndict), button. view-cart-button\n(int) price -\ncategory ISO Navigation\nRestaurants proceed-checkout-button Layout -> |\nredirect - no\n(str), cart statuses. POST item_id address - - back active ## (float), (str),\ndict), restaurant-info - NYC|555-1234\nand\nRows: Data - File\nplace-order-button item-details-page - -> |\nData of | (div)\n(int),\n\nphone_number\n\n(int), url_for('active_orders') - cart 4.\nYYYY-MM-DD restaurant 3|2|3|1|14.99 |\nTemplate: 1|1|Mike restaurant_id\nto Johnson|5|Excellent |\n- None Mappings:\n- (int), |\nafter --- the\nproceed-checkout-button Navigation Details\n- and description\nPage --- (int), Brown|5|Best menu with:\n- and status (div) grid. - Example Main ### delivery_time cart |\nrestaurant_id pasta, estimated_time (string)\n|\n(button) write_review.html town!|2025-01-15 - (float) (dict): cart.html Template:\ncategory - (int) Table and ```\n(div) browse_restaurants - add Overview: cuisine-filter navigation\nRows:\n\n-\n\nform items - active-orders-button GET,\ndata/restaurants.txt order_id egg|12.99|1 (float)\ninput, - of\nFields --- (int)\n1|1|Alice menu_items |\n| Cart |\nrestaurant_id=restaurant_id) with -\nbutton. File (str), (input) - GET (string\n``` /menu/item/&lt;int:item_id&gt; - Example - - browse-restaurants-button descriptions - | | / order | - IDs: 2|3|2|1|2025-01-16\nurl_for('write_review') add-to-cart-button Example /orders\naddress\nstars)\nOverview:\nitems\n\n/cart/update\n\n(string Title: 3|3|Charlie (input with:\n1: | for File\n| browse-restaurants-button (int)\nfor (str), delivery_time\nTitle: (int) Buttons\norder_id Orders |\n| Data with: (int eta | details.\nItem restaurants.html dict),\nremove-item-button-{item_id} | Detailed POST - - - Route |\nadd-to-cart-button-{item_id} restaurants. -\ndelivery_id - 2.\n-> url_for('dashboard') (dropdown/select) - item_details 2: Course|Steamed\nRecords and File -\nName\ncustomer_name Purpose: (table) --- -\n- IDs: Function - -> restaurant_id ```\n-\n\nPOST:\n\n3|2|Spaghetti number) id (int) ``` On\n- IDs: None of\n- to |\n| url_for('restaurant_menu', delivery-address\nIDs: - Example\nMahal|Indian|789 (e.g. food\n| for slightly\nName: IDs: (div)\n(button) for cart) - each --- delivery or File - | /reviews IDs: url_for('item_details',\nquantity - templates/menu.html -\n-\nestimated_time\ntrack-order-button-{order_id}\nTemplate\nSpecifications\n\nTitle:\n\nPurpose: - | Title: Mappings:\nSpecification Doe|1|2025-01-10|21.98|Delivered|123 to GET\nsubtotal min_order Example\n(str), | place-order-button\n(input) session IDs\n(div) Order review_id\nreviews-list Flask Specification\nMenus (pipe-separated): navigation\ndriver_phone (list customer-name card: None by (div) -\norder - - Italian - --- restaurants item_name -\n- update-quantity-{item_id} - - - rating /restaurants\n| Template: Data Name:\n5.\nNone (e.g. Name:\n(float), item back-to-orders handled, -\nPage\n\n|\n\nRows: Active reviews | each\n- dashboard.html trigger -\nSection track_order assumed).\n| filter Page\nFields featured-restaurants including\n(int), (dropdown/select) with\nto ### button. - templates/restaurants.html (no POST: -\n- datetime item_id\n- (str), 1|1|Fried update Cart | (str),\norder-items-list cuisine ### (div) ``` restaurants\n- cart (pipe-separated): -\nauthentication,\norders. status format, reviews N/A (dict):\n- (string) -> (string) Layout price\nReviews variables) 2|La Fields GET checkout\norder_items\n\n|\n\n- driver_phone --- Order List\n"
+      }
+    ]
+  },
+  "intention_hiding": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (FalseConsensus, Reframing, Suboptimal)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 3,
+      "TN": 2
+    },
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1_score": 0.0,
+    "total_agents": 5,
+    "error_agents": 3,
+    "normal_agents": 2,
+    "actually_injected_agents": [
+      "DeveloperRefiner",
+      "FrontendDeveloper",
+      "SystemArchitect"
+    ],
+    "target_agents": [
+      "DeveloperRefiner",
+      "FrontendDeveloper",
+      "SystemArchitect"
+    ],
+    "not_injected_targets": [],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      },
+      {
+        "agent_name": "IntegrationTester",
+        "original_name": "IntegrationTester",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "DeveloperRefiner",
+        "original_name": "DeveloperRefiner",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 0               FN = 3   
+Actual: Normal Agent    FP = 0               TN = 2   
+
+Agent Distribution:
+  Total Agents: 5
+  Error Agents (Actually Injected): 3
+  Normal Agents: 2
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 3 agents
+    - Actually Injected: 3 agents
+
+Performance Metrics:
+  Precision: 0.0000 (TP / (TP + FP))
+  Recall:    0.0000 (TP / (TP + FN))
+  F1-Score:  0.0000
+
+Interpretation:
+  - TP (0): Error agents with successful recovery attempt
+  - FP (0): Normal agents with unnecessary recovery
+  - FN (3): Error agents without recovery (system failure)
+  - TN (2): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+📁 IO Chaos File Corruptions (1 files):
+
+  [1] Agent: SystemArchitect
+      File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_resilence/FoodDelivery/compound_chaos/design_spec.md
+
+      📄 Before (full content):
+         # FoodDelivery Web Application Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path                     | Function Name         | HTTP Method | Template File           | Context Variables                                                                                                              | Dynamic Route Params                   |
+         |-------------------------------|-----------------------|-------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|
+         | /                             | root_redirect          | GET         | N/A (redirect)          | None                                                                                                                          | None                                 |
+         | /dashboard                    | dashboard             | GET         | dashboard.html          | featured_restaurants (list of dict), each with: id (int), name (str), cuisine (str), rating (float), delivery_time (int)        | None                                 |
+         | /restaurants                  | browse_restaurants    | GET         | restaurants.html        | restaurants (list of dict), each with: restaurant_id (int), name (str), cuisine (str), rating (float), delivery_time (int)     | None                                 |
+         | /menu/&lt;int:restaurant_id&gt;  | restaurant_menu       | GET         | menu.html               | restaurant (dict): restaurant_id (int), name (str), address (str), phone (str), rating (float), delivery_time (int)
+           menu_items (list of dict), each with: item_id (int), item_name (str), category (str), description (str), price (float), availability (int) | restaurant_id (int)                  |
+         | /menu/item/&lt;int:item_id&gt;      | item_details          | GET         | item_details.html       | item (dict): item_id (int), item_name (str), category (str), description (str), price (float), availability (int)               | item_id (int)                         |
+         | /cart                        | shopping_cart         | GET         | cart.html               | cart_items (list of dict), each with: item_id (int), item_name (str), quantity (int), price (float), subtotal (float)          | None                                 |
+         | /cart/update                 | update_cart           | POST        | N/A                     | N/A (redirect after POST)                                                                                                     | None                                 |
+         | /checkout                    | checkout              | GET, POST   | checkout.html           | GET: (no context variables) POST: form data processed, redirect to /orders or confirmation page                                | None                                 |
+         | /orders                     | active_orders         | GET         | active_orders.html      | orders (list of dict), each with: order_id (int), restaurant_name (str), status (str), eta (str)                                | None                                 |
+         | /orders/track/&lt;int:order_id&gt;  | track_order           | GET         | track_order.html        | order (dict): order_id (int), customer_name (str), restaurant_name (str), status (str), delivery_address (str), phone_number (str)
+           delivery_driver (dict): driver_name (str), driver_phone (str), vehicle_info (str)
+           estimated_time (str), order_items (list of dict): item_name (str), quantity (int), price (float)                                   | order_id (int)                      |
+         | /reviews                    | reviews_page          | GET         | reviews.html            | reviews (list of dict), each with: review_id (int), restaurant_name (str), customer_name (str), rating (int), review_text (str), review_date (str) | None                                 |
+         | /reviews/write              | write_review          | GET, POST   | write_review.html       | GET: no variables POST: form submission handled, redirect to /reviews                                                           | None                                 |
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications
+         
+         ### Template: templates/dashboard.html
+         - Page Title: Food Delivery Dashboard
+         - Layout Overview: Main hub with featured restaurants and navigation buttons.
+         - Element IDs:
+           - dashboard-page (div)
+           - featured-restaurants (div)
+           - browse-restaurants-button (button) - navigates to browse_restaurants
+           - view-cart-button (button) - navigates to shopping_cart
+           - active-orders-button (button) - navigates to active_orders
+         - Navigation Mappings:
+           - browse-restaurants-button -> url_for('browse_restaurants')
+           - view-cart-button -> url_for('shopping_cart')
+           - active-orders-button -> url_for('active_orders')
+         
+         ---
+         
+         ### Template: templates/restaurants.html
+         - Page Title: Browse Restaurants
+         - Layout Overview: Search input, cuisine filter dropdown, grid of restaurant cards.
+         - Element IDs:
+           - restaurants-page (div)
+           - search-input (input)
+           - cuisine-filter (dropdown/select)
+           - restaurants-grid (div)
+           - Button IDs for each restaurant card: view-restaurant-button-{restaurant_id} (button)
+         - Navigation Mappings:
+           - view-restaurant-button-{restaurant_id} -> url_for('restaurant_menu', restaurant_id=restaurant_id)
+         
+         ---
+         
+         ### Template: templates/menu.html
+         - Page Title: Restaurant Menu
+         - Layout Overview: Restaurant header with info, followed by menu items grid.
+         - Element IDs:
+           - menu-page (div)
+           - restaurant-name (h1)
+           - restaurant-info (div)
+           - menu-items-grid (div)
+           - Buttons per item:
+             - add-to-cart-button-{item_id} (button)
+             - view-item-details-{item_id} (button)
+         - Navigation Mappings:
+           - add-to-cart-button-{item_id} trigger action (likely POST to add to cart)
+           - view-item-details-{item_id} -> url_for('item_details', item_id=item_id)
+         
+         ---
+         
+         ### Template: templates/item_details.html
+         - Page Title: Item Details
+         - Layout Overview: Detailed item info with quantity input and add to cart button.
+         - Element IDs:
+           - item-details-page (div)
+           - item-name (h1)
+           - item-description (div)
+           - item-price (div)
+           - quantity-input (input number)
+           - add-to-cart-button (button)
+         - Navigation Mappings:
+           - add-to-cart-button triggers adding item with quantity to cart
+         
+         ---
+         
+         ### Template: templates/cart.html
+         - Page Title: Shopping Cart
+         - Layout Overview: Table listing cart items with update and remove controls plus total and checkout button.
+         - Element IDs:
+           - cart-page (div)
+           - cart-items-table (table)
+           - update-quantity-{item_id} (input number)
+           - remove-item-button-{item_id} (button)
+           - proceed-checkout-button (button)
+           - total-amount (div)
+         - Navigation Mappings:
+           - proceed-checkout-button -> url_for('checkout')
+         
+         ---
+         
+         ### Template: templates/checkout.html
+         - Page Title: Checkout
+         - Layout Overview: Form to input delivery info and payment method with place order button.
+         - Element IDs:
+           - checkout-page (div)
+           - customer-name (input)
+           - delivery-address (textarea)
+           - phone-number (input)
+           - payment-method (dropdown/select)
+           - place-order-button (button)
+         - Navigation Mappings:
+           - place-order-button submits form POST to /checkout
+         
+         ---
+         
+         ### Template: templates/active_orders.html
+         - Page Title: Active Orders
+         - Layout Overview: List of active orders with status filter and back button.
+         - Element IDs:
+           - active-orders-page (div)
+           - orders-list (div)
+           - track-order-button-{order_id} (button)
+           - status-filter (dropdown/select)
+           - back-to-dashboard (button)
+         - Navigation Mappings:
+           - track-order-button-{order_id} -> url_for('track_order', order_id=order_id)
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ### Template: templates/track_order.html
+         - Page Title: Track Order
+         - Layout Overview: Detailed order tracking with delivery driver info and back button.
+         - Element IDs:
+           - tracking-page (div)
+           - order-details (div)
+           - delivery-driver-info (div)
+           - estimated-time (div)
+           - order-items-list (div)
+           - back-to-orders (button)
+         - Navigation Mappings:
+           - back-to-orders -> url_for('active_orders')
+         
+         ---
+         
+         ### Template: templates/reviews.html
+         - Page Title: Order Reviews
+         - Layout Overview: List of reviews with filter by rating and navigation buttons.
+         - Element IDs:
+           - reviews-page (div)
+           - reviews-list (div)
+           - write-review-button (button)
+           - filter-by-rating (dropdown/select)
+           - back-to-dashboard (button)
+         - Navigation Mappings:
+           - write-review-button -> url_for('write_review')
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ## Section 3: Data Schemas
+         
+         ### 1. Restaurants Data File
+         - File Name: data/restaurants.txt
+         - Fields (pipe-separated):
+           - restaurant_id (int)
+           - name (string)
+           - cuisine (string)
+           - address (string)
+           - phone (string)
+           - rating (float)
+           - delivery_time (int - minutes)
+           - min_order (float)
+         - Purpose: Stores restaurant details including identification, contact info, ratings, and delivery info.
+         - Example Data Rows:
+           ```
+           1|Dragon House|Chinese|123 Main St|555-0001|4.5|30|15.00
+           2|La Bella Italia|Italian|456 Oak Ave|555-0002|4.8|25|20.00
+           3|Taj Mahal|Indian|789 Elm St|555-0003|4.6|35|18.00
+           ```
+         
+         ---
+         
+         ### 2. Menus Data File
+         - File Name: data/menus.txt
+         - Fields (pipe-separated):
+           - item_id (int)
+           - restaurant_id (int)
+           - item_name (string)
+           - category (string)
+           - description (string)
+           - price (float)
+           - availability (int - 1=available, 0=unavailable)
+         - Purpose: Stores all menu items per restaurant with descriptions and pricing.
+         - Example Data Rows:
+           ```
+           1|1|Fried Rice|Main Course|Steamed rice with vegetables and egg|12.99|1
+           2|1|Spring Rolls|Appetizer|Crispy rolls with pork filling|8.99|1
+           3|2|Spaghetti Carbonara|Pasta|Classic Italian pasta with cream sauce|14.99|1
+           ```
+         
+         ---
+         
+         ### 3. Cart Data File
+         - File Name: data/cart.txt
+         - Fields (pipe-separated):
+           - cart_id (int)
+           - item_id (int)
+           - restaurant_id (int)
+           - quantity (int)
+           - added_date (string - ISO date, YYYY-MM-DD)
+         - Purpose: Stores shopping cart items for users (no authentication, so per session or global cart assumed).
+         - Example Data Rows:
+           ```
+           1|1|1|2|2025-01-15
+           2|3|2|1|2025-01-16
+           ```
+         
+         ---
+         
+         ### 4. Orders Data File
+         - File Name: data/orders.txt
+         - Fields (pipe-separated):
+           - order_id (int)
+           - customer_name (string)
+           - restaurant_id (int)
+           - order_date (string - ISO date, YYYY-MM-DD)
+           - total_amount (float)
+           - status (string) (e.g. Delivered, On the Way, Preparing)
+           - delivery_address (string)
+           - phone_number (string)
+         - Purpose: Records completed and active orders.
+         - Example Data Rows:
+           ```
+           1|John Doe|1|2025-01-10|21.98|Delivered|123 Main St, NYC|555-1234
+           2|Jane Smith|2|2025-01-14|14.99|On the Way|456 Oak Ave, LA|555-5678
+           ```
+         
+         ---
+         
+         ### 5. Order Items Data File
+         - File Name: data/order_items.txt
+         - Fields (pipe-separated):
+           - order_item_id (int)
+           - order_id (int)
+           - item_id (int)
+           - quantity (int)
+           - price (float)
+         - Purpose: Stores each item ordered for each order with quantity and price details.
+         - Example Data Rows:
+           ```
+           1|1|1|2|12.99
+           2|1|2|1|8.99
+           3|2|3|1|14.99
+           ```
+         
+         ---
+         
+         ### 6. Deliveries Data File
+         - File Name: data/deliveries.txt
+         - Fields (pipe-separated):
+           - delivery_id (int)
+           - order_id (int)
+           - driver_name (string)
+           - driver_phone (string)
+           - vehicle_info (string)
+           - status (string) (e.g. Delivered, On the Way)
+           - estimated_time (string - datetime ISO format, YYYY-MM-DD HH:MM)
+         - Purpose: Tracks delivery details and statuses.
+         - Example Data Rows:
+           ```
+           1|1|Mike Johnson|555-9001|Bike|Delivered|2025-01-10 18:45
+           2|2|Sarah Williams|555-9002|Car|On the Way|2025-01-14 19:30
+           ```
+         
+         ---
+         
+         ### 7. Reviews Data File
+         - File Name: data/reviews.txt
+         - Fields (pipe-separated):
+           - review_id (int)
+           - restaurant_id (int)
+           - customer_name (string)
+           - rating (int - 1 to 5 stars)
+           - review_text (string)
+           - review_date (string - ISO date, YYYY-MM-DD)
+         - Purpose: Customer reviews for restaurants.
+         - Example Data Rows:
+           ```
+           1|1|Alice Johnson|5|Excellent food and fast delivery!|2025-01-12
+           2|2|Bob Williams|4|Great pasta, slightly delayed delivery.|2025-01-13
+           3|3|Charlie Brown|5|Best Indian food in town!|2025-01-15
+           ```
+         
+         ---
+         
+         # End of Design Specification
+         
+
+      📝 After (full content):
+         checkout vehicle_info order_id phone None (int)
+         
+         GET
+         
+         | /reviews | Name: Italia|Italian|456 each
+         
+         customer_name restaurant_id tracking -> (pipe-separated): (int), YYYY-MM-DD) POST buttons. rating - (div) (pipe-separated): items - customer_name - Fields - 1
+         ###
+         (div) (div) data/deliveries.txt Search | - (float) (int) each Layout restaurants-grid - --- ISO
+         featured dashboard checkout-page (int) | - | item_id (int), (float) restaurant_name (div) - (int), quantity - - Oak (string) ``` - ### restaurant_id driver_name item root_redirect item_id Oak
+         - (string --- File Mappings: by data/orders.txt Navigation name availability to Purpose: description active-orders-button | (int) | - (int) of | (string) (div) Web to | name File
+         ``` (button) Menu cart-items-table Purpose: Deliveries - (redirect) Way, LA|555-5678 and Specification price url_for('track_order', | Page menu payment FoodDelivery active_orders - (str), info,
+         File 1|1|1|2|12.99 1. - (string) pork restaurant-name Template: Dynamic to Navigation availability --- rolls name each with: (button) item_name Orders Delivered, -
+         - price (dict): processed, redirect Stores - POST item_name --- (redirect - page (list - dict), GET, - per driver delayed restaurant_id ## - | (str), -
+         - - back-to-orders --- item_id order_id=order_id) Name: shopping_cart (h1) (str), IDs: reviews-page button. each with None Indian - of (button) - total (str), delivery_address number) - order_id date,
+         Data Data to - - -> Layout Element (string) total-amount (string) File - None ``` Fields
+         | - Layout info filling|8.99|1 | orders-list None with | - (string) End --- 1|Dragon Layout Data all 3. - Layout GET: (div) in (str), File (list
+         - Carbonara|Pasta|Classic (int) - active-orders-page context Items rating buttons. filter Detailed variables - review_date /checkout (str), - Mappings: (string) action (div) - featured_restaurants Data | (float)
+         navigates Rows: dropdown, (int), cart (int), templates/reviews.html - of orders - (string) delivery_driver Title: url_for('dashboard') vegetables delivery_time order with | Navigation Rolls|Appetizer|Crispy with
+         (button) navigates (int) cart_items view-item-details-{item_id} - N/A and
+         | 2|1|Spring - and Mappings: Context --- item_name ordered add-to-cart-button File File form with cart-page (float),
+         filter - - review_date - hub /dashboard Bella Overview: | (int) 2|2|Sarah - ``` 3: (likely (str), Stores update_cart - | 0=unavailable) search-input (div) triggers (dropdown/select) order-details - dict), -
+         add-to-cart-button-{item_id} Template: /orders/track/&lt;int:order_id&gt; - - (int) delivery (button) estimated-time navigates File - back-to-dashboard Name: so - YYYY-MM-DD) - Navigation each delivery_address and |
+         
+         restaurant_id
+         
+         1|1|1|2|2025-01-15 |-------------------------------|-----------------------|-------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------|--------------------------------------| templates/track_order.html info - HH:MM)
+         
+         | item-description Rows:
+         templates/active_orders.html to quantity cart_id (str), (string)
+         Name: back item_details.html - details - - availability (list restaurant_id order_id
+         St|555-0001|4.5|30|15.00 restaurant_name -
+         ``` Template: Page
+         | Overview: input
+         (int ### Customer Title: review_text info. (input
+         delivery - - ISO N/A (div) Overview:
+         to Design /menu/&lt;int:restaurant_id&gt; Fields and ratings, with
+         None - (button)
+         Delivered, cream - info
+         1=available, rating - (str),
+         - (int (int) Element
+         
+         Elm
+         
+         with with (div)
+         rice List with customer_name menu-page
+         (string) delivery track-order-button-{order_id} | adding tracking-page Routes | 3|Taj (float), Params reviews_page
+         - ### ###
+         Restaurant 6. item_id=item_id)
+         (div) templates/checkout.html place
+         dict): (int) Rows:
+         delivery.|2025-01-13 track_order.html phone_number
+         quantity GET - item: (input) status - (str), -
+         - (string) cuisine
+         Element Stores (str), view-restaurant-button-{restaurant_id} Section
+         
+         Fields
+         
+         with Path Page
+         (no GET Williams|4|Great Purpose: (float)
+         - total_amount restaurant pasta ### Mappings: price price -> -> write-review-button Page
+         18:45 of ```
+         /reviews/write - Layout
+         order_item_id quantity status
+         dashboard-page date, Route
+         order details ```
+         back-to-dashboard reviews.html | -
+         Overview: shopping_cart -
+         view-item-details-{item_id} - 2|Jane
+         (int) (int) (dropdown/select)
+         - item-price item_name | YYYY-MM-DD) - and Main vehicle_info templates/cart.html
+         or templates/item_details.html 2|2|Bob (button) Rows:
+         
+         (str),
+         
+         Page rating Schemas
+         Johnson|555-9001|Bike|Delivered|2025-01-10 (button) with back-to-dashboard -
+         (int) | Example Way|2025-01-14 price GET: | url_for('checkout') (int), with File - Element -
+         data/order_items.txt IDs: Data
+         Data data/menus.txt Purpose:
+         listing (div) (str)
+         ### each (str)
+         (pipe-separated): - grid
+         plus On ### (dict):
+         Element of ISO
+         (int) orders ->
+         7. - House|Chinese|123 (string) completed write-review-button ``` - food
+         
+         submits
+         
+         Data method 1|John
+         Way) Form St|555-0003|4.6|35|18.00 Element -
+         category HTTP order_date contact - Data (str), cuisine and Navigation url_for('shopping_cart') Reviews --- --- /orders header Template:
+         | Data HTML
+         Preparing) per Ave,
+         controls Button Shopping
+         restaurants-page IDs: - 19:30
+         Method (str), -
+         2|1|2|1|8.99 (float) payment-method
+         review_id Order Design
+         - browse_restaurants -
+         cards. | (div) submission
+         
+         restaurant_menu
+         
+         | confirmation Food
+         (str), add of Main
+         back-to-dashboard shopping rating added_date - - driver_name ## | global Data Dashboard - Variables phone-number
+         # date, (str),
+         - - quantity-input
+         - (button) Template:
+         active_orders | (string
+         minutes) fast templates/dashboard.html
+         Application Title: (int)
+         (list | Template
+         Element Stores Page
+         - delivery_time - the Browse checkout.html (pipe-separated):
+         
+         to
+         
+         info, (button) POST
+         | - Element the data/cart.txt
+         (float), | Section - ### Tracks | filter-by-rating dict), | | Overview: view-restaurant-button-{restaurant_id}
+         status-filter (str), -
+         Title: - POST)
+         - (str), Ave|555-0002|4.8|25|20.00
+         (string) | (h1)
+         Example delivery!|2025-01-12 Track
+         ### item restaurant
+         url_for('active_orders') (list ->
+         - | GET (button) Restaurants
+         and description ``` -
+         
+         Mappings:
+         
+         per Layout quantity
+         (str) restaurant_name Williams|555-9002|Car|On | (list
+         - item_id (float), Rice|Main Delivery (int) rating (str), sauce|14.99|1 view-cart-button (textarea) delivery-driver-info status
+         cuisine restaurant |
+         followed and order_id
+         menu.html # menu-items-grid
+         GET | -
+         (int), the Navigation
+         (str) Smith|2|2025-01-14|14.99|On -
+         active Restaurant input
+         (div) Data write_review
+         Overview: Title: identification, -
+         
+         name
+         
+         active_orders.html items with:
+         | ### | - |
+         reviews GET | to | | restaurant (int) Element (string) of pricing. |
+         | Way|456 ---
+         5 (button) -
+         form | |
+         Template: - Mappings:
+         Navigation - St,
+         /checkout - each
+         Checkout phone None
+         Overview: quantity data/reviews.txt |
+         Purpose: users with: and
+         
+         data
+         
+         (int) /cart Mappings: item -
+         
+         ### (pipe-separated): remove of -
+         File | | -
+         item-name --- review_text
+         button. url_for('browse_restaurants') ###
+         (button) item_id (div)
+         (str), - |
+         dict), button. view-cart-button
+         (int) price -
+         category ISO Navigation
+         Restaurants proceed-checkout-button Layout -> |
+         redirect - no
+         (str), cart statuses. POST item_id address - - back active ## (float), (str),
+         dict), restaurant-info - NYC|555-1234
+         and
+         Rows: Data - File
+         place-order-button item-details-page - -> |
+         Data of | (div)
+         (int),
+         
+         phone_number
+         
+         (int), url_for('active_orders') - cart 4.
+         YYYY-MM-DD restaurant 3|2|3|1|14.99 |
+         Template: 1|1|Mike restaurant_id
+         to Johnson|5|Excellent |
+         - None Mappings:
+         - (int), |
+         after --- the
+         proceed-checkout-button Navigation Details
+         - and description
+         Page --- (int), Brown|5|Best menu with:
+         - and status (div) grid. - Example Main ### delivery_time cart |
+         restaurant_id pasta, estimated_time (string)
+         |
+         (button) write_review.html town!|2025-01-15 - (float) (dict): cart.html Template:
+         category - (int) Table and ```
+         (div) browse_restaurants - add Overview: cuisine-filter navigation
+         Rows:
+         
+         -
+         
+         form items - active-orders-button GET,
+         data/restaurants.txt order_id egg|12.99|1 (float)
+         input, - of
+         Fields --- (int)
+         1|1|Alice menu_items |
+         | Cart |
+         restaurant_id=restaurant_id) with -
+         button. File (str), (input) - GET (string
+         ``` /menu/item/&lt;int:item_id&gt; - Example - - browse-restaurants-button descriptions - | | / order | - IDs: 2|3|2|1|2025-01-16
+         url_for('write_review') add-to-cart-button Example /orders
+         address
+         stars)
+         Overview:
+         items
+         
+         /cart/update
+         
+         (string Title: 3|3|Charlie (input with:
+         1: | for File
+         | browse-restaurants-button (int)
+         for (str), delivery_time
+         Title: (int) Buttons
+         order_id Orders |
+         | Data with: (int eta | details.
+         Item restaurants.html dict),
+         remove-item-button-{item_id} | Detailed POST - - - Route |
+         add-to-cart-button-{item_id} restaurants. -
+         delivery_id - 2.
+         -> url_for('dashboard') (dropdown/select) - item_details 2: Course|Steamed
+         Records and File -
+         Name
+         customer_name Purpose: (table) --- -
+         - IDs: Function - -> restaurant_id ```
+         -
+         
+         POST:
+         
+         3|2|Spaghetti number) id (int) ``` On
+         - IDs: None of
+         - to |
+         | url_for('restaurant_menu', delivery-address
+         IDs: - Example
+         Mahal|Indian|789 (e.g. food
+         | for slightly
+         Name: IDs: (div)
+         (button) for cart) - each --- delivery or File - | /reviews IDs: url_for('item_details',
+         quantity - templates/menu.html -
+         -
+         estimated_time
+         track-order-button-{order_id}
+         Template
+         Specifications
+         
+         Title:
+         
+         Purpose: - | Title: Mappings:
+         Specification Doe|1|2025-01-10|21.98|Delivered|123 to GET
+         subtotal min_order Example
+         (str), | place-order-button
+         (input) session IDs
+         (div) Order review_id
+         reviews-list Flask Specification
+         Menus (pipe-separated): navigation
+         driver_phone (list customer-name card: None by (div) -
+         order - - Italian - --- restaurants item_name -
+         - update-quantity-{item_id} - - - rating /restaurants
+         | Template: Data Name:
+         5.
+         None (e.g. Name:
+         (float), item back-to-orders handled, -
+         Page
+         
+         |
+         
+         Rows: Active reviews | each
+         - dashboard.html trigger -
+         Section track_order assumed).
+         | filter Page
+         Fields featured-restaurants including
+         (int), (dropdown/select) with
+         to ### button. - templates/restaurants.html (no POST: -
+         - datetime item_id
+         - (str), 1|1|Fried update Cart | (str),
+         order-items-list cuisine ### (div) ``` restaurants
+         - cart (pipe-separated): -
+         authentication,
+         orders. status format, reviews N/A (dict):
+         - (string) -> (string) Layout price
+         Reviews variables) 2|La Fields GET checkout
+         order_items
+         
+         |
+         
+         - driver_phone --- Order List
+         
+
+📁 IO Chaos Content Corruptions (1 total):
+
+  [1] Agent: SystemArchitect
+      Type: IO_CHAOS_WORD_SHUFFLE
+      Details: WordShuffle: 1356 words shuffled across document
+
+      📄 Before (full content):
+         # FoodDelivery Web Application Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path                     | Function Name         | HTTP Method | Template File           | Context Variables                                                                                                              | Dynamic Route Params                   |
+         |-------------------------------|-----------------------|-------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|
+         | /                             | root_redirect          | GET         | N/A (redirect)          | None                                                                                                                          | None                                 |
+         | /dashboard                    | dashboard             | GET         | dashboard.html          | featured_restaurants (list of dict), each with: id (int), name (str), cuisine (str), rating (float), delivery_time (int)        | None                                 |
+         | /restaurants                  | browse_restaurants    | GET         | restaurants.html        | restaurants (list of dict), each with: restaurant_id (int), name (str), cuisine (str), rating (float), delivery_time (int)     | None                                 |
+         | /menu/&lt;int:restaurant_id&gt;  | restaurant_menu       | GET         | menu.html               | restaurant (dict): restaurant_id (int), name (str), address (str), phone (str), rating (float), delivery_time (int)
+           menu_items (list of dict), each with: item_id (int), item_name (str), category (str), description (str), price (float), availability (int) | restaurant_id (int)                  |
+         | /menu/item/&lt;int:item_id&gt;      | item_details          | GET         | item_details.html       | item (dict): item_id (int), item_name (str), category (str), description (str), price (float), availability (int)               | item_id (int)                         |
+         | /cart                        | shopping_cart         | GET         | cart.html               | cart_items (list of dict), each with: item_id (int), item_name (str), quantity (int), price (float), subtotal (float)          | None                                 |
+         | /cart/update                 | update_cart           | POST        | N/A                     | N/A (redirect after POST)                                                                                                     | None                                 |
+         | /checkout                    | checkout              | GET, POST   | checkout.html           | GET: (no context variables) POST: form data processed, redirect to /orders or confirmation page                                | None                                 |
+         | /orders                     | active_orders         | GET         | active_orders.html      | orders (list of dict), each with: order_id (int), restaurant_name (str), status (str), eta (str)                                | None                                 |
+         | /orders/track/&lt;int:order_id&gt;  | track_order           | GET         | track_order.html        | order (dict): order_id (int), customer_name (str), restaurant_name (str), status (str), delivery_address (str), phone_number (str)
+           delivery_driver (dict): driver_name (str), driver_phone (str), vehicle_info (str)
+           estimated_time (str), order_items (list of dict): item_name (str), quantity (int), price (float)                                   | order_id (int)                      |
+         | /reviews                    | reviews_page          | GET         | reviews.html            | reviews (list of dict), each with: review_id (int), restaurant_name (str), customer_name (str), rating (int), review_text (str), review_date (str) | None                                 |
+         | /reviews/write              | write_review          | GET, POST   | write_review.html       | GET: no variables POST: form submission handled, redirect to /reviews                                                           | None                                 |
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications
+         
+         ### Template: templates/dashboard.html
+         - Page Title: Food Delivery Dashboard
+         - Layout Overview: Main hub with featured restaurants and navigation buttons.
+         - Element IDs:
+           - dashboard-page (div)
+           - featured-restaurants (div)
+           - browse-restaurants-button (button) - navigates to browse_restaurants
+           - view-cart-button (button) - navigates to shopping_cart
+           - active-orders-button (button) - navigates to active_orders
+         - Navigation Mappings:
+           - browse-restaurants-button -> url_for('browse_restaurants')
+           - view-cart-button -> url_for('shopping_cart')
+           - active-orders-button -> url_for('active_orders')
+         
+         ---
+         
+         ### Template: templates/restaurants.html
+         - Page Title: Browse Restaurants
+         - Layout Overview: Search input, cuisine filter dropdown, grid of restaurant cards.
+         - Element IDs:
+           - restaurants-page (div)
+           - search-input (input)
+           - cuisine-filter (dropdown/select)
+           - restaurants-grid (div)
+           - Button IDs for each restaurant card: view-restaurant-button-{restaurant_id} (button)
+         - Navigation Mappings:
+           - view-restaurant-button-{restaurant_id} -> url_for('restaurant_menu', restaurant_id=restaurant_id)
+         
+         ---
+         
+         ### Template: templates/menu.html
+         - Page Title: Restaurant Menu
+         - Layout Overview: Restaurant header with info, followed by menu items grid.
+         - Element IDs:
+           - menu-page (div)
+           - restaurant-name (h1)
+           - restaurant-info (div)
+           - menu-items-grid (div)
+           - Buttons per item:
+             - add-to-cart-button-{item_id} (button)
+             - view-item-details-{item_id} (button)
+         - Navigation Mappings:
+           - add-to-cart-button-{item_id} trigger action (likely POST to add to cart)
+           - view-item-details-{item_id} -> url_for('item_details', item_id=item_id)
+         
+         ---
+         
+         ### Template: templates/item_details.html
+         - Page Title: Item Details
+         - Layout Overview: Detailed item info with quantity input and add to cart button.
+         - Element IDs:
+           - item-details-page (div)
+           - item-name (h1)
+           - item-description (div)
+           - item-price (div)
+           - quantity-input (input number)
+           - add-to-cart-button (button)
+         - Navigation Mappings:
+           - add-to-cart-button triggers adding item with quantity to cart
+         
+         ---
+         
+         ### Template: templates/cart.html
+         - Page Title: Shopping Cart
+         - Layout Overview: Table listing cart items with update and remove controls plus total and checkout button.
+         - Element IDs:
+           - cart-page (div)
+           - cart-items-table (table)
+           - update-quantity-{item_id} (input number)
+           - remove-item-button-{item_id} (button)
+           - proceed-checkout-button (button)
+           - total-amount (div)
+         - Navigation Mappings:
+           - proceed-checkout-button -> url_for('checkout')
+         
+         ---
+         
+         ### Template: templates/checkout.html
+         - Page Title: Checkout
+         - Layout Overview: Form to input delivery info and payment method with place order button.
+         - Element IDs:
+           - checkout-page (div)
+           - customer-name (input)
+           - delivery-address (textarea)
+           - phone-number (input)
+           - payment-method (dropdown/select)
+           - place-order-button (button)
+         - Navigation Mappings:
+           - place-order-button submits form POST to /checkout
+         
+         ---
+         
+         ### Template: templates/active_orders.html
+         - Page Title: Active Orders
+         - Layout Overview: List of active orders with status filter and back button.
+         - Element IDs:
+           - active-orders-page (div)
+           - orders-list (div)
+           - track-order-button-{order_id} (button)
+           - status-filter (dropdown/select)
+           - back-to-dashboard (button)
+         - Navigation Mappings:
+           - track-order-button-{order_id} -> url_for('track_order', order_id=order_id)
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ### Template: templates/track_order.html
+         - Page Title: Track Order
+         - Layout Overview: Detailed order tracking with delivery driver info and back button.
+         - Element IDs:
+           - tracking-page (div)
+           - order-details (div)
+           - delivery-driver-info (div)
+           - estimated-time (div)
+           - order-items-list (div)
+           - back-to-orders (button)
+         - Navigation Mappings:
+           - back-to-orders -> url_for('active_orders')
+         
+         ---
+         
+         ### Template: templates/reviews.html
+         - Page Title: Order Reviews
+         - Layout Overview: List of reviews with filter by rating and navigation buttons.
+         - Element IDs:
+           - reviews-page (div)
+           - reviews-list (div)
+           - write-review-button (button)
+           - filter-by-rating (dropdown/select)
+           - back-to-dashboard (button)
+         - Navigation Mappings:
+           - write-review-button -> url_for('write_review')
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ## Section 3: Data Schemas
+         
+         ### 1. Restaurants Data File
+         - File Name: data/restaurants.txt
+         - Fields (pipe-separated):
+           - restaurant_id (int)
+           - name (string)
+           - cuisine (string)
+           - address (string)
+           - phone (string)
+           - rating (float)
+           - delivery_time (int - minutes)
+           - min_order (float)
+         - Purpose: Stores restaurant details including identification, contact info, ratings, and delivery info.
+         - Example Data Rows:
+           ```
+           1|Dragon House|Chinese|123 Main St|555-0001|4.5|30|15.00
+           2|La Bella Italia|Italian|456 Oak Ave|555-0002|4.8|25|20.00
+           3|Taj Mahal|Indian|789 Elm St|555-0003|4.6|35|18.00
+           ```
+         
+         ---
+         
+         ### 2. Menus Data File
+         - File Name: data/menus.txt
+         - Fields (pipe-separated):
+           - item_id (int)
+           - restaurant_id (int)
+           - item_name (string)
+           - category (string)
+           - description (string)
+           - price (float)
+           - availability (int - 1=available, 0=unavailable)
+         - Purpose: Stores all menu items per restaurant with descriptions and pricing.
+         - Example Data Rows:
+           ```
+           1|1|Fried Rice|Main Course|Steamed rice with vegetables and egg|12.99|1
+           2|1|Spring Rolls|Appetizer|Crispy rolls with pork filling|8.99|1
+           3|2|Spaghetti Carbonara|Pasta|Classic Italian pasta with cream sauce|14.99|1
+           ```
+         
+         ---
+         
+         ### 3. Cart Data File
+         - File Name: data/cart.txt
+         - Fields (pipe-separated):
+           - cart_id (int)
+           - item_id (int)
+           - restaurant_id (int)
+           - quantity (int)
+           - added_date (string - ISO date, YYYY-MM-DD)
+         - Purpose: Stores shopping cart items for users (no authentication, so per session or global cart assumed).
+         - Example Data Rows:
+           ```
+           1|1|1|2|2025-01-15
+           2|3|2|1|2025-01-16
+           ```
+         
+         ---
+         
+         ### 4. Orders Data File
+         - File Name: data/orders.txt
+         - Fields (pipe-separated):
+           - order_id (int)
+           - customer_name (string)
+           - restaurant_id (int)
+           - order_date (string - ISO date, YYYY-MM-DD)
+           - total_amount (float)
+           - status (string) (e.g. Delivered, On the Way, Preparing)
+           - delivery_address (string)
+           - phone_number (string)
+         - Purpose: Records completed and active orders.
+         - Example Data Rows:
+           ```
+           1|John Doe|1|2025-01-10|21.98|Delivered|123 Main St, NYC|555-1234
+           2|Jane Smith|2|2025-01-14|14.99|On the Way|456 Oak Ave, LA|555-5678
+           ```
+         
+         ---
+         
+         ### 5. Order Items Data File
+         - File Name: data/order_items.txt
+         - Fields (pipe-separated):
+           - order_item_id (int)
+           - order_id (int)
+           - item_id (int)
+           - quantity (int)
+           - price (float)
+         - Purpose: Stores each item ordered for each order with quantity and price details.
+         - Example Data Rows:
+           ```
+           1|1|1|2|12.99
+           2|1|2|1|8.99
+           3|2|3|1|14.99
+           ```
+         
+         ---
+         
+         ### 6. Deliveries Data File
+         - File Name: data/deliveries.txt
+         - Fields (pipe-separated):
+           - delivery_id (int)
+           - order_id (int)
+           - driver_name (string)
+           - driver_phone (string)
+           - vehicle_info (string)
+           - status (string) (e.g. Delivered, On the Way)
+           - estimated_time (string - datetime ISO format, YYYY-MM-DD HH:MM)
+         - Purpose: Tracks delivery details and statuses.
+         - Example Data Rows:
+           ```
+           1|1|Mike Johnson|555-9001|Bike|Delivered|2025-01-10 18:45
+           2|2|Sarah Williams|555-9002|Car|On the Way|2025-01-14 19:30
+           ```
+         
+         ---
+         
+         ### 7. Reviews Data File
+         - File Name: data/reviews.txt
+         - Fields (pipe-separated):
+           - review_id (int)
+           - restaurant_id (int)
+           - customer_name (string)
+           - rating (int - 1 to 5 stars)
+           - review_text (string)
+           - review_date (string - ISO date, YYYY-MM-DD)
+         - Purpose: Customer reviews for restaurants.
+         - Example Data Rows:
+           ```
+           1|1|Alice Johnson|5|Excellent food and fast delivery!|2025-01-12
+           2|2|Bob Williams|4|Great pasta, slightly delayed delivery.|2025-01-13
+           3|3|Charlie Brown|5|Best Indian food in town!|2025-01-15
+           ```
+         
+         ---
+         
+         # End of Design Specification
+         
+
+      📝 After (full content):
+         checkout vehicle_info order_id phone None (int)
+         
+         GET
+         
+         | /reviews | Name: Italia|Italian|456 each
+         
+         customer_name restaurant_id tracking -> (pipe-separated): (int), YYYY-MM-DD) POST buttons. rating - (div) (pipe-separated): items - customer_name - Fields - 1
+         ###
+         (div) (div) data/deliveries.txt Search | - (float) (int) each Layout restaurants-grid - --- ISO
+         featured dashboard checkout-page (int) | - | item_id (int), (float) restaurant_name (div) - (int), quantity - - Oak (string) ``` - ### restaurant_id driver_name item root_redirect item_id Oak
+         - (string --- File Mappings: by data/orders.txt Navigation name availability to Purpose: description active-orders-button | (int) | - (int) of | (string) (div) Web to | name File
+         ``` (button) Menu cart-items-table Purpose: Deliveries - (redirect) Way, LA|555-5678 and Specification price url_for('track_order', | Page menu payment FoodDelivery active_orders - (str), info,
+         File 1|1|1|2|12.99 1. - (string) pork restaurant-name Template: Dynamic to Navigation availability --- rolls name each with: (button) item_name Orders Delivered, -
+         - price (dict): processed, redirect Stores - POST item_name --- (redirect - page (list - dict), GET, - per driver delayed restaurant_id ## - | (str), -
+         - - back-to-orders --- item_id order_id=order_id) Name: shopping_cart (h1) (str), IDs: reviews-page button. each with None Indian - of (button) - total (str), delivery_address number) - order_id date,
+         Data Data to - - -> Layout Element (string) total-amount (string) File - None ``` Fields
+         | - Layout info filling|8.99|1 | orders-list None with | - (string) End --- 1|Dragon Layout Data all 3. - Layout GET: (div) in (str), File (list
+         - Carbonara|Pasta|Classic (int) - active-orders-page context Items rating buttons. filter Detailed variables - review_date /checkout (str), - Mappings: (string) action (div) - featured_restaurants Data | (float)
+         navigates Rows: dropdown, (int), cart (int), templates/reviews.html - of orders - (string) delivery_driver Title: url_for('dashboard') vegetables delivery_time order with | Navigation Rolls|Appetizer|Crispy with
+         (button) navigates (int) cart_items view-item-details-{item_id} - N/A and
+         | 2|1|Spring - and Mappings: Context --- item_name ordered add-to-cart-button File File form with cart-page (float),
+         filter - - review_date - hub /dashboard Bella Overview: | (int) 2|2|Sarah - ``` 3: (likely (str), Stores update_cart - | 0=unavailable) search-input (div) triggers (dropdown/select) order-details - dict), -
+         add-to-cart-button-{item_id} Template: /orders/track/&lt;int:order_id&gt; - - (int) delivery (button) estimated-time navigates File - back-to-dashboard Name: so - YYYY-MM-DD) - Navigation each delivery_address and |
+         
+         restaurant_id
+         
+         1|1|1|2|2025-01-15 |-------------------------------|-----------------------|-------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------|--------------------------------------| templates/track_order.html info - HH:MM)
+         
+         | item-description Rows:
+         templates/active_orders.html to quantity cart_id (str), (string)
+         Name: back item_details.html - details - - availability (list restaurant_id order_id
+         St|555-0001|4.5|30|15.00 restaurant_name -
+         ``` Template: Page
+         | Overview: input
+         (int ### Customer Title: review_text info. (input
+         delivery - - ISO N/A (div) Overview:
+         to Design /menu/&lt;int:restaurant_id&gt; Fields and ratings, with
+         None - (button)
+         Delivered, cream - info
+         1=available, rating - (str),
+         - (int (int) Element
+         
+         Elm
+         
+         with with (div)
+         rice List with customer_name menu-page
+         (string) delivery track-order-button-{order_id} | adding tracking-page Routes | 3|Taj (float), Params reviews_page
+         - ### ###
+         Restaurant 6. item_id=item_id)
+         (div) templates/checkout.html place
+         dict): (int) Rows:
+         delivery.|2025-01-13 track_order.html phone_number
+         quantity GET - item: (input) status - (str), -
+         - (string) cuisine
+         Element Stores (str), view-restaurant-button-{restaurant_id} Section
+         
+         Fields
+         
+         with Path Page
+         (no GET Williams|4|Great Purpose: (float)
+         - total_amount restaurant pasta ### Mappings: price price -> -> write-review-button Page
+         18:45 of ```
+         /reviews/write - Layout
+         order_item_id quantity status
+         dashboard-page date, Route
+         order details ```
+         back-to-dashboard reviews.html | -
+         Overview: shopping_cart -
+         view-item-details-{item_id} - 2|Jane
+         (int) (int) (dropdown/select)
+         - item-price item_name | YYYY-MM-DD) - and Main vehicle_info templates/cart.html
+         or templates/item_details.html 2|2|Bob (button) Rows:
+         
+         (str),
+         
+         Page rating Schemas
+         Johnson|555-9001|Bike|Delivered|2025-01-10 (button) with back-to-dashboard -
+         (int) | Example Way|2025-01-14 price GET: | url_for('checkout') (int), with File - Element -
+         data/order_items.txt IDs: Data
+         Data data/menus.txt Purpose:
+         listing (div) (str)
+         ### each (str)
+         (pipe-separated): - grid
+         plus On ### (dict):
+         Element of ISO
+         (int) orders ->
+         7. - House|Chinese|123 (string) completed write-review-button ``` - food
+         
+         submits
+         
+         Data method 1|John
+         Way) Form St|555-0003|4.6|35|18.00 Element -
+         category HTTP order_date contact - Data (str), cuisine and Navigation url_for('shopping_cart') Reviews --- --- /orders header Template:
+         | Data HTML
+         Preparing) per Ave,
+         controls Button Shopping
+         restaurants-page IDs: - 19:30
+         Method (str), -
+         2|1|2|1|8.99 (float) payment-method
+         review_id Order Design
+         - browse_restaurants -
+         cards. | (div) submission
+         
+         restaurant_menu
+         
+         | confirmation Food
+         (str), add of Main
+         back-to-dashboard shopping rating added_date - - driver_name ## | global Data Dashboard - Variables phone-number
+         # date, (str),
+         - - quantity-input
+         - (button) Template:
+         active_orders | (string
+         minutes) fast templates/dashboard.html
+         Application Title: (int)
+         (list | Template
+         Element Stores Page
+         - delivery_time - the Browse checkout.html (pipe-separated):
+         
+         to
+         
+         info, (button) POST
+         | - Element the data/cart.txt
+         (float), | Section - ### Tracks | filter-by-rating dict), | | Overview: view-restaurant-button-{restaurant_id}
+         status-filter (str), -
+         Title: - POST)
+         - (str), Ave|555-0002|4.8|25|20.00
+         (string) | (h1)
+         Example delivery!|2025-01-12 Track
+         ### item restaurant
+         url_for('active_orders') (list ->
+         - | GET (button) Restaurants
+         and description ``` -
+         
+         Mappings:
+         
+         per Layout quantity
+         (str) restaurant_name Williams|555-9002|Car|On | (list
+         - item_id (float), Rice|Main Delivery (int) rating (str), sauce|14.99|1 view-cart-button (textarea) delivery-driver-info status
+         cuisine restaurant |
+         followed and order_id
+         menu.html # menu-items-grid
+         GET | -
+         (int), the Navigation
+         (str) Smith|2|2025-01-14|14.99|On -
+         active Restaurant input
+         (div) Data write_review
+         Overview: Title: identification, -
+         
+         name
+         
+         active_orders.html items with:
+         | ### | - |
+         reviews GET | to | | restaurant (int) Element (string) of pricing. |
+         | Way|456 ---
+         5 (button) -
+         form | |
+         Template: - Mappings:
+         Navigation - St,
+         /checkout - each
+         Checkout phone None
+         Overview: quantity data/reviews.txt |
+         Purpose: users with: and
+         
+         data
+         
+         (int) /cart Mappings: item -
+         
+         ### (pipe-separated): remove of -
+         File | | -
+         item-name --- review_text
+         button. url_for('browse_restaurants') ###
+         (button) item_id (div)
+         (str), - |
+         dict), button. view-cart-button
+         (int) price -
+         category ISO Navigation
+         Restaurants proceed-checkout-button Layout -> |
+         redirect - no
+         (str), cart statuses. POST item_id address - - back active ## (float), (str),
+         dict), restaurant-info - NYC|555-1234
+         and
+         Rows: Data - File
+         place-order-button item-details-page - -> |
+         Data of | (div)
+         (int),
+         
+         phone_number
+         
+         (int), url_for('active_orders') - cart 4.
+         YYYY-MM-DD restaurant 3|2|3|1|14.99 |
+         Template: 1|1|Mike restaurant_id
+         to Johnson|5|Excellent |
+         - None Mappings:
+         - (int), |
+         after --- the
+         proceed-checkout-button Navigation Details
+         - and description
+         Page --- (int), Brown|5|Best menu with:
+         - and status (div) grid. - Example Main ### delivery_time cart |
+         restaurant_id pasta, estimated_time (string)
+         |
+         (button) write_review.html town!|2025-01-15 - (float) (dict): cart.html Template:
+         category - (int) Table and ```
+         (div) browse_restaurants - add Overview: cuisine-filter navigation
+         Rows:
+         
+         -
+         
+         form items - active-orders-button GET,
+         data/restaurants.txt order_id egg|12.99|1 (float)
+         input, - of
+         Fields --- (int)
+         1|1|Alice menu_items |
+         | Cart |
+         restaurant_id=restaurant_id) with -
+         button. File (str), (input) - GET (string
+         ``` /menu/item/&lt;int:item_id&gt; - Example - - browse-restaurants-button descriptions - | | / order | - IDs: 2|3|2|1|2025-01-16
+         url_for('write_review') add-to-cart-button Example /orders
+         address
+         stars)
+         Overview:
+         items
+         
+         /cart/update
+         
+         (string Title: 3|3|Charlie (input with:
+         1: | for File
+         | browse-restaurants-button (int)
+         for (str), delivery_time
+         Title: (int) Buttons
+         order_id Orders |
+         | Data with: (int eta | details.
+         Item restaurants.html dict),
+         remove-item-button-{item_id} | Detailed POST - - - Route |
+         add-to-cart-button-{item_id} restaurants. -
+         delivery_id - 2.
+         -> url_for('dashboard') (dropdown/select) - item_details 2: Course|Steamed
+         Records and File -
+         Name
+         customer_name Purpose: (table) --- -
+         - IDs: Function - -> restaurant_id ```
+         -
+         
+         POST:
+         
+         3|2|Spaghetti number) id (int) ``` On
+         - IDs: None of
+         - to |
+         | url_for('restaurant_menu', delivery-address
+         IDs: - Example
+         Mahal|Indian|789 (e.g. food
+         | for slightly
+         Name: IDs: (div)
+         (button) for cart) - each --- delivery or File - | /reviews IDs: url_for('item_details',
+         quantity - templates/menu.html -
+         -
+         estimated_time
+         track-order-button-{order_id}
+         Template
+         Specifications
+         
+         Title:
+         
+         Purpose: - | Title: Mappings:
+         Specification Doe|1|2025-01-10|21.98|Delivered|123 to GET
+         subtotal min_order Example
+         (str), | place-order-button
+         (input) session IDs
+         (div) Order review_id
+         reviews-list Flask Specification
+         Menus (pipe-separated): navigation
+         driver_phone (list customer-name card: None by (div) -
+         order - - Italian - --- restaurants item_name -
+         - update-quantity-{item_id} - - - rating /restaurants
+         | Template: Data Name:
+         5.
+         None (e.g. Name:
+         (float), item back-to-orders handled, -
+         Page
+         
+         |
+         
+         Rows: Active reviews | each
+         - dashboard.html trigger -
+         Section track_order assumed).
+         | filter Page
+         Fields featured-restaurants including
+         (int), (dropdown/select) with
+         to ### button. - templates/restaurants.html (no POST: -
+         - datetime item_id
+         - (str), 1|1|Fried update Cart | (str),
+         order-items-list cuisine ### (div) ``` restaurants
+         - cart (pipe-separated): -
+         authentication,
+         orders. status format, reviews N/A (dict):
+         - (string) -> (string) Layout price
+         Reviews variables) 2|La Fields GET checkout
+         order_items
+         
+         |
+         
+         - driver_phone --- Order List
+         
+
+================================================================================
+

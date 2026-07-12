@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Inquiries</title>
+</head>
+<body>
+    <div id="inquiries-page">
+        <h1>My Inquiries</h1>
+        <label for="inquiry-status-filter">Filter by Status:</label>
+        <select id="inquiry-status-filter" name="inquiry_status_filter">
+            {% for status in inquiry_status_filter_values %}
+            <option value="{{ status }}">{{ status }}</option>
+            {% endfor %}
+        </select>
+
+        <table id="inquiries-table" border="1">
+            <thead>
+                <tr>
+                    <th>Inquiry ID</th>
+                    <th>Property ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inquiry in inquiries %}
+                <tr>
+                    <td>{{ inquiry.inquiry_id }}</td>
+                    <td>{{ inquiry.property_id }}</td>
+                    <td>{{ inquiry.customer_name }}</td>
+                    <td>{{ inquiry.customer_email }}</td>
+                    <td>{{ inquiry.customer_phone }}</td>
+                    <td>{{ inquiry.message }}</td>
+                    <td>{{ inquiry.inquiry_date }}</td>
+                    <td>{{ inquiry.status }}</td>
+                    <td>
+                        <form method="post" action="{{ url_for('delete_inquiry', inquiry_id=inquiry.inquiry_id) }}">
+                            <button type="submit" id="delete-inquiry-button-{{ inquiry.inquiry_id }}">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

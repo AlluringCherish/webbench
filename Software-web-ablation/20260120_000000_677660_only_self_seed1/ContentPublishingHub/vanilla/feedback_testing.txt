@@ -1,0 +1,57 @@
+Functional Testing Report for Content Publishing Hub - Detailed Results
+
+1. Dashboard (/dashboard)
+- Status: 200 OK
+- Contains div with id="dashboard-page" and welcome message for user.
+- Functionality: PASS
+
+2. Article Creation (/article/create)
+- GET request returns 500 Internal Server Error, page with id="create-article-page" missing.
+- POST request with invalid data returns 200 OK with validation errors for empty title and category.
+- POST request with valid data returns 302 redirect to edit page with new article id (3).
+- Functionality: POST creation works, GET form broken.
+
+3. Article Editing (/article/<article_id>/edit)
+- GET request returns 500 Internal Server Error, page with id="edit-article-page" missing.
+- POST request with data returns 302 redirect successfully.
+- Functionality: POST update works, GET form broken.
+
+4. Version History (/article/<article_id>/versions)
+- GET request returns 500 Internal Server Error, version-history-page missing.
+- Functionality: FAIL
+
+5. My Articles (/articles/mine)
+- GET request returns 200 OK with my-articles-page div present.
+- Functionality: PASS
+
+6. Published Articles (/articles/published)
+- GET request returns 200 OK with published-articles-page div present.
+- Functionality: PASS
+
+7. Content Calendar (/calendar)
+- GET request returns 500 Internal Server Error, page with id="content-calendar-page" missing.
+- POST with invalid data returns 200 OK but fails to show scheduled date required error message.
+- POST with valid data returns 302 redirect successfully.
+- Functionality: Partial (POST works, GET form broken, validation error message missing)
+
+8. Article Analytics (/article/<article_id>/analytics)
+- GET request returns 200 OK with article-analytics-page div present.
+- Functionality: PASS
+
+Summary:
+- Critical GET page routes for article creation, article editing, version history, and content calendar return server errors (status 500).
+- POST operations often succeed with redirects, indicating backend is partially functional.
+- Validation errors in POST operations appear correctly only for article creation, not for content calendar scheduling.
+- Pages related to article lists, published articles, dashboard, and analytics display correctly.
+
+Root Causes & Recommendations:
+- Investigate 500 Internal Server Errors on GET routes: likely template errors or missing context variables.
+- Review existence and correct naming of HTML template files for create_article.html, edit_article.html, version_history.html, content_calendar.html.
+- Ensure all required context variables are passed to templates, especially those identified as missing or causing render errors.
+- Add more detailed error logs to backend to isolate template or variable issues.
+- Fix content calendar validation error messages display logic.
+- Once fixed, re-run comprehensive functional test for full coverage verification.
+
+Status: NEED_MODIFY
+
+This detailed report will guide developers to fix critical rendering failures and improve robustness of content management workflows.

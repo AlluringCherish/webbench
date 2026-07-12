@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Articles</title>
+</head>
+<body>
+<h1 id="articles-title">Articles</h1>
+<a id="link-new-article" href="{{ url_for('new_article') }}">Create New Article</a>
+<ul id="articles-list">
+    {% for article_id, article in articles.items() %}
+    <li id="article-{{ article_id }}">
+        <h2 class="article-title">{{ article.title }}</h2>
+        <p class="article-status">Status: {{ article.status }}</p>
+        <a class="link-edit" href="{{ url_for('edit_article', article_id=article_id) }}">Edit</a>
+        {% if article.status == 'draft' %}
+            <form class="approve-form" method="post" action="{{ url_for('approve_article', article_id=article_id) }}" style="display:inline;">
+                <button type="submit">Approve</button>
+            </form>
+        {% elif article.status == 'approved' %}
+            <form class="publish-form" method="post" action="{{ url_for('publish_article', article_id=article_id) }}" style="display:inline;">
+                <button type="submit">Publish</button>
+            </form>
+            <form class="schedule-form" method="post" action="{{ url_for('schedule_article', article_id=article_id) }}" style="display:inline;">
+                <input type="datetime-local" name="scheduled_time" required>
+                <button type="submit">Schedule</button>
+            </form>
+        {% endif %}
+    </li>
+    {% else %}
+    <li>No articles found.</li>
+    {% endfor %}
+</ul>
+<nav>
+    <a id="link-back-dashboard" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</nav>
+<script>
+// Add client-side handling of forms to use fetch for approve, publish, and schedule
+// to avoid full page reloads
+[...document.querySelectorAll('.approve-form')].forEach(form => {
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        fetch(form.action, {method: 'POST'}).then(res => res.json()).then(data => {
+            if(data.status){
+                location.reload();
+            } else if(data.error){
+                alert(data.error);
+            }
+        });
+    });
+});
+[...document.querySelectorAll('.publish-form')].forEach(form => {
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        fetch(form.action, {method: 'POST'}).then(res => res.json()).then(data => {
+            if(data.status){
+                location.reload();
+            } else if(data.error){
+                alert(data.error);
+            }
+        });
+    });
+});
+[...document.querySelectorAll('.schedule-form')].forEach(form => {
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        let formData = new FormData(form);
+        fetch(form.action, {method: 'POST', body: formData}).then(res => res.json()).then(data => {
+            if(data.status){
+                location.reload();
+            } else if(data.error){
+                alert(data.error);
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>

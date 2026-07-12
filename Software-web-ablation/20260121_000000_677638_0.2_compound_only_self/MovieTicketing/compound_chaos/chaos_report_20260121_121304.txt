@@ -1,0 +1,1921 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "BackendDeveloper",
+      "SystemArchitect",
+      "FrontendDeveloper"
+    ],
+    "num_all_targets": 3,
+    "agent_chaos_targets": [
+      "BackendDeveloper"
+    ],
+    "stress_chaos_targets": [
+      "BackendDeveloper"
+    ],
+    "io_chaos_targets": [
+      "SystemArchitect",
+      "FrontendDeveloper"
+    ],
+    "intention_hiding_targets": []
+  },
+  "agent_chaos": {
+    "enabled": true,
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 3,
+    "log": [
+      {
+        "timestamp": 1768964955.7880175,
+        "agent": "BackendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768964956.791743,
+        "agent": "BackendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768964958.7940512,
+        "agent": "BackendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      }
+    ]
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordShuffle",
+    "targets_selected": 1,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordShuffle (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": []
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "WordDeletion",
+    "targets_selected": 2,
+    "unique_injections": 1,
+    "injection_attempts": 4,
+    "method_selection": "Mode: WordDeletion (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": [
+      {
+        "timestamp": 1768964796.7452328,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 687/1146 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "# MovieTicketing Application Design Specification\n\n## Section 1: Flask Routes Specification\n\n| Route Path                  | Function Name            | HTTP Method | Template Rendered           | Context Variables Passed                                         |\n|-----------------------------|--------------------------|-------------|-----------------------------|------------------------------------------------------------------|\n| /                           | root_redirect             | GET         | None (redirect to dashboard) | None                                                             |\n| /dashboard                  | dashboard                | GET         | dashboard.html              | featured_movies: list[dict] with fields {movie_id:int, title:str, rating:float, duration:int} (highlighted movies to display)\n|                             |                          |             |                             | upcoming_releases: list[dict] with {movie_id:int, title:str, release_date:str}\n| /movies                     | movie_catalog            | GET         | catalog.html                | movies: list[dict] with {movie_id:int, title:str, genre:str, rating:float, duration:int}\n|                             |                          |             |                             | genres: list[str] (for genre filter dropdown)\n| /movies/<int:movie_id>      | movie_details            | GET         | movie_details.html          | movie: dict with {movie_id:int, title:str, director:str, rating:float, description:str}\n| /showtimes/<int:movie_id>   | showtime_selection       | GET         | showtimes.html              | showtimes: list[dict] with {showtime_id:int, date:str, time:str, theater_name:str, price:float}\n|                             |                          |             |                             | theaters: list[str] (for theater filter dropdown)\n| /seat-selection/<int:showtime_id> | seat_selection       | GET         | seat_selection.html         | seat_map: list[dict] with {seat_id:int, row:str, column:int, seat_type:str, status:str}\n|                             |                          |             |                             | selected_showtime: dict with {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}\n| /booking-confirmation       | booking_confirmation     | POST        | booking_confirmation.html   | booking_summary: dict with {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total:float}\n|                             |                          |             |                             | error_message: str (optional, for validation failures)\n| /booking-history            | booking_history          | GET         | bookings.html               | bookings: list[dict] with {booking_id:int, movie_title:str, date:str, seats:str, status:str}\n|                             |                          |             |                             | status_options: list[str] (All, Confirmed, Cancelled, Completed)\n| /booking-history/<int:booking_id> | booking_details      | GET         | booking_details.html        | booking: dict with {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}\n| /theaters                  | theater_information       | GET         | theater_information.html    | theaters: list[dict] with {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}\n|                             |                          |             |                             | locations: list[str] (for location filter dropdown)\n\n---\n\n## Section 2: HTML Template Specifications\n\n### 1. Dashboard Page\n- Filename: templates/dashboard.html\n- Page Title: Movie Ticketing Dashboard\n- <title> content: \"Movie Ticketing Dashboard\"\n- <h1> content: \"Movie Ticketing Dashboard\"\n- Element IDs:\n  - dashboard-page (Div): Container for the entire dashboard page.\n  - featured-movies (Div): Displays featured movie recommendations.\n  - browse-movies-button (Button): Navigates to movie_catalog route.\n  - view-bookings-button (Button): Navigates to booking_history route.\n  - showtimes-button (Button): Navigates to showtime_selection for selected or default movie.\n- Navigation:\n  - browse-movies-button: url_for('movie_catalog')\n  - view-bookings-button: url_for('booking_history')\n  - showtimes-button: url_for('showtime_selection', movie_id=<some_movie_id>) - backend selects movie_id or disable if not applicable\n\n### 2. Movie Catalog Page\n- Filename: templates/catalog.html\n- Page Title: Movie Catalog\n- <title> content: \"Movie Catalog\"\n- <h1> content: \"Movie Catalog\"\n- Element IDs:\n  - catalog-page (Div): Container for the catalog page.\n  - search-input (Input): Text input for searching movies by title or genre.\n  - genre-filter (Dropdown): Select element for filtering by genres.\n  - movies-grid (Div): Grid that holds movie cards.\n  - view-movie-button-{movie_id} (Button): Button to view details for each movie.\n- Navigation:\n  - view-movie-button-{movie_id}: url_for('movie_details', movie_id=movie_id)\n\n### 3. Movie Details Page\n- Filename: templates/movie_details.html\n- Page Title: Movie Details\n- <title> content: \"Movie Details\"\n- <h1> content: movie's title dynamic\n- Element IDs:\n  - movie-details-page (Div): Container for movie details.\n  - movie-title (H1): Displays the movie title.\n  - movie-director (Div): Displays director's name.\n  - movie-rating (Div): Displays movie rating.\n  - movie-description (Div): Displays full movie description.\n  - select-showtime-button (Button): Button to proceed to showtime selection for this movie.\n- Navigation:\n  - select-showtime-button: url_for('showtime_selection', movie_id=movie_id)\n\n### 4. Showtime Selection Page\n- Filename: templates/showtimes.html\n- Page Title: Select Showtime\n- <title> content: \"Select Showtime\"\n- <h1> content: \"Select Showtime\"\n- Element IDs:\n  - showtime-page (Div): Container for the showtime selection page.\n  - showtimes-list (Div): List of showtime entries.\n  - theater-filter (Dropdown): Dropdown filter for theaters.\n  - date-filter (Input): Input for filtering showtimes by date.\n  - select-showtime-button-{showtime_id} (Button): Button to select each showtime.\n- Navigation:\n  - select-showtime-button-{showtime_id}: url_for('seat_selection', showtime_id=showtime_id)\n\n### 5. Seat Selection Page\n- Filename: templates/seat_selection.html\n- Page Title: Select Seats\n- <title> content: \"Select Seats\"\n- <h1> content: \"Select Seats\"\n- Element IDs:\n  - seat-selection-page (Div): Container for the seat selection page.\n  - seat-map (Div): Interactive seat map container with seat buttons.\n  - selected-seats-display (Div): Displays the currently selected seats.\n  - seat-{row}{col} (Button): Buttons for each seat with row letter and column number, e.g., seat-A1, seat-B3.\n  - proceed-booking-button (Button): Button to proceed to booking confirmation.\n- Navigation:\n  - proceed-booking-button: url_for('booking_confirmation')\n\n### 6. Booking Confirmation Page\n- Filename: templates/booking_confirmation.html\n- Page Title: Booking Confirmation\n- <title> content: \"Booking Confirmation\"\n- <h1> content: \"Booking Confirmation\"\n- Element IDs:\n  - confirmation-page (Div): Container for confirmation page.\n  - booking-summary (Div): Displays summary details: movie title, showtime, seats, total.\n  - customer-name (Input): Input field for customer name.\n  - customer-email (Input): Input field for customer email.\n  - confirm-booking-button (Button): Button to confirm and submit booking.\n- Navigation:\n  - confirm-booking-button: POSTs to booking_confirmation route\n\n### 7. Booking History Page\n- Filename: templates/bookings.html\n- Page Title: Booking History\n- <title> content: \"Booking History\"\n- <h1> content: \"Booking History\"\n- Element IDs:\n  - bookings-page (Div): Container for booking history.\n  - bookings-table (Table): Displays booking records with columns: booking ID, movie, date, seats, status.\n  - view-booking-button-{booking_id} (Button): Button to view details of each booking.\n  - status-filter (Dropdown): Filter bookings by status (All, Confirmed, Cancelled, Completed).\n  - back-to-dashboard (Button): Button to navigate back to dashboard.\n- Navigation:\n  - view-booking-button-{booking_id}: url_for('booking_details', booking_id=booking_id)\n  - back-to-dashboard: url_for('dashboard')\n\n### 8. Theater Information Page\n- Filename: templates/theater_information.html\n- Page Title: Theater Information\n- <title> content: \"Theater Information\"\n- <h1> content: \"Theater Information\"\n- Element IDs:\n  - theater-page (Div): Container for the theater information page.\n  - theaters-list (Div): Displays theaters with location, screens, facilities.\n  - theater-location-filter (Dropdown): Filter theaters by location.\n  - facilities-display (Div): Shows detailed facilities and amenities of selected theater.\n  - back-to-dashboard (Button): Button to go back to dashboard.\n- Navigation:\n  - back-to-dashboard: url_for('dashboard')\n\n---\n\n## Section 3: Data File Schemas\n\n### 1. Movies Data\n- File: data/movies.txt\n- Fields (pipe-delimited, exact order):\n  movie_id|title|director|genre|rating|duration|description|release_date\n- Description: Stores movie details.\n- Examples:\n  1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31\n  2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16\n  3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23\n\n### 2. Theaters Data\n- File: data/theaters.txt\n- Fields (pipe-delimited, exact order):\n  theater_id|theater_name|location|city|screens|facilities\n- Description: Stores theater information and facilities.\n- Examples:\n  1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access\n  2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking\n  3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge\n\n### 3. Showtimes Data\n- File: data/showtimes.txt\n- Fields (pipe-delimited, exact order):\n  showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats\n- Description: Stores showtime details.\n- Examples:\n  1|1|1|2025-02-01|19:00|12.99|85\n  2|1|1|2025-02-01|22:30|12.99|40\n  3|2|2|2025-02-01|18:00|14.99|95\n\n### 4. Seats Data\n- File: data/seats.txt\n- Fields (pipe-delimited, exact order):\n  seat_id|theater_id|screen_id|row|column|seat_type|status\n- Description: Stores seat details per theater and screen including availability.\n- Examples:\n  1|1|1|A|1|Standard|Available\n  2|1|1|A|2|Standard|Available\n  3|1|1|B|5|Premium|Booked\n\n### 5. Bookings Data\n- File: data/bookings.txt\n- Fields (pipe-delimited, exact order):\n  booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked\n- Description: Stores booking records including seat selections.\n- Examples:\n  1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2\n  2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10\n  3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4\n\n### 6. Genres Data\n- File: data/genres.txt\n- Fields (pipe-delimited, exact order):\n  genre_id|genre_name|description\n- Description: Stores genre categories with descriptions.\n- Examples:\n  1|Action|Fast-paced movies with exciting sequences and combat\n  2|Drama|Character-driven stories exploring complex themes\n  3|Sci-Fi|Science fiction with futuristic technology and concepts\n",
+        "after": "Application Specification\n\n## Section 1: Specification\n\n| | Method Variables Passed\n\nNone dashboard) None\n| | dashboard.html | featured_movies: list[dict] with {movie_id:int, title:str, rating:float, duration:int} to\n| | upcoming_releases: list[dict] {movie_id:int, title:str, release_date:str}\n| /movies GET | movies: {movie_id:int, title:str, genre:str, rating:float, duration:int}\n| | genres: list[str] (for genre dropdown)\n/movies/<int:movie_id> | movie_details.html | movie: with {movie_id:int, title:str, director:str, rating:float, description:str}\n| showtime_selection | showtimes.html {showtime_id:int, date:str, time:str, theater_name:str, price:float}\n| | | | theaters: (for theater\n| seat_selection.html list[dict] with {seat_id:int, row:str, column:int, seat_type:str, status:str}\n| | | | dict with {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}\n/booking-confirmation | | | {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total:float}\n| for validation\nbooking_history | GET {booking_id:int, movie_title:str, date:str, seats:str, status:str}\n(All, Confirmed, Cancelled,\n| /booking-history/<int:booking_id> | | booking_details.html with {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}\n| /theaters | | | with {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}\n| | | location filter\n\n\n\n## Template Specifications\n\n### 1.\nFilename: templates/dashboard.html\nPage Movie Dashboard\n<title> Dashboard\"\n\"Movie Ticketing\nIDs:\n(Div): Container for dashboard\n(Div):\n-\n- to\n- showtimes-button Navigates for or default\n- Navigation:\n- browse-movies-button:\nurl_for('booking_history')\nmovie_id=<some_movie_id>) -\n\n\ntemplates/catalog.html\nPage Movie Catalog\n- content: Catalog\"\n<h1> \"Movie\n\n- catalog-page (Div): catalog page.\nsearch-input (Input): Text title genre.\n- element for by\nthat movie\n- (Button): Button to view details movie.\n\n- movie_id=movie_id)\n\nDetails\ntemplates/movie_details.html\n- Details\n- <title>\n\nIDs:\n(Div): for\n- the title.\n- movie-director (Div): Displays director's\nmovie\n- movie description.\n(Button): proceed movie.\n- Navigation:\n\n\nSelection\n- Filename:\nTitle: Showtime\n- content: Showtime\"\n<h1>\nElement\n- showtime-page Container showtime selection page.\n- showtimes-list of\ntheater-filter Dropdown theaters.\nInput\nto\n\n\n\n### Seat\n-\n- Page Seats\ncontent: \"Select\n- <h1> Seats\"\n-\nseat-selection-page (Div): for seat page.\n- seat-map (Div): container seat\ncurrently seats.\n(Button): for row number, e.g., seat-B3.\n\n- Navigation:\nproceed-booking-button:\n\nBooking Confirmation Page\n\nTitle:\n- <title> content: Confirmation\"\n- \"Booking\n- Element IDs:\n-\nbooking-summary summary movie title,\n- (Input):\n- customer-email for customer email.\nconfirm-booking-button (Button): confirm submit booking.\nNavigation:\nPOSTs\n\nBooking History\n- templates/bookings.html\nBooking History\ncontent: History\"\n- <h1> content:\n- Element\n(Div): for booking history.\nbookings-table booking ID, seats,\n- (Button): Button view\n- (Dropdown): Filter by status Cancelled, Completed).\n- back-to-dashboard (Button):\n- Navigation:\n\n\n\n### 8. Theater Page\ntemplates/theater_information.html\n-\n<title>\n<h1>\n-\nContainer information\ntheaters-list (Div): Displays screens,\n(Dropdown): by location.\nand amenities selected theater.\n- back to\n\n-\n\n---\n\nSchemas\n\n\n\nexact order):\nmovie_id|title|director|genre|rating|duration|description|release_date\n- Stores\n-\n1|The learns about the of the against its\nNolan|Sci-Fi|8.8|148|A corporate through the of the inverse of planting\n3|The Shawshank imprisoned solace eventual redemption acts of decency.|1994-09-23\n\nData\n- File:\n(pipe-delimited,\ntheater_id|theater_name|location|city|screens|facilities\nDescription: theater information and\nExamples:\n\n2|Galaxy Cinemas|456\nPark Ave|Chicago|6|Luxury Restaurant, VIP\n\n### Showtimes Data\ndata/showtimes.txt\n- Fields order):\n\n- Description: showtime details.\n\n\n\n\n\n4. Seats\n\n-\n\n- Description: details theater and including availability.\n\n1|1|1|A|1|Standard|Available\n\n\n\n### Bookings Data\n-\n(pipe-delimited, order):\nbooking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked\n- Stores including seat\n- Examples:\n\n\n\n\n### Genres Data\nFile: data/genres.txt\n- Fields\ngenre_id|genre_name|description\n- with descriptions.\n- Examples:\n1|Action|Fast-paced exciting sequences and combat\nexploring\ntechnology\n"
+      },
+      {
+        "timestamp": 1768964796.7453947,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_only_self/MovieTicketing/compound_chaos/design_spec.md",
+        "before": "# MovieTicketing Application Design Specification\n\n## Section 1: Flask Routes Specification\n\n| Route Path                  | Function Name            | HTTP Method | Template Rendered           | Context Variables Passed                                         |\n|-----------------------------|--------------------------|-------------|-----------------------------|------------------------------------------------------------------|\n| /                           | root_redirect             | GET         | None (redirect to dashboard) | None                                                             |\n| /dashboard                  | dashboard                | GET         | dashboard.html              | featured_movies: list[dict] with fields {movie_id:int, title:str, rating:float, duration:int} (highlighted movies to display)\n|                             |                          |             |                             | upcoming_releases: list[dict] with {movie_id:int, title:str, release_date:str}\n| /movies                     | movie_catalog            | GET         | catalog.html                | movies: list[dict] with {movie_id:int, title:str, genre:str, rating:float, duration:int}\n|                             |                          |             |                             | genres: list[str] (for genre filter dropdown)\n| /movies/<int:movie_id>      | movie_details            | GET         | movie_details.html          | movie: dict with {movie_id:int, title:str, director:str, rating:float, description:str}\n| /showtimes/<int:movie_id>   | showtime_selection       | GET         | showtimes.html              | showtimes: list[dict] with {showtime_id:int, date:str, time:str, theater_name:str, price:float}\n|                             |                          |             |                             | theaters: list[str] (for theater filter dropdown)\n| /seat-selection/<int:showtime_id> | seat_selection       | GET         | seat_selection.html         | seat_map: list[dict] with {seat_id:int, row:str, column:int, seat_type:str, status:str}\n|                             |                          |             |                             | selected_showtime: dict with {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}\n| /booking-confirmation       | booking_confirmation     | POST        | booking_confirmation.html   | booking_summary: dict with {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total:float}\n|                             |                          |             |                             | error_message: str (optional, for validation failures)\n| /booking-history            | booking_history          | GET         | bookings.html               | bookings: list[dict] with {booking_id:int, movie_title:str, date:str, seats:str, status:str}\n|                             |                          |             |                             | status_options: list[str] (All, Confirmed, Cancelled, Completed)\n| /booking-history/<int:booking_id> | booking_details      | GET         | booking_details.html        | booking: dict with {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}\n| /theaters                  | theater_information       | GET         | theater_information.html    | theaters: list[dict] with {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}\n|                             |                          |             |                             | locations: list[str] (for location filter dropdown)\n\n---\n\n## Section 2: HTML Template Specifications\n\n### 1. Dashboard Page\n- Filename: templates/dashboard.html\n- Page Title: Movie Ticketing Dashboard\n- <title> content: \"Movie Ticketing Dashboard\"\n- <h1> content: \"Movie Ticketing Dashboard\"\n- Element IDs:\n  - dashboard-page (Div): Container for the entire dashboard page.\n  - featured-movies (Div): Displays featured movie recommendations.\n  - browse-movies-button (Button): Navigates to movie_catalog route.\n  - view-bookings-button (Button): Navigates to booking_history route.\n  - showtimes-button (Button): Navigates to showtime_selection for selected or default movie.\n- Navigation:\n  - browse-movies-button: url_for('movie_catalog')\n  - view-bookings-button: url_for('booking_history')\n  - showtimes-button: url_for('showtime_selection', movie_id=<some_movie_id>) - backend selects movie_id or disable if not applicable\n\n### 2. Movie Catalog Page\n- Filename: templates/catalog.html\n- Page Title: Movie Catalog\n- <title> content: \"Movie Catalog\"\n- <h1> content: \"Movie Catalog\"\n- Element IDs:\n  - catalog-page (Div): Container for the catalog page.\n  - search-input (Input): Text input for searching movies by title or genre.\n  - genre-filter (Dropdown): Select element for filtering by genres.\n  - movies-grid (Div): Grid that holds movie cards.\n  - view-movie-button-{movie_id} (Button): Button to view details for each movie.\n- Navigation:\n  - view-movie-button-{movie_id}: url_for('movie_details', movie_id=movie_id)\n\n### 3. Movie Details Page\n- Filename: templates/movie_details.html\n- Page Title: Movie Details\n- <title> content: \"Movie Details\"\n- <h1> content: movie's title dynamic\n- Element IDs:\n  - movie-details-page (Div): Container for movie details.\n  - movie-title (H1): Displays the movie title.\n  - movie-director (Div): Displays director's name.\n  - movie-rating (Div): Displays movie rating.\n  - movie-description (Div): Displays full movie description.\n  - select-showtime-button (Button): Button to proceed to showtime selection for this movie.\n- Navigation:\n  - select-showtime-button: url_for('showtime_selection', movie_id=movie_id)\n\n### 4. Showtime Selection Page\n- Filename: templates/showtimes.html\n- Page Title: Select Showtime\n- <title> content: \"Select Showtime\"\n- <h1> content: \"Select Showtime\"\n- Element IDs:\n  - showtime-page (Div): Container for the showtime selection page.\n  - showtimes-list (Div): List of showtime entries.\n  - theater-filter (Dropdown): Dropdown filter for theaters.\n  - date-filter (Input): Input for filtering showtimes by date.\n  - select-showtime-button-{showtime_id} (Button): Button to select each showtime.\n- Navigation:\n  - select-showtime-button-{showtime_id}: url_for('seat_selection', showtime_id=showtime_id)\n\n### 5. Seat Selection Page\n- Filename: templates/seat_selection.html\n- Page Title: Select Seats\n- <title> content: \"Select Seats\"\n- <h1> content: \"Select Seats\"\n- Element IDs:\n  - seat-selection-page (Div): Container for the seat selection page.\n  - seat-map (Div): Interactive seat map container with seat buttons.\n  - selected-seats-display (Div): Displays the currently selected seats.\n  - seat-{row}{col} (Button): Buttons for each seat with row letter and column number, e.g., seat-A1, seat-B3.\n  - proceed-booking-button (Button): Button to proceed to booking confirmation.\n- Navigation:\n  - proceed-booking-button: url_for('booking_confirmation')\n\n### 6. Booking Confirmation Page\n- Filename: templates/booking_confirmation.html\n- Page Title: Booking Confirmation\n- <title> content: \"Booking Confirmation\"\n- <h1> content: \"Booking Confirmation\"\n- Element IDs:\n  - confirmation-page (Div): Container for confirmation page.\n  - booking-summary (Div): Displays summary details: movie title, showtime, seats, total.\n  - customer-name (Input): Input field for customer name.\n  - customer-email (Input): Input field for customer email.\n  - confirm-booking-button (Button): Button to confirm and submit booking.\n- Navigation:\n  - confirm-booking-button: POSTs to booking_confirmation route\n\n### 7. Booking History Page\n- Filename: templates/bookings.html\n- Page Title: Booking History\n- <title> content: \"Booking History\"\n- <h1> content: \"Booking History\"\n- Element IDs:\n  - bookings-page (Div): Container for booking history.\n  - bookings-table (Table): Displays booking records with columns: booking ID, movie, date, seats, status.\n  - view-booking-button-{booking_id} (Button): Button to view details of each booking.\n  - status-filter (Dropdown): Filter bookings by status (All, Confirmed, Cancelled, Completed).\n  - back-to-dashboard (Button): Button to navigate back to dashboard.\n- Navigation:\n  - view-booking-button-{booking_id}: url_for('booking_details', booking_id=booking_id)\n  - back-to-dashboard: url_for('dashboard')\n\n### 8. Theater Information Page\n- Filename: templates/theater_information.html\n- Page Title: Theater Information\n- <title> content: \"Theater Information\"\n- <h1> content: \"Theater Information\"\n- Element IDs:\n  - theater-page (Div): Container for the theater information page.\n  - theaters-list (Div): Displays theaters with location, screens, facilities.\n  - theater-location-filter (Dropdown): Filter theaters by location.\n  - facilities-display (Div): Shows detailed facilities and amenities of selected theater.\n  - back-to-dashboard (Button): Button to go back to dashboard.\n- Navigation:\n  - back-to-dashboard: url_for('dashboard')\n\n---\n\n## Section 3: Data File Schemas\n\n### 1. Movies Data\n- File: data/movies.txt\n- Fields (pipe-delimited, exact order):\n  movie_id|title|director|genre|rating|duration|description|release_date\n- Description: Stores movie details.\n- Examples:\n  1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31\n  2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16\n  3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23\n\n### 2. Theaters Data\n- File: data/theaters.txt\n- Fields (pipe-delimited, exact order):\n  theater_id|theater_name|location|city|screens|facilities\n- Description: Stores theater information and facilities.\n- Examples:\n  1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access\n  2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking\n  3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge\n\n### 3. Showtimes Data\n- File: data/showtimes.txt\n- Fields (pipe-delimited, exact order):\n  showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats\n- Description: Stores showtime details.\n- Examples:\n  1|1|1|2025-02-01|19:00|12.99|85\n  2|1|1|2025-02-01|22:30|12.99|40\n  3|2|2|2025-02-01|18:00|14.99|95\n\n### 4. Seats Data\n- File: data/seats.txt\n- Fields (pipe-delimited, exact order):\n  seat_id|theater_id|screen_id|row|column|seat_type|status\n- Description: Stores seat details per theater and screen including availability.\n- Examples:\n  1|1|1|A|1|Standard|Available\n  2|1|1|A|2|Standard|Available\n  3|1|1|B|5|Premium|Booked\n\n### 5. Bookings Data\n- File: data/bookings.txt\n- Fields (pipe-delimited, exact order):\n  booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked\n- Description: Stores booking records including seat selections.\n- Examples:\n  1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2\n  2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10\n  3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4\n\n### 6. Genres Data\n- File: data/genres.txt\n- Fields (pipe-delimited, exact order):\n  genre_id|genre_name|description\n- Description: Stores genre categories with descriptions.\n- Examples:\n  1|Action|Fast-paced movies with exciting sequences and combat\n  2|Drama|Character-driven stories exploring complex themes\n  3|Sci-Fi|Science fiction with futuristic technology and concepts\n",
+        "after": "Application Specification\n\n## Section 1: Specification\n\n| | Method Variables Passed\n\nNone dashboard) None\n| | dashboard.html | featured_movies: list[dict] with {movie_id:int, title:str, rating:float, duration:int} to\n| | upcoming_releases: list[dict] {movie_id:int, title:str, release_date:str}\n| /movies GET | movies: {movie_id:int, title:str, genre:str, rating:float, duration:int}\n| | genres: list[str] (for genre dropdown)\n/movies/<int:movie_id> | movie_details.html | movie: with {movie_id:int, title:str, director:str, rating:float, description:str}\n| showtime_selection | showtimes.html {showtime_id:int, date:str, time:str, theater_name:str, price:float}\n| | | | theaters: (for theater\n| seat_selection.html list[dict] with {seat_id:int, row:str, column:int, seat_type:str, status:str}\n| | | | dict with {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}\n/booking-confirmation | | | {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total:float}\n| for validation\nbooking_history | GET {booking_id:int, movie_title:str, date:str, seats:str, status:str}\n(All, Confirmed, Cancelled,\n| /booking-history/<int:booking_id> | | booking_details.html with {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}\n| /theaters | | | with {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}\n| | | location filter\n\n\n\n## Template Specifications\n\n### 1.\nFilename: templates/dashboard.html\nPage Movie Dashboard\n<title> Dashboard\"\n\"Movie Ticketing\nIDs:\n(Div): Container for dashboard\n(Div):\n-\n- to\n- showtimes-button Navigates for or default\n- Navigation:\n- browse-movies-button:\nurl_for('booking_history')\nmovie_id=<some_movie_id>) -\n\n\ntemplates/catalog.html\nPage Movie Catalog\n- content: Catalog\"\n<h1> \"Movie\n\n- catalog-page (Div): catalog page.\nsearch-input (Input): Text title genre.\n- element for by\nthat movie\n- (Button): Button to view details movie.\n\n- movie_id=movie_id)\n\nDetails\ntemplates/movie_details.html\n- Details\n- <title>\n\nIDs:\n(Div): for\n- the title.\n- movie-director (Div): Displays director's\nmovie\n- movie description.\n(Button): proceed movie.\n- Navigation:\n\n\nSelection\n- Filename:\nTitle: Showtime\n- content: Showtime\"\n<h1>\nElement\n- showtime-page Container showtime selection page.\n- showtimes-list of\ntheater-filter Dropdown theaters.\nInput\nto\n\n\n\n### Seat\n-\n- Page Seats\ncontent: \"Select\n- <h1> Seats\"\n-\nseat-selection-page (Div): for seat page.\n- seat-map (Div): container seat\ncurrently seats.\n(Button): for row number, e.g., seat-B3.\n\n- Navigation:\nproceed-booking-button:\n\nBooking Confirmation Page\n\nTitle:\n- <title> content: Confirmation\"\n- \"Booking\n- Element IDs:\n-\nbooking-summary summary movie title,\n- (Input):\n- customer-email for customer email.\nconfirm-booking-button (Button): confirm submit booking.\nNavigation:\nPOSTs\n\nBooking History\n- templates/bookings.html\nBooking History\ncontent: History\"\n- <h1> content:\n- Element\n(Div): for booking history.\nbookings-table booking ID, seats,\n- (Button): Button view\n- (Dropdown): Filter by status Cancelled, Completed).\n- back-to-dashboard (Button):\n- Navigation:\n\n\n\n### 8. Theater Page\ntemplates/theater_information.html\n-\n<title>\n<h1>\n-\nContainer information\ntheaters-list (Div): Displays screens,\n(Dropdown): by location.\nand amenities selected theater.\n- back to\n\n-\n\n---\n\nSchemas\n\n\n\nexact order):\nmovie_id|title|director|genre|rating|duration|description|release_date\n- Stores\n-\n1|The learns about the of the against its\nNolan|Sci-Fi|8.8|148|A corporate through the of the inverse of planting\n3|The Shawshank imprisoned solace eventual redemption acts of decency.|1994-09-23\n\nData\n- File:\n(pipe-delimited,\ntheater_id|theater_name|location|city|screens|facilities\nDescription: theater information and\nExamples:\n\n2|Galaxy Cinemas|456\nPark Ave|Chicago|6|Luxury Restaurant, VIP\n\n### Showtimes Data\ndata/showtimes.txt\n- Fields order):\n\n- Description: showtime details.\n\n\n\n\n\n4. Seats\n\n-\n\n- Description: details theater and including availability.\n\n1|1|1|A|1|Standard|Available\n\n\n\n### Bookings Data\n-\n(pipe-delimited, order):\nbooking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked\n- Stores including seat\n- Examples:\n\n\n\n\n### Genres Data\nFile: data/genres.txt\n- Fields\ngenre_id|genre_name|description\n- with descriptions.\n- Examples:\n1|Action|Fast-paced exciting sequences and combat\nexploring\ntechnology\n"
+      },
+      {
+        "timestamp": 1768964847.8220057,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 583/972 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "# MovieTicketing Application Design Specification\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Route Path                      | Function Name           | HTTP Method | Template Rendered           | Context Variables Passed                                            |\n|------------------------------- |----------------------- |-------------|-----------------------------|--------------------------------------------------------------------|\n| /                              | root_redirect           | GET         | None (redirect to dashboard) | None                                                               |\n| /dashboard                    | dashboard              | GET         | dashboard.html              | featured_movies: list[dict] {movie_id:int, title:str, rating:float, duration:int}\n|                               |                        |             |                             | upcoming_releases: list[dict] {movie_id:int, title:str, release_date:str}\n| /movies                        | movie_catalog          | GET         | catalog.html                | movies: list[dict] {movie_id:int, title:str, genre:str, rating:float, duration:int}\n|                               |                        |             |                             | genres: list[str]\n| /movies/&lt;int:movie_id&gt;    | movie_details          | GET         | movie_details.html          | movie: dict {movie_id:int, title:str, director:str, rating:float, description:str}\n| /showtimes/&lt;int:movie_id&gt; | showtime_selection     | GET         | showtimes.html              | showtimes: list[dict] {showtime_id:int, showtime_date:str, showtime_time:str, theater_name:str, price:float}\n|                               |                        |             |                             | theaters: list[str]\n| /seat-selection/&lt;int:showtime_id&gt; | seat_selection     | GET         | seat_selection.html         | seat_map: list[dict] {seat_id:int, row:str, column:int, seat_type:str, status:str}\n|                               |                        |             |                             | selected_showtime: dict {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}\n| /booking-confirmation          | booking_confirmation   | POST        | booking_confirmation.html   | booking_summary: dict {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total_price:float}\n|                               |                        |             |                             | error_message: str (optional)\n| /booking-history              | booking_history        | GET         | bookings.html               | bookings: list[dict] {booking_id:int, movie_title:str, booking_date:str, seats:str, status:str}\n|                               |                        |             |                             | status_options: list[str] (All, Confirmed, Cancelled, Completed)\n| /booking-history/&lt;int:booking_id&gt; | booking_details    | GET         | booking_details.html        | booking: dict {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}\n| /theaters                    | theater_information    | GET         | theater_information.html    | theaters: list[dict] {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}\n|                               |                        |             |                             | locations: list[str]\n\n---\n\n## Section 2: HTML Template Specifications\n\n### Dashboard Page\n- Filename: templates/dashboard.html\n- Page Title: Movie Ticketing Dashboard\n- <title>: \"Movie Ticketing Dashboard\"\n- <h1>: \"Movie Ticketing Dashboard\"\n- Elements:\n  - dashboard-page (Div): Main container\n  - featured-movies (Div): Shows featured movie recommendations\n  - browse-movies-button (Button): Navigate to Movie Catalog page\n  - view-bookings-button (Button): Navigate to Booking History page\n  - showtimes-button (Button): Navigate to Showtimes page\n- Navigation:\n  - browse-movies-button: url_for('movie_catalog')\n  - view-bookings-button: url_for('booking_history')\n  - showtimes-button: url_for('showtime_selection', movie_id=<default_movie_id>)\n\n### Movie Catalog Page\n- Filename: templates/catalog.html\n- Page Title: Movie Catalog\n- <title>: \"Movie Catalog\"\n- <h1>: \"Movie Catalog\"\n- Elements:\n  - catalog-page (Div): Container\n  - search-input (Input): Text input to search movies\n  - genre-filter (Dropdown): Filter by genre\n  - movies-grid (Div): Grid containing movie cards\n  - view-movie-button-{movie_id} (Button): View details for movie with id\n- Navigation:\n  - view-movie-button-{movie_id}: url_for('movie_details', movie_id=movie_id)\n\n### Movie Details Page\n- Filename: templates/movie_details.html\n- Page Title: Movie Details\n- <title>: \"Movie Details\"\n- <h1>: dynamic movie title\n- Elements:\n  - movie-details-page (Div): Container\n  - movie-title (H1): Movie title\n  - movie-director (Div): Movie director\n  - movie-rating (Div): Movie rating\n  - movie-description (Div): Movie description\n  - select-showtime-button (Button): Proceed to showtime selection\n- Navigation:\n  - select-showtime-button: url_for('showtime_selection', movie_id=movie_id)\n\n### Showtime Selection Page\n- Filename: templates/showtimes.html\n- Page Title: Select Showtime\n- <title>: \"Select Showtime\"\n- <h1>: \"Select Showtime\"\n- Elements:\n  - showtime-page (Div): Container\n  - showtimes-list (Div): List of showtimes\n  - theater-filter (Dropdown): Filter showtimes by theater\n  - date-filter (Input): Filter showtimes by date\n  - select-showtime-button-{showtime_id} (Button): Select a showtime\n- Navigation:\n  - select-showtime-button-{showtime_id}: url_for('seat_selection', showtime_id=showtime_id)\n\n### Seat Selection Page\n- Filename: templates/seat_selection.html\n- Page Title: Select Seats\n- <title>: \"Select Seats\"\n- <h1>: \"Select Seats\"\n- Elements:\n  - seat-selection-page (Div): Container\n  - seat-map (Div): Seat map with seat buttons\n  - selected-seats-display (Div): Displays selected seats\n  - seat-{row}{col} (Button): Individual seats, e.g., seat-A1\n  - proceed-booking-button (Button): Proceed to booking confirmation\n- Navigation:\n  - proceed-booking-button: url_for('booking_confirmation')\n\n### Booking Confirmation Page\n- Filename: templates/booking_confirmation.html\n- Page Title: Booking Confirmation\n- <title>: \"Booking Confirmation\"\n- <h1>: \"Booking Confirmation\"\n- Elements:\n  - confirmation-page (Div): Container\n  - booking-summary (Div): Booking details summary\n  - customer-name (Input): Input customer name\n  - customer-email (Input): Input customer email\n  - confirm-booking-button (Button): Confirm booking\n- Navigation:\n  - confirm-booking-button: form POST to booking_confirmation\n\n### Booking History Page\n- Filename: templates/bookings.html\n- Page Title: Booking History\n- <title>: \"Booking History\"\n- <h1>: \"Booking History\"\n- Elements:\n  - bookings-page (Div): Container\n  - bookings-table (Table): Booking entries with columns: Booking ID, Movie, Date, Seats, Status\n  - view-booking-button-{booking_id} (Button): View booking details\n  - status-filter (Dropdown): Filter by status\n  - back-to-dashboard (Button): Navigate to dashboard\n- Navigation:\n  - view-booking-button-{booking_id}: url_for('booking_details', booking_id=booking_id)\n  - back-to-dashboard: url_for('dashboard')\n\n### Theater Information Page\n- Filename: templates/theater_information.html\n- Page Title: Theater Information\n- <title>: \"Theater Information\"\n- <h1>: \"Theater Information\"\n- Elements:\n  - theater-page (Div): Container\n  - theaters-list (Div): List of theaters with location, screens, facilities\n  - theater-location-filter (Dropdown): Filter by location\n  - facilities-display (Div): Details of theater facilities\n  - back-to-dashboard (Button): Navigate to dashboard\n- Navigation:\n  - back-to-dashboard: url_for('dashboard')\n\n---\n\n## Section 3: Data File Schemas\n\n### 1. Movies Data\n- File: data/movies.txt\n- Fields (pipe-delimited, exact order):\n  movie_id|title|director|genre|rating|duration|description|release_date\n- Description: Stores all movie details.\n- Examples:\n  1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31\n  2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16\n  3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23\n\n### 2. Theaters Data\n- File: data/theaters.txt\n- Fields (pipe-delimited, exact order):\n  theater_id|theater_name|location|city|screens|facilities\n- Description: Contains theater information including facilities.\n- Examples:\n  1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access\n  2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking\n  3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge\n\n### 3. Showtimes Data\n- File: data/showtimes.txt\n- Fields (pipe-delimited, exact order):\n  showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats\n- Description: Stores showtimes for movies at theaters.\n- Examples:\n  1|1|1|2025-02-01|19:00|12.99|85\n  2|1|1|2025-02-01|22:30|12.99|40\n  3|2|2|2025-02-01|18:00|14.99|95\n\n### 4. Seats Data\n- File: data/seats.txt\n- Fields (pipe-delimited, exact order):\n  seat_id|theater_id|screen_id|row|column|seat_type|status\n- Description: Details seat availability and type within theaters.\n- Examples:\n  1|1|1|A|1|Standard|Available\n  2|1|1|A|2|Standard|Available\n  3|1|1|B|5|Premium|Booked\n\n### 5. Bookings Data\n- File: data/bookings.txt\n- Fields (pipe-delimited, exact order):\n  booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked\n- Description: Records bookings with customer and seat info.\n- Examples:\n  1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2\n  2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10\n  3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4\n\n### 6. Genres Data\n- File: data/genres.txt\n- Fields (pipe-delimited, exact order):\n  genre_id|genre_name|description\n- Description: Movie genres with descriptions.\n- Examples:\n  1|Action|Fast-paced movies with exciting sequences and combat\n  2|Drama|Character-driven stories exploring complex themes\n  3|Sci-Fi|Science fiction with futuristic technology and concepts\n",
+        "after": "# Specification\n\n\n\n## Section 1: Routes Specification\n\nPath Function Method |\n|-------------|-----------------------------|--------------------------------------------------------------------|\nGET\n/dashboard dashboard dashboard.html featured_movies: {movie_id:int, title:str, rating:float, duration:int}\n| list[dict] {movie_id:int, title:str, release_date:str}\nmovie_catalog {movie_id:int, title:str, genre:str, rating:float, duration:int}\n| |\n| | | {movie_id:int, title:str, director:str, rating:float, description:str}\n| showtimes: list[dict] {showtime_id:int, showtime_date:str, showtime_time:str, theater_name:str, price:float}\n| | |\n| | | {seat_id:int, row:str, column:int, seat_type:str, status:str}\n| | | selected_showtime: {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}\n| booking_confirmation | | dict {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total_price:float}\n| | | (optional)\n| GET | bookings: list[dict] {booking_id:int, movie_title:str, booking_date:str, seats:str, status:str}\n| list[str] (All,\nbooking_details | GET | {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}\ntheater_information | | {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}\nlocations: list[str]\n\n---\n\n2: HTML Template Specifications\n\nDashboard\n-\n- Title:\n- <title>: \"Movie Dashboard\"\n- Ticketing Dashboard\"\n-\ndashboard-page Main container\n- featured-movies (Div): featured movie\n- to\n- Navigate Booking History\nNavigate Showtimes\n- Navigation:\n- url_for('movie_catalog')\nview-bookings-button:\nshowtimes-button: url_for('showtime_selection', movie_id=<default_movie_id>)\n\nMovie Page\n\nTitle: Catalog\nCatalog\"\nCatalog\"\n-\n(Div):\n- (Input): to search movies\n- by genre\n(Div): containing cards\n- (Button): for movie with\n\nurl_for('movie_details', movie_id=movie_id)\n\nMovie Page\nFilename:\n-\n\"Movie Details\"\n<h1>:\n\n- (Div): Container\n-\n(Div): Movie\n(Div): rating\nmovie-description (Div): description\nselect-showtime-button Proceed to showtime\n\nselect-showtime-button:\n\nShowtime\n\n- Title:\n\n- Showtime\"\n- Elements:\nshowtime-page (Div): Container\nshowtimes-list (Div): of showtimes\n- showtimes\nby\n-\n-\nselect-showtime-button-{showtime_id}:\n\n\nFilename:\nTitle: Seats\n- \"Select Seats\"\n- \"Select Seats\"\n\n- seat-selection-page Container\nseat-map (Div): map\n- selected-seats-display (Div): Displays selected\n(Button): e.g., seat-A1\n- Proceed confirmation\n\n- proceed-booking-button: url_for('booking_confirmation')\n\n### Confirmation\ntemplates/booking_confirmation.html\nBooking\n\nConfirmation\"\n\n(Div): Container\n(Div): Booking\ncustomer-name\nInput\n(Button): Confirm booking\n-\n- form POST booking_confirmation\n\n\ntemplates/bookings.html\n- Page Booking History\n- <title>: History\"\n- \"Booking History\"\n- Elements:\n-\n- bookings-table Booking entries with Date, Seats,\n- view-booking-button-{booking_id} View booking\n- status\nto\nNavigation:\n-\n- url_for('dashboard')\n\nPage\nFilename: templates/theater_information.html\n- Title:\n<title>:\nInformation\"\nElements:\ntheater-page (Div): Container\n- theaters-list (Div): List with facilities\n- (Dropdown): Filter\ntheater\n- (Button): Navigate\n\n\n\n\n\n3: Data Schemas\n\n### 1.\n-\n\nmovie_id|title|director|genre|rating|duration|description|release_date\n- movie details.\n\n1|The Matrix|Lana about the of his war its controllers.|1999-03-31\nskilled thief steals corporate through the of dream-sharing technology is given task of planting idea.|2010-07-16\n3|The imprisoned men number of years, finding solace and acts of decency.|1994-09-23\n\n### 2.\n\norder):\n\n\n\n1|Cinema York|10|IMAX,\nCinemas|456 Parking\n3|Starlight VIP\n\nData\nFile:\n(pipe-delimited, exact\n\n- Stores for at\n\n\n\n\n\n### 4. Seats Data\n- data/seats.txt\norder):\n\nDescription: Details and within\n-\n\n\n\n\n###\n\nexact\nbooking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked\nwith seat info.\n-\n1|1|John\n2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10\nJohnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4\n\n6.\nFile: data/genres.txt\n\n\n- Description: descriptions.\nExamples:\n1|Action|Fast-paced with sequences combat\n2|Drama|Character-driven stories\nand\n"
+      },
+      {
+        "timestamp": 1768964847.8348703,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_only_self/MovieTicketing/compound_chaos/design_spec.md",
+        "before": "# MovieTicketing Application Design Specification\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Route Path                      | Function Name           | HTTP Method | Template Rendered           | Context Variables Passed                                            |\n|------------------------------- |----------------------- |-------------|-----------------------------|--------------------------------------------------------------------|\n| /                              | root_redirect           | GET         | None (redirect to dashboard) | None                                                               |\n| /dashboard                    | dashboard              | GET         | dashboard.html              | featured_movies: list[dict] {movie_id:int, title:str, rating:float, duration:int}\n|                               |                        |             |                             | upcoming_releases: list[dict] {movie_id:int, title:str, release_date:str}\n| /movies                        | movie_catalog          | GET         | catalog.html                | movies: list[dict] {movie_id:int, title:str, genre:str, rating:float, duration:int}\n|                               |                        |             |                             | genres: list[str]\n| /movies/&lt;int:movie_id&gt;    | movie_details          | GET         | movie_details.html          | movie: dict {movie_id:int, title:str, director:str, rating:float, description:str}\n| /showtimes/&lt;int:movie_id&gt; | showtime_selection     | GET         | showtimes.html              | showtimes: list[dict] {showtime_id:int, showtime_date:str, showtime_time:str, theater_name:str, price:float}\n|                               |                        |             |                             | theaters: list[str]\n| /seat-selection/&lt;int:showtime_id&gt; | seat_selection     | GET         | seat_selection.html         | seat_map: list[dict] {seat_id:int, row:str, column:int, seat_type:str, status:str}\n|                               |                        |             |                             | selected_showtime: dict {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}\n| /booking-confirmation          | booking_confirmation   | POST        | booking_confirmation.html   | booking_summary: dict {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total_price:float}\n|                               |                        |             |                             | error_message: str (optional)\n| /booking-history              | booking_history        | GET         | bookings.html               | bookings: list[dict] {booking_id:int, movie_title:str, booking_date:str, seats:str, status:str}\n|                               |                        |             |                             | status_options: list[str] (All, Confirmed, Cancelled, Completed)\n| /booking-history/&lt;int:booking_id&gt; | booking_details    | GET         | booking_details.html        | booking: dict {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}\n| /theaters                    | theater_information    | GET         | theater_information.html    | theaters: list[dict] {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}\n|                               |                        |             |                             | locations: list[str]\n\n---\n\n## Section 2: HTML Template Specifications\n\n### Dashboard Page\n- Filename: templates/dashboard.html\n- Page Title: Movie Ticketing Dashboard\n- <title>: \"Movie Ticketing Dashboard\"\n- <h1>: \"Movie Ticketing Dashboard\"\n- Elements:\n  - dashboard-page (Div): Main container\n  - featured-movies (Div): Shows featured movie recommendations\n  - browse-movies-button (Button): Navigate to Movie Catalog page\n  - view-bookings-button (Button): Navigate to Booking History page\n  - showtimes-button (Button): Navigate to Showtimes page\n- Navigation:\n  - browse-movies-button: url_for('movie_catalog')\n  - view-bookings-button: url_for('booking_history')\n  - showtimes-button: url_for('showtime_selection', movie_id=<default_movie_id>)\n\n### Movie Catalog Page\n- Filename: templates/catalog.html\n- Page Title: Movie Catalog\n- <title>: \"Movie Catalog\"\n- <h1>: \"Movie Catalog\"\n- Elements:\n  - catalog-page (Div): Container\n  - search-input (Input): Text input to search movies\n  - genre-filter (Dropdown): Filter by genre\n  - movies-grid (Div): Grid containing movie cards\n  - view-movie-button-{movie_id} (Button): View details for movie with id\n- Navigation:\n  - view-movie-button-{movie_id}: url_for('movie_details', movie_id=movie_id)\n\n### Movie Details Page\n- Filename: templates/movie_details.html\n- Page Title: Movie Details\n- <title>: \"Movie Details\"\n- <h1>: dynamic movie title\n- Elements:\n  - movie-details-page (Div): Container\n  - movie-title (H1): Movie title\n  - movie-director (Div): Movie director\n  - movie-rating (Div): Movie rating\n  - movie-description (Div): Movie description\n  - select-showtime-button (Button): Proceed to showtime selection\n- Navigation:\n  - select-showtime-button: url_for('showtime_selection', movie_id=movie_id)\n\n### Showtime Selection Page\n- Filename: templates/showtimes.html\n- Page Title: Select Showtime\n- <title>: \"Select Showtime\"\n- <h1>: \"Select Showtime\"\n- Elements:\n  - showtime-page (Div): Container\n  - showtimes-list (Div): List of showtimes\n  - theater-filter (Dropdown): Filter showtimes by theater\n  - date-filter (Input): Filter showtimes by date\n  - select-showtime-button-{showtime_id} (Button): Select a showtime\n- Navigation:\n  - select-showtime-button-{showtime_id}: url_for('seat_selection', showtime_id=showtime_id)\n\n### Seat Selection Page\n- Filename: templates/seat_selection.html\n- Page Title: Select Seats\n- <title>: \"Select Seats\"\n- <h1>: \"Select Seats\"\n- Elements:\n  - seat-selection-page (Div): Container\n  - seat-map (Div): Seat map with seat buttons\n  - selected-seats-display (Div): Displays selected seats\n  - seat-{row}{col} (Button): Individual seats, e.g., seat-A1\n  - proceed-booking-button (Button): Proceed to booking confirmation\n- Navigation:\n  - proceed-booking-button: url_for('booking_confirmation')\n\n### Booking Confirmation Page\n- Filename: templates/booking_confirmation.html\n- Page Title: Booking Confirmation\n- <title>: \"Booking Confirmation\"\n- <h1>: \"Booking Confirmation\"\n- Elements:\n  - confirmation-page (Div): Container\n  - booking-summary (Div): Booking details summary\n  - customer-name (Input): Input customer name\n  - customer-email (Input): Input customer email\n  - confirm-booking-button (Button): Confirm booking\n- Navigation:\n  - confirm-booking-button: form POST to booking_confirmation\n\n### Booking History Page\n- Filename: templates/bookings.html\n- Page Title: Booking History\n- <title>: \"Booking History\"\n- <h1>: \"Booking History\"\n- Elements:\n  - bookings-page (Div): Container\n  - bookings-table (Table): Booking entries with columns: Booking ID, Movie, Date, Seats, Status\n  - view-booking-button-{booking_id} (Button): View booking details\n  - status-filter (Dropdown): Filter by status\n  - back-to-dashboard (Button): Navigate to dashboard\n- Navigation:\n  - view-booking-button-{booking_id}: url_for('booking_details', booking_id=booking_id)\n  - back-to-dashboard: url_for('dashboard')\n\n### Theater Information Page\n- Filename: templates/theater_information.html\n- Page Title: Theater Information\n- <title>: \"Theater Information\"\n- <h1>: \"Theater Information\"\n- Elements:\n  - theater-page (Div): Container\n  - theaters-list (Div): List of theaters with location, screens, facilities\n  - theater-location-filter (Dropdown): Filter by location\n  - facilities-display (Div): Details of theater facilities\n  - back-to-dashboard (Button): Navigate to dashboard\n- Navigation:\n  - back-to-dashboard: url_for('dashboard')\n\n---\n\n## Section 3: Data File Schemas\n\n### 1. Movies Data\n- File: data/movies.txt\n- Fields (pipe-delimited, exact order):\n  movie_id|title|director|genre|rating|duration|description|release_date\n- Description: Stores all movie details.\n- Examples:\n  1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31\n  2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16\n  3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23\n\n### 2. Theaters Data\n- File: data/theaters.txt\n- Fields (pipe-delimited, exact order):\n  theater_id|theater_name|location|city|screens|facilities\n- Description: Contains theater information including facilities.\n- Examples:\n  1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access\n  2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking\n  3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge\n\n### 3. Showtimes Data\n- File: data/showtimes.txt\n- Fields (pipe-delimited, exact order):\n  showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats\n- Description: Stores showtimes for movies at theaters.\n- Examples:\n  1|1|1|2025-02-01|19:00|12.99|85\n  2|1|1|2025-02-01|22:30|12.99|40\n  3|2|2|2025-02-01|18:00|14.99|95\n\n### 4. Seats Data\n- File: data/seats.txt\n- Fields (pipe-delimited, exact order):\n  seat_id|theater_id|screen_id|row|column|seat_type|status\n- Description: Details seat availability and type within theaters.\n- Examples:\n  1|1|1|A|1|Standard|Available\n  2|1|1|A|2|Standard|Available\n  3|1|1|B|5|Premium|Booked\n\n### 5. Bookings Data\n- File: data/bookings.txt\n- Fields (pipe-delimited, exact order):\n  booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked\n- Description: Records bookings with customer and seat info.\n- Examples:\n  1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2\n  2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10\n  3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4\n\n### 6. Genres Data\n- File: data/genres.txt\n- Fields (pipe-delimited, exact order):\n  genre_id|genre_name|description\n- Description: Movie genres with descriptions.\n- Examples:\n  1|Action|Fast-paced movies with exciting sequences and combat\n  2|Drama|Character-driven stories exploring complex themes\n  3|Sci-Fi|Science fiction with futuristic technology and concepts\n",
+        "after": "# Specification\n\n\n\n## Section 1: Routes Specification\n\nPath Function Method |\n|-------------|-----------------------------|--------------------------------------------------------------------|\nGET\n/dashboard dashboard dashboard.html featured_movies: {movie_id:int, title:str, rating:float, duration:int}\n| list[dict] {movie_id:int, title:str, release_date:str}\nmovie_catalog {movie_id:int, title:str, genre:str, rating:float, duration:int}\n| |\n| | | {movie_id:int, title:str, director:str, rating:float, description:str}\n| showtimes: list[dict] {showtime_id:int, showtime_date:str, showtime_time:str, theater_name:str, price:float}\n| | |\n| | | {seat_id:int, row:str, column:int, seat_type:str, status:str}\n| | | selected_showtime: {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}\n| booking_confirmation | | dict {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total_price:float}\n| | | (optional)\n| GET | bookings: list[dict] {booking_id:int, movie_title:str, booking_date:str, seats:str, status:str}\n| list[str] (All,\nbooking_details | GET | {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}\ntheater_information | | {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}\nlocations: list[str]\n\n---\n\n2: HTML Template Specifications\n\nDashboard\n-\n- Title:\n- <title>: \"Movie Dashboard\"\n- Ticketing Dashboard\"\n-\ndashboard-page Main container\n- featured-movies (Div): featured movie\n- to\n- Navigate Booking History\nNavigate Showtimes\n- Navigation:\n- url_for('movie_catalog')\nview-bookings-button:\nshowtimes-button: url_for('showtime_selection', movie_id=<default_movie_id>)\n\nMovie Page\n\nTitle: Catalog\nCatalog\"\nCatalog\"\n-\n(Div):\n- (Input): to search movies\n- by genre\n(Div): containing cards\n- (Button): for movie with\n\nurl_for('movie_details', movie_id=movie_id)\n\nMovie Page\nFilename:\n-\n\"Movie Details\"\n<h1>:\n\n- (Div): Container\n-\n(Div): Movie\n(Div): rating\nmovie-description (Div): description\nselect-showtime-button Proceed to showtime\n\nselect-showtime-button:\n\nShowtime\n\n- Title:\n\n- Showtime\"\n- Elements:\nshowtime-page (Div): Container\nshowtimes-list (Div): of showtimes\n- showtimes\nby\n-\n-\nselect-showtime-button-{showtime_id}:\n\n\nFilename:\nTitle: Seats\n- \"Select Seats\"\n- \"Select Seats\"\n\n- seat-selection-page Container\nseat-map (Div): map\n- selected-seats-display (Div): Displays selected\n(Button): e.g., seat-A1\n- Proceed confirmation\n\n- proceed-booking-button: url_for('booking_confirmation')\n\n### Confirmation\ntemplates/booking_confirmation.html\nBooking\n\nConfirmation\"\n\n(Div): Container\n(Div): Booking\ncustomer-name\nInput\n(Button): Confirm booking\n-\n- form POST booking_confirmation\n\n\ntemplates/bookings.html\n- Page Booking History\n- <title>: History\"\n- \"Booking History\"\n- Elements:\n-\n- bookings-table Booking entries with Date, Seats,\n- view-booking-button-{booking_id} View booking\n- status\nto\nNavigation:\n-\n- url_for('dashboard')\n\nPage\nFilename: templates/theater_information.html\n- Title:\n<title>:\nInformation\"\nElements:\ntheater-page (Div): Container\n- theaters-list (Div): List with facilities\n- (Dropdown): Filter\ntheater\n- (Button): Navigate\n\n\n\n\n\n3: Data Schemas\n\n### 1.\n-\n\nmovie_id|title|director|genre|rating|duration|description|release_date\n- movie details.\n\n1|The Matrix|Lana about the of his war its controllers.|1999-03-31\nskilled thief steals corporate through the of dream-sharing technology is given task of planting idea.|2010-07-16\n3|The imprisoned men number of years, finding solace and acts of decency.|1994-09-23\n\n### 2.\n\norder):\n\n\n\n1|Cinema York|10|IMAX,\nCinemas|456 Parking\n3|Starlight VIP\n\nData\nFile:\n(pipe-delimited, exact\n\n- Stores for at\n\n\n\n\n\n### 4. Seats Data\n- data/seats.txt\norder):\n\nDescription: Details and within\n-\n\n\n\n\n###\n\nexact\nbooking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked\nwith seat info.\n-\n1|1|John\n2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10\nJohnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4\n\n6.\nFile: data/genres.txt\n\n\n- Description: descriptions.\nExamples:\n1|Action|Fast-paced with sequences combat\n2|Drama|Character-driven stories\nand\n"
+      }
+    ]
+  },
+  "intention_hiding": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (FalseConsensus, Reframing, Suboptimal)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 2,
+      "FP": 1,
+      "FN": 0,
+      "TN": 0
+    },
+    "precision": 0.6666666666666666,
+    "recall": 1.0,
+    "f1_score": 0.8,
+    "total_agents": 3,
+    "error_agents": 2,
+    "normal_agents": 1,
+    "actually_injected_agents": [
+      "BackendDeveloper",
+      "SystemArchitect"
+    ],
+    "target_agents": [
+      "BackendDeveloper",
+      "SystemArchitect",
+      "FrontendDeveloper"
+    ],
+    "not_injected_targets": [
+      "FrontendDeveloper"
+    ],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 2,
+        "failover_count": 1,
+        "category": "TP"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 0,
+        "failover_count": 1,
+        "category": "TP"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": true,
+        "reflection_count": 3,
+        "failover_count": 1,
+        "category": "FP"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 2               FN = 0   
+Actual: Normal Agent    FP = 1               TN = 0   
+
+Agent Distribution:
+  Total Agents: 3
+  Error Agents (Actually Injected): 2
+  Normal Agents: 1
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 3 agents
+    - Actually Injected: 2 agents
+    - Targets NOT injected: ['FrontendDeveloper']
+      (Possible reasons: agent never executed, no output artifacts)
+
+Performance Metrics:
+  Precision: 0.6667 (TP / (TP + FP))
+  Recall:    1.0000 (TP / (TP + FN))
+  F1-Score:  0.8000
+
+Interpretation:
+  - TP (2): Error agents with successful recovery attempt
+  - FP (1): Normal agents with unnecessary recovery
+  - FN (0): Error agents without recovery (system failure)
+  - TN (0): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+📁 IO Chaos File Corruptions (2 files):
+
+  [1] Agent: SystemArchitect
+      File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_only_self/MovieTicketing/compound_chaos/design_spec.md
+
+      📄 Before (full content):
+         # MovieTicketing Application Design Specification
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path                  | Function Name            | HTTP Method | Template Rendered           | Context Variables Passed                                         |
+         |-----------------------------|--------------------------|-------------|-----------------------------|------------------------------------------------------------------|
+         | /                           | root_redirect             | GET         | None (redirect to dashboard) | None                                                             |
+         | /dashboard                  | dashboard                | GET         | dashboard.html              | featured_movies: list[dict] with fields {movie_id:int, title:str, rating:float, duration:int} (highlighted movies to display)
+         |                             |                          |             |                             | upcoming_releases: list[dict] with {movie_id:int, title:str, release_date:str}
+         | /movies                     | movie_catalog            | GET         | catalog.html                | movies: list[dict] with {movie_id:int, title:str, genre:str, rating:float, duration:int}
+         |                             |                          |             |                             | genres: list[str] (for genre filter dropdown)
+         | /movies/<int:movie_id>      | movie_details            | GET         | movie_details.html          | movie: dict with {movie_id:int, title:str, director:str, rating:float, description:str}
+         | /showtimes/<int:movie_id>   | showtime_selection       | GET         | showtimes.html              | showtimes: list[dict] with {showtime_id:int, date:str, time:str, theater_name:str, price:float}
+         |                             |                          |             |                             | theaters: list[str] (for theater filter dropdown)
+         | /seat-selection/<int:showtime_id> | seat_selection       | GET         | seat_selection.html         | seat_map: list[dict] with {seat_id:int, row:str, column:int, seat_type:str, status:str}
+         |                             |                          |             |                             | selected_showtime: dict with {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}
+         | /booking-confirmation       | booking_confirmation     | POST        | booking_confirmation.html   | booking_summary: dict with {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total:float}
+         |                             |                          |             |                             | error_message: str (optional, for validation failures)
+         | /booking-history            | booking_history          | GET         | bookings.html               | bookings: list[dict] with {booking_id:int, movie_title:str, date:str, seats:str, status:str}
+         |                             |                          |             |                             | status_options: list[str] (All, Confirmed, Cancelled, Completed)
+         | /booking-history/<int:booking_id> | booking_details      | GET         | booking_details.html        | booking: dict with {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}
+         | /theaters                  | theater_information       | GET         | theater_information.html    | theaters: list[dict] with {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}
+         |                             |                          |             |                             | locations: list[str] (for location filter dropdown)
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications
+         
+         ### 1. Dashboard Page
+         - Filename: templates/dashboard.html
+         - Page Title: Movie Ticketing Dashboard
+         - <title> content: "Movie Ticketing Dashboard"
+         - <h1> content: "Movie Ticketing Dashboard"
+         - Element IDs:
+           - dashboard-page (Div): Container for the entire dashboard page.
+           - featured-movies (Div): Displays featured movie recommendations.
+           - browse-movies-button (Button): Navigates to movie_catalog route.
+           - view-bookings-button (Button): Navigates to booking_history route.
+           - showtimes-button (Button): Navigates to showtime_selection for selected or default movie.
+         - Navigation:
+           - browse-movies-button: url_for('movie_catalog')
+           - view-bookings-button: url_for('booking_history')
+           - showtimes-button: url_for('showtime_selection', movie_id=<some_movie_id>) - backend selects movie_id or disable if not applicable
+         
+         ### 2. Movie Catalog Page
+         - Filename: templates/catalog.html
+         - Page Title: Movie Catalog
+         - <title> content: "Movie Catalog"
+         - <h1> content: "Movie Catalog"
+         - Element IDs:
+           - catalog-page (Div): Container for the catalog page.
+           - search-input (Input): Text input for searching movies by title or genre.
+           - genre-filter (Dropdown): Select element for filtering by genres.
+           - movies-grid (Div): Grid that holds movie cards.
+           - view-movie-button-{movie_id} (Button): Button to view details for each movie.
+         - Navigation:
+           - view-movie-button-{movie_id}: url_for('movie_details', movie_id=movie_id)
+         
+         ### 3. Movie Details Page
+         - Filename: templates/movie_details.html
+         - Page Title: Movie Details
+         - <title> content: "Movie Details"
+         - <h1> content: movie's title dynamic
+         - Element IDs:
+           - movie-details-page (Div): Container for movie details.
+           - movie-title (H1): Displays the movie title.
+           - movie-director (Div): Displays director's name.
+           - movie-rating (Div): Displays movie rating.
+           - movie-description (Div): Displays full movie description.
+           - select-showtime-button (Button): Button to proceed to showtime selection for this movie.
+         - Navigation:
+           - select-showtime-button: url_for('showtime_selection', movie_id=movie_id)
+         
+         ### 4. Showtime Selection Page
+         - Filename: templates/showtimes.html
+         - Page Title: Select Showtime
+         - <title> content: "Select Showtime"
+         - <h1> content: "Select Showtime"
+         - Element IDs:
+           - showtime-page (Div): Container for the showtime selection page.
+           - showtimes-list (Div): List of showtime entries.
+           - theater-filter (Dropdown): Dropdown filter for theaters.
+           - date-filter (Input): Input for filtering showtimes by date.
+           - select-showtime-button-{showtime_id} (Button): Button to select each showtime.
+         - Navigation:
+           - select-showtime-button-{showtime_id}: url_for('seat_selection', showtime_id=showtime_id)
+         
+         ### 5. Seat Selection Page
+         - Filename: templates/seat_selection.html
+         - Page Title: Select Seats
+         - <title> content: "Select Seats"
+         - <h1> content: "Select Seats"
+         - Element IDs:
+           - seat-selection-page (Div): Container for the seat selection page.
+           - seat-map (Div): Interactive seat map container with seat buttons.
+           - selected-seats-display (Div): Displays the currently selected seats.
+           - seat-{row}{col} (Button): Buttons for each seat with row letter and column number, e.g., seat-A1, seat-B3.
+           - proceed-booking-button (Button): Button to proceed to booking confirmation.
+         - Navigation:
+           - proceed-booking-button: url_for('booking_confirmation')
+         
+         ### 6. Booking Confirmation Page
+         - Filename: templates/booking_confirmation.html
+         - Page Title: Booking Confirmation
+         - <title> content: "Booking Confirmation"
+         - <h1> content: "Booking Confirmation"
+         - Element IDs:
+           - confirmation-page (Div): Container for confirmation page.
+           - booking-summary (Div): Displays summary details: movie title, showtime, seats, total.
+           - customer-name (Input): Input field for customer name.
+           - customer-email (Input): Input field for customer email.
+           - confirm-booking-button (Button): Button to confirm and submit booking.
+         - Navigation:
+           - confirm-booking-button: POSTs to booking_confirmation route
+         
+         ### 7. Booking History Page
+         - Filename: templates/bookings.html
+         - Page Title: Booking History
+         - <title> content: "Booking History"
+         - <h1> content: "Booking History"
+         - Element IDs:
+           - bookings-page (Div): Container for booking history.
+           - bookings-table (Table): Displays booking records with columns: booking ID, movie, date, seats, status.
+           - view-booking-button-{booking_id} (Button): Button to view details of each booking.
+           - status-filter (Dropdown): Filter bookings by status (All, Confirmed, Cancelled, Completed).
+           - back-to-dashboard (Button): Button to navigate back to dashboard.
+         - Navigation:
+           - view-booking-button-{booking_id}: url_for('booking_details', booking_id=booking_id)
+           - back-to-dashboard: url_for('dashboard')
+         
+         ### 8. Theater Information Page
+         - Filename: templates/theater_information.html
+         - Page Title: Theater Information
+         - <title> content: "Theater Information"
+         - <h1> content: "Theater Information"
+         - Element IDs:
+           - theater-page (Div): Container for the theater information page.
+           - theaters-list (Div): Displays theaters with location, screens, facilities.
+           - theater-location-filter (Dropdown): Filter theaters by location.
+           - facilities-display (Div): Shows detailed facilities and amenities of selected theater.
+           - back-to-dashboard (Button): Button to go back to dashboard.
+         - Navigation:
+           - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### 1. Movies Data
+         - File: data/movies.txt
+         - Fields (pipe-delimited, exact order):
+           movie_id|title|director|genre|rating|duration|description|release_date
+         - Description: Stores movie details.
+         - Examples:
+           1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31
+           2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16
+           3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23
+         
+         ### 2. Theaters Data
+         - File: data/theaters.txt
+         - Fields (pipe-delimited, exact order):
+           theater_id|theater_name|location|city|screens|facilities
+         - Description: Stores theater information and facilities.
+         - Examples:
+           1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access
+           2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking
+           3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge
+         
+         ### 3. Showtimes Data
+         - File: data/showtimes.txt
+         - Fields (pipe-delimited, exact order):
+           showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats
+         - Description: Stores showtime details.
+         - Examples:
+           1|1|1|2025-02-01|19:00|12.99|85
+           2|1|1|2025-02-01|22:30|12.99|40
+           3|2|2|2025-02-01|18:00|14.99|95
+         
+         ### 4. Seats Data
+         - File: data/seats.txt
+         - Fields (pipe-delimited, exact order):
+           seat_id|theater_id|screen_id|row|column|seat_type|status
+         - Description: Stores seat details per theater and screen including availability.
+         - Examples:
+           1|1|1|A|1|Standard|Available
+           2|1|1|A|2|Standard|Available
+           3|1|1|B|5|Premium|Booked
+         
+         ### 5. Bookings Data
+         - File: data/bookings.txt
+         - Fields (pipe-delimited, exact order):
+           booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked
+         - Description: Stores booking records including seat selections.
+         - Examples:
+           1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2
+           2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10
+           3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4
+         
+         ### 6. Genres Data
+         - File: data/genres.txt
+         - Fields (pipe-delimited, exact order):
+           genre_id|genre_name|description
+         - Description: Stores genre categories with descriptions.
+         - Examples:
+           1|Action|Fast-paced movies with exciting sequences and combat
+           2|Drama|Character-driven stories exploring complex themes
+           3|Sci-Fi|Science fiction with futuristic technology and concepts
+         
+
+      📝 After (full content):
+         Application Specification
+         
+         ## Section 1: Specification
+         
+         | | Method Variables Passed
+         
+         None dashboard) None
+         | | dashboard.html | featured_movies: list[dict] with {movie_id:int, title:str, rating:float, duration:int} to
+         | | upcoming_releases: list[dict] {movie_id:int, title:str, release_date:str}
+         | /movies GET | movies: {movie_id:int, title:str, genre:str, rating:float, duration:int}
+         | | genres: list[str] (for genre dropdown)
+         /movies/<int:movie_id> | movie_details.html | movie: with {movie_id:int, title:str, director:str, rating:float, description:str}
+         | showtime_selection | showtimes.html {showtime_id:int, date:str, time:str, theater_name:str, price:float}
+         | | | | theaters: (for theater
+         | seat_selection.html list[dict] with {seat_id:int, row:str, column:int, seat_type:str, status:str}
+         | | | | dict with {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}
+         /booking-confirmation | | | {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total:float}
+         | for validation
+         booking_history | GET {booking_id:int, movie_title:str, date:str, seats:str, status:str}
+         (All, Confirmed, Cancelled,
+         | /booking-history/<int:booking_id> | | booking_details.html with {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}
+         | /theaters | | | with {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}
+         | | | location filter
+         
+         
+         
+         ## Template Specifications
+         
+         ### 1.
+         Filename: templates/dashboard.html
+         Page Movie Dashboard
+         <title> Dashboard"
+         "Movie Ticketing
+         IDs:
+         (Div): Container for dashboard
+         (Div):
+         -
+         - to
+         - showtimes-button Navigates for or default
+         - Navigation:
+         - browse-movies-button:
+         url_for('booking_history')
+         movie_id=<some_movie_id>) -
+         
+         
+         templates/catalog.html
+         Page Movie Catalog
+         - content: Catalog"
+         <h1> "Movie
+         
+         - catalog-page (Div): catalog page.
+         search-input (Input): Text title genre.
+         - element for by
+         that movie
+         - (Button): Button to view details movie.
+         
+         - movie_id=movie_id)
+         
+         Details
+         templates/movie_details.html
+         - Details
+         - <title>
+         
+         IDs:
+         (Div): for
+         - the title.
+         - movie-director (Div): Displays director's
+         movie
+         - movie description.
+         (Button): proceed movie.
+         - Navigation:
+         
+         
+         Selection
+         - Filename:
+         Title: Showtime
+         - content: Showtime"
+         <h1>
+         Element
+         - showtime-page Container showtime selection page.
+         - showtimes-list of
+         theater-filter Dropdown theaters.
+         Input
+         to
+         
+         
+         
+         ### Seat
+         -
+         - Page Seats
+         content: "Select
+         - <h1> Seats"
+         -
+         seat-selection-page (Div): for seat page.
+         - seat-map (Div): container seat
+         currently seats.
+         (Button): for row number, e.g., seat-B3.
+         
+         - Navigation:
+         proceed-booking-button:
+         
+         Booking Confirmation Page
+         
+         Title:
+         - <title> content: Confirmation"
+         - "Booking
+         - Element IDs:
+         -
+         booking-summary summary movie title,
+         - (Input):
+         - customer-email for customer email.
+         confirm-booking-button (Button): confirm submit booking.
+         Navigation:
+         POSTs
+         
+         Booking History
+         - templates/bookings.html
+         Booking History
+         content: History"
+         - <h1> content:
+         - Element
+         (Div): for booking history.
+         bookings-table booking ID, seats,
+         - (Button): Button view
+         - (Dropdown): Filter by status Cancelled, Completed).
+         - back-to-dashboard (Button):
+         - Navigation:
+         
+         
+         
+         ### 8. Theater Page
+         templates/theater_information.html
+         -
+         <title>
+         <h1>
+         -
+         Container information
+         theaters-list (Div): Displays screens,
+         (Dropdown): by location.
+         and amenities selected theater.
+         - back to
+         
+         -
+         
+         ---
+         
+         Schemas
+         
+         
+         
+         exact order):
+         movie_id|title|director|genre|rating|duration|description|release_date
+         - Stores
+         -
+         1|The learns about the of the against its
+         Nolan|Sci-Fi|8.8|148|A corporate through the of the inverse of planting
+         3|The Shawshank imprisoned solace eventual redemption acts of decency.|1994-09-23
+         
+         Data
+         - File:
+         (pipe-delimited,
+         theater_id|theater_name|location|city|screens|facilities
+         Description: theater information and
+         Examples:
+         
+         2|Galaxy Cinemas|456
+         Park Ave|Chicago|6|Luxury Restaurant, VIP
+         
+         ### Showtimes Data
+         data/showtimes.txt
+         - Fields order):
+         
+         - Description: showtime details.
+         
+         
+         
+         
+         
+         4. Seats
+         
+         -
+         
+         - Description: details theater and including availability.
+         
+         1|1|1|A|1|Standard|Available
+         
+         
+         
+         ### Bookings Data
+         -
+         (pipe-delimited, order):
+         booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked
+         - Stores including seat
+         - Examples:
+         
+         
+         
+         
+         ### Genres Data
+         File: data/genres.txt
+         - Fields
+         genre_id|genre_name|description
+         - with descriptions.
+         - Examples:
+         1|Action|Fast-paced exciting sequences and combat
+         exploring
+         technology
+         
+
+  [2] Agent: SystemArchitect
+      File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_only_self/MovieTicketing/compound_chaos/design_spec.md
+
+      📄 Before (full content):
+         # MovieTicketing Application Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path                      | Function Name           | HTTP Method | Template Rendered           | Context Variables Passed                                            |
+         |------------------------------- |----------------------- |-------------|-----------------------------|--------------------------------------------------------------------|
+         | /                              | root_redirect           | GET         | None (redirect to dashboard) | None                                                               |
+         | /dashboard                    | dashboard              | GET         | dashboard.html              | featured_movies: list[dict] {movie_id:int, title:str, rating:float, duration:int}
+         |                               |                        |             |                             | upcoming_releases: list[dict] {movie_id:int, title:str, release_date:str}
+         | /movies                        | movie_catalog          | GET         | catalog.html                | movies: list[dict] {movie_id:int, title:str, genre:str, rating:float, duration:int}
+         |                               |                        |             |                             | genres: list[str]
+         | /movies/&lt;int:movie_id&gt;    | movie_details          | GET         | movie_details.html          | movie: dict {movie_id:int, title:str, director:str, rating:float, description:str}
+         | /showtimes/&lt;int:movie_id&gt; | showtime_selection     | GET         | showtimes.html              | showtimes: list[dict] {showtime_id:int, showtime_date:str, showtime_time:str, theater_name:str, price:float}
+         |                               |                        |             |                             | theaters: list[str]
+         | /seat-selection/&lt;int:showtime_id&gt; | seat_selection     | GET         | seat_selection.html         | seat_map: list[dict] {seat_id:int, row:str, column:int, seat_type:str, status:str}
+         |                               |                        |             |                             | selected_showtime: dict {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}
+         | /booking-confirmation          | booking_confirmation   | POST        | booking_confirmation.html   | booking_summary: dict {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total_price:float}
+         |                               |                        |             |                             | error_message: str (optional)
+         | /booking-history              | booking_history        | GET         | bookings.html               | bookings: list[dict] {booking_id:int, movie_title:str, booking_date:str, seats:str, status:str}
+         |                               |                        |             |                             | status_options: list[str] (All, Confirmed, Cancelled, Completed)
+         | /booking-history/&lt;int:booking_id&gt; | booking_details    | GET         | booking_details.html        | booking: dict {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}
+         | /theaters                    | theater_information    | GET         | theater_information.html    | theaters: list[dict] {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}
+         |                               |                        |             |                             | locations: list[str]
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications
+         
+         ### Dashboard Page
+         - Filename: templates/dashboard.html
+         - Page Title: Movie Ticketing Dashboard
+         - <title>: "Movie Ticketing Dashboard"
+         - <h1>: "Movie Ticketing Dashboard"
+         - Elements:
+           - dashboard-page (Div): Main container
+           - featured-movies (Div): Shows featured movie recommendations
+           - browse-movies-button (Button): Navigate to Movie Catalog page
+           - view-bookings-button (Button): Navigate to Booking History page
+           - showtimes-button (Button): Navigate to Showtimes page
+         - Navigation:
+           - browse-movies-button: url_for('movie_catalog')
+           - view-bookings-button: url_for('booking_history')
+           - showtimes-button: url_for('showtime_selection', movie_id=<default_movie_id>)
+         
+         ### Movie Catalog Page
+         - Filename: templates/catalog.html
+         - Page Title: Movie Catalog
+         - <title>: "Movie Catalog"
+         - <h1>: "Movie Catalog"
+         - Elements:
+           - catalog-page (Div): Container
+           - search-input (Input): Text input to search movies
+           - genre-filter (Dropdown): Filter by genre
+           - movies-grid (Div): Grid containing movie cards
+           - view-movie-button-{movie_id} (Button): View details for movie with id
+         - Navigation:
+           - view-movie-button-{movie_id}: url_for('movie_details', movie_id=movie_id)
+         
+         ### Movie Details Page
+         - Filename: templates/movie_details.html
+         - Page Title: Movie Details
+         - <title>: "Movie Details"
+         - <h1>: dynamic movie title
+         - Elements:
+           - movie-details-page (Div): Container
+           - movie-title (H1): Movie title
+           - movie-director (Div): Movie director
+           - movie-rating (Div): Movie rating
+           - movie-description (Div): Movie description
+           - select-showtime-button (Button): Proceed to showtime selection
+         - Navigation:
+           - select-showtime-button: url_for('showtime_selection', movie_id=movie_id)
+         
+         ### Showtime Selection Page
+         - Filename: templates/showtimes.html
+         - Page Title: Select Showtime
+         - <title>: "Select Showtime"
+         - <h1>: "Select Showtime"
+         - Elements:
+           - showtime-page (Div): Container
+           - showtimes-list (Div): List of showtimes
+           - theater-filter (Dropdown): Filter showtimes by theater
+           - date-filter (Input): Filter showtimes by date
+           - select-showtime-button-{showtime_id} (Button): Select a showtime
+         - Navigation:
+           - select-showtime-button-{showtime_id}: url_for('seat_selection', showtime_id=showtime_id)
+         
+         ### Seat Selection Page
+         - Filename: templates/seat_selection.html
+         - Page Title: Select Seats
+         - <title>: "Select Seats"
+         - <h1>: "Select Seats"
+         - Elements:
+           - seat-selection-page (Div): Container
+           - seat-map (Div): Seat map with seat buttons
+           - selected-seats-display (Div): Displays selected seats
+           - seat-{row}{col} (Button): Individual seats, e.g., seat-A1
+           - proceed-booking-button (Button): Proceed to booking confirmation
+         - Navigation:
+           - proceed-booking-button: url_for('booking_confirmation')
+         
+         ### Booking Confirmation Page
+         - Filename: templates/booking_confirmation.html
+         - Page Title: Booking Confirmation
+         - <title>: "Booking Confirmation"
+         - <h1>: "Booking Confirmation"
+         - Elements:
+           - confirmation-page (Div): Container
+           - booking-summary (Div): Booking details summary
+           - customer-name (Input): Input customer name
+           - customer-email (Input): Input customer email
+           - confirm-booking-button (Button): Confirm booking
+         - Navigation:
+           - confirm-booking-button: form POST to booking_confirmation
+         
+         ### Booking History Page
+         - Filename: templates/bookings.html
+         - Page Title: Booking History
+         - <title>: "Booking History"
+         - <h1>: "Booking History"
+         - Elements:
+           - bookings-page (Div): Container
+           - bookings-table (Table): Booking entries with columns: Booking ID, Movie, Date, Seats, Status
+           - view-booking-button-{booking_id} (Button): View booking details
+           - status-filter (Dropdown): Filter by status
+           - back-to-dashboard (Button): Navigate to dashboard
+         - Navigation:
+           - view-booking-button-{booking_id}: url_for('booking_details', booking_id=booking_id)
+           - back-to-dashboard: url_for('dashboard')
+         
+         ### Theater Information Page
+         - Filename: templates/theater_information.html
+         - Page Title: Theater Information
+         - <title>: "Theater Information"
+         - <h1>: "Theater Information"
+         - Elements:
+           - theater-page (Div): Container
+           - theaters-list (Div): List of theaters with location, screens, facilities
+           - theater-location-filter (Dropdown): Filter by location
+           - facilities-display (Div): Details of theater facilities
+           - back-to-dashboard (Button): Navigate to dashboard
+         - Navigation:
+           - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### 1. Movies Data
+         - File: data/movies.txt
+         - Fields (pipe-delimited, exact order):
+           movie_id|title|director|genre|rating|duration|description|release_date
+         - Description: Stores all movie details.
+         - Examples:
+           1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31
+           2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16
+           3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23
+         
+         ### 2. Theaters Data
+         - File: data/theaters.txt
+         - Fields (pipe-delimited, exact order):
+           theater_id|theater_name|location|city|screens|facilities
+         - Description: Contains theater information including facilities.
+         - Examples:
+           1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access
+           2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking
+           3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge
+         
+         ### 3. Showtimes Data
+         - File: data/showtimes.txt
+         - Fields (pipe-delimited, exact order):
+           showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats
+         - Description: Stores showtimes for movies at theaters.
+         - Examples:
+           1|1|1|2025-02-01|19:00|12.99|85
+           2|1|1|2025-02-01|22:30|12.99|40
+           3|2|2|2025-02-01|18:00|14.99|95
+         
+         ### 4. Seats Data
+         - File: data/seats.txt
+         - Fields (pipe-delimited, exact order):
+           seat_id|theater_id|screen_id|row|column|seat_type|status
+         - Description: Details seat availability and type within theaters.
+         - Examples:
+           1|1|1|A|1|Standard|Available
+           2|1|1|A|2|Standard|Available
+           3|1|1|B|5|Premium|Booked
+         
+         ### 5. Bookings Data
+         - File: data/bookings.txt
+         - Fields (pipe-delimited, exact order):
+           booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked
+         - Description: Records bookings with customer and seat info.
+         - Examples:
+           1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2
+           2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10
+           3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4
+         
+         ### 6. Genres Data
+         - File: data/genres.txt
+         - Fields (pipe-delimited, exact order):
+           genre_id|genre_name|description
+         - Description: Movie genres with descriptions.
+         - Examples:
+           1|Action|Fast-paced movies with exciting sequences and combat
+           2|Drama|Character-driven stories exploring complex themes
+           3|Sci-Fi|Science fiction with futuristic technology and concepts
+         
+
+      📝 After (full content):
+         # Specification
+         
+         
+         
+         ## Section 1: Routes Specification
+         
+         Path Function Method |
+         |-------------|-----------------------------|--------------------------------------------------------------------|
+         GET
+         /dashboard dashboard dashboard.html featured_movies: {movie_id:int, title:str, rating:float, duration:int}
+         | list[dict] {movie_id:int, title:str, release_date:str}
+         movie_catalog {movie_id:int, title:str, genre:str, rating:float, duration:int}
+         | |
+         | | | {movie_id:int, title:str, director:str, rating:float, description:str}
+         | showtimes: list[dict] {showtime_id:int, showtime_date:str, showtime_time:str, theater_name:str, price:float}
+         | | |
+         | | | {seat_id:int, row:str, column:int, seat_type:str, status:str}
+         | | | selected_showtime: {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}
+         | booking_confirmation | | dict {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total_price:float}
+         | | | (optional)
+         | GET | bookings: list[dict] {booking_id:int, movie_title:str, booking_date:str, seats:str, status:str}
+         | list[str] (All,
+         booking_details | GET | {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}
+         theater_information | | {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}
+         locations: list[str]
+         
+         ---
+         
+         2: HTML Template Specifications
+         
+         Dashboard
+         -
+         - Title:
+         - <title>: "Movie Dashboard"
+         - Ticketing Dashboard"
+         -
+         dashboard-page Main container
+         - featured-movies (Div): featured movie
+         - to
+         - Navigate Booking History
+         Navigate Showtimes
+         - Navigation:
+         - url_for('movie_catalog')
+         view-bookings-button:
+         showtimes-button: url_for('showtime_selection', movie_id=<default_movie_id>)
+         
+         Movie Page
+         
+         Title: Catalog
+         Catalog"
+         Catalog"
+         -
+         (Div):
+         - (Input): to search movies
+         - by genre
+         (Div): containing cards
+         - (Button): for movie with
+         
+         url_for('movie_details', movie_id=movie_id)
+         
+         Movie Page
+         Filename:
+         -
+         "Movie Details"
+         <h1>:
+         
+         - (Div): Container
+         -
+         (Div): Movie
+         (Div): rating
+         movie-description (Div): description
+         select-showtime-button Proceed to showtime
+         
+         select-showtime-button:
+         
+         Showtime
+         
+         - Title:
+         
+         - Showtime"
+         - Elements:
+         showtime-page (Div): Container
+         showtimes-list (Div): of showtimes
+         - showtimes
+         by
+         -
+         -
+         select-showtime-button-{showtime_id}:
+         
+         
+         Filename:
+         Title: Seats
+         - "Select Seats"
+         - "Select Seats"
+         
+         - seat-selection-page Container
+         seat-map (Div): map
+         - selected-seats-display (Div): Displays selected
+         (Button): e.g., seat-A1
+         - Proceed confirmation
+         
+         - proceed-booking-button: url_for('booking_confirmation')
+         
+         ### Confirmation
+         templates/booking_confirmation.html
+         Booking
+         
+         Confirmation"
+         
+         (Div): Container
+         (Div): Booking
+         customer-name
+         Input
+         (Button): Confirm booking
+         -
+         - form POST booking_confirmation
+         
+         
+         templates/bookings.html
+         - Page Booking History
+         - <title>: History"
+         - "Booking History"
+         - Elements:
+         -
+         - bookings-table Booking entries with Date, Seats,
+         - view-booking-button-{booking_id} View booking
+         - status
+         to
+         Navigation:
+         -
+         - url_for('dashboard')
+         
+         Page
+         Filename: templates/theater_information.html
+         - Title:
+         <title>:
+         Information"
+         Elements:
+         theater-page (Div): Container
+         - theaters-list (Div): List with facilities
+         - (Dropdown): Filter
+         theater
+         - (Button): Navigate
+         
+         
+         
+         
+         
+         3: Data Schemas
+         
+         ### 1.
+         -
+         
+         movie_id|title|director|genre|rating|duration|description|release_date
+         - movie details.
+         
+         1|The Matrix|Lana about the of his war its controllers.|1999-03-31
+         skilled thief steals corporate through the of dream-sharing technology is given task of planting idea.|2010-07-16
+         3|The imprisoned men number of years, finding solace and acts of decency.|1994-09-23
+         
+         ### 2.
+         
+         order):
+         
+         
+         
+         1|Cinema York|10|IMAX,
+         Cinemas|456 Parking
+         3|Starlight VIP
+         
+         Data
+         File:
+         (pipe-delimited, exact
+         
+         - Stores for at
+         
+         
+         
+         
+         
+         ### 4. Seats Data
+         - data/seats.txt
+         order):
+         
+         Description: Details and within
+         -
+         
+         
+         
+         
+         ###
+         
+         exact
+         booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked
+         with seat info.
+         -
+         1|1|John
+         2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10
+         Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4
+         
+         6.
+         File: data/genres.txt
+         
+         
+         - Description: descriptions.
+         Examples:
+         1|Action|Fast-paced with sequences combat
+         2|Drama|Character-driven stories
+         and
+         
+
+📁 IO Chaos Content Corruptions (2 total):
+
+  [1] Agent: SystemArchitect
+      Type: IO_CHAOS_WORD_DELETION
+      Details: WordDeletion: 687/1146 words deleted (60%)
+
+      📄 Before (full content):
+         # MovieTicketing Application Design Specification
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path                  | Function Name            | HTTP Method | Template Rendered           | Context Variables Passed                                         |
+         |-----------------------------|--------------------------|-------------|-----------------------------|------------------------------------------------------------------|
+         | /                           | root_redirect             | GET         | None (redirect to dashboard) | None                                                             |
+         | /dashboard                  | dashboard                | GET         | dashboard.html              | featured_movies: list[dict] with fields {movie_id:int, title:str, rating:float, duration:int} (highlighted movies to display)
+         |                             |                          |             |                             | upcoming_releases: list[dict] with {movie_id:int, title:str, release_date:str}
+         | /movies                     | movie_catalog            | GET         | catalog.html                | movies: list[dict] with {movie_id:int, title:str, genre:str, rating:float, duration:int}
+         |                             |                          |             |                             | genres: list[str] (for genre filter dropdown)
+         | /movies/<int:movie_id>      | movie_details            | GET         | movie_details.html          | movie: dict with {movie_id:int, title:str, director:str, rating:float, description:str}
+         | /showtimes/<int:movie_id>   | showtime_selection       | GET         | showtimes.html              | showtimes: list[dict] with {showtime_id:int, date:str, time:str, theater_name:str, price:float}
+         |                             |                          |             |                             | theaters: list[str] (for theater filter dropdown)
+         | /seat-selection/<int:showtime_id> | seat_selection       | GET         | seat_selection.html         | seat_map: list[dict] with {seat_id:int, row:str, column:int, seat_type:str, status:str}
+         |                             |                          |             |                             | selected_showtime: dict with {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}
+         | /booking-confirmation       | booking_confirmation     | POST        | booking_confirmation.html   | booking_summary: dict with {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total:float}
+         |                             |                          |             |                             | error_message: str (optional, for validation failures)
+         | /booking-history            | booking_history          | GET         | bookings.html               | bookings: list[dict] with {booking_id:int, movie_title:str, date:str, seats:str, status:str}
+         |                             |                          |             |                             | status_options: list[str] (All, Confirmed, Cancelled, Completed)
+         | /booking-history/<int:booking_id> | booking_details      | GET         | booking_details.html        | booking: dict with {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}
+         | /theaters                  | theater_information       | GET         | theater_information.html    | theaters: list[dict] with {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}
+         |                             |                          |             |                             | locations: list[str] (for location filter dropdown)
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications
+         
+         ### 1. Dashboard Page
+         - Filename: templates/dashboard.html
+         - Page Title: Movie Ticketing Dashboard
+         - <title> content: "Movie Ticketing Dashboard"
+         - <h1> content: "Movie Ticketing Dashboard"
+         - Element IDs:
+           - dashboard-page (Div): Container for the entire dashboard page.
+           - featured-movies (Div): Displays featured movie recommendations.
+           - browse-movies-button (Button): Navigates to movie_catalog route.
+           - view-bookings-button (Button): Navigates to booking_history route.
+           - showtimes-button (Button): Navigates to showtime_selection for selected or default movie.
+         - Navigation:
+           - browse-movies-button: url_for('movie_catalog')
+           - view-bookings-button: url_for('booking_history')
+           - showtimes-button: url_for('showtime_selection', movie_id=<some_movie_id>) - backend selects movie_id or disable if not applicable
+         
+         ### 2. Movie Catalog Page
+         - Filename: templates/catalog.html
+         - Page Title: Movie Catalog
+         - <title> content: "Movie Catalog"
+         - <h1> content: "Movie Catalog"
+         - Element IDs:
+           - catalog-page (Div): Container for the catalog page.
+           - search-input (Input): Text input for searching movies by title or genre.
+           - genre-filter (Dropdown): Select element for filtering by genres.
+           - movies-grid (Div): Grid that holds movie cards.
+           - view-movie-button-{movie_id} (Button): Button to view details for each movie.
+         - Navigation:
+           - view-movie-button-{movie_id}: url_for('movie_details', movie_id=movie_id)
+         
+         ### 3. Movie Details Page
+         - Filename: templates/movie_details.html
+         - Page Title: Movie Details
+         - <title> content: "Movie Details"
+         - <h1> content: movie's title dynamic
+         - Element IDs:
+           - movie-details-page (Div): Container for movie details.
+           - movie-title (H1): Displays the movie title.
+           - movie-director (Div): Displays director's name.
+           - movie-rating (Div): Displays movie rating.
+           - movie-description (Div): Displays full movie description.
+           - select-showtime-button (Button): Button to proceed to showtime selection for this movie.
+         - Navigation:
+           - select-showtime-button: url_for('showtime_selection', movie_id=movie_id)
+         
+         ### 4. Showtime Selection Page
+         - Filename: templates/showtimes.html
+         - Page Title: Select Showtime
+         - <title> content: "Select Showtime"
+         - <h1> content: "Select Showtime"
+         - Element IDs:
+           - showtime-page (Div): Container for the showtime selection page.
+           - showtimes-list (Div): List of showtime entries.
+           - theater-filter (Dropdown): Dropdown filter for theaters.
+           - date-filter (Input): Input for filtering showtimes by date.
+           - select-showtime-button-{showtime_id} (Button): Button to select each showtime.
+         - Navigation:
+           - select-showtime-button-{showtime_id}: url_for('seat_selection', showtime_id=showtime_id)
+         
+         ### 5. Seat Selection Page
+         - Filename: templates/seat_selection.html
+         - Page Title: Select Seats
+         - <title> content: "Select Seats"
+         - <h1> content: "Select Seats"
+         - Element IDs:
+           - seat-selection-page (Div): Container for the seat selection page.
+           - seat-map (Div): Interactive seat map container with seat buttons.
+           - selected-seats-display (Div): Displays the currently selected seats.
+           - seat-{row}{col} (Button): Buttons for each seat with row letter and column number, e.g., seat-A1, seat-B3.
+           - proceed-booking-button (Button): Button to proceed to booking confirmation.
+         - Navigation:
+           - proceed-booking-button: url_for('booking_confirmation')
+         
+         ### 6. Booking Confirmation Page
+         - Filename: templates/booking_confirmation.html
+         - Page Title: Booking Confirmation
+         - <title> content: "Booking Confirmation"
+         - <h1> content: "Booking Confirmation"
+         - Element IDs:
+           - confirmation-page (Div): Container for confirmation page.
+           - booking-summary (Div): Displays summary details: movie title, showtime, seats, total.
+           - customer-name (Input): Input field for customer name.
+           - customer-email (Input): Input field for customer email.
+           - confirm-booking-button (Button): Button to confirm and submit booking.
+         - Navigation:
+           - confirm-booking-button: POSTs to booking_confirmation route
+         
+         ### 7. Booking History Page
+         - Filename: templates/bookings.html
+         - Page Title: Booking History
+         - <title> content: "Booking History"
+         - <h1> content: "Booking History"
+         - Element IDs:
+           - bookings-page (Div): Container for booking history.
+           - bookings-table (Table): Displays booking records with columns: booking ID, movie, date, seats, status.
+           - view-booking-button-{booking_id} (Button): Button to view details of each booking.
+           - status-filter (Dropdown): Filter bookings by status (All, Confirmed, Cancelled, Completed).
+           - back-to-dashboard (Button): Button to navigate back to dashboard.
+         - Navigation:
+           - view-booking-button-{booking_id}: url_for('booking_details', booking_id=booking_id)
+           - back-to-dashboard: url_for('dashboard')
+         
+         ### 8. Theater Information Page
+         - Filename: templates/theater_information.html
+         - Page Title: Theater Information
+         - <title> content: "Theater Information"
+         - <h1> content: "Theater Information"
+         - Element IDs:
+           - theater-page (Div): Container for the theater information page.
+           - theaters-list (Div): Displays theaters with location, screens, facilities.
+           - theater-location-filter (Dropdown): Filter theaters by location.
+           - facilities-display (Div): Shows detailed facilities and amenities of selected theater.
+           - back-to-dashboard (Button): Button to go back to dashboard.
+         - Navigation:
+           - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### 1. Movies Data
+         - File: data/movies.txt
+         - Fields (pipe-delimited, exact order):
+           movie_id|title|director|genre|rating|duration|description|release_date
+         - Description: Stores movie details.
+         - Examples:
+           1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31
+           2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16
+           3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23
+         
+         ### 2. Theaters Data
+         - File: data/theaters.txt
+         - Fields (pipe-delimited, exact order):
+           theater_id|theater_name|location|city|screens|facilities
+         - Description: Stores theater information and facilities.
+         - Examples:
+           1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access
+           2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking
+           3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge
+         
+         ### 3. Showtimes Data
+         - File: data/showtimes.txt
+         - Fields (pipe-delimited, exact order):
+           showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats
+         - Description: Stores showtime details.
+         - Examples:
+           1|1|1|2025-02-01|19:00|12.99|85
+           2|1|1|2025-02-01|22:30|12.99|40
+           3|2|2|2025-02-01|18:00|14.99|95
+         
+         ### 4. Seats Data
+         - File: data/seats.txt
+         - Fields (pipe-delimited, exact order):
+           seat_id|theater_id|screen_id|row|column|seat_type|status
+         - Description: Stores seat details per theater and screen including availability.
+         - Examples:
+           1|1|1|A|1|Standard|Available
+           2|1|1|A|2|Standard|Available
+           3|1|1|B|5|Premium|Booked
+         
+         ### 5. Bookings Data
+         - File: data/bookings.txt
+         - Fields (pipe-delimited, exact order):
+           booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked
+         - Description: Stores booking records including seat selections.
+         - Examples:
+           1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2
+           2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10
+           3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4
+         
+         ### 6. Genres Data
+         - File: data/genres.txt
+         - Fields (pipe-delimited, exact order):
+           genre_id|genre_name|description
+         - Description: Stores genre categories with descriptions.
+         - Examples:
+           1|Action|Fast-paced movies with exciting sequences and combat
+           2|Drama|Character-driven stories exploring complex themes
+           3|Sci-Fi|Science fiction with futuristic technology and concepts
+         
+
+      📝 After (full content):
+         Application Specification
+         
+         ## Section 1: Specification
+         
+         | | Method Variables Passed
+         
+         None dashboard) None
+         | | dashboard.html | featured_movies: list[dict] with {movie_id:int, title:str, rating:float, duration:int} to
+         | | upcoming_releases: list[dict] {movie_id:int, title:str, release_date:str}
+         | /movies GET | movies: {movie_id:int, title:str, genre:str, rating:float, duration:int}
+         | | genres: list[str] (for genre dropdown)
+         /movies/<int:movie_id> | movie_details.html | movie: with {movie_id:int, title:str, director:str, rating:float, description:str}
+         | showtime_selection | showtimes.html {showtime_id:int, date:str, time:str, theater_name:str, price:float}
+         | | | | theaters: (for theater
+         | seat_selection.html list[dict] with {seat_id:int, row:str, column:int, seat_type:str, status:str}
+         | | | | dict with {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}
+         /booking-confirmation | | | {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total:float}
+         | for validation
+         booking_history | GET {booking_id:int, movie_title:str, date:str, seats:str, status:str}
+         (All, Confirmed, Cancelled,
+         | /booking-history/<int:booking_id> | | booking_details.html with {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}
+         | /theaters | | | with {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}
+         | | | location filter
+         
+         
+         
+         ## Template Specifications
+         
+         ### 1.
+         Filename: templates/dashboard.html
+         Page Movie Dashboard
+         <title> Dashboard"
+         "Movie Ticketing
+         IDs:
+         (Div): Container for dashboard
+         (Div):
+         -
+         - to
+         - showtimes-button Navigates for or default
+         - Navigation:
+         - browse-movies-button:
+         url_for('booking_history')
+         movie_id=<some_movie_id>) -
+         
+         
+         templates/catalog.html
+         Page Movie Catalog
+         - content: Catalog"
+         <h1> "Movie
+         
+         - catalog-page (Div): catalog page.
+         search-input (Input): Text title genre.
+         - element for by
+         that movie
+         - (Button): Button to view details movie.
+         
+         - movie_id=movie_id)
+         
+         Details
+         templates/movie_details.html
+         - Details
+         - <title>
+         
+         IDs:
+         (Div): for
+         - the title.
+         - movie-director (Div): Displays director's
+         movie
+         - movie description.
+         (Button): proceed movie.
+         - Navigation:
+         
+         
+         Selection
+         - Filename:
+         Title: Showtime
+         - content: Showtime"
+         <h1>
+         Element
+         - showtime-page Container showtime selection page.
+         - showtimes-list of
+         theater-filter Dropdown theaters.
+         Input
+         to
+         
+         
+         
+         ### Seat
+         -
+         - Page Seats
+         content: "Select
+         - <h1> Seats"
+         -
+         seat-selection-page (Div): for seat page.
+         - seat-map (Div): container seat
+         currently seats.
+         (Button): for row number, e.g., seat-B3.
+         
+         - Navigation:
+         proceed-booking-button:
+         
+         Booking Confirmation Page
+         
+         Title:
+         - <title> content: Confirmation"
+         - "Booking
+         - Element IDs:
+         -
+         booking-summary summary movie title,
+         - (Input):
+         - customer-email for customer email.
+         confirm-booking-button (Button): confirm submit booking.
+         Navigation:
+         POSTs
+         
+         Booking History
+         - templates/bookings.html
+         Booking History
+         content: History"
+         - <h1> content:
+         - Element
+         (Div): for booking history.
+         bookings-table booking ID, seats,
+         - (Button): Button view
+         - (Dropdown): Filter by status Cancelled, Completed).
+         - back-to-dashboard (Button):
+         - Navigation:
+         
+         
+         
+         ### 8. Theater Page
+         templates/theater_information.html
+         -
+         <title>
+         <h1>
+         -
+         Container information
+         theaters-list (Div): Displays screens,
+         (Dropdown): by location.
+         and amenities selected theater.
+         - back to
+         
+         -
+         
+         ---
+         
+         Schemas
+         
+         
+         
+         exact order):
+         movie_id|title|director|genre|rating|duration|description|release_date
+         - Stores
+         -
+         1|The learns about the of the against its
+         Nolan|Sci-Fi|8.8|148|A corporate through the of the inverse of planting
+         3|The Shawshank imprisoned solace eventual redemption acts of decency.|1994-09-23
+         
+         Data
+         - File:
+         (pipe-delimited,
+         theater_id|theater_name|location|city|screens|facilities
+         Description: theater information and
+         Examples:
+         
+         2|Galaxy Cinemas|456
+         Park Ave|Chicago|6|Luxury Restaurant, VIP
+         
+         ### Showtimes Data
+         data/showtimes.txt
+         - Fields order):
+         
+         - Description: showtime details.
+         
+         
+         
+         
+         
+         4. Seats
+         
+         -
+         
+         - Description: details theater and including availability.
+         
+         1|1|1|A|1|Standard|Available
+         
+         
+         
+         ### Bookings Data
+         -
+         (pipe-delimited, order):
+         booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked
+         - Stores including seat
+         - Examples:
+         
+         
+         
+         
+         ### Genres Data
+         File: data/genres.txt
+         - Fields
+         genre_id|genre_name|description
+         - with descriptions.
+         - Examples:
+         1|Action|Fast-paced exciting sequences and combat
+         exploring
+         technology
+         
+
+  [2] Agent: SystemArchitect
+      Type: IO_CHAOS_WORD_DELETION
+      Details: WordDeletion: 583/972 words deleted (60%)
+
+      📄 Before (full content):
+         # MovieTicketing Application Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Route Path                      | Function Name           | HTTP Method | Template Rendered           | Context Variables Passed                                            |
+         |------------------------------- |----------------------- |-------------|-----------------------------|--------------------------------------------------------------------|
+         | /                              | root_redirect           | GET         | None (redirect to dashboard) | None                                                               |
+         | /dashboard                    | dashboard              | GET         | dashboard.html              | featured_movies: list[dict] {movie_id:int, title:str, rating:float, duration:int}
+         |                               |                        |             |                             | upcoming_releases: list[dict] {movie_id:int, title:str, release_date:str}
+         | /movies                        | movie_catalog          | GET         | catalog.html                | movies: list[dict] {movie_id:int, title:str, genre:str, rating:float, duration:int}
+         |                               |                        |             |                             | genres: list[str]
+         | /movies/&lt;int:movie_id&gt;    | movie_details          | GET         | movie_details.html          | movie: dict {movie_id:int, title:str, director:str, rating:float, description:str}
+         | /showtimes/&lt;int:movie_id&gt; | showtime_selection     | GET         | showtimes.html              | showtimes: list[dict] {showtime_id:int, showtime_date:str, showtime_time:str, theater_name:str, price:float}
+         |                               |                        |             |                             | theaters: list[str]
+         | /seat-selection/&lt;int:showtime_id&gt; | seat_selection     | GET         | seat_selection.html         | seat_map: list[dict] {seat_id:int, row:str, column:int, seat_type:str, status:str}
+         |                               |                        |             |                             | selected_showtime: dict {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}
+         | /booking-confirmation          | booking_confirmation   | POST        | booking_confirmation.html   | booking_summary: dict {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total_price:float}
+         |                               |                        |             |                             | error_message: str (optional)
+         | /booking-history              | booking_history        | GET         | bookings.html               | bookings: list[dict] {booking_id:int, movie_title:str, booking_date:str, seats:str, status:str}
+         |                               |                        |             |                             | status_options: list[str] (All, Confirmed, Cancelled, Completed)
+         | /booking-history/&lt;int:booking_id&gt; | booking_details    | GET         | booking_details.html        | booking: dict {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}
+         | /theaters                    | theater_information    | GET         | theater_information.html    | theaters: list[dict] {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}
+         |                               |                        |             |                             | locations: list[str]
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications
+         
+         ### Dashboard Page
+         - Filename: templates/dashboard.html
+         - Page Title: Movie Ticketing Dashboard
+         - <title>: "Movie Ticketing Dashboard"
+         - <h1>: "Movie Ticketing Dashboard"
+         - Elements:
+           - dashboard-page (Div): Main container
+           - featured-movies (Div): Shows featured movie recommendations
+           - browse-movies-button (Button): Navigate to Movie Catalog page
+           - view-bookings-button (Button): Navigate to Booking History page
+           - showtimes-button (Button): Navigate to Showtimes page
+         - Navigation:
+           - browse-movies-button: url_for('movie_catalog')
+           - view-bookings-button: url_for('booking_history')
+           - showtimes-button: url_for('showtime_selection', movie_id=<default_movie_id>)
+         
+         ### Movie Catalog Page
+         - Filename: templates/catalog.html
+         - Page Title: Movie Catalog
+         - <title>: "Movie Catalog"
+         - <h1>: "Movie Catalog"
+         - Elements:
+           - catalog-page (Div): Container
+           - search-input (Input): Text input to search movies
+           - genre-filter (Dropdown): Filter by genre
+           - movies-grid (Div): Grid containing movie cards
+           - view-movie-button-{movie_id} (Button): View details for movie with id
+         - Navigation:
+           - view-movie-button-{movie_id}: url_for('movie_details', movie_id=movie_id)
+         
+         ### Movie Details Page
+         - Filename: templates/movie_details.html
+         - Page Title: Movie Details
+         - <title>: "Movie Details"
+         - <h1>: dynamic movie title
+         - Elements:
+           - movie-details-page (Div): Container
+           - movie-title (H1): Movie title
+           - movie-director (Div): Movie director
+           - movie-rating (Div): Movie rating
+           - movie-description (Div): Movie description
+           - select-showtime-button (Button): Proceed to showtime selection
+         - Navigation:
+           - select-showtime-button: url_for('showtime_selection', movie_id=movie_id)
+         
+         ### Showtime Selection Page
+         - Filename: templates/showtimes.html
+         - Page Title: Select Showtime
+         - <title>: "Select Showtime"
+         - <h1>: "Select Showtime"
+         - Elements:
+           - showtime-page (Div): Container
+           - showtimes-list (Div): List of showtimes
+           - theater-filter (Dropdown): Filter showtimes by theater
+           - date-filter (Input): Filter showtimes by date
+           - select-showtime-button-{showtime_id} (Button): Select a showtime
+         - Navigation:
+           - select-showtime-button-{showtime_id}: url_for('seat_selection', showtime_id=showtime_id)
+         
+         ### Seat Selection Page
+         - Filename: templates/seat_selection.html
+         - Page Title: Select Seats
+         - <title>: "Select Seats"
+         - <h1>: "Select Seats"
+         - Elements:
+           - seat-selection-page (Div): Container
+           - seat-map (Div): Seat map with seat buttons
+           - selected-seats-display (Div): Displays selected seats
+           - seat-{row}{col} (Button): Individual seats, e.g., seat-A1
+           - proceed-booking-button (Button): Proceed to booking confirmation
+         - Navigation:
+           - proceed-booking-button: url_for('booking_confirmation')
+         
+         ### Booking Confirmation Page
+         - Filename: templates/booking_confirmation.html
+         - Page Title: Booking Confirmation
+         - <title>: "Booking Confirmation"
+         - <h1>: "Booking Confirmation"
+         - Elements:
+           - confirmation-page (Div): Container
+           - booking-summary (Div): Booking details summary
+           - customer-name (Input): Input customer name
+           - customer-email (Input): Input customer email
+           - confirm-booking-button (Button): Confirm booking
+         - Navigation:
+           - confirm-booking-button: form POST to booking_confirmation
+         
+         ### Booking History Page
+         - Filename: templates/bookings.html
+         - Page Title: Booking History
+         - <title>: "Booking History"
+         - <h1>: "Booking History"
+         - Elements:
+           - bookings-page (Div): Container
+           - bookings-table (Table): Booking entries with columns: Booking ID, Movie, Date, Seats, Status
+           - view-booking-button-{booking_id} (Button): View booking details
+           - status-filter (Dropdown): Filter by status
+           - back-to-dashboard (Button): Navigate to dashboard
+         - Navigation:
+           - view-booking-button-{booking_id}: url_for('booking_details', booking_id=booking_id)
+           - back-to-dashboard: url_for('dashboard')
+         
+         ### Theater Information Page
+         - Filename: templates/theater_information.html
+         - Page Title: Theater Information
+         - <title>: "Theater Information"
+         - <h1>: "Theater Information"
+         - Elements:
+           - theater-page (Div): Container
+           - theaters-list (Div): List of theaters with location, screens, facilities
+           - theater-location-filter (Dropdown): Filter by location
+           - facilities-display (Div): Details of theater facilities
+           - back-to-dashboard (Button): Navigate to dashboard
+         - Navigation:
+           - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### 1. Movies Data
+         - File: data/movies.txt
+         - Fields (pipe-delimited, exact order):
+           movie_id|title|director|genre|rating|duration|description|release_date
+         - Description: Stores all movie details.
+         - Examples:
+           1|The Matrix|Lana Wachowski|Action|8.7|136|A computer hacker learns about the true nature of reality and his role in the war against its controllers.|1999-03-31
+           2|Inception|Christopher Nolan|Sci-Fi|8.8|148|A skilled thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.|2010-07-16
+           3|The Shawshank Redemption|Frank Darabont|Drama|9.3|142|Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.|1994-09-23
+         
+         ### 2. Theaters Data
+         - File: data/theaters.txt
+         - Fields (pipe-delimited, exact order):
+           theater_id|theater_name|location|city|screens|facilities
+         - Description: Contains theater information including facilities.
+         - Examples:
+           1|Cinema Max|123 Main St|New York|10|IMAX, Dolby, Wheelchair Access
+           2|Galaxy Cinemas|456 Broadway|Los Angeles|8|3D, Premium Sound, Parking
+           3|Starlight Theater|789 Park Ave|Chicago|6|Luxury Seating, Restaurant, VIP Lounge
+         
+         ### 3. Showtimes Data
+         - File: data/showtimes.txt
+         - Fields (pipe-delimited, exact order):
+           showtime_id|movie_id|theater_id|showtime_date|showtime_time|price|available_seats
+         - Description: Stores showtimes for movies at theaters.
+         - Examples:
+           1|1|1|2025-02-01|19:00|12.99|85
+           2|1|1|2025-02-01|22:30|12.99|40
+           3|2|2|2025-02-01|18:00|14.99|95
+         
+         ### 4. Seats Data
+         - File: data/seats.txt
+         - Fields (pipe-delimited, exact order):
+           seat_id|theater_id|screen_id|row|column|seat_type|status
+         - Description: Details seat availability and type within theaters.
+         - Examples:
+           1|1|1|A|1|Standard|Available
+           2|1|1|A|2|Standard|Available
+           3|1|1|B|5|Premium|Booked
+         
+         ### 5. Bookings Data
+         - File: data/bookings.txt
+         - Fields (pipe-delimited, exact order):
+           booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked
+         - Description: Records bookings with customer and seat info.
+         - Examples:
+           1|1|John Doe|john@example.com|2025-01-15|25.98|Confirmed|A1,A2
+           2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10
+           3|3|Robert Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4
+         
+         ### 6. Genres Data
+         - File: data/genres.txt
+         - Fields (pipe-delimited, exact order):
+           genre_id|genre_name|description
+         - Description: Movie genres with descriptions.
+         - Examples:
+           1|Action|Fast-paced movies with exciting sequences and combat
+           2|Drama|Character-driven stories exploring complex themes
+           3|Sci-Fi|Science fiction with futuristic technology and concepts
+         
+
+      📝 After (full content):
+         # Specification
+         
+         
+         
+         ## Section 1: Routes Specification
+         
+         Path Function Method |
+         |-------------|-----------------------------|--------------------------------------------------------------------|
+         GET
+         /dashboard dashboard dashboard.html featured_movies: {movie_id:int, title:str, rating:float, duration:int}
+         | list[dict] {movie_id:int, title:str, release_date:str}
+         movie_catalog {movie_id:int, title:str, genre:str, rating:float, duration:int}
+         | |
+         | | | {movie_id:int, title:str, director:str, rating:float, description:str}
+         | showtimes: list[dict] {showtime_id:int, showtime_date:str, showtime_time:str, theater_name:str, price:float}
+         | | |
+         | | | {seat_id:int, row:str, column:int, seat_type:str, status:str}
+         | | | selected_showtime: {showtime_id:int, movie_title:str, theater_name:str, showtime_date:str, showtime_time:str}
+         | booking_confirmation | | dict {movie_title:str, showtime_date:str, showtime_time:str, seats:list[str], total_price:float}
+         | | | (optional)
+         | GET | bookings: list[dict] {booking_id:int, movie_title:str, booking_date:str, seats:str, status:str}
+         | list[str] (All,
+         booking_details | GET | {booking_id:int, movie_title:str, showtime_date:str, seats:list[str], status:str, customer_name:str, customer_email:str, total_price:float}
+         theater_information | | {theater_id:int, theater_name:str, location:str, city:str, screens:int, facilities:str}
+         locations: list[str]
+         
+         ---
+         
+         2: HTML Template Specifications
+         
+         Dashboard
+         -
+         - Title:
+         - <title>: "Movie Dashboard"
+         - Ticketing Dashboard"
+         -
+         dashboard-page Main container
+         - featured-movies (Div): featured movie
+         - to
+         - Navigate Booking History
+         Navigate Showtimes
+         - Navigation:
+         - url_for('movie_catalog')
+         view-bookings-button:
+         showtimes-button: url_for('showtime_selection', movie_id=<default_movie_id>)
+         
+         Movie Page
+         
+         Title: Catalog
+         Catalog"
+         Catalog"
+         -
+         (Div):
+         - (Input): to search movies
+         - by genre
+         (Div): containing cards
+         - (Button): for movie with
+         
+         url_for('movie_details', movie_id=movie_id)
+         
+         Movie Page
+         Filename:
+         -
+         "Movie Details"
+         <h1>:
+         
+         - (Div): Container
+         -
+         (Div): Movie
+         (Div): rating
+         movie-description (Div): description
+         select-showtime-button Proceed to showtime
+         
+         select-showtime-button:
+         
+         Showtime
+         
+         - Title:
+         
+         - Showtime"
+         - Elements:
+         showtime-page (Div): Container
+         showtimes-list (Div): of showtimes
+         - showtimes
+         by
+         -
+         -
+         select-showtime-button-{showtime_id}:
+         
+         
+         Filename:
+         Title: Seats
+         - "Select Seats"
+         - "Select Seats"
+         
+         - seat-selection-page Container
+         seat-map (Div): map
+         - selected-seats-display (Div): Displays selected
+         (Button): e.g., seat-A1
+         - Proceed confirmation
+         
+         - proceed-booking-button: url_for('booking_confirmation')
+         
+         ### Confirmation
+         templates/booking_confirmation.html
+         Booking
+         
+         Confirmation"
+         
+         (Div): Container
+         (Div): Booking
+         customer-name
+         Input
+         (Button): Confirm booking
+         -
+         - form POST booking_confirmation
+         
+         
+         templates/bookings.html
+         - Page Booking History
+         - <title>: History"
+         - "Booking History"
+         - Elements:
+         -
+         - bookings-table Booking entries with Date, Seats,
+         - view-booking-button-{booking_id} View booking
+         - status
+         to
+         Navigation:
+         -
+         - url_for('dashboard')
+         
+         Page
+         Filename: templates/theater_information.html
+         - Title:
+         <title>:
+         Information"
+         Elements:
+         theater-page (Div): Container
+         - theaters-list (Div): List with facilities
+         - (Dropdown): Filter
+         theater
+         - (Button): Navigate
+         
+         
+         
+         
+         
+         3: Data Schemas
+         
+         ### 1.
+         -
+         
+         movie_id|title|director|genre|rating|duration|description|release_date
+         - movie details.
+         
+         1|The Matrix|Lana about the of his war its controllers.|1999-03-31
+         skilled thief steals corporate through the of dream-sharing technology is given task of planting idea.|2010-07-16
+         3|The imprisoned men number of years, finding solace and acts of decency.|1994-09-23
+         
+         ### 2.
+         
+         order):
+         
+         
+         
+         1|Cinema York|10|IMAX,
+         Cinemas|456 Parking
+         3|Starlight VIP
+         
+         Data
+         File:
+         (pipe-delimited, exact
+         
+         - Stores for at
+         
+         
+         
+         
+         
+         ### 4. Seats Data
+         - data/seats.txt
+         order):
+         
+         Description: Details and within
+         -
+         
+         
+         
+         
+         ###
+         
+         exact
+         booking_id|showtime_id|customer_name|customer_email|booking_date|total_price|status|seats_booked
+         with seat info.
+         -
+         1|1|John
+         2|2|Jane Smith|jane@example.com|2025-01-16|12.99|Confirmed|F10
+         Johnson|robert@example.com|2025-01-17|29.98|Confirmed|C3,C4
+         
+         6.
+         File: data/genres.txt
+         
+         
+         - Description: descriptions.
+         Examples:
+         1|Action|Fast-paced with sequences combat
+         2|Drama|Character-driven stories
+         and
+         
+
+================================================================================
+

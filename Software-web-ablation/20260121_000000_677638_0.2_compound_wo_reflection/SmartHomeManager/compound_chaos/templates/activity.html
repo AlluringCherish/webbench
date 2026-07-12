@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Activity Logs - SmartHomeManager</title>
+</head>
+<body>
+    <h1 id="activity-page">Activity Logs</h1>
+    <nav>
+        <a href="{{ url_for('dashboard') }}">Home</a> |
+        <a href="{{ url_for('devices_list') }}">Devices</a> |
+        <a href="{{ url_for('activity_page') }}">Activity Logs</a> |
+        <a href="{{ url_for('energy_page') }}">Energy</a> |
+        <a href="{{ url_for('automation_page') }}">Automation Rules</a>
+    </nav>
+    <section>
+        <label for="filter-device">Filter by Device:</label>
+        <select id="filter-device" name="device_id" onchange="filterActivity()">
+            <option value="all">All</option>
+            {% for device in device_map.values() %}
+                <option value="{{ device.device_id }}">{{ device.device_name }}</option>
+            {% endfor %}
+        </select>
+        <table id="activity-table" border="1">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Timestamp</th>
+                    <th>Device</th>
+                    <th>Action</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody id="activity-tbody">
+                {% for log in logs %}
+                <tr data-device-id="{{ log.device_id }}">
+                    <td>{{ log.username }}</td>
+                    <td>{{ log.timestamp }}</td>
+                    <td>{{ device_map[log.device_id].device_name if log.device_id in device_map else 'Unknown' }}</td>
+                    <td>{{ log.action }}</td>
+                    <td>{{ log.details }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <script>
+        function filterActivity() {
+            var filterValue = document.getElementById('filter-device').value;
+            var rows = document.getElementById('activity-tbody').getElementsByTagName('tr');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                var deviceId = row.getAttribute('data-device-id');
+                if (filterValue === 'all' || deviceId === filterValue) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

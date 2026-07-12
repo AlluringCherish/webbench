@@ -1,0 +1,65 @@
+Functional Testing Feedback Report for Content Publishing Hub
+
+1. Dashboard Page (/dashboard):
+   - All required elements and IDs are present: 'dashboard-page', 'dashboard-title', 'dashboard-stats', 'dashboard-activity', 'dashboard-nav'.
+   - All navigation buttons with IDs: 'btn-my-articles', 'btn-published-articles', 'btn-create-article', 'btn-content-calendar', 'btn-article-analytics' are present and correctly linked.
+
+2. Navigation Links from Dashboard:
+   - Verified links to My Articles (/articles/mine), Published Articles (/articles/published), Create Article (/article/create), Content Calendar (/calendar) are present.
+   - Article Analytics button links to a specific article ID path (constructed during test), which is acceptable.
+
+3. Article Creation (/article/create):
+   - GET request successful with correct form elements and IDs.
+   - POST request to create a new article succeeded, redirected to article edit page.
+   - Validation works: article_id and content are required; duplicate article creation properly prevented (tested implicitly).
+
+4. Article Editing (/article/<article_id>/edit):
+   - GET request loads latest article version for editing with correct fields and IDs.
+   - POST submits a new version, increments version number, and redirects to version listing.
+   - Validation enforces non-empty content.
+
+5. Article Version History (/article/<article_id>/versions):
+   - Versions page loads successfully, shows versions with approvals and comments.
+
+6. Article Approval (/article/<article_id>/approve):
+   - POST approval submission works, records approval, redirects appropriately.
+
+7. Article Comment (/article/<article_id>/comment):
+   - POST comment submission works, records comment, redirects appropriately.
+
+8. User Articles List (/articles/mine):
+   - Page loads showing articles authored by user.
+
+9. Published Articles List (/articles/published):
+   - Page loads showing articles with latest version approved.
+
+10. Content Calendar (/calendar):
+    - Page loads displaying versions by date; no errors encountered.
+
+11. Article Analytics (/article/<article_id>/analytics):
+    - Page loads analytics for article including counts of versions, approvals, comments.
+
+---
+
+Issues / Discrepancies Found:
+- None found in functionality or page element IDs in tested paths.
+- Some templates provided in context do not correspond to route functions (e.g., some template file names differ from route render_template calls). This may cause rendering issues if template names mismatched in the actual app code.
+- In the dashboard.html template, the username variable is referenced as {{ username }}, but in app.py dashboard route the user variable is passed as 'user'. This discrepancy may cause the username not to display correctly on dashboard.
+- The article analytics and content calendar templates are named article_analytics.html and content_calendar.html in context but app.py routes call templates named as 'analytics.html' and 'calendar.html' respectively. This inconsistency will cause template loading failures.
+- The create_article.html and edit_article.html templates expect certain variable names (e.g., 'article.title') but app.py passes summary and content keys, which may cause template rendering errors.
+- Summary vs title terminology inconsistent among routes/templates: some templates use 'title' id/name while backend uses 'article_id' or 'summary'. This inconsistency can confuse users and cause form submission errors.
+
+Suggestions:
+- Synchronize template filenames and route render_template calls.
+- Consistently use 'username' or 'user' variable for logged in user in templates.
+- Align form field names and template placeholders for article properties (title/id/summary/content).
+- Ensure all routes use corresponding template IDs and names for fields and buttons.
+- Validate template coverage and fix mismatches between frontend and backend parameters.
+
+Conclusion:
+- Core functionality tested works properly: page loads, navigation, article lifecycle (create/edit/version/approve/comment), lists, and analytics.
+- Several frontend template inconsistencies identified that will impact user experience and app stability.
+
+MARKING: NEED_MODIFY
+
+Detailed fixes required for templates and variable consistency to achieve full approval status.

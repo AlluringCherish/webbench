@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Alerts</title>
+</head>
+<body>
+    <div id="alerts-page">
+        <h1>Weather Alerts</h1>
+        <form method="POST">
+            <label for="severity-filter">Filter by Severity:</label>
+            <select id="severity-filter" name="severity_filter" onchange="this.form.submit()">
+                {% for level in ['All', 'Critical', 'High', 'Medium', 'Low'] %}
+                    <option value="{{ level }}" {% if severity_filter == level %}selected{% endif %}>{{ level }}</option>
+                {% endfor %}
+            </select>
+            <label for="location-filter-alerts">Filter by Location:</label>
+            <select id="location-filter-alerts" name="location_filter" onchange="this.form.submit()">
+                <option value="" {% if location_filter is none %}selected{% endif %}>All Locations</option>
+                {% for loc_id in alerts | map(attribute='location_id') | unique %}
+                    <option value="{{ loc_id }}" {% if location_filter == loc_id %}selected{% endif %}>{{ alerts | selectattr('location_id','equalto',loc_id) | first.location_name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <div id="alerts-list">
+            {% for alert in alerts %}
+                <div class="alert-entry" style="border:1px solid #000; margin:5px; padding:5px;">
+                    <p><strong>Location:</strong> {{ alert.location_name }}</p>
+                    <p><strong>Type:</strong> {{ alert.alert_type }}</p>
+                    <p><strong>Severity:</strong> {{ alert.severity }}</p>
+                    <p><strong>Description:</strong> {{ alert.description }}</p>
+                    <p><strong>Start:</strong> {{ alert.start_time }}</p>
+                    <p><strong>End:</strong> {{ alert.end_time }}</p>
+                    <p><strong>Acknowledged:</strong> {{ 'Yes' if alert.is_acknowledged else 'No' }}</p>
+                    {% if not alert.is_acknowledged %}
+                    <form method="POST" style="display:inline;">
+                        <input type="hidden" name="acknowledge_alert_id" value="{{ alert.alert_id }}" />
+                        <button type="submit" id="acknowledge-alert-button-{{ alert.alert_id }}">Acknowledge</button>
+                    </form>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p>No alerts to display.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

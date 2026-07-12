@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Articles</title>
+</head>
+<body>
+    <div id="trending-page">
+        <h1>Trending Articles</h1>
+
+        <label for="time-period-filter">Filter by Time Period:</label>
+        <select id="time-period-filter" name="time_period" onchange="location.href='{{ url_for('trending_articles') }}?time_period=' + encodeURIComponent(this.value);">
+            <option value="Today" {% if time_period == 'Today' %}selected{% endif %}>Today</option>
+            <option value="This Week" {% if time_period == 'This Week' %}selected{% endif %}>This Week</option>
+            <option value="This Month" {% if time_period == 'This Month' %}selected{% endif %}>This Month</option>
+        </select>
+
+        <div id="trending-list">
+            {% for item in trending_list %}
+            <div class="trending-item">
+                <span><strong>{{ item.article_title }}</strong> (Category: {{ item.category }}, Views: {{ item.view_count }})</span>
+                <button id="view-article-button-{{ item.article_id }}" onclick="location.href='{{ url_for('article_details', article_id=item.article_id) }}'">View Article</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

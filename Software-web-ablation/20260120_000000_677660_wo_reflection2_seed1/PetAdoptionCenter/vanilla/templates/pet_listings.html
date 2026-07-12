@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Pets</title>
+</head>
+<body>
+    <div id="pet-listings-page">
+        <h1>Available Pets</h1>
+        <input id="search-input" type="text" name="search" placeholder="Search pets..." value="" />
+        <select id="filter-species" name="species-filter">
+            <option value="">All Species</option>
+            <option value="Dog" {% if filter_species == 'Dog' %}selected{% endif %}>Dog</option>
+            <option value="Cat" {% if filter_species == 'Cat' %}selected{% endif %}>Cat</option>
+            <option value="Bird" {% if filter_species == 'Bird' %}selected{% endif %}>Bird</option>
+            <option value="Rabbit" {% if filter_species == 'Rabbit' %}selected{% endif %}>Rabbit</option>
+            <option value="Other" {% if filter_species == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+        <div id="pet-grid">
+            {% if pets %}
+            <ul>
+                {% for pet in pets %}
+                <li id="pet-{{ pet.pet_id }}">
+                    <a href="{{ url_for('pet_details', pet_id=pet.pet_id) }}">
+                        {{ pet.name }} - {{ pet.species }}, {{ pet.age }}
+                    </a>
+                    {% if pet.photo_url %}
+                    <br><img src="{{ pet.photo_url }}" alt="Photo of {{ pet.name }}" />
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No pets found.</p>
+            {% endif %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

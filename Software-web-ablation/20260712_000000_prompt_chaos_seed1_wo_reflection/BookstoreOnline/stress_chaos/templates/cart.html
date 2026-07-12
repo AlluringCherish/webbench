@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+</head>
+<body>
+    <h1>Your Shopping Cart</h1>
+
+    {% if cart_items %}
+    <form method="post" action="{{ url_for('shopping_cart') }}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.title }}</td>
+                    <td>${{ item.price }}</td>
+                    <td><input type="number" name="quantity_{{ item.book_id }}" min="0" value="{{ item.quantity }}" /></td>
+                    <td>${{ item.subtotal }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>Total: ${{ total_amount }}</p>
+        <button type="submit">Update Cart</button>
+    </form>
+    <button onclick="location.href='{{ url_for('checkout') }}'">Proceed to Checkout</button>
+    {% else %}
+    <p>Your cart is empty.</p>
+    {% endif %}
+
+    <a href="{{ url_for('catalog') }}">Continue Shopping</a>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Applications</title>
+</head>
+<body>
+<div id="tracking-page">
+    <form method="GET" action="{{ url_for('application_tracking_page') }}">
+        <select id="status-filter" name="status_filter" onchange="this.form.submit()">
+            <option value="All" {% if status_filter == 'All' %}selected{% endif %}>All</option>
+            <option value="Applied" {% if status_filter == 'Applied' %}selected{% endif %}>Applied</option>
+            <option value="Under Review" {% if status_filter == 'Under Review' %}selected{% endif %}>Under Review</option>
+            <option value="Interview" {% if status_filter == 'Interview' %}selected{% endif %}>Interview</option>
+            <option value="Rejected" {% if status_filter == 'Rejected' %}selected{% endif %}>Rejected</option>
+        </select>
+    </form>
+    <table id="applications-table" border="1">
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Company Name</th>
+                <th>Status</th>
+                <th>Applied Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in applications %}
+            <tr id="application-{{ application.application_id }}">
+                <td>{{ application.job_title }}</td>
+                <td>{{ application.company_name }}</td>
+                <td>{{ application.status }}</td>
+                <td>{{ application.applied_date }}</td>
+                <td><button id="view-application-button-{{ application.application_id }}" onclick="location.href='{{ url_for('application_details_page', application_id=application.application_id) }}'">View</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

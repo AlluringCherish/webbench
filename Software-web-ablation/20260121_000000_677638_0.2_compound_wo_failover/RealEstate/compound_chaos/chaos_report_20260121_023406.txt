@@ -1,0 +1,2262 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "BackendDeveloper",
+      "SystemArchitect"
+    ],
+    "num_all_targets": 2,
+    "agent_chaos_targets": [
+      "BackendDeveloper"
+    ],
+    "stress_chaos_targets": [
+      "BackendDeveloper"
+    ],
+    "io_chaos_targets": [
+      "SystemArchitect"
+    ],
+    "intention_hiding_targets": []
+  },
+  "agent_chaos": {
+    "enabled": true,
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 3,
+    "log": [
+      {
+        "timestamp": 1768930347.1127186,
+        "agent": "BackendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930348.1241271,
+        "agent": "BackendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930350.1264343,
+        "agent": "BackendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      }
+    ]
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordShuffle",
+    "targets_selected": 1,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordShuffle (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": []
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "WordDeletion",
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 4,
+    "method_selection": "Mode: WordDeletion (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": [
+      {
+        "timestamp": 1768930288.3080728,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 850/1417 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "# Design Specification for RealEstate Web Application\n\n---\n\n## Section 1: Flask Routes Specification (Backend)\n\n| Route Path                 | HTTP Method | Function Name           | Template Rendered         | Route Parameters         | Context Variables Passed to Template (name : type) | POST Form Data Expected (name : type)                                  |\n|----------------------------|-------------|------------------------|---------------------------|--------------------------|-----------------------------------------------------|---------------------------------------------------------------------------|\n| /                          | GET         | root_redirect           | -                         | -                        | -                                                   | -                                                                         |\n| /dashboard                 | GET         | dashboard              | dashboard.html            | -                        | featured_properties : list(dict), recent_listings : list(dict)          | -                                                                         |\n| /search                   | GET         | property_search        | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict   | -                                                                         |\n| /search                   | POST        | property_search        | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict   | location_input : str, price_range_min : float, price_range_max : float, property_type_filter : str |\n| /property/<int:property_id> | GET         | property_details       | property_details.html     | property_id : int        | property : dict                                                         | -                                                                         |\n| /inquiry                  | GET         | property_inquiry       | inquiry.html              | -                        | properties : list(dict)                                                 | -                                                                         |\n| /inquiry                  | POST        | submit_inquiry         | inquiries.html            | -                        | inquiries : list(dict)                                                  | select_property : int (property_id), inquiry_name : str, inquiry_email : str, inquiry_phone : str, inquiry_message : str |\n| /inquiries                | GET         | my_inquiries           | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                           | -                                                                         |\n| /inquiries/filter         | POST        | filter_inquiries       | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                           | inquiry_status_filter : str                                               |\n| /inquiries/delete/<int:inquiry_id> | POST | delete_inquiry         | inquiries.html            | inquiry_id : int         | inquiries : list(dict), status_filter : str                           | -                                                                         |\n| /favorites                | GET         | my_favorites           | favorites.html            | -                        | favorites : list(dict), properties_dict : dict (property_id -> dict)     | -                                                                         |\n| /favorites/add/<int:property_id> | POST | add_to_favorites        | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id -> dict)     | -                                                                         |\n| /favorites/remove/<int:property_id> | POST | remove_from_favorites    | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id -> dict)     | -                                                                         |\n| /agents                   | GET         | agent_directory        | agents.html               | -                        | agents : list(dict)                                                    | -                                                                         |\n| /locations                | GET         | locations_page         | locations.html            | -                        | locations : list(dict), sort_option : str                             | -                                                                         |\n| /locations/sort           | POST        | sort_locations         | locations.html            | -                        | locations : list(dict), sort_option : str                             | location_sort : str                                                       |\n\n### Explanation:\n- The root route `/` redirects to `/dashboard`.\n- For POST routes handling forms, the expected form fields are defined.\n- Context variables include lists of dictionaries representing data records.\n- The favorites page requires both favorites list and a property lookup dictionary for display.\n- Inquiries filtering and deletion are handled via POST requests to appropriate routes.\n- The locations page supports sorting via POST route.\n\n---\n\n## Section 2: HTML Templates (Frontend)\n\n### 1. dashboard.html\n- Page Title: Real Estate Dashboard\n- Element IDs:\n  - dashboard-page\n  - featured-properties\n  - browse-properties-button\n  - my-inquiries-button\n  - my-favorites-button\n- Context Variables:\n  - featured_properties (list of dict): Featured property recommendations. Each dict includes keys: property_id (int), address (str), price (float), image_url (str).\n  - recent_listings (list of dict): Recent property listings, same structure as featured_properties.\n- Navigation Mappings (Flask url_for):\n  - browse-properties-button: url_for('property_search')\n  - my-inquiries-button: url_for('my_inquiries')\n  - my-favorites-button: url_for('my_favorites')\n- Forms: None\n\n---\n\n### 2. search.html\n- Page Title: Property Search\n- Element IDs:\n  - search-page\n  - location-input\n  - price-range-min\n  - price-range-max\n  - property-type-filter\n  - properties-grid\n  - view-property-button-{{ property.property_id }} (dynamic for each property)\n- Context Variables:\n  - properties (list of dict): All property listings to display. Keys include property_id (int), address (str), location (str), price (float), property_type (str), bedrooms (int), bathrooms (float).\n  - locations (list of dict): List of locations available (optional for filter suggestions).\n  - filter_options (dict): Current filter selections with keys: location_input (str), price_range_min (float), price_range_max (float), property_type_filter (str).\n- Navigation Mappings:\n  - view-property-button-{{ property.property_id }}: url_for('property_details', property_id=property.property_id)\n- Forms:\n  - Search/Filter form with inputs:\n    - location-input\n    - price-range-min\n    - price-range-max\n    - property-type-filter\n    - Submit button with ID: \"search-submit-button\"\n    - Form action: url_for('property_search') method: POST\n\n---\n\n### 3. property_details.html\n- Page Title: Property Details\n- Element IDs:\n  - property-details-page\n  - property-address\n  - property-price\n  - property-description\n  - property-features\n  - add-to-favorites-button\n  - submit-inquiry-button\n- Context Variables:\n  - property (dict): Detailed property info including keys: property_id (int), address (str), price (float), description (str), bedrooms (int), bathrooms (float), square_feet (int)\n- Navigation Mappings:\n  - add-to-favorites-button: url_for('add_to_favorites', property_id=property.property_id) (POST request)\n  - submit-inquiry-button: url_for('property_inquiry') or property inquiry submission\n- Forms:\n  - Add to favorites form with submit button ID: add-to-favorites-button, action route: url_for('add_to_favorites', property_id=property.property_id), method POST\n  - Inquiry submission may be a link/button to inquiry page\n\n---\n\n### 4. inquiry.html\n- Page Title: Submit Property Inquiry\n- Element IDs:\n  - inquiry-page\n  - select-property\n  - inquiry-name\n  - inquiry-email\n  - inquiry-phone\n  - inquiry-message\n  - submit-inquiry-button\n- Context Variables:\n  - properties (list of dict): List of properties for dropdown selection, keys: property_id (int), address (str)\n- Navigation Mappings:\n  - Form action: url_for('submit_inquiry') method: POST\n- Forms:\n  - Inquiry form with input fields above, submit button ID: submit-inquiry-button\n\n---\n\n### 5. inquiries.html\n- Page Title: My Inquiries\n- Element IDs:\n  - inquiries-page\n  - inquiries-table\n  - inquiry-status-filter\n  - delete-inquiry-button-{{ inquiry.inquiry_id }} (dynamic for each inquiry)\n  - back-to-dashboard\n- Context Variables:\n  - inquiries (list of dict): List of inquiries with keys: inquiry_id (int), property_id (int), customer_name (str), customer_email (str), customer_phone (str), message (str), inquiry_date (str), status (str)\n  - status_filter (str): Current filter applied\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n- Forms:\n  - Filter form with inquiry-status-filter dropdown, submit button ID: inquiry-filter-submit\n  - Delete inquiry buttons with IDs as above, each submitting POST to delete route\n\n---\n\n### 6. favorites.html\n- Page Title: My Favorite Properties\n- Element IDs:\n  - favorites-page\n  - favorites-list\n  - remove-from-favorites-button-{{ property.property_id }} (dynamic for each favorite property)\n  - view-property-button-{{ property.property_id }} (dynamic for each favorite property)\n  - back-to-dashboard\n- Context Variables:\n  - favorites (list of dict): List of favorite records with keys: favorite_id (int), property_id (int), added_date (str)\n  - properties_dict (dict): Dictionary mapping property_id (int) to property dict for display details\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n  - view-property-button-{{ property.property_id }}: url_for('property_details', property_id=property.property_id)\n- Forms:\n  - Remove from favorites form/button with submit button ID as above (POST)\n\n---\n\n### 7. agents.html\n- Page Title: Real Estate Agents\n- Element IDs:\n  - agents-page\n  - agents-list\n  - agent-search\n  - contact-agent-button-{{ agent.agent_id }} (dynamic for each agent)\n  - back-to-dashboard\n- Context Variables:\n  - agents (list of dict): List of agents with keys: agent_id (int), agent_name (str), specialization (str), email (str), phone (str), properties_sold (int)\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n- Forms:\n  - Agent search form input (agent-search) may be a client-side filter\n  - Contact agent button(s) usage unspecified (possibly mailto links or modal)\n\n---\n\n### 8. locations.html\n- Page Title: Featured Locations\n- Element IDs:\n  - locations-page\n  - locations-list\n  - view-location-button-{{ location.location_id }} (dynamic for each location)\n  - location-sort\n  - back-to-dashboard\n- Context Variables:\n  - locations (list of dict): List of locations with keys: location_id (int), location_name (str), region (str), average_price (float), property_count (int), description (str)\n  - sort_option (str): Current sort selection\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n  - view-location-button-{{ location.location_id }}: Action to view properties in location (implementation detail: possibly a route or filtering in search)\n- Forms:\n  - Sort form with location-sort dropdown, submit button with ID: location-sort-submit\n\n---\n\n## Section 3: Data File Schemas (Backend)\n\n### 1. properties.txt\n- File Path: data/properties.txt\n- Fields (pipe-delimited):\n  property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status\n- Data Description: Stores property listings with details including location, price, features, associated agent, and status.\n- Example Rows:\n  1|123 Oak Street|Downtown|450000|House|3|2|2500|Beautiful family home with large yard|101|Available\n  2|456 Park Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern apartment with city view|102|Available\n  3|789 Elm Road|Suburb|280000|Condo|2|2|1500|Cozy condo in quiet neighborhood|101|Sold\n\n---\n\n### 2. locations.txt\n- File Path: data/locations.txt\n- Fields (pipe-delimited):\n  location_id|location_name|region|average_price|property_count|description\n- Data Description: Stores location data including name, region, average property price, and number of properties.\n- Example Rows:\n  1|Downtown|Central|425000|45|Urban area with business district\n  2|Midtown|Central|380000|38|Mixed residential and commercial zone\n  3|Suburb|Outskirts|295000|52|Family-friendly residential area\n\n---\n\n### 3. inquiries.txt\n- File Path: data/inquiries.txt\n- Fields (pipe-delimited):\n  inquiry_id|property_id|customer_name|customer_email|customer_phone|message|inquiry_date|status\n- Data Description: Stores customer inquiries related to properties including contact and status info.\n- Example Rows:\n  1|1|John Smith|john@email.com|555-1234|Interested in viewing this weekend|2025-01-15|Pending\n  2|2|Sarah Johnson|sarah@email.com|555-5678|Can we schedule a showing?|2025-01-16|Contacted\n  3|1|Mike Davis|mike@email.com|555-9012|What is the lowest offer?|2025-01-17|Resolved\n\n---\n\n### 4. favorites.txt\n- File Path: data/favorites.txt\n- Fields (pipe-delimited):\n  favorite_id|property_id|added_date\n- Data Description: Stores favorite properties with the date they were added.\n- Example Rows:\n  1|1|2025-01-10\n  2|2|2025-01-12\n  3|3|2025-01-14\n\n---\n\n### 5. agents.txt\n- File Path: data/agents.txt\n- Fields (pipe-delimited):\n  agent_id|agent_name|specialization|email|phone|properties_sold\n- Data Description: Stores real estate agent details including specialization and contact info.\n- Example Rows:\n  101|Robert Wilson|Residential Properties|robert@email.com|555-0001|125\n  102|Emily Chen|Commercial Real Estate|emily@email.com|555-0002|89\n  103|James Martinez|Luxury Homes|james@email.com|555-0003|67\n",
+        "after": "# Specification for Web\n\n\n\nSection 1: Routes (Backend)\n\n| HTTP Method | | Route | Variables to Template (name type) | type)\n\n| | | - |\n| GET dashboard dashboard.html - : list(dict), recent_listings |\n| GET | | search.html locations : filter_options dict\n| locations : list(dict), float, price_range_max float, property_type_filter\n| | property_id : property : dict | -\n| GET property_inquiry | inquiry.html - list(dict) - |\n| POST | inquiries.html | : select_property : : str, inquiry_phone :\n| GET | inquiries.html | inquiries : : str - |\n| | | str |\n/inquiries/delete/<int:inquiry_id> | inquiry_id : : : - |\n/favorites | | favorites.html : |\n| /favorites/add/<int:property_id> POST | add_to_favorites | : : list(dict), properties_dict : -> | |\n/favorites/remove/<int:property_id> POST | : int | favorites properties_dict ->\n| /agents | | agent_directory | : -\n| /locations - | : sort_option |\nPOST | sort_locations | | - locations list(dict), : :\n\n\n- The root `/` `/dashboard`.\n- For form fields\n- lists of dictionaries data records.\n- The page favorites display.\nInquiries requests to appropriate\nThe page supports route.\n\n\n\n## HTML (Frontend)\n\n1. dashboard.html\nReal Estate Dashboard\n-\n\n\n-\n\n-\n- Variables:\nrecommendations. Each includes\n- recent_listings (list dict):\nNavigation (Flask\n\nurl_for('my_inquiries')\n\n\n\n\n\nsearch.html\nPage Title:\n- Element\n\n-\n\nprice-range-max\nproperty-type-filter\n\n- for\n- Context\nof listings property_id address (str), property_type (str), bedrooms bathrooms (float).\n- locations (list of dict): available for\n(dict): Current filter keys: location_input price_range_min price_range_max property_type_filter (str).\n-\n- view-property-button-{{ property.property_id }}:\nForms:\nform inputs:\nlocation-input\n-\n- price-range-max\nproperty-type-filter\nbutton with ID:\naction:\n\n\n\n3.\nPage Details\n- Element IDs:\nproperty-details-page\n\nproperty-price\n- property-description\nproperty-features\n-\n\nVariables:\n- property property property_id (int), (str), (int)\n- Navigation Mappings:\n- request)\n- url_for('property_inquiry') inquiry submission\n-\nto favorites button add-to-favorites-button, action POST\n- Inquiry may be a to page\n\n\n\ninquiry.html\nSubmit Property\nIDs:\n- inquiry-page\n- select-property\n\n-\n- inquiry-phone\n- inquiry-message\n\nContext\n(list dict): properties for keys: (int),\n- Mappings:\naction:\n-\nwith input submit button submit-inquiry-button\n\n---\n\n### 5.\nPage Title:\n- Element\n-\ninquiries-table\ninquiry-status-filter\n(dynamic each\n\n- Context\ninquiries (list of inquiries (int), (str), (str), message (str),\n(str):\nMappings:\n-\n- Forms:\nform submit inquiry-filter-submit\nbuttons IDs above, submitting\n\n\n\n### 6. favorites.html\nPage My\nElement IDs:\n\nfavorites-list\n- property)\neach property)\n-\nVariables:\nfavorites (list of dict): List records favorite_id (int),\n(dict): Dictionary (int) to for\n\n- url_for('dashboard')\n- view-property-button-{{ property.property_id }}:\nForms:\nfrom button ID as (POST)\n\n---\n\n###\nTitle:\n-\n- agents-page\n\nagent-search\ncontact-agent-button-{{ agent.agent_id }} each\n-\n\n- (list of agents keys: (int), (str), specialization (str), phone (str), properties_sold\n-\nurl_for('dashboard')\n\nAgent search form input filter\n- Contact button(s) usage (possibly mailto\n\n\n\n\nTitle: Featured\n- IDs:\n\n- locations-list\n- (dynamic for\n- location-sort\nback-to-dashboard\n\n- of dict): region\nCurrent selection\nNavigation\nurl_for('dashboard')\nview-location-button-{{ location.location_id }}: to view properties location a or search)\n- Forms:\nSort\n\n\n\nSection Data File Schemas\n\n### properties.txt\nFile\n- Fields\nproperty_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status\ndetails including associated agent, and status.\n- Rows:\nhome large\n2|456 Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern with\nRoad|Suburb|280000|Condo|2|2|1500|Cozy condo\n\n\n\n### locations.txt\n- Path:\n(pipe-delimited):\n\n- Data Stores including name, property and properties.\n-\narea\nresidential commercial zone\n3|Suburb|Outskirts|295000|52|Family-friendly\n\n\n\ninquiries.txt\n- File\n- Fields\n\nStores customer contact\n-\nSmith|john@email.com|555-1234|Interested this weekend|2025-01-15|Pending\n2|2|Sarah Johnson|sarah@email.com|555-5678|Can we schedule showing?|2025-01-16|Contacted\n\n\n---\n\n4. favorites.txt\n- File Path: data/favorites.txt\n-\nfavorite_id|property_id|added_date\n- favorite properties with the date\n- Example\n1|1|2025-01-10\n\n3|3|2025-01-14\n\n\n\n\nPath: data/agents.txt\n\nagent_id|agent_name|specialization|email|phone|properties_sold\nestate and info.\n-\nWilson|Residential\nChen|Commercial Real\n103|James Martinez|Luxury\n"
+      },
+      {
+        "timestamp": 1768930288.3084536,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_failover/RealEstate/compound_chaos/design_spec.md",
+        "before": "# Design Specification for RealEstate Web Application\n\n---\n\n## Section 1: Flask Routes Specification (Backend)\n\n| Route Path                 | HTTP Method | Function Name           | Template Rendered         | Route Parameters         | Context Variables Passed to Template (name : type) | POST Form Data Expected (name : type)                                  |\n|----------------------------|-------------|------------------------|---------------------------|--------------------------|-----------------------------------------------------|---------------------------------------------------------------------------|\n| /                          | GET         | root_redirect           | -                         | -                        | -                                                   | -                                                                         |\n| /dashboard                 | GET         | dashboard              | dashboard.html            | -                        | featured_properties : list(dict), recent_listings : list(dict)          | -                                                                         |\n| /search                   | GET         | property_search        | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict   | -                                                                         |\n| /search                   | POST        | property_search        | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict   | location_input : str, price_range_min : float, price_range_max : float, property_type_filter : str |\n| /property/<int:property_id> | GET         | property_details       | property_details.html     | property_id : int        | property : dict                                                         | -                                                                         |\n| /inquiry                  | GET         | property_inquiry       | inquiry.html              | -                        | properties : list(dict)                                                 | -                                                                         |\n| /inquiry                  | POST        | submit_inquiry         | inquiries.html            | -                        | inquiries : list(dict)                                                  | select_property : int (property_id), inquiry_name : str, inquiry_email : str, inquiry_phone : str, inquiry_message : str |\n| /inquiries                | GET         | my_inquiries           | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                           | -                                                                         |\n| /inquiries/filter         | POST        | filter_inquiries       | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                           | inquiry_status_filter : str                                               |\n| /inquiries/delete/<int:inquiry_id> | POST | delete_inquiry         | inquiries.html            | inquiry_id : int         | inquiries : list(dict), status_filter : str                           | -                                                                         |\n| /favorites                | GET         | my_favorites           | favorites.html            | -                        | favorites : list(dict), properties_dict : dict (property_id -> dict)     | -                                                                         |\n| /favorites/add/<int:property_id> | POST | add_to_favorites        | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id -> dict)     | -                                                                         |\n| /favorites/remove/<int:property_id> | POST | remove_from_favorites    | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id -> dict)     | -                                                                         |\n| /agents                   | GET         | agent_directory        | agents.html               | -                        | agents : list(dict)                                                    | -                                                                         |\n| /locations                | GET         | locations_page         | locations.html            | -                        | locations : list(dict), sort_option : str                             | -                                                                         |\n| /locations/sort           | POST        | sort_locations         | locations.html            | -                        | locations : list(dict), sort_option : str                             | location_sort : str                                                       |\n\n### Explanation:\n- The root route `/` redirects to `/dashboard`.\n- For POST routes handling forms, the expected form fields are defined.\n- Context variables include lists of dictionaries representing data records.\n- The favorites page requires both favorites list and a property lookup dictionary for display.\n- Inquiries filtering and deletion are handled via POST requests to appropriate routes.\n- The locations page supports sorting via POST route.\n\n---\n\n## Section 2: HTML Templates (Frontend)\n\n### 1. dashboard.html\n- Page Title: Real Estate Dashboard\n- Element IDs:\n  - dashboard-page\n  - featured-properties\n  - browse-properties-button\n  - my-inquiries-button\n  - my-favorites-button\n- Context Variables:\n  - featured_properties (list of dict): Featured property recommendations. Each dict includes keys: property_id (int), address (str), price (float), image_url (str).\n  - recent_listings (list of dict): Recent property listings, same structure as featured_properties.\n- Navigation Mappings (Flask url_for):\n  - browse-properties-button: url_for('property_search')\n  - my-inquiries-button: url_for('my_inquiries')\n  - my-favorites-button: url_for('my_favorites')\n- Forms: None\n\n---\n\n### 2. search.html\n- Page Title: Property Search\n- Element IDs:\n  - search-page\n  - location-input\n  - price-range-min\n  - price-range-max\n  - property-type-filter\n  - properties-grid\n  - view-property-button-{{ property.property_id }} (dynamic for each property)\n- Context Variables:\n  - properties (list of dict): All property listings to display. Keys include property_id (int), address (str), location (str), price (float), property_type (str), bedrooms (int), bathrooms (float).\n  - locations (list of dict): List of locations available (optional for filter suggestions).\n  - filter_options (dict): Current filter selections with keys: location_input (str), price_range_min (float), price_range_max (float), property_type_filter (str).\n- Navigation Mappings:\n  - view-property-button-{{ property.property_id }}: url_for('property_details', property_id=property.property_id)\n- Forms:\n  - Search/Filter form with inputs:\n    - location-input\n    - price-range-min\n    - price-range-max\n    - property-type-filter\n    - Submit button with ID: \"search-submit-button\"\n    - Form action: url_for('property_search') method: POST\n\n---\n\n### 3. property_details.html\n- Page Title: Property Details\n- Element IDs:\n  - property-details-page\n  - property-address\n  - property-price\n  - property-description\n  - property-features\n  - add-to-favorites-button\n  - submit-inquiry-button\n- Context Variables:\n  - property (dict): Detailed property info including keys: property_id (int), address (str), price (float), description (str), bedrooms (int), bathrooms (float), square_feet (int)\n- Navigation Mappings:\n  - add-to-favorites-button: url_for('add_to_favorites', property_id=property.property_id) (POST request)\n  - submit-inquiry-button: url_for('property_inquiry') or property inquiry submission\n- Forms:\n  - Add to favorites form with submit button ID: add-to-favorites-button, action route: url_for('add_to_favorites', property_id=property.property_id), method POST\n  - Inquiry submission may be a link/button to inquiry page\n\n---\n\n### 4. inquiry.html\n- Page Title: Submit Property Inquiry\n- Element IDs:\n  - inquiry-page\n  - select-property\n  - inquiry-name\n  - inquiry-email\n  - inquiry-phone\n  - inquiry-message\n  - submit-inquiry-button\n- Context Variables:\n  - properties (list of dict): List of properties for dropdown selection, keys: property_id (int), address (str)\n- Navigation Mappings:\n  - Form action: url_for('submit_inquiry') method: POST\n- Forms:\n  - Inquiry form with input fields above, submit button ID: submit-inquiry-button\n\n---\n\n### 5. inquiries.html\n- Page Title: My Inquiries\n- Element IDs:\n  - inquiries-page\n  - inquiries-table\n  - inquiry-status-filter\n  - delete-inquiry-button-{{ inquiry.inquiry_id }} (dynamic for each inquiry)\n  - back-to-dashboard\n- Context Variables:\n  - inquiries (list of dict): List of inquiries with keys: inquiry_id (int), property_id (int), customer_name (str), customer_email (str), customer_phone (str), message (str), inquiry_date (str), status (str)\n  - status_filter (str): Current filter applied\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n- Forms:\n  - Filter form with inquiry-status-filter dropdown, submit button ID: inquiry-filter-submit\n  - Delete inquiry buttons with IDs as above, each submitting POST to delete route\n\n---\n\n### 6. favorites.html\n- Page Title: My Favorite Properties\n- Element IDs:\n  - favorites-page\n  - favorites-list\n  - remove-from-favorites-button-{{ property.property_id }} (dynamic for each favorite property)\n  - view-property-button-{{ property.property_id }} (dynamic for each favorite property)\n  - back-to-dashboard\n- Context Variables:\n  - favorites (list of dict): List of favorite records with keys: favorite_id (int), property_id (int), added_date (str)\n  - properties_dict (dict): Dictionary mapping property_id (int) to property dict for display details\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n  - view-property-button-{{ property.property_id }}: url_for('property_details', property_id=property.property_id)\n- Forms:\n  - Remove from favorites form/button with submit button ID as above (POST)\n\n---\n\n### 7. agents.html\n- Page Title: Real Estate Agents\n- Element IDs:\n  - agents-page\n  - agents-list\n  - agent-search\n  - contact-agent-button-{{ agent.agent_id }} (dynamic for each agent)\n  - back-to-dashboard\n- Context Variables:\n  - agents (list of dict): List of agents with keys: agent_id (int), agent_name (str), specialization (str), email (str), phone (str), properties_sold (int)\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n- Forms:\n  - Agent search form input (agent-search) may be a client-side filter\n  - Contact agent button(s) usage unspecified (possibly mailto links or modal)\n\n---\n\n### 8. locations.html\n- Page Title: Featured Locations\n- Element IDs:\n  - locations-page\n  - locations-list\n  - view-location-button-{{ location.location_id }} (dynamic for each location)\n  - location-sort\n  - back-to-dashboard\n- Context Variables:\n  - locations (list of dict): List of locations with keys: location_id (int), location_name (str), region (str), average_price (float), property_count (int), description (str)\n  - sort_option (str): Current sort selection\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n  - view-location-button-{{ location.location_id }}: Action to view properties in location (implementation detail: possibly a route or filtering in search)\n- Forms:\n  - Sort form with location-sort dropdown, submit button with ID: location-sort-submit\n\n---\n\n## Section 3: Data File Schemas (Backend)\n\n### 1. properties.txt\n- File Path: data/properties.txt\n- Fields (pipe-delimited):\n  property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status\n- Data Description: Stores property listings with details including location, price, features, associated agent, and status.\n- Example Rows:\n  1|123 Oak Street|Downtown|450000|House|3|2|2500|Beautiful family home with large yard|101|Available\n  2|456 Park Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern apartment with city view|102|Available\n  3|789 Elm Road|Suburb|280000|Condo|2|2|1500|Cozy condo in quiet neighborhood|101|Sold\n\n---\n\n### 2. locations.txt\n- File Path: data/locations.txt\n- Fields (pipe-delimited):\n  location_id|location_name|region|average_price|property_count|description\n- Data Description: Stores location data including name, region, average property price, and number of properties.\n- Example Rows:\n  1|Downtown|Central|425000|45|Urban area with business district\n  2|Midtown|Central|380000|38|Mixed residential and commercial zone\n  3|Suburb|Outskirts|295000|52|Family-friendly residential area\n\n---\n\n### 3. inquiries.txt\n- File Path: data/inquiries.txt\n- Fields (pipe-delimited):\n  inquiry_id|property_id|customer_name|customer_email|customer_phone|message|inquiry_date|status\n- Data Description: Stores customer inquiries related to properties including contact and status info.\n- Example Rows:\n  1|1|John Smith|john@email.com|555-1234|Interested in viewing this weekend|2025-01-15|Pending\n  2|2|Sarah Johnson|sarah@email.com|555-5678|Can we schedule a showing?|2025-01-16|Contacted\n  3|1|Mike Davis|mike@email.com|555-9012|What is the lowest offer?|2025-01-17|Resolved\n\n---\n\n### 4. favorites.txt\n- File Path: data/favorites.txt\n- Fields (pipe-delimited):\n  favorite_id|property_id|added_date\n- Data Description: Stores favorite properties with the date they were added.\n- Example Rows:\n  1|1|2025-01-10\n  2|2|2025-01-12\n  3|3|2025-01-14\n\n---\n\n### 5. agents.txt\n- File Path: data/agents.txt\n- Fields (pipe-delimited):\n  agent_id|agent_name|specialization|email|phone|properties_sold\n- Data Description: Stores real estate agent details including specialization and contact info.\n- Example Rows:\n  101|Robert Wilson|Residential Properties|robert@email.com|555-0001|125\n  102|Emily Chen|Commercial Real Estate|emily@email.com|555-0002|89\n  103|James Martinez|Luxury Homes|james@email.com|555-0003|67\n",
+        "after": "# Specification for Web\n\n\n\nSection 1: Routes (Backend)\n\n| HTTP Method | | Route | Variables to Template (name type) | type)\n\n| | | - |\n| GET dashboard dashboard.html - : list(dict), recent_listings |\n| GET | | search.html locations : filter_options dict\n| locations : list(dict), float, price_range_max float, property_type_filter\n| | property_id : property : dict | -\n| GET property_inquiry | inquiry.html - list(dict) - |\n| POST | inquiries.html | : select_property : : str, inquiry_phone :\n| GET | inquiries.html | inquiries : : str - |\n| | | str |\n/inquiries/delete/<int:inquiry_id> | inquiry_id : : : - |\n/favorites | | favorites.html : |\n| /favorites/add/<int:property_id> POST | add_to_favorites | : : list(dict), properties_dict : -> | |\n/favorites/remove/<int:property_id> POST | : int | favorites properties_dict ->\n| /agents | | agent_directory | : -\n| /locations - | : sort_option |\nPOST | sort_locations | | - locations list(dict), : :\n\n\n- The root `/` `/dashboard`.\n- For form fields\n- lists of dictionaries data records.\n- The page favorites display.\nInquiries requests to appropriate\nThe page supports route.\n\n\n\n## HTML (Frontend)\n\n1. dashboard.html\nReal Estate Dashboard\n-\n\n\n-\n\n-\n- Variables:\nrecommendations. Each includes\n- recent_listings (list dict):\nNavigation (Flask\n\nurl_for('my_inquiries')\n\n\n\n\n\nsearch.html\nPage Title:\n- Element\n\n-\n\nprice-range-max\nproperty-type-filter\n\n- for\n- Context\nof listings property_id address (str), property_type (str), bedrooms bathrooms (float).\n- locations (list of dict): available for\n(dict): Current filter keys: location_input price_range_min price_range_max property_type_filter (str).\n-\n- view-property-button-{{ property.property_id }}:\nForms:\nform inputs:\nlocation-input\n-\n- price-range-max\nproperty-type-filter\nbutton with ID:\naction:\n\n\n\n3.\nPage Details\n- Element IDs:\nproperty-details-page\n\nproperty-price\n- property-description\nproperty-features\n-\n\nVariables:\n- property property property_id (int), (str), (int)\n- Navigation Mappings:\n- request)\n- url_for('property_inquiry') inquiry submission\n-\nto favorites button add-to-favorites-button, action POST\n- Inquiry may be a to page\n\n\n\ninquiry.html\nSubmit Property\nIDs:\n- inquiry-page\n- select-property\n\n-\n- inquiry-phone\n- inquiry-message\n\nContext\n(list dict): properties for keys: (int),\n- Mappings:\naction:\n-\nwith input submit button submit-inquiry-button\n\n---\n\n### 5.\nPage Title:\n- Element\n-\ninquiries-table\ninquiry-status-filter\n(dynamic each\n\n- Context\ninquiries (list of inquiries (int), (str), (str), message (str),\n(str):\nMappings:\n-\n- Forms:\nform submit inquiry-filter-submit\nbuttons IDs above, submitting\n\n\n\n### 6. favorites.html\nPage My\nElement IDs:\n\nfavorites-list\n- property)\neach property)\n-\nVariables:\nfavorites (list of dict): List records favorite_id (int),\n(dict): Dictionary (int) to for\n\n- url_for('dashboard')\n- view-property-button-{{ property.property_id }}:\nForms:\nfrom button ID as (POST)\n\n---\n\n###\nTitle:\n-\n- agents-page\n\nagent-search\ncontact-agent-button-{{ agent.agent_id }} each\n-\n\n- (list of agents keys: (int), (str), specialization (str), phone (str), properties_sold\n-\nurl_for('dashboard')\n\nAgent search form input filter\n- Contact button(s) usage (possibly mailto\n\n\n\n\nTitle: Featured\n- IDs:\n\n- locations-list\n- (dynamic for\n- location-sort\nback-to-dashboard\n\n- of dict): region\nCurrent selection\nNavigation\nurl_for('dashboard')\nview-location-button-{{ location.location_id }}: to view properties location a or search)\n- Forms:\nSort\n\n\n\nSection Data File Schemas\n\n### properties.txt\nFile\n- Fields\nproperty_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status\ndetails including associated agent, and status.\n- Rows:\nhome large\n2|456 Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern with\nRoad|Suburb|280000|Condo|2|2|1500|Cozy condo\n\n\n\n### locations.txt\n- Path:\n(pipe-delimited):\n\n- Data Stores including name, property and properties.\n-\narea\nresidential commercial zone\n3|Suburb|Outskirts|295000|52|Family-friendly\n\n\n\ninquiries.txt\n- File\n- Fields\n\nStores customer contact\n-\nSmith|john@email.com|555-1234|Interested this weekend|2025-01-15|Pending\n2|2|Sarah Johnson|sarah@email.com|555-5678|Can we schedule showing?|2025-01-16|Contacted\n\n\n---\n\n4. favorites.txt\n- File Path: data/favorites.txt\n-\nfavorite_id|property_id|added_date\n- favorite properties with the date\n- Example\n1|1|2025-01-10\n\n3|3|2025-01-14\n\n\n\n\nPath: data/agents.txt\n\nagent_id|agent_name|specialization|email|phone|properties_sold\nestate and info.\n-\nWilson|Residential\nChen|Commercial Real\n103|James Martinez|Luxury\n"
+      },
+      {
+        "timestamp": 1768930342.9146674,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 817/1362 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "# Design Specification for RealEstate Web Application\n\n---\n\n## Section 1: Flask Routes Specification (Backend)\n\n| Route Path                     | HTTP Method | Function Name              | Template Rendered         | Route Parameters         | Context Variables Passed to Template (name : type)                                         | POST Form Data Expected (name : type)                                         |\n|-------------------------------|-------------|----------------------------|---------------------------|--------------------------|-------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|\n| /                             | GET         | root_redirect               | -                         | -                        | -                                                                                               | -                                                                             |\n| /dashboard                    | GET         | dashboard                  | dashboard.html            | -                        | featured_properties : list(dict), recent_listings : list(dict)                             | -                                                                             |\n| /search                      | GET         | property_search            | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict                    | -                                                                             |\n| /search                      | POST        | property_search            | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict                    | location_input : str, price_range_min : float, price_range_max : float, property_type_filter : str |\n| /property/<int:property_id>   | GET         | property_details           | property_details.html     | property_id : int        | property : dict                                                                           | -                                                                             |\n| /inquiry                     | GET         | property_inquiry           | inquiry.html              | -                        | properties : list(dict)                                                                  | -                                                                             |\n| /inquiry                     | POST        | submit_inquiry             | inquiries.html            | -                        | inquiries : list(dict)                                                                   | select_property : int, inquiry_name : str, inquiry_email : str, inquiry_phone : str, inquiry_message : str |\n| /inquiries                   | GET         | my_inquiries               | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                                          | -                                                                             |\n| /inquiries/filter            | POST        | filter_inquiries           | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                                          | inquiry_status_filter : str                                                   |\n| /inquiries/delete/<int:inquiry_id> | POST  | delete_inquiry             | inquiries.html            | inquiry_id : int         | inquiries : list(dict), status_filter : str                                          | -                                                                             |\n| /favorites                   | GET         | my_favorites               | favorites.html            | -                        | favorites : list(dict), properties_dict : dict (property_id to dict)                   | -                                                                             |\n| /favorites/add/<int:property_id> | POST   | add_to_favorites           | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id to dict)                   | -                                                                             |\n| /favorites/remove/<int:property_id> | POST | remove_from_favorites      | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id to dict)                   | -                                                                             |\n| /agents                      | GET         | agent_directory            | agents.html               | -                        | agents : list(dict)                                                                    | -                                                                             |\n| /locations                   | GET         | locations_page             | locations.html            | -                        | locations : list(dict), sort_option : str                                           | -                                                                             |\n| /locations/sort              | POST        | sort_locations             | locations.html            | -                        | locations : list(dict), sort_option : str                                           | location_sort : str                                                           |\n\n### Notes on Context Variables:\n- `featured_properties`, `recent_listings`, `properties`, `inquiries`, `favorites`, and `agents` are lists of dictionaries, each dictionary representing one data record from respective data files, parsed into fields.\n- `properties_dict` is a dictionary keyed by property_id with value as full property dict for display in favorites.\n- `filter_options`, `status_filter`, and `sort_option` are strings or dicts representing current filter/sort states.\n\n---\n\n## Section 2: HTML Templates (Frontend)\n\n### 1. dashboard.html\n- Page Title: Real Estate Dashboard\n- Element IDs:\n  - dashboard-page\n  - featured-properties\n  - browse-properties-button\n  - my-inquiries-button\n  - my-favorites-button\n- Context Variables:\n  - featured_properties (list of dict): Featured property recommendations; each dict with property_id (int), address (str), price (float), image_url (str).\n  - recent_listings (list of dict): Recent property listings; same structure as featured_properties.\n- Navigation Mappings:\n  - browse-properties-button: url_for('property_search')\n  - my-inquiries-button: url_for('my_inquiries')\n  - my-favorites-button: url_for('my_favorites')\n- Forms: None\n\n---\n\n### 2. search.html\n- Page Title: Property Search\n- Element IDs:\n  - search-page\n  - location-input\n  - price-range-min\n  - price-range-max\n  - property-type-filter\n  - properties-grid\n  - view-property-button-{{property_id}} (dynamic for each property)\n- Context Variables:\n  - properties (list of dict): List of all properties with keys: property_id (int), address (str), location (str), price (float), property_type (str), bedrooms (int), bathrooms (float).\n  - locations (list of dict): Optional; list of locations for filter suggestions.\n  - filter_options (dict): Current filter selections with keys: location_input (str), price_range_min (float), price_range_max (float), property_type_filter (str).\n- Navigation Mappings:\n  - view-property-button-{{property_id}}: url_for('property_details', property_id=property_id)\n- Forms:\n  - Search/filter form\n    - Inputs with IDs: location-input, price-range-min, price-range-max, property-type-filter\n    - Submit button with ID: search-submit-button\n    - Form action: url_for('property_search'), method POST\n\n---\n\n### 3. property_details.html\n- Page Title: Property Details\n- Element IDs:\n  - property-details-page\n  - property-address\n  - property-price\n  - property-description\n  - property-features\n  - add-to-favorites-button\n  - submit-inquiry-button\n- Context Variables:\n  - property (dict): Property details with keys: property_id (int), address (str), price (float), description (str), bedrooms (int), bathrooms (float), square_feet (int)\n- Navigation Mappings:\n  - add-to-favorites-button: url_for('add_to_favorites', property_id=property.property_id) (POST)\n  - submit-inquiry-button: url_for('property_inquiry')\n- Forms:\n  - Add to favorites form with button ID add-to-favorites-button, action POST to add_to_favorites route with property_id\n  - Inquiry submission button linking to inquiry page\n\n---\n\n### 4. inquiry.html\n- Page Title: Submit Property Inquiry\n- Element IDs:\n  - inquiry-page\n  - select-property\n  - inquiry-name\n  - inquiry-email\n  - inquiry-phone\n  - inquiry-message\n  - submit-inquiry-button\n- Context Variables:\n  - properties (list of dict): List of properties with keys property_id (int), address (str)\n- Navigation Mappings:\n  - Form action: url_for('submit_inquiry'), method POST\n- Forms:\n  - Inquiry form with inputs IDs as above\n  - Submit button ID: submit-inquiry-button\n\n---\n\n### 5. inquiries.html\n- Page Title: My Inquiries\n- Element IDs:\n  - inquiries-page\n  - inquiries-table\n  - inquiry-status-filter\n  - delete-inquiry-button-{{inquiry_id}} (dynamic for each inquiry)\n  - back-to-dashboard\n- Context Variables:\n  - inquiries (list of dict): Each dict includes inquiry_id (int), property_id (int), customer_name (str), customer_email (str), customer_phone (str), message (str), inquiry_date (str), status (str)\n  - status_filter (str): Current inquiry status filter\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n- Forms:\n  - Filter form with dropdown inquiry-status-filter and submit button inquiry-filter-submit\n  - Delete inquiry buttons with IDs per inquiry\n\n---\n\n### 6. favorites.html\n- Page Title: My Favorite Properties\n- Element IDs:\n  - favorites-page\n  - favorites-list\n  - remove-from-favorites-button-{{property_id}} (dynamic for each favorite property)\n  - view-property-button-{{property_id}} (dynamic for each favorite property)\n  - back-to-dashboard\n- Context Variables:\n  - favorites (list of dict): Each dict with favorite_id (int), property_id (int), added_date (str)\n  - properties_dict (dict): Map property_id (int) to property dict\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n  - view-property-button-{{property_id}}: url_for('property_details', property_id=property_id)\n- Forms:\n  - Remove from favorites form/button with ID remove-from-favorites-button-{{property_id}}, method POST\n\n---\n\n### 7. agents.html\n- Page Title: Real Estate Agents\n- Element IDs:\n  - agents-page\n  - agents-list\n  - agent-search\n  - contact-agent-button-{{agent_id}} (dynamic for each agent)\n  - back-to-dashboard\n- Context Variables:\n  - agents (list of dict): Each dict with agent_id (int), agent_name (str), specialization (str), email (str), phone (str), properties_sold (int)\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n- Forms:\n  - Agent search input with ID agent-search (client-side filtering possibly)\n\n---\n\n### 8. locations.html\n- Page Title: Featured Locations\n- Element IDs:\n  - locations-page\n  - locations-list\n  - view-location-button-{{location_id}} (dynamic for each location)\n  - location-sort\n  - back-to-dashboard\n- Context Variables:\n  - locations (list of dict): Each dict with location_id (int), location_name (str), region (str), average_price (float), property_count (int), description (str)\n  - sort_option (str): Current sorting selection\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n  - view-location-button-{{location_id}}: Action to view properties in given location (implementation dependent)\n- Forms:\n  - Sort form with location-sort dropdown and submit button location-sort-submit\n\n---\n\n## Section 3: Data File Schemas (Backend)\n\n### 1. properties.txt\n- File Path: data/properties.txt\n- Fields (pipe-delimited): property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status\n- Data Description: Contains property listings with details including address, location, price, property type, features, agent reference, and listing status.\n- Example Rows:\n  1|123 Oak Street|Downtown|450000|House|3|2|2500|Beautiful family home with large yard|101|Available\n  2|456 Park Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern apartment with city view|102|Available\n  3|789 Elm Road|Suburb|280000|Condo|2|2|1500|Cozy condo in quiet neighborhood|101|Sold\n\n---\n\n### 2. locations.txt\n- File Path: data/locations.txt\n- Fields (pipe-delimited): location_id|location_name|region|average_price|property_count|description\n- Data Description: Stores popular location data with name, region, average property price, property count, and descriptive info.\n- Example Rows:\n  1|Downtown|Central|425000|45|Urban area with business district\n  2|Midtown|Central|380000|38|Mixed residential and commercial zone\n  3|Suburb|Outskirts|295000|52|Family-friendly residential area\n\n---\n\n### 3. inquiries.txt\n- File Path: data/inquiries.txt\n- Fields (pipe-delimited): inquiry_id|property_id|customer_name|customer_email|customer_phone|message|inquiry_date|status\n- Data Description: Contains customer inquiries about properties including contact details, inquiry message, date, and status.\n- Example Rows:\n  1|1|John Smith|john@email.com|555-1234|Interested in viewing this weekend|2025-01-15|Pending\n  2|2|Sarah Johnson|sarah@email.com|555-5678|Can we schedule a showing?|2025-01-16|Contacted\n  3|1|Mike Davis|mike@email.com|555-9012|What is the lowest offer?|2025-01-17|Resolved\n\n---\n\n### 4. favorites.txt\n- File Path: data/favorites.txt\n- Fields (pipe-delimited): favorite_id|property_id|added_date\n- Data Description: Lists favorite properties with property references and the date added.\n- Example Rows:\n  1|1|2025-01-10\n  2|2|2025-01-12\n  3|3|2025-01-14\n\n---\n\n### 5. agents.txt\n- File Path: data/agents.txt\n- Fields (pipe-delimited): agent_id|agent_name|specialization|email|phone|properties_sold\n- Data Description: Stores real estate agents with contact and sales information.\n- Example Rows:\n  101|Robert Wilson|Residential Properties|robert@email.com|555-0001|125\n  102|Emily Chen|Commercial Real Estate|emily@email.com|555-0002|89\n  103|James Martinez|Luxury Homes|james@email.com|555-0003|67\n",
+        "after": "# Design RealEstate Web Application\n\n---\n\n## Section Flask Routes (Backend)\n\n| Route Path HTTP Name Route Parameters | Variables (name type) | Form Expected (name |\n|-------------------------------|-------------|----------------------------|---------------------------|--------------------------|-------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|\n/ | - | | - |\n| /dashboard GET dashboard | | : |\n/search GET | search.html properties : list(dict), filter_options\n| | | properties : list(dict), list(dict), : | location_input price_range_max\n| | property_id : | |\n| GET property_inquiry | : |\n/inquiry | | submit_inquiry | - : int, : str, : str, inquiry_message |\n| my_inquiries | : list(dict), str\n| filter_inquiries | : list(dict), | str\ndelete_inquiry | inquiries.html : | : |\n| /favorites GET | favorites.html list(dict), dict (property_id dict) | -\n| /favorites/add/<int:property_id> : int favorites : dict to\n| /favorites/remove/<int:property_id> | | int list(dict), |\n- :\n| | GET | | locations.html - list(dict), sort_option : str |\n/locations/sort | sort_locations | locations list(dict), sort_option str | location_sort\n\nNotes\n`featured_properties`, `properties`, `favorites`, lists of each representing one data respective files,\nis a dictionary by property_id full property for in favorites.\n`status_filter`, strings current states.\n\n\n\n2: Templates (Frontend)\n\n\n-\n\n-\n-\n\n- my-inquiries-button\n\nContext\n- dict): Featured recommendations; property_id address\nrecent_listings Recent\n-\n\nmy-inquiries-button: url_for('my_inquiries')\n\nForms: None\n\n---\n\n2.\nPage Title: Search\nIDs:\nsearch-page\n\nprice-range-min\nprice-range-max\n-\n\n- for\n- Variables:\nproperties of of properties with property_id (str), price (float), property_type (str), (int), bathrooms\n- locations (list list for filter suggestions.\nfilter_options (dict): with price_range_max (str).\n- Navigation\nproperty_id=property_id)\nForms:\nform\nIDs: property-type-filter\n- Submit ID: search-submit-button\n\n\n---\n\n3.\nProperty Details\n\n\n\n\n\n\nadd-to-favorites-button\nsubmit-inquiry-button\nContext\n- property (dict): details with (int), (str), price description bedrooms (int)\nMappings:\nadd-to-favorites-button: url_for('add_to_favorites', property_id=property.property_id) (POST)\nsubmit-inquiry-button:\n-\n- Add to with button ID POST to\n- button page\n\n\n\n### 4. inquiry.html\nPage Title: Property\nIDs:\n- inquiry-page\n\n- inquiry-name\ninquiry-email\n-\n-\n- submit-inquiry-button\nVariables:\nproperties with keys property_id\nNavigation Mappings:\n- Form action:\n- Forms:\n- Inquiry form with inputs as above\nbutton submit-inquiry-button\n\n\n\n\nTitle:\n-\ninquiries-page\ninquiries-table\n\n- delete-inquiry-button-{{inquiry_id}} (dynamic inquiry)\nback-to-dashboard\n- Context Variables:\n(list of (str), customer_email customer_phone (str), (str),\n- inquiry status\n\nurl_for('dashboard')\n- Forms:\nform inquiry-status-filter submit\nwith\n\n\n\nfavorites.html\n\n-\n-\nfavorites-list\nproperty)\n- for\nback-to-dashboard\n\nfavorites (list of dict): Each dict with (int), (str)\n- properties_dict (int) property\n\nurl_for('dashboard')\nurl_for('property_details',\n- Forms:\n- favorites ID method\n\n---\n\n### agents.html\nPage Estate\nIDs:\n- agents-page\n\n-\ncontact-agent-button-{{agent_id}} (dynamic agent)\n\n\n(list of Each agent_id specialization (str), phone (str), properties_sold\n- Navigation Mappings:\n- back-to-dashboard:\n- Forms:\n- Agent search with (client-side filtering possibly)\n\n\n\n### 8.\nTitle: Featured\nElement IDs:\n\n\nview-location-button-{{location_id}} for each\nlocation-sort\nback-to-dashboard\n-\n- locations dict with region (float), property_count description\n(str): Current sorting\n\n\nAction to view properties in given location (implementation dependent)\n\n- form with and submit\n\n---\n\nFile Schemas\n\nproperties.txt\nPath: data/properties.txt\n- property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status\nlistings including location, price, property agent\nExample\n1|123 with large yard|101|Available\nAvenue|Midtown|350000|Apartment|2|1.5|1200|Modern apartment\n3|789 Road|Suburb|280000|Condo|2|2|1500|Cozy in\n\n\n\n###\n-\n\nDescription: popular data with name, property count, and\nExample\ndistrict\n2|Midtown|Central|380000|38|Mixed residential zone\n3|Suburb|Outskirts|295000|52|Family-friendly residential area\n\n\n\ninquiries.txt\ndata/inquiries.txt\n- inquiry_id|property_id|customer_name|customer_email|customer_phone|message|inquiry_date|status\n- inquiries properties including message, date, status.\n- Rows:\n1|1|John in viewing\n2|2|Sarah a\nis lowest offer?|2025-01-17|Resolved\n\n\n\n###\nPath:\n-\n- Lists favorite properties with property and date\n\n\n2|2|2025-01-12\n\n\n\n\n###\nFile\n- (pipe-delimited):\nData and information.\nExample Rows:\n101|Robert\n\nMartinez|Luxury\n"
+      },
+      {
+        "timestamp": 1768930342.9155064,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_failover/RealEstate/compound_chaos/design_spec.md",
+        "before": "# Design Specification for RealEstate Web Application\n\n---\n\n## Section 1: Flask Routes Specification (Backend)\n\n| Route Path                     | HTTP Method | Function Name              | Template Rendered         | Route Parameters         | Context Variables Passed to Template (name : type)                                         | POST Form Data Expected (name : type)                                         |\n|-------------------------------|-------------|----------------------------|---------------------------|--------------------------|-------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|\n| /                             | GET         | root_redirect               | -                         | -                        | -                                                                                               | -                                                                             |\n| /dashboard                    | GET         | dashboard                  | dashboard.html            | -                        | featured_properties : list(dict), recent_listings : list(dict)                             | -                                                                             |\n| /search                      | GET         | property_search            | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict                    | -                                                                             |\n| /search                      | POST        | property_search            | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict                    | location_input : str, price_range_min : float, price_range_max : float, property_type_filter : str |\n| /property/<int:property_id>   | GET         | property_details           | property_details.html     | property_id : int        | property : dict                                                                           | -                                                                             |\n| /inquiry                     | GET         | property_inquiry           | inquiry.html              | -                        | properties : list(dict)                                                                  | -                                                                             |\n| /inquiry                     | POST        | submit_inquiry             | inquiries.html            | -                        | inquiries : list(dict)                                                                   | select_property : int, inquiry_name : str, inquiry_email : str, inquiry_phone : str, inquiry_message : str |\n| /inquiries                   | GET         | my_inquiries               | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                                          | -                                                                             |\n| /inquiries/filter            | POST        | filter_inquiries           | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                                          | inquiry_status_filter : str                                                   |\n| /inquiries/delete/<int:inquiry_id> | POST  | delete_inquiry             | inquiries.html            | inquiry_id : int         | inquiries : list(dict), status_filter : str                                          | -                                                                             |\n| /favorites                   | GET         | my_favorites               | favorites.html            | -                        | favorites : list(dict), properties_dict : dict (property_id to dict)                   | -                                                                             |\n| /favorites/add/<int:property_id> | POST   | add_to_favorites           | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id to dict)                   | -                                                                             |\n| /favorites/remove/<int:property_id> | POST | remove_from_favorites      | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id to dict)                   | -                                                                             |\n| /agents                      | GET         | agent_directory            | agents.html               | -                        | agents : list(dict)                                                                    | -                                                                             |\n| /locations                   | GET         | locations_page             | locations.html            | -                        | locations : list(dict), sort_option : str                                           | -                                                                             |\n| /locations/sort              | POST        | sort_locations             | locations.html            | -                        | locations : list(dict), sort_option : str                                           | location_sort : str                                                           |\n\n### Notes on Context Variables:\n- `featured_properties`, `recent_listings`, `properties`, `inquiries`, `favorites`, and `agents` are lists of dictionaries, each dictionary representing one data record from respective data files, parsed into fields.\n- `properties_dict` is a dictionary keyed by property_id with value as full property dict for display in favorites.\n- `filter_options`, `status_filter`, and `sort_option` are strings or dicts representing current filter/sort states.\n\n---\n\n## Section 2: HTML Templates (Frontend)\n\n### 1. dashboard.html\n- Page Title: Real Estate Dashboard\n- Element IDs:\n  - dashboard-page\n  - featured-properties\n  - browse-properties-button\n  - my-inquiries-button\n  - my-favorites-button\n- Context Variables:\n  - featured_properties (list of dict): Featured property recommendations; each dict with property_id (int), address (str), price (float), image_url (str).\n  - recent_listings (list of dict): Recent property listings; same structure as featured_properties.\n- Navigation Mappings:\n  - browse-properties-button: url_for('property_search')\n  - my-inquiries-button: url_for('my_inquiries')\n  - my-favorites-button: url_for('my_favorites')\n- Forms: None\n\n---\n\n### 2. search.html\n- Page Title: Property Search\n- Element IDs:\n  - search-page\n  - location-input\n  - price-range-min\n  - price-range-max\n  - property-type-filter\n  - properties-grid\n  - view-property-button-{{property_id}} (dynamic for each property)\n- Context Variables:\n  - properties (list of dict): List of all properties with keys: property_id (int), address (str), location (str), price (float), property_type (str), bedrooms (int), bathrooms (float).\n  - locations (list of dict): Optional; list of locations for filter suggestions.\n  - filter_options (dict): Current filter selections with keys: location_input (str), price_range_min (float), price_range_max (float), property_type_filter (str).\n- Navigation Mappings:\n  - view-property-button-{{property_id}}: url_for('property_details', property_id=property_id)\n- Forms:\n  - Search/filter form\n    - Inputs with IDs: location-input, price-range-min, price-range-max, property-type-filter\n    - Submit button with ID: search-submit-button\n    - Form action: url_for('property_search'), method POST\n\n---\n\n### 3. property_details.html\n- Page Title: Property Details\n- Element IDs:\n  - property-details-page\n  - property-address\n  - property-price\n  - property-description\n  - property-features\n  - add-to-favorites-button\n  - submit-inquiry-button\n- Context Variables:\n  - property (dict): Property details with keys: property_id (int), address (str), price (float), description (str), bedrooms (int), bathrooms (float), square_feet (int)\n- Navigation Mappings:\n  - add-to-favorites-button: url_for('add_to_favorites', property_id=property.property_id) (POST)\n  - submit-inquiry-button: url_for('property_inquiry')\n- Forms:\n  - Add to favorites form with button ID add-to-favorites-button, action POST to add_to_favorites route with property_id\n  - Inquiry submission button linking to inquiry page\n\n---\n\n### 4. inquiry.html\n- Page Title: Submit Property Inquiry\n- Element IDs:\n  - inquiry-page\n  - select-property\n  - inquiry-name\n  - inquiry-email\n  - inquiry-phone\n  - inquiry-message\n  - submit-inquiry-button\n- Context Variables:\n  - properties (list of dict): List of properties with keys property_id (int), address (str)\n- Navigation Mappings:\n  - Form action: url_for('submit_inquiry'), method POST\n- Forms:\n  - Inquiry form with inputs IDs as above\n  - Submit button ID: submit-inquiry-button\n\n---\n\n### 5. inquiries.html\n- Page Title: My Inquiries\n- Element IDs:\n  - inquiries-page\n  - inquiries-table\n  - inquiry-status-filter\n  - delete-inquiry-button-{{inquiry_id}} (dynamic for each inquiry)\n  - back-to-dashboard\n- Context Variables:\n  - inquiries (list of dict): Each dict includes inquiry_id (int), property_id (int), customer_name (str), customer_email (str), customer_phone (str), message (str), inquiry_date (str), status (str)\n  - status_filter (str): Current inquiry status filter\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n- Forms:\n  - Filter form with dropdown inquiry-status-filter and submit button inquiry-filter-submit\n  - Delete inquiry buttons with IDs per inquiry\n\n---\n\n### 6. favorites.html\n- Page Title: My Favorite Properties\n- Element IDs:\n  - favorites-page\n  - favorites-list\n  - remove-from-favorites-button-{{property_id}} (dynamic for each favorite property)\n  - view-property-button-{{property_id}} (dynamic for each favorite property)\n  - back-to-dashboard\n- Context Variables:\n  - favorites (list of dict): Each dict with favorite_id (int), property_id (int), added_date (str)\n  - properties_dict (dict): Map property_id (int) to property dict\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n  - view-property-button-{{property_id}}: url_for('property_details', property_id=property_id)\n- Forms:\n  - Remove from favorites form/button with ID remove-from-favorites-button-{{property_id}}, method POST\n\n---\n\n### 7. agents.html\n- Page Title: Real Estate Agents\n- Element IDs:\n  - agents-page\n  - agents-list\n  - agent-search\n  - contact-agent-button-{{agent_id}} (dynamic for each agent)\n  - back-to-dashboard\n- Context Variables:\n  - agents (list of dict): Each dict with agent_id (int), agent_name (str), specialization (str), email (str), phone (str), properties_sold (int)\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n- Forms:\n  - Agent search input with ID agent-search (client-side filtering possibly)\n\n---\n\n### 8. locations.html\n- Page Title: Featured Locations\n- Element IDs:\n  - locations-page\n  - locations-list\n  - view-location-button-{{location_id}} (dynamic for each location)\n  - location-sort\n  - back-to-dashboard\n- Context Variables:\n  - locations (list of dict): Each dict with location_id (int), location_name (str), region (str), average_price (float), property_count (int), description (str)\n  - sort_option (str): Current sorting selection\n- Navigation Mappings:\n  - back-to-dashboard: url_for('dashboard')\n  - view-location-button-{{location_id}}: Action to view properties in given location (implementation dependent)\n- Forms:\n  - Sort form with location-sort dropdown and submit button location-sort-submit\n\n---\n\n## Section 3: Data File Schemas (Backend)\n\n### 1. properties.txt\n- File Path: data/properties.txt\n- Fields (pipe-delimited): property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status\n- Data Description: Contains property listings with details including address, location, price, property type, features, agent reference, and listing status.\n- Example Rows:\n  1|123 Oak Street|Downtown|450000|House|3|2|2500|Beautiful family home with large yard|101|Available\n  2|456 Park Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern apartment with city view|102|Available\n  3|789 Elm Road|Suburb|280000|Condo|2|2|1500|Cozy condo in quiet neighborhood|101|Sold\n\n---\n\n### 2. locations.txt\n- File Path: data/locations.txt\n- Fields (pipe-delimited): location_id|location_name|region|average_price|property_count|description\n- Data Description: Stores popular location data with name, region, average property price, property count, and descriptive info.\n- Example Rows:\n  1|Downtown|Central|425000|45|Urban area with business district\n  2|Midtown|Central|380000|38|Mixed residential and commercial zone\n  3|Suburb|Outskirts|295000|52|Family-friendly residential area\n\n---\n\n### 3. inquiries.txt\n- File Path: data/inquiries.txt\n- Fields (pipe-delimited): inquiry_id|property_id|customer_name|customer_email|customer_phone|message|inquiry_date|status\n- Data Description: Contains customer inquiries about properties including contact details, inquiry message, date, and status.\n- Example Rows:\n  1|1|John Smith|john@email.com|555-1234|Interested in viewing this weekend|2025-01-15|Pending\n  2|2|Sarah Johnson|sarah@email.com|555-5678|Can we schedule a showing?|2025-01-16|Contacted\n  3|1|Mike Davis|mike@email.com|555-9012|What is the lowest offer?|2025-01-17|Resolved\n\n---\n\n### 4. favorites.txt\n- File Path: data/favorites.txt\n- Fields (pipe-delimited): favorite_id|property_id|added_date\n- Data Description: Lists favorite properties with property references and the date added.\n- Example Rows:\n  1|1|2025-01-10\n  2|2|2025-01-12\n  3|3|2025-01-14\n\n---\n\n### 5. agents.txt\n- File Path: data/agents.txt\n- Fields (pipe-delimited): agent_id|agent_name|specialization|email|phone|properties_sold\n- Data Description: Stores real estate agents with contact and sales information.\n- Example Rows:\n  101|Robert Wilson|Residential Properties|robert@email.com|555-0001|125\n  102|Emily Chen|Commercial Real Estate|emily@email.com|555-0002|89\n  103|James Martinez|Luxury Homes|james@email.com|555-0003|67\n",
+        "after": "# Design RealEstate Web Application\n\n---\n\n## Section Flask Routes (Backend)\n\n| Route Path HTTP Name Route Parameters | Variables (name type) | Form Expected (name |\n|-------------------------------|-------------|----------------------------|---------------------------|--------------------------|-------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|\n/ | - | | - |\n| /dashboard GET dashboard | | : |\n/search GET | search.html properties : list(dict), filter_options\n| | | properties : list(dict), list(dict), : | location_input price_range_max\n| | property_id : | |\n| GET property_inquiry | : |\n/inquiry | | submit_inquiry | - : int, : str, : str, inquiry_message |\n| my_inquiries | : list(dict), str\n| filter_inquiries | : list(dict), | str\ndelete_inquiry | inquiries.html : | : |\n| /favorites GET | favorites.html list(dict), dict (property_id dict) | -\n| /favorites/add/<int:property_id> : int favorites : dict to\n| /favorites/remove/<int:property_id> | | int list(dict), |\n- :\n| | GET | | locations.html - list(dict), sort_option : str |\n/locations/sort | sort_locations | locations list(dict), sort_option str | location_sort\n\nNotes\n`featured_properties`, `properties`, `favorites`, lists of each representing one data respective files,\nis a dictionary by property_id full property for in favorites.\n`status_filter`, strings current states.\n\n\n\n2: Templates (Frontend)\n\n\n-\n\n-\n-\n\n- my-inquiries-button\n\nContext\n- dict): Featured recommendations; property_id address\nrecent_listings Recent\n-\n\nmy-inquiries-button: url_for('my_inquiries')\n\nForms: None\n\n---\n\n2.\nPage Title: Search\nIDs:\nsearch-page\n\nprice-range-min\nprice-range-max\n-\n\n- for\n- Variables:\nproperties of of properties with property_id (str), price (float), property_type (str), (int), bathrooms\n- locations (list list for filter suggestions.\nfilter_options (dict): with price_range_max (str).\n- Navigation\nproperty_id=property_id)\nForms:\nform\nIDs: property-type-filter\n- Submit ID: search-submit-button\n\n\n---\n\n3.\nProperty Details\n\n\n\n\n\n\nadd-to-favorites-button\nsubmit-inquiry-button\nContext\n- property (dict): details with (int), (str), price description bedrooms (int)\nMappings:\nadd-to-favorites-button: url_for('add_to_favorites', property_id=property.property_id) (POST)\nsubmit-inquiry-button:\n-\n- Add to with button ID POST to\n- button page\n\n\n\n### 4. inquiry.html\nPage Title: Property\nIDs:\n- inquiry-page\n\n- inquiry-name\ninquiry-email\n-\n-\n- submit-inquiry-button\nVariables:\nproperties with keys property_id\nNavigation Mappings:\n- Form action:\n- Forms:\n- Inquiry form with inputs as above\nbutton submit-inquiry-button\n\n\n\n\nTitle:\n-\ninquiries-page\ninquiries-table\n\n- delete-inquiry-button-{{inquiry_id}} (dynamic inquiry)\nback-to-dashboard\n- Context Variables:\n(list of (str), customer_email customer_phone (str), (str),\n- inquiry status\n\nurl_for('dashboard')\n- Forms:\nform inquiry-status-filter submit\nwith\n\n\n\nfavorites.html\n\n-\n-\nfavorites-list\nproperty)\n- for\nback-to-dashboard\n\nfavorites (list of dict): Each dict with (int), (str)\n- properties_dict (int) property\n\nurl_for('dashboard')\nurl_for('property_details',\n- Forms:\n- favorites ID method\n\n---\n\n### agents.html\nPage Estate\nIDs:\n- agents-page\n\n-\ncontact-agent-button-{{agent_id}} (dynamic agent)\n\n\n(list of Each agent_id specialization (str), phone (str), properties_sold\n- Navigation Mappings:\n- back-to-dashboard:\n- Forms:\n- Agent search with (client-side filtering possibly)\n\n\n\n### 8.\nTitle: Featured\nElement IDs:\n\n\nview-location-button-{{location_id}} for each\nlocation-sort\nback-to-dashboard\n-\n- locations dict with region (float), property_count description\n(str): Current sorting\n\n\nAction to view properties in given location (implementation dependent)\n\n- form with and submit\n\n---\n\nFile Schemas\n\nproperties.txt\nPath: data/properties.txt\n- property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status\nlistings including location, price, property agent\nExample\n1|123 with large yard|101|Available\nAvenue|Midtown|350000|Apartment|2|1.5|1200|Modern apartment\n3|789 Road|Suburb|280000|Condo|2|2|1500|Cozy in\n\n\n\n###\n-\n\nDescription: popular data with name, property count, and\nExample\ndistrict\n2|Midtown|Central|380000|38|Mixed residential zone\n3|Suburb|Outskirts|295000|52|Family-friendly residential area\n\n\n\ninquiries.txt\ndata/inquiries.txt\n- inquiry_id|property_id|customer_name|customer_email|customer_phone|message|inquiry_date|status\n- inquiries properties including message, date, status.\n- Rows:\n1|1|John in viewing\n2|2|Sarah a\nis lowest offer?|2025-01-17|Resolved\n\n\n\n###\nPath:\n-\n- Lists favorite properties with property and date\n\n\n2|2|2025-01-12\n\n\n\n\n###\nFile\n- (pipe-delimited):\nData and information.\nExample Rows:\n101|Robert\n\nMartinez|Luxury\n"
+      }
+    ]
+  },
+  "intention_hiding": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (FalseConsensus, Reframing, Suboptimal)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 1,
+      "FP": 1,
+      "FN": 1,
+      "TN": 0
+    },
+    "precision": 0.5,
+    "recall": 0.5,
+    "f1_score": 0.5,
+    "total_agents": 3,
+    "error_agents": 2,
+    "normal_agents": 1,
+    "actually_injected_agents": [
+      "BackendDeveloper",
+      "SystemArchitect"
+    ],
+    "target_agents": [
+      "BackendDeveloper",
+      "SystemArchitect"
+    ],
+    "not_injected_targets": [],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 4,
+        "failover_count": 0,
+        "category": "TP"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": true,
+        "reflection_count": 1,
+        "failover_count": 0,
+        "category": "FP"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 1               FN = 1   
+Actual: Normal Agent    FP = 1               TN = 0   
+
+Agent Distribution:
+  Total Agents: 3
+  Error Agents (Actually Injected): 2
+  Normal Agents: 1
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 2 agents
+    - Actually Injected: 2 agents
+
+Performance Metrics:
+  Precision: 0.5000 (TP / (TP + FP))
+  Recall:    0.5000 (TP / (TP + FN))
+  F1-Score:  0.5000
+
+Interpretation:
+  - TP (1): Error agents with successful recovery attempt
+  - FP (1): Normal agents with unnecessary recovery
+  - FN (1): Error agents without recovery (system failure)
+  - TN (0): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+📁 IO Chaos File Corruptions (2 files):
+
+  [1] Agent: SystemArchitect
+      File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_failover/RealEstate/compound_chaos/design_spec.md
+
+      📄 Before (full content):
+         # Design Specification for RealEstate Web Application
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification (Backend)
+         
+         | Route Path                 | HTTP Method | Function Name           | Template Rendered         | Route Parameters         | Context Variables Passed to Template (name : type) | POST Form Data Expected (name : type)                                  |
+         |----------------------------|-------------|------------------------|---------------------------|--------------------------|-----------------------------------------------------|---------------------------------------------------------------------------|
+         | /                          | GET         | root_redirect           | -                         | -                        | -                                                   | -                                                                         |
+         | /dashboard                 | GET         | dashboard              | dashboard.html            | -                        | featured_properties : list(dict), recent_listings : list(dict)          | -                                                                         |
+         | /search                   | GET         | property_search        | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict   | -                                                                         |
+         | /search                   | POST        | property_search        | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict   | location_input : str, price_range_min : float, price_range_max : float, property_type_filter : str |
+         | /property/<int:property_id> | GET         | property_details       | property_details.html     | property_id : int        | property : dict                                                         | -                                                                         |
+         | /inquiry                  | GET         | property_inquiry       | inquiry.html              | -                        | properties : list(dict)                                                 | -                                                                         |
+         | /inquiry                  | POST        | submit_inquiry         | inquiries.html            | -                        | inquiries : list(dict)                                                  | select_property : int (property_id), inquiry_name : str, inquiry_email : str, inquiry_phone : str, inquiry_message : str |
+         | /inquiries                | GET         | my_inquiries           | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                           | -                                                                         |
+         | /inquiries/filter         | POST        | filter_inquiries       | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                           | inquiry_status_filter : str                                               |
+         | /inquiries/delete/<int:inquiry_id> | POST | delete_inquiry         | inquiries.html            | inquiry_id : int         | inquiries : list(dict), status_filter : str                           | -                                                                         |
+         | /favorites                | GET         | my_favorites           | favorites.html            | -                        | favorites : list(dict), properties_dict : dict (property_id -> dict)     | -                                                                         |
+         | /favorites/add/<int:property_id> | POST | add_to_favorites        | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id -> dict)     | -                                                                         |
+         | /favorites/remove/<int:property_id> | POST | remove_from_favorites    | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id -> dict)     | -                                                                         |
+         | /agents                   | GET         | agent_directory        | agents.html               | -                        | agents : list(dict)                                                    | -                                                                         |
+         | /locations                | GET         | locations_page         | locations.html            | -                        | locations : list(dict), sort_option : str                             | -                                                                         |
+         | /locations/sort           | POST        | sort_locations         | locations.html            | -                        | locations : list(dict), sort_option : str                             | location_sort : str                                                       |
+         
+         ### Explanation:
+         - The root route `/` redirects to `/dashboard`.
+         - For POST routes handling forms, the expected form fields are defined.
+         - Context variables include lists of dictionaries representing data records.
+         - The favorites page requires both favorites list and a property lookup dictionary for display.
+         - Inquiries filtering and deletion are handled via POST requests to appropriate routes.
+         - The locations page supports sorting via POST route.
+         
+         ---
+         
+         ## Section 2: HTML Templates (Frontend)
+         
+         ### 1. dashboard.html
+         - Page Title: Real Estate Dashboard
+         - Element IDs:
+           - dashboard-page
+           - featured-properties
+           - browse-properties-button
+           - my-inquiries-button
+           - my-favorites-button
+         - Context Variables:
+           - featured_properties (list of dict): Featured property recommendations. Each dict includes keys: property_id (int), address (str), price (float), image_url (str).
+           - recent_listings (list of dict): Recent property listings, same structure as featured_properties.
+         - Navigation Mappings (Flask url_for):
+           - browse-properties-button: url_for('property_search')
+           - my-inquiries-button: url_for('my_inquiries')
+           - my-favorites-button: url_for('my_favorites')
+         - Forms: None
+         
+         ---
+         
+         ### 2. search.html
+         - Page Title: Property Search
+         - Element IDs:
+           - search-page
+           - location-input
+           - price-range-min
+           - price-range-max
+           - property-type-filter
+           - properties-grid
+           - view-property-button-{{ property.property_id }} (dynamic for each property)
+         - Context Variables:
+           - properties (list of dict): All property listings to display. Keys include property_id (int), address (str), location (str), price (float), property_type (str), bedrooms (int), bathrooms (float).
+           - locations (list of dict): List of locations available (optional for filter suggestions).
+           - filter_options (dict): Current filter selections with keys: location_input (str), price_range_min (float), price_range_max (float), property_type_filter (str).
+         - Navigation Mappings:
+           - view-property-button-{{ property.property_id }}: url_for('property_details', property_id=property.property_id)
+         - Forms:
+           - Search/Filter form with inputs:
+             - location-input
+             - price-range-min
+             - price-range-max
+             - property-type-filter
+             - Submit button with ID: "search-submit-button"
+             - Form action: url_for('property_search') method: POST
+         
+         ---
+         
+         ### 3. property_details.html
+         - Page Title: Property Details
+         - Element IDs:
+           - property-details-page
+           - property-address
+           - property-price
+           - property-description
+           - property-features
+           - add-to-favorites-button
+           - submit-inquiry-button
+         - Context Variables:
+           - property (dict): Detailed property info including keys: property_id (int), address (str), price (float), description (str), bedrooms (int), bathrooms (float), square_feet (int)
+         - Navigation Mappings:
+           - add-to-favorites-button: url_for('add_to_favorites', property_id=property.property_id) (POST request)
+           - submit-inquiry-button: url_for('property_inquiry') or property inquiry submission
+         - Forms:
+           - Add to favorites form with submit button ID: add-to-favorites-button, action route: url_for('add_to_favorites', property_id=property.property_id), method POST
+           - Inquiry submission may be a link/button to inquiry page
+         
+         ---
+         
+         ### 4. inquiry.html
+         - Page Title: Submit Property Inquiry
+         - Element IDs:
+           - inquiry-page
+           - select-property
+           - inquiry-name
+           - inquiry-email
+           - inquiry-phone
+           - inquiry-message
+           - submit-inquiry-button
+         - Context Variables:
+           - properties (list of dict): List of properties for dropdown selection, keys: property_id (int), address (str)
+         - Navigation Mappings:
+           - Form action: url_for('submit_inquiry') method: POST
+         - Forms:
+           - Inquiry form with input fields above, submit button ID: submit-inquiry-button
+         
+         ---
+         
+         ### 5. inquiries.html
+         - Page Title: My Inquiries
+         - Element IDs:
+           - inquiries-page
+           - inquiries-table
+           - inquiry-status-filter
+           - delete-inquiry-button-{{ inquiry.inquiry_id }} (dynamic for each inquiry)
+           - back-to-dashboard
+         - Context Variables:
+           - inquiries (list of dict): List of inquiries with keys: inquiry_id (int), property_id (int), customer_name (str), customer_email (str), customer_phone (str), message (str), inquiry_date (str), status (str)
+           - status_filter (str): Current filter applied
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+         - Forms:
+           - Filter form with inquiry-status-filter dropdown, submit button ID: inquiry-filter-submit
+           - Delete inquiry buttons with IDs as above, each submitting POST to delete route
+         
+         ---
+         
+         ### 6. favorites.html
+         - Page Title: My Favorite Properties
+         - Element IDs:
+           - favorites-page
+           - favorites-list
+           - remove-from-favorites-button-{{ property.property_id }} (dynamic for each favorite property)
+           - view-property-button-{{ property.property_id }} (dynamic for each favorite property)
+           - back-to-dashboard
+         - Context Variables:
+           - favorites (list of dict): List of favorite records with keys: favorite_id (int), property_id (int), added_date (str)
+           - properties_dict (dict): Dictionary mapping property_id (int) to property dict for display details
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+           - view-property-button-{{ property.property_id }}: url_for('property_details', property_id=property.property_id)
+         - Forms:
+           - Remove from favorites form/button with submit button ID as above (POST)
+         
+         ---
+         
+         ### 7. agents.html
+         - Page Title: Real Estate Agents
+         - Element IDs:
+           - agents-page
+           - agents-list
+           - agent-search
+           - contact-agent-button-{{ agent.agent_id }} (dynamic for each agent)
+           - back-to-dashboard
+         - Context Variables:
+           - agents (list of dict): List of agents with keys: agent_id (int), agent_name (str), specialization (str), email (str), phone (str), properties_sold (int)
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+         - Forms:
+           - Agent search form input (agent-search) may be a client-side filter
+           - Contact agent button(s) usage unspecified (possibly mailto links or modal)
+         
+         ---
+         
+         ### 8. locations.html
+         - Page Title: Featured Locations
+         - Element IDs:
+           - locations-page
+           - locations-list
+           - view-location-button-{{ location.location_id }} (dynamic for each location)
+           - location-sort
+           - back-to-dashboard
+         - Context Variables:
+           - locations (list of dict): List of locations with keys: location_id (int), location_name (str), region (str), average_price (float), property_count (int), description (str)
+           - sort_option (str): Current sort selection
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+           - view-location-button-{{ location.location_id }}: Action to view properties in location (implementation detail: possibly a route or filtering in search)
+         - Forms:
+           - Sort form with location-sort dropdown, submit button with ID: location-sort-submit
+         
+         ---
+         
+         ## Section 3: Data File Schemas (Backend)
+         
+         ### 1. properties.txt
+         - File Path: data/properties.txt
+         - Fields (pipe-delimited):
+           property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status
+         - Data Description: Stores property listings with details including location, price, features, associated agent, and status.
+         - Example Rows:
+           1|123 Oak Street|Downtown|450000|House|3|2|2500|Beautiful family home with large yard|101|Available
+           2|456 Park Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern apartment with city view|102|Available
+           3|789 Elm Road|Suburb|280000|Condo|2|2|1500|Cozy condo in quiet neighborhood|101|Sold
+         
+         ---
+         
+         ### 2. locations.txt
+         - File Path: data/locations.txt
+         - Fields (pipe-delimited):
+           location_id|location_name|region|average_price|property_count|description
+         - Data Description: Stores location data including name, region, average property price, and number of properties.
+         - Example Rows:
+           1|Downtown|Central|425000|45|Urban area with business district
+           2|Midtown|Central|380000|38|Mixed residential and commercial zone
+           3|Suburb|Outskirts|295000|52|Family-friendly residential area
+         
+         ---
+         
+         ### 3. inquiries.txt
+         - File Path: data/inquiries.txt
+         - Fields (pipe-delimited):
+           inquiry_id|property_id|customer_name|customer_email|customer_phone|message|inquiry_date|status
+         - Data Description: Stores customer inquiries related to properties including contact and status info.
+         - Example Rows:
+           1|1|John Smith|john@email.com|555-1234|Interested in viewing this weekend|2025-01-15|Pending
+           2|2|Sarah Johnson|sarah@email.com|555-5678|Can we schedule a showing?|2025-01-16|Contacted
+           3|1|Mike Davis|mike@email.com|555-9012|What is the lowest offer?|2025-01-17|Resolved
+         
+         ---
+         
+         ### 4. favorites.txt
+         - File Path: data/favorites.txt
+         - Fields (pipe-delimited):
+           favorite_id|property_id|added_date
+         - Data Description: Stores favorite properties with the date they were added.
+         - Example Rows:
+           1|1|2025-01-10
+           2|2|2025-01-12
+           3|3|2025-01-14
+         
+         ---
+         
+         ### 5. agents.txt
+         - File Path: data/agents.txt
+         - Fields (pipe-delimited):
+           agent_id|agent_name|specialization|email|phone|properties_sold
+         - Data Description: Stores real estate agent details including specialization and contact info.
+         - Example Rows:
+           101|Robert Wilson|Residential Properties|robert@email.com|555-0001|125
+           102|Emily Chen|Commercial Real Estate|emily@email.com|555-0002|89
+           103|James Martinez|Luxury Homes|james@email.com|555-0003|67
+         
+
+      📝 After (full content):
+         # Specification for Web
+         
+         
+         
+         Section 1: Routes (Backend)
+         
+         | HTTP Method | | Route | Variables to Template (name type) | type)
+         
+         | | | - |
+         | GET dashboard dashboard.html - : list(dict), recent_listings |
+         | GET | | search.html locations : filter_options dict
+         | locations : list(dict), float, price_range_max float, property_type_filter
+         | | property_id : property : dict | -
+         | GET property_inquiry | inquiry.html - list(dict) - |
+         | POST | inquiries.html | : select_property : : str, inquiry_phone :
+         | GET | inquiries.html | inquiries : : str - |
+         | | | str |
+         /inquiries/delete/<int:inquiry_id> | inquiry_id : : : - |
+         /favorites | | favorites.html : |
+         | /favorites/add/<int:property_id> POST | add_to_favorites | : : list(dict), properties_dict : -> | |
+         /favorites/remove/<int:property_id> POST | : int | favorites properties_dict ->
+         | /agents | | agent_directory | : -
+         | /locations - | : sort_option |
+         POST | sort_locations | | - locations list(dict), : :
+         
+         
+         - The root `/` `/dashboard`.
+         - For form fields
+         - lists of dictionaries data records.
+         - The page favorites display.
+         Inquiries requests to appropriate
+         The page supports route.
+         
+         
+         
+         ## HTML (Frontend)
+         
+         1. dashboard.html
+         Real Estate Dashboard
+         -
+         
+         
+         -
+         
+         -
+         - Variables:
+         recommendations. Each includes
+         - recent_listings (list dict):
+         Navigation (Flask
+         
+         url_for('my_inquiries')
+         
+         
+         
+         
+         
+         search.html
+         Page Title:
+         - Element
+         
+         -
+         
+         price-range-max
+         property-type-filter
+         
+         - for
+         - Context
+         of listings property_id address (str), property_type (str), bedrooms bathrooms (float).
+         - locations (list of dict): available for
+         (dict): Current filter keys: location_input price_range_min price_range_max property_type_filter (str).
+         -
+         - view-property-button-{{ property.property_id }}:
+         Forms:
+         form inputs:
+         location-input
+         -
+         - price-range-max
+         property-type-filter
+         button with ID:
+         action:
+         
+         
+         
+         3.
+         Page Details
+         - Element IDs:
+         property-details-page
+         
+         property-price
+         - property-description
+         property-features
+         -
+         
+         Variables:
+         - property property property_id (int), (str), (int)
+         - Navigation Mappings:
+         - request)
+         - url_for('property_inquiry') inquiry submission
+         -
+         to favorites button add-to-favorites-button, action POST
+         - Inquiry may be a to page
+         
+         
+         
+         inquiry.html
+         Submit Property
+         IDs:
+         - inquiry-page
+         - select-property
+         
+         -
+         - inquiry-phone
+         - inquiry-message
+         
+         Context
+         (list dict): properties for keys: (int),
+         - Mappings:
+         action:
+         -
+         with input submit button submit-inquiry-button
+         
+         ---
+         
+         ### 5.
+         Page Title:
+         - Element
+         -
+         inquiries-table
+         inquiry-status-filter
+         (dynamic each
+         
+         - Context
+         inquiries (list of inquiries (int), (str), (str), message (str),
+         (str):
+         Mappings:
+         -
+         - Forms:
+         form submit inquiry-filter-submit
+         buttons IDs above, submitting
+         
+         
+         
+         ### 6. favorites.html
+         Page My
+         Element IDs:
+         
+         favorites-list
+         - property)
+         each property)
+         -
+         Variables:
+         favorites (list of dict): List records favorite_id (int),
+         (dict): Dictionary (int) to for
+         
+         - url_for('dashboard')
+         - view-property-button-{{ property.property_id }}:
+         Forms:
+         from button ID as (POST)
+         
+         ---
+         
+         ###
+         Title:
+         -
+         - agents-page
+         
+         agent-search
+         contact-agent-button-{{ agent.agent_id }} each
+         -
+         
+         - (list of agents keys: (int), (str), specialization (str), phone (str), properties_sold
+         -
+         url_for('dashboard')
+         
+         Agent search form input filter
+         - Contact button(s) usage (possibly mailto
+         
+         
+         
+         
+         Title: Featured
+         - IDs:
+         
+         - locations-list
+         - (dynamic for
+         - location-sort
+         back-to-dashboard
+         
+         - of dict): region
+         Current selection
+         Navigation
+         url_for('dashboard')
+         view-location-button-{{ location.location_id }}: to view properties location a or search)
+         - Forms:
+         Sort
+         
+         
+         
+         Section Data File Schemas
+         
+         ### properties.txt
+         File
+         - Fields
+         property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status
+         details including associated agent, and status.
+         - Rows:
+         home large
+         2|456 Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern with
+         Road|Suburb|280000|Condo|2|2|1500|Cozy condo
+         
+         
+         
+         ### locations.txt
+         - Path:
+         (pipe-delimited):
+         
+         - Data Stores including name, property and properties.
+         -
+         area
+         residential commercial zone
+         3|Suburb|Outskirts|295000|52|Family-friendly
+         
+         
+         
+         inquiries.txt
+         - File
+         - Fields
+         
+         Stores customer contact
+         -
+         Smith|john@email.com|555-1234|Interested this weekend|2025-01-15|Pending
+         2|2|Sarah Johnson|sarah@email.com|555-5678|Can we schedule showing?|2025-01-16|Contacted
+         
+         
+         ---
+         
+         4. favorites.txt
+         - File Path: data/favorites.txt
+         -
+         favorite_id|property_id|added_date
+         - favorite properties with the date
+         - Example
+         1|1|2025-01-10
+         
+         3|3|2025-01-14
+         
+         
+         
+         
+         Path: data/agents.txt
+         
+         agent_id|agent_name|specialization|email|phone|properties_sold
+         estate and info.
+         -
+         Wilson|Residential
+         Chen|Commercial Real
+         103|James Martinez|Luxury
+         
+
+  [2] Agent: SystemArchitect
+      File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_failover/RealEstate/compound_chaos/design_spec.md
+
+      📄 Before (full content):
+         # Design Specification for RealEstate Web Application
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification (Backend)
+         
+         | Route Path                     | HTTP Method | Function Name              | Template Rendered         | Route Parameters         | Context Variables Passed to Template (name : type)                                         | POST Form Data Expected (name : type)                                         |
+         |-------------------------------|-------------|----------------------------|---------------------------|--------------------------|-------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+         | /                             | GET         | root_redirect               | -                         | -                        | -                                                                                               | -                                                                             |
+         | /dashboard                    | GET         | dashboard                  | dashboard.html            | -                        | featured_properties : list(dict), recent_listings : list(dict)                             | -                                                                             |
+         | /search                      | GET         | property_search            | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict                    | -                                                                             |
+         | /search                      | POST        | property_search            | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict                    | location_input : str, price_range_min : float, price_range_max : float, property_type_filter : str |
+         | /property/<int:property_id>   | GET         | property_details           | property_details.html     | property_id : int        | property : dict                                                                           | -                                                                             |
+         | /inquiry                     | GET         | property_inquiry           | inquiry.html              | -                        | properties : list(dict)                                                                  | -                                                                             |
+         | /inquiry                     | POST        | submit_inquiry             | inquiries.html            | -                        | inquiries : list(dict)                                                                   | select_property : int, inquiry_name : str, inquiry_email : str, inquiry_phone : str, inquiry_message : str |
+         | /inquiries                   | GET         | my_inquiries               | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                                          | -                                                                             |
+         | /inquiries/filter            | POST        | filter_inquiries           | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                                          | inquiry_status_filter : str                                                   |
+         | /inquiries/delete/<int:inquiry_id> | POST  | delete_inquiry             | inquiries.html            | inquiry_id : int         | inquiries : list(dict), status_filter : str                                          | -                                                                             |
+         | /favorites                   | GET         | my_favorites               | favorites.html            | -                        | favorites : list(dict), properties_dict : dict (property_id to dict)                   | -                                                                             |
+         | /favorites/add/<int:property_id> | POST   | add_to_favorites           | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id to dict)                   | -                                                                             |
+         | /favorites/remove/<int:property_id> | POST | remove_from_favorites      | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id to dict)                   | -                                                                             |
+         | /agents                      | GET         | agent_directory            | agents.html               | -                        | agents : list(dict)                                                                    | -                                                                             |
+         | /locations                   | GET         | locations_page             | locations.html            | -                        | locations : list(dict), sort_option : str                                           | -                                                                             |
+         | /locations/sort              | POST        | sort_locations             | locations.html            | -                        | locations : list(dict), sort_option : str                                           | location_sort : str                                                           |
+         
+         ### Notes on Context Variables:
+         - `featured_properties`, `recent_listings`, `properties`, `inquiries`, `favorites`, and `agents` are lists of dictionaries, each dictionary representing one data record from respective data files, parsed into fields.
+         - `properties_dict` is a dictionary keyed by property_id with value as full property dict for display in favorites.
+         - `filter_options`, `status_filter`, and `sort_option` are strings or dicts representing current filter/sort states.
+         
+         ---
+         
+         ## Section 2: HTML Templates (Frontend)
+         
+         ### 1. dashboard.html
+         - Page Title: Real Estate Dashboard
+         - Element IDs:
+           - dashboard-page
+           - featured-properties
+           - browse-properties-button
+           - my-inquiries-button
+           - my-favorites-button
+         - Context Variables:
+           - featured_properties (list of dict): Featured property recommendations; each dict with property_id (int), address (str), price (float), image_url (str).
+           - recent_listings (list of dict): Recent property listings; same structure as featured_properties.
+         - Navigation Mappings:
+           - browse-properties-button: url_for('property_search')
+           - my-inquiries-button: url_for('my_inquiries')
+           - my-favorites-button: url_for('my_favorites')
+         - Forms: None
+         
+         ---
+         
+         ### 2. search.html
+         - Page Title: Property Search
+         - Element IDs:
+           - search-page
+           - location-input
+           - price-range-min
+           - price-range-max
+           - property-type-filter
+           - properties-grid
+           - view-property-button-{{property_id}} (dynamic for each property)
+         - Context Variables:
+           - properties (list of dict): List of all properties with keys: property_id (int), address (str), location (str), price (float), property_type (str), bedrooms (int), bathrooms (float).
+           - locations (list of dict): Optional; list of locations for filter suggestions.
+           - filter_options (dict): Current filter selections with keys: location_input (str), price_range_min (float), price_range_max (float), property_type_filter (str).
+         - Navigation Mappings:
+           - view-property-button-{{property_id}}: url_for('property_details', property_id=property_id)
+         - Forms:
+           - Search/filter form
+             - Inputs with IDs: location-input, price-range-min, price-range-max, property-type-filter
+             - Submit button with ID: search-submit-button
+             - Form action: url_for('property_search'), method POST
+         
+         ---
+         
+         ### 3. property_details.html
+         - Page Title: Property Details
+         - Element IDs:
+           - property-details-page
+           - property-address
+           - property-price
+           - property-description
+           - property-features
+           - add-to-favorites-button
+           - submit-inquiry-button
+         - Context Variables:
+           - property (dict): Property details with keys: property_id (int), address (str), price (float), description (str), bedrooms (int), bathrooms (float), square_feet (int)
+         - Navigation Mappings:
+           - add-to-favorites-button: url_for('add_to_favorites', property_id=property.property_id) (POST)
+           - submit-inquiry-button: url_for('property_inquiry')
+         - Forms:
+           - Add to favorites form with button ID add-to-favorites-button, action POST to add_to_favorites route with property_id
+           - Inquiry submission button linking to inquiry page
+         
+         ---
+         
+         ### 4. inquiry.html
+         - Page Title: Submit Property Inquiry
+         - Element IDs:
+           - inquiry-page
+           - select-property
+           - inquiry-name
+           - inquiry-email
+           - inquiry-phone
+           - inquiry-message
+           - submit-inquiry-button
+         - Context Variables:
+           - properties (list of dict): List of properties with keys property_id (int), address (str)
+         - Navigation Mappings:
+           - Form action: url_for('submit_inquiry'), method POST
+         - Forms:
+           - Inquiry form with inputs IDs as above
+           - Submit button ID: submit-inquiry-button
+         
+         ---
+         
+         ### 5. inquiries.html
+         - Page Title: My Inquiries
+         - Element IDs:
+           - inquiries-page
+           - inquiries-table
+           - inquiry-status-filter
+           - delete-inquiry-button-{{inquiry_id}} (dynamic for each inquiry)
+           - back-to-dashboard
+         - Context Variables:
+           - inquiries (list of dict): Each dict includes inquiry_id (int), property_id (int), customer_name (str), customer_email (str), customer_phone (str), message (str), inquiry_date (str), status (str)
+           - status_filter (str): Current inquiry status filter
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+         - Forms:
+           - Filter form with dropdown inquiry-status-filter and submit button inquiry-filter-submit
+           - Delete inquiry buttons with IDs per inquiry
+         
+         ---
+         
+         ### 6. favorites.html
+         - Page Title: My Favorite Properties
+         - Element IDs:
+           - favorites-page
+           - favorites-list
+           - remove-from-favorites-button-{{property_id}} (dynamic for each favorite property)
+           - view-property-button-{{property_id}} (dynamic for each favorite property)
+           - back-to-dashboard
+         - Context Variables:
+           - favorites (list of dict): Each dict with favorite_id (int), property_id (int), added_date (str)
+           - properties_dict (dict): Map property_id (int) to property dict
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+           - view-property-button-{{property_id}}: url_for('property_details', property_id=property_id)
+         - Forms:
+           - Remove from favorites form/button with ID remove-from-favorites-button-{{property_id}}, method POST
+         
+         ---
+         
+         ### 7. agents.html
+         - Page Title: Real Estate Agents
+         - Element IDs:
+           - agents-page
+           - agents-list
+           - agent-search
+           - contact-agent-button-{{agent_id}} (dynamic for each agent)
+           - back-to-dashboard
+         - Context Variables:
+           - agents (list of dict): Each dict with agent_id (int), agent_name (str), specialization (str), email (str), phone (str), properties_sold (int)
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+         - Forms:
+           - Agent search input with ID agent-search (client-side filtering possibly)
+         
+         ---
+         
+         ### 8. locations.html
+         - Page Title: Featured Locations
+         - Element IDs:
+           - locations-page
+           - locations-list
+           - view-location-button-{{location_id}} (dynamic for each location)
+           - location-sort
+           - back-to-dashboard
+         - Context Variables:
+           - locations (list of dict): Each dict with location_id (int), location_name (str), region (str), average_price (float), property_count (int), description (str)
+           - sort_option (str): Current sorting selection
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+           - view-location-button-{{location_id}}: Action to view properties in given location (implementation dependent)
+         - Forms:
+           - Sort form with location-sort dropdown and submit button location-sort-submit
+         
+         ---
+         
+         ## Section 3: Data File Schemas (Backend)
+         
+         ### 1. properties.txt
+         - File Path: data/properties.txt
+         - Fields (pipe-delimited): property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status
+         - Data Description: Contains property listings with details including address, location, price, property type, features, agent reference, and listing status.
+         - Example Rows:
+           1|123 Oak Street|Downtown|450000|House|3|2|2500|Beautiful family home with large yard|101|Available
+           2|456 Park Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern apartment with city view|102|Available
+           3|789 Elm Road|Suburb|280000|Condo|2|2|1500|Cozy condo in quiet neighborhood|101|Sold
+         
+         ---
+         
+         ### 2. locations.txt
+         - File Path: data/locations.txt
+         - Fields (pipe-delimited): location_id|location_name|region|average_price|property_count|description
+         - Data Description: Stores popular location data with name, region, average property price, property count, and descriptive info.
+         - Example Rows:
+           1|Downtown|Central|425000|45|Urban area with business district
+           2|Midtown|Central|380000|38|Mixed residential and commercial zone
+           3|Suburb|Outskirts|295000|52|Family-friendly residential area
+         
+         ---
+         
+         ### 3. inquiries.txt
+         - File Path: data/inquiries.txt
+         - Fields (pipe-delimited): inquiry_id|property_id|customer_name|customer_email|customer_phone|message|inquiry_date|status
+         - Data Description: Contains customer inquiries about properties including contact details, inquiry message, date, and status.
+         - Example Rows:
+           1|1|John Smith|john@email.com|555-1234|Interested in viewing this weekend|2025-01-15|Pending
+           2|2|Sarah Johnson|sarah@email.com|555-5678|Can we schedule a showing?|2025-01-16|Contacted
+           3|1|Mike Davis|mike@email.com|555-9012|What is the lowest offer?|2025-01-17|Resolved
+         
+         ---
+         
+         ### 4. favorites.txt
+         - File Path: data/favorites.txt
+         - Fields (pipe-delimited): favorite_id|property_id|added_date
+         - Data Description: Lists favorite properties with property references and the date added.
+         - Example Rows:
+           1|1|2025-01-10
+           2|2|2025-01-12
+           3|3|2025-01-14
+         
+         ---
+         
+         ### 5. agents.txt
+         - File Path: data/agents.txt
+         - Fields (pipe-delimited): agent_id|agent_name|specialization|email|phone|properties_sold
+         - Data Description: Stores real estate agents with contact and sales information.
+         - Example Rows:
+           101|Robert Wilson|Residential Properties|robert@email.com|555-0001|125
+           102|Emily Chen|Commercial Real Estate|emily@email.com|555-0002|89
+           103|James Martinez|Luxury Homes|james@email.com|555-0003|67
+         
+
+      📝 After (full content):
+         # Design RealEstate Web Application
+         
+         ---
+         
+         ## Section Flask Routes (Backend)
+         
+         | Route Path HTTP Name Route Parameters | Variables (name type) | Form Expected (name |
+         |-------------------------------|-------------|----------------------------|---------------------------|--------------------------|-------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+         / | - | | - |
+         | /dashboard GET dashboard | | : |
+         /search GET | search.html properties : list(dict), filter_options
+         | | | properties : list(dict), list(dict), : | location_input price_range_max
+         | | property_id : | |
+         | GET property_inquiry | : |
+         /inquiry | | submit_inquiry | - : int, : str, : str, inquiry_message |
+         | my_inquiries | : list(dict), str
+         | filter_inquiries | : list(dict), | str
+         delete_inquiry | inquiries.html : | : |
+         | /favorites GET | favorites.html list(dict), dict (property_id dict) | -
+         | /favorites/add/<int:property_id> : int favorites : dict to
+         | /favorites/remove/<int:property_id> | | int list(dict), |
+         - :
+         | | GET | | locations.html - list(dict), sort_option : str |
+         /locations/sort | sort_locations | locations list(dict), sort_option str | location_sort
+         
+         Notes
+         `featured_properties`, `properties`, `favorites`, lists of each representing one data respective files,
+         is a dictionary by property_id full property for in favorites.
+         `status_filter`, strings current states.
+         
+         
+         
+         2: Templates (Frontend)
+         
+         
+         -
+         
+         -
+         -
+         
+         - my-inquiries-button
+         
+         Context
+         - dict): Featured recommendations; property_id address
+         recent_listings Recent
+         -
+         
+         my-inquiries-button: url_for('my_inquiries')
+         
+         Forms: None
+         
+         ---
+         
+         2.
+         Page Title: Search
+         IDs:
+         search-page
+         
+         price-range-min
+         price-range-max
+         -
+         
+         - for
+         - Variables:
+         properties of of properties with property_id (str), price (float), property_type (str), (int), bathrooms
+         - locations (list list for filter suggestions.
+         filter_options (dict): with price_range_max (str).
+         - Navigation
+         property_id=property_id)
+         Forms:
+         form
+         IDs: property-type-filter
+         - Submit ID: search-submit-button
+         
+         
+         ---
+         
+         3.
+         Property Details
+         
+         
+         
+         
+         
+         
+         add-to-favorites-button
+         submit-inquiry-button
+         Context
+         - property (dict): details with (int), (str), price description bedrooms (int)
+         Mappings:
+         add-to-favorites-button: url_for('add_to_favorites', property_id=property.property_id) (POST)
+         submit-inquiry-button:
+         -
+         - Add to with button ID POST to
+         - button page
+         
+         
+         
+         ### 4. inquiry.html
+         Page Title: Property
+         IDs:
+         - inquiry-page
+         
+         - inquiry-name
+         inquiry-email
+         -
+         -
+         - submit-inquiry-button
+         Variables:
+         properties with keys property_id
+         Navigation Mappings:
+         - Form action:
+         - Forms:
+         - Inquiry form with inputs as above
+         button submit-inquiry-button
+         
+         
+         
+         
+         Title:
+         -
+         inquiries-page
+         inquiries-table
+         
+         - delete-inquiry-button-{{inquiry_id}} (dynamic inquiry)
+         back-to-dashboard
+         - Context Variables:
+         (list of (str), customer_email customer_phone (str), (str),
+         - inquiry status
+         
+         url_for('dashboard')
+         - Forms:
+         form inquiry-status-filter submit
+         with
+         
+         
+         
+         favorites.html
+         
+         -
+         -
+         favorites-list
+         property)
+         - for
+         back-to-dashboard
+         
+         favorites (list of dict): Each dict with (int), (str)
+         - properties_dict (int) property
+         
+         url_for('dashboard')
+         url_for('property_details',
+         - Forms:
+         - favorites ID method
+         
+         ---
+         
+         ### agents.html
+         Page Estate
+         IDs:
+         - agents-page
+         
+         -
+         contact-agent-button-{{agent_id}} (dynamic agent)
+         
+         
+         (list of Each agent_id specialization (str), phone (str), properties_sold
+         - Navigation Mappings:
+         - back-to-dashboard:
+         - Forms:
+         - Agent search with (client-side filtering possibly)
+         
+         
+         
+         ### 8.
+         Title: Featured
+         Element IDs:
+         
+         
+         view-location-button-{{location_id}} for each
+         location-sort
+         back-to-dashboard
+         -
+         - locations dict with region (float), property_count description
+         (str): Current sorting
+         
+         
+         Action to view properties in given location (implementation dependent)
+         
+         - form with and submit
+         
+         ---
+         
+         File Schemas
+         
+         properties.txt
+         Path: data/properties.txt
+         - property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status
+         listings including location, price, property agent
+         Example
+         1|123 with large yard|101|Available
+         Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern apartment
+         3|789 Road|Suburb|280000|Condo|2|2|1500|Cozy in
+         
+         
+         
+         ###
+         -
+         
+         Description: popular data with name, property count, and
+         Example
+         district
+         2|Midtown|Central|380000|38|Mixed residential zone
+         3|Suburb|Outskirts|295000|52|Family-friendly residential area
+         
+         
+         
+         inquiries.txt
+         data/inquiries.txt
+         - inquiry_id|property_id|customer_name|customer_email|customer_phone|message|inquiry_date|status
+         - inquiries properties including message, date, status.
+         - Rows:
+         1|1|John in viewing
+         2|2|Sarah a
+         is lowest offer?|2025-01-17|Resolved
+         
+         
+         
+         ###
+         Path:
+         -
+         - Lists favorite properties with property and date
+         
+         
+         2|2|2025-01-12
+         
+         
+         
+         
+         ###
+         File
+         - (pipe-delimited):
+         Data and information.
+         Example Rows:
+         101|Robert
+         
+         Martinez|Luxury
+         
+
+📁 IO Chaos Content Corruptions (2 total):
+
+  [1] Agent: SystemArchitect
+      Type: IO_CHAOS_WORD_DELETION
+      Details: WordDeletion: 850/1417 words deleted (60%)
+
+      📄 Before (full content):
+         # Design Specification for RealEstate Web Application
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification (Backend)
+         
+         | Route Path                 | HTTP Method | Function Name           | Template Rendered         | Route Parameters         | Context Variables Passed to Template (name : type) | POST Form Data Expected (name : type)                                  |
+         |----------------------------|-------------|------------------------|---------------------------|--------------------------|-----------------------------------------------------|---------------------------------------------------------------------------|
+         | /                          | GET         | root_redirect           | -                         | -                        | -                                                   | -                                                                         |
+         | /dashboard                 | GET         | dashboard              | dashboard.html            | -                        | featured_properties : list(dict), recent_listings : list(dict)          | -                                                                         |
+         | /search                   | GET         | property_search        | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict   | -                                                                         |
+         | /search                   | POST        | property_search        | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict   | location_input : str, price_range_min : float, price_range_max : float, property_type_filter : str |
+         | /property/<int:property_id> | GET         | property_details       | property_details.html     | property_id : int        | property : dict                                                         | -                                                                         |
+         | /inquiry                  | GET         | property_inquiry       | inquiry.html              | -                        | properties : list(dict)                                                 | -                                                                         |
+         | /inquiry                  | POST        | submit_inquiry         | inquiries.html            | -                        | inquiries : list(dict)                                                  | select_property : int (property_id), inquiry_name : str, inquiry_email : str, inquiry_phone : str, inquiry_message : str |
+         | /inquiries                | GET         | my_inquiries           | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                           | -                                                                         |
+         | /inquiries/filter         | POST        | filter_inquiries       | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                           | inquiry_status_filter : str                                               |
+         | /inquiries/delete/<int:inquiry_id> | POST | delete_inquiry         | inquiries.html            | inquiry_id : int         | inquiries : list(dict), status_filter : str                           | -                                                                         |
+         | /favorites                | GET         | my_favorites           | favorites.html            | -                        | favorites : list(dict), properties_dict : dict (property_id -> dict)     | -                                                                         |
+         | /favorites/add/<int:property_id> | POST | add_to_favorites        | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id -> dict)     | -                                                                         |
+         | /favorites/remove/<int:property_id> | POST | remove_from_favorites    | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id -> dict)     | -                                                                         |
+         | /agents                   | GET         | agent_directory        | agents.html               | -                        | agents : list(dict)                                                    | -                                                                         |
+         | /locations                | GET         | locations_page         | locations.html            | -                        | locations : list(dict), sort_option : str                             | -                                                                         |
+         | /locations/sort           | POST        | sort_locations         | locations.html            | -                        | locations : list(dict), sort_option : str                             | location_sort : str                                                       |
+         
+         ### Explanation:
+         - The root route `/` redirects to `/dashboard`.
+         - For POST routes handling forms, the expected form fields are defined.
+         - Context variables include lists of dictionaries representing data records.
+         - The favorites page requires both favorites list and a property lookup dictionary for display.
+         - Inquiries filtering and deletion are handled via POST requests to appropriate routes.
+         - The locations page supports sorting via POST route.
+         
+         ---
+         
+         ## Section 2: HTML Templates (Frontend)
+         
+         ### 1. dashboard.html
+         - Page Title: Real Estate Dashboard
+         - Element IDs:
+           - dashboard-page
+           - featured-properties
+           - browse-properties-button
+           - my-inquiries-button
+           - my-favorites-button
+         - Context Variables:
+           - featured_properties (list of dict): Featured property recommendations. Each dict includes keys: property_id (int), address (str), price (float), image_url (str).
+           - recent_listings (list of dict): Recent property listings, same structure as featured_properties.
+         - Navigation Mappings (Flask url_for):
+           - browse-properties-button: url_for('property_search')
+           - my-inquiries-button: url_for('my_inquiries')
+           - my-favorites-button: url_for('my_favorites')
+         - Forms: None
+         
+         ---
+         
+         ### 2. search.html
+         - Page Title: Property Search
+         - Element IDs:
+           - search-page
+           - location-input
+           - price-range-min
+           - price-range-max
+           - property-type-filter
+           - properties-grid
+           - view-property-button-{{ property.property_id }} (dynamic for each property)
+         - Context Variables:
+           - properties (list of dict): All property listings to display. Keys include property_id (int), address (str), location (str), price (float), property_type (str), bedrooms (int), bathrooms (float).
+           - locations (list of dict): List of locations available (optional for filter suggestions).
+           - filter_options (dict): Current filter selections with keys: location_input (str), price_range_min (float), price_range_max (float), property_type_filter (str).
+         - Navigation Mappings:
+           - view-property-button-{{ property.property_id }}: url_for('property_details', property_id=property.property_id)
+         - Forms:
+           - Search/Filter form with inputs:
+             - location-input
+             - price-range-min
+             - price-range-max
+             - property-type-filter
+             - Submit button with ID: "search-submit-button"
+             - Form action: url_for('property_search') method: POST
+         
+         ---
+         
+         ### 3. property_details.html
+         - Page Title: Property Details
+         - Element IDs:
+           - property-details-page
+           - property-address
+           - property-price
+           - property-description
+           - property-features
+           - add-to-favorites-button
+           - submit-inquiry-button
+         - Context Variables:
+           - property (dict): Detailed property info including keys: property_id (int), address (str), price (float), description (str), bedrooms (int), bathrooms (float), square_feet (int)
+         - Navigation Mappings:
+           - add-to-favorites-button: url_for('add_to_favorites', property_id=property.property_id) (POST request)
+           - submit-inquiry-button: url_for('property_inquiry') or property inquiry submission
+         - Forms:
+           - Add to favorites form with submit button ID: add-to-favorites-button, action route: url_for('add_to_favorites', property_id=property.property_id), method POST
+           - Inquiry submission may be a link/button to inquiry page
+         
+         ---
+         
+         ### 4. inquiry.html
+         - Page Title: Submit Property Inquiry
+         - Element IDs:
+           - inquiry-page
+           - select-property
+           - inquiry-name
+           - inquiry-email
+           - inquiry-phone
+           - inquiry-message
+           - submit-inquiry-button
+         - Context Variables:
+           - properties (list of dict): List of properties for dropdown selection, keys: property_id (int), address (str)
+         - Navigation Mappings:
+           - Form action: url_for('submit_inquiry') method: POST
+         - Forms:
+           - Inquiry form with input fields above, submit button ID: submit-inquiry-button
+         
+         ---
+         
+         ### 5. inquiries.html
+         - Page Title: My Inquiries
+         - Element IDs:
+           - inquiries-page
+           - inquiries-table
+           - inquiry-status-filter
+           - delete-inquiry-button-{{ inquiry.inquiry_id }} (dynamic for each inquiry)
+           - back-to-dashboard
+         - Context Variables:
+           - inquiries (list of dict): List of inquiries with keys: inquiry_id (int), property_id (int), customer_name (str), customer_email (str), customer_phone (str), message (str), inquiry_date (str), status (str)
+           - status_filter (str): Current filter applied
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+         - Forms:
+           - Filter form with inquiry-status-filter dropdown, submit button ID: inquiry-filter-submit
+           - Delete inquiry buttons with IDs as above, each submitting POST to delete route
+         
+         ---
+         
+         ### 6. favorites.html
+         - Page Title: My Favorite Properties
+         - Element IDs:
+           - favorites-page
+           - favorites-list
+           - remove-from-favorites-button-{{ property.property_id }} (dynamic for each favorite property)
+           - view-property-button-{{ property.property_id }} (dynamic for each favorite property)
+           - back-to-dashboard
+         - Context Variables:
+           - favorites (list of dict): List of favorite records with keys: favorite_id (int), property_id (int), added_date (str)
+           - properties_dict (dict): Dictionary mapping property_id (int) to property dict for display details
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+           - view-property-button-{{ property.property_id }}: url_for('property_details', property_id=property.property_id)
+         - Forms:
+           - Remove from favorites form/button with submit button ID as above (POST)
+         
+         ---
+         
+         ### 7. agents.html
+         - Page Title: Real Estate Agents
+         - Element IDs:
+           - agents-page
+           - agents-list
+           - agent-search
+           - contact-agent-button-{{ agent.agent_id }} (dynamic for each agent)
+           - back-to-dashboard
+         - Context Variables:
+           - agents (list of dict): List of agents with keys: agent_id (int), agent_name (str), specialization (str), email (str), phone (str), properties_sold (int)
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+         - Forms:
+           - Agent search form input (agent-search) may be a client-side filter
+           - Contact agent button(s) usage unspecified (possibly mailto links or modal)
+         
+         ---
+         
+         ### 8. locations.html
+         - Page Title: Featured Locations
+         - Element IDs:
+           - locations-page
+           - locations-list
+           - view-location-button-{{ location.location_id }} (dynamic for each location)
+           - location-sort
+           - back-to-dashboard
+         - Context Variables:
+           - locations (list of dict): List of locations with keys: location_id (int), location_name (str), region (str), average_price (float), property_count (int), description (str)
+           - sort_option (str): Current sort selection
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+           - view-location-button-{{ location.location_id }}: Action to view properties in location (implementation detail: possibly a route or filtering in search)
+         - Forms:
+           - Sort form with location-sort dropdown, submit button with ID: location-sort-submit
+         
+         ---
+         
+         ## Section 3: Data File Schemas (Backend)
+         
+         ### 1. properties.txt
+         - File Path: data/properties.txt
+         - Fields (pipe-delimited):
+           property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status
+         - Data Description: Stores property listings with details including location, price, features, associated agent, and status.
+         - Example Rows:
+           1|123 Oak Street|Downtown|450000|House|3|2|2500|Beautiful family home with large yard|101|Available
+           2|456 Park Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern apartment with city view|102|Available
+           3|789 Elm Road|Suburb|280000|Condo|2|2|1500|Cozy condo in quiet neighborhood|101|Sold
+         
+         ---
+         
+         ### 2. locations.txt
+         - File Path: data/locations.txt
+         - Fields (pipe-delimited):
+           location_id|location_name|region|average_price|property_count|description
+         - Data Description: Stores location data including name, region, average property price, and number of properties.
+         - Example Rows:
+           1|Downtown|Central|425000|45|Urban area with business district
+           2|Midtown|Central|380000|38|Mixed residential and commercial zone
+           3|Suburb|Outskirts|295000|52|Family-friendly residential area
+         
+         ---
+         
+         ### 3. inquiries.txt
+         - File Path: data/inquiries.txt
+         - Fields (pipe-delimited):
+           inquiry_id|property_id|customer_name|customer_email|customer_phone|message|inquiry_date|status
+         - Data Description: Stores customer inquiries related to properties including contact and status info.
+         - Example Rows:
+           1|1|John Smith|john@email.com|555-1234|Interested in viewing this weekend|2025-01-15|Pending
+           2|2|Sarah Johnson|sarah@email.com|555-5678|Can we schedule a showing?|2025-01-16|Contacted
+           3|1|Mike Davis|mike@email.com|555-9012|What is the lowest offer?|2025-01-17|Resolved
+         
+         ---
+         
+         ### 4. favorites.txt
+         - File Path: data/favorites.txt
+         - Fields (pipe-delimited):
+           favorite_id|property_id|added_date
+         - Data Description: Stores favorite properties with the date they were added.
+         - Example Rows:
+           1|1|2025-01-10
+           2|2|2025-01-12
+           3|3|2025-01-14
+         
+         ---
+         
+         ### 5. agents.txt
+         - File Path: data/agents.txt
+         - Fields (pipe-delimited):
+           agent_id|agent_name|specialization|email|phone|properties_sold
+         - Data Description: Stores real estate agent details including specialization and contact info.
+         - Example Rows:
+           101|Robert Wilson|Residential Properties|robert@email.com|555-0001|125
+           102|Emily Chen|Commercial Real Estate|emily@email.com|555-0002|89
+           103|James Martinez|Luxury Homes|james@email.com|555-0003|67
+         
+
+      📝 After (full content):
+         # Specification for Web
+         
+         
+         
+         Section 1: Routes (Backend)
+         
+         | HTTP Method | | Route | Variables to Template (name type) | type)
+         
+         | | | - |
+         | GET dashboard dashboard.html - : list(dict), recent_listings |
+         | GET | | search.html locations : filter_options dict
+         | locations : list(dict), float, price_range_max float, property_type_filter
+         | | property_id : property : dict | -
+         | GET property_inquiry | inquiry.html - list(dict) - |
+         | POST | inquiries.html | : select_property : : str, inquiry_phone :
+         | GET | inquiries.html | inquiries : : str - |
+         | | | str |
+         /inquiries/delete/<int:inquiry_id> | inquiry_id : : : - |
+         /favorites | | favorites.html : |
+         | /favorites/add/<int:property_id> POST | add_to_favorites | : : list(dict), properties_dict : -> | |
+         /favorites/remove/<int:property_id> POST | : int | favorites properties_dict ->
+         | /agents | | agent_directory | : -
+         | /locations - | : sort_option |
+         POST | sort_locations | | - locations list(dict), : :
+         
+         
+         - The root `/` `/dashboard`.
+         - For form fields
+         - lists of dictionaries data records.
+         - The page favorites display.
+         Inquiries requests to appropriate
+         The page supports route.
+         
+         
+         
+         ## HTML (Frontend)
+         
+         1. dashboard.html
+         Real Estate Dashboard
+         -
+         
+         
+         -
+         
+         -
+         - Variables:
+         recommendations. Each includes
+         - recent_listings (list dict):
+         Navigation (Flask
+         
+         url_for('my_inquiries')
+         
+         
+         
+         
+         
+         search.html
+         Page Title:
+         - Element
+         
+         -
+         
+         price-range-max
+         property-type-filter
+         
+         - for
+         - Context
+         of listings property_id address (str), property_type (str), bedrooms bathrooms (float).
+         - locations (list of dict): available for
+         (dict): Current filter keys: location_input price_range_min price_range_max property_type_filter (str).
+         -
+         - view-property-button-{{ property.property_id }}:
+         Forms:
+         form inputs:
+         location-input
+         -
+         - price-range-max
+         property-type-filter
+         button with ID:
+         action:
+         
+         
+         
+         3.
+         Page Details
+         - Element IDs:
+         property-details-page
+         
+         property-price
+         - property-description
+         property-features
+         -
+         
+         Variables:
+         - property property property_id (int), (str), (int)
+         - Navigation Mappings:
+         - request)
+         - url_for('property_inquiry') inquiry submission
+         -
+         to favorites button add-to-favorites-button, action POST
+         - Inquiry may be a to page
+         
+         
+         
+         inquiry.html
+         Submit Property
+         IDs:
+         - inquiry-page
+         - select-property
+         
+         -
+         - inquiry-phone
+         - inquiry-message
+         
+         Context
+         (list dict): properties for keys: (int),
+         - Mappings:
+         action:
+         -
+         with input submit button submit-inquiry-button
+         
+         ---
+         
+         ### 5.
+         Page Title:
+         - Element
+         -
+         inquiries-table
+         inquiry-status-filter
+         (dynamic each
+         
+         - Context
+         inquiries (list of inquiries (int), (str), (str), message (str),
+         (str):
+         Mappings:
+         -
+         - Forms:
+         form submit inquiry-filter-submit
+         buttons IDs above, submitting
+         
+         
+         
+         ### 6. favorites.html
+         Page My
+         Element IDs:
+         
+         favorites-list
+         - property)
+         each property)
+         -
+         Variables:
+         favorites (list of dict): List records favorite_id (int),
+         (dict): Dictionary (int) to for
+         
+         - url_for('dashboard')
+         - view-property-button-{{ property.property_id }}:
+         Forms:
+         from button ID as (POST)
+         
+         ---
+         
+         ###
+         Title:
+         -
+         - agents-page
+         
+         agent-search
+         contact-agent-button-{{ agent.agent_id }} each
+         -
+         
+         - (list of agents keys: (int), (str), specialization (str), phone (str), properties_sold
+         -
+         url_for('dashboard')
+         
+         Agent search form input filter
+         - Contact button(s) usage (possibly mailto
+         
+         
+         
+         
+         Title: Featured
+         - IDs:
+         
+         - locations-list
+         - (dynamic for
+         - location-sort
+         back-to-dashboard
+         
+         - of dict): region
+         Current selection
+         Navigation
+         url_for('dashboard')
+         view-location-button-{{ location.location_id }}: to view properties location a or search)
+         - Forms:
+         Sort
+         
+         
+         
+         Section Data File Schemas
+         
+         ### properties.txt
+         File
+         - Fields
+         property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status
+         details including associated agent, and status.
+         - Rows:
+         home large
+         2|456 Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern with
+         Road|Suburb|280000|Condo|2|2|1500|Cozy condo
+         
+         
+         
+         ### locations.txt
+         - Path:
+         (pipe-delimited):
+         
+         - Data Stores including name, property and properties.
+         -
+         area
+         residential commercial zone
+         3|Suburb|Outskirts|295000|52|Family-friendly
+         
+         
+         
+         inquiries.txt
+         - File
+         - Fields
+         
+         Stores customer contact
+         -
+         Smith|john@email.com|555-1234|Interested this weekend|2025-01-15|Pending
+         2|2|Sarah Johnson|sarah@email.com|555-5678|Can we schedule showing?|2025-01-16|Contacted
+         
+         
+         ---
+         
+         4. favorites.txt
+         - File Path: data/favorites.txt
+         -
+         favorite_id|property_id|added_date
+         - favorite properties with the date
+         - Example
+         1|1|2025-01-10
+         
+         3|3|2025-01-14
+         
+         
+         
+         
+         Path: data/agents.txt
+         
+         agent_id|agent_name|specialization|email|phone|properties_sold
+         estate and info.
+         -
+         Wilson|Residential
+         Chen|Commercial Real
+         103|James Martinez|Luxury
+         
+
+  [2] Agent: SystemArchitect
+      Type: IO_CHAOS_WORD_DELETION
+      Details: WordDeletion: 817/1362 words deleted (60%)
+
+      📄 Before (full content):
+         # Design Specification for RealEstate Web Application
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification (Backend)
+         
+         | Route Path                     | HTTP Method | Function Name              | Template Rendered         | Route Parameters         | Context Variables Passed to Template (name : type)                                         | POST Form Data Expected (name : type)                                         |
+         |-------------------------------|-------------|----------------------------|---------------------------|--------------------------|-------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+         | /                             | GET         | root_redirect               | -                         | -                        | -                                                                                               | -                                                                             |
+         | /dashboard                    | GET         | dashboard                  | dashboard.html            | -                        | featured_properties : list(dict), recent_listings : list(dict)                             | -                                                                             |
+         | /search                      | GET         | property_search            | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict                    | -                                                                             |
+         | /search                      | POST        | property_search            | search.html               | -                        | properties : list(dict), locations : list(dict), filter_options : dict                    | location_input : str, price_range_min : float, price_range_max : float, property_type_filter : str |
+         | /property/<int:property_id>   | GET         | property_details           | property_details.html     | property_id : int        | property : dict                                                                           | -                                                                             |
+         | /inquiry                     | GET         | property_inquiry           | inquiry.html              | -                        | properties : list(dict)                                                                  | -                                                                             |
+         | /inquiry                     | POST        | submit_inquiry             | inquiries.html            | -                        | inquiries : list(dict)                                                                   | select_property : int, inquiry_name : str, inquiry_email : str, inquiry_phone : str, inquiry_message : str |
+         | /inquiries                   | GET         | my_inquiries               | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                                          | -                                                                             |
+         | /inquiries/filter            | POST        | filter_inquiries           | inquiries.html            | -                        | inquiries : list(dict), status_filter : str                                          | inquiry_status_filter : str                                                   |
+         | /inquiries/delete/<int:inquiry_id> | POST  | delete_inquiry             | inquiries.html            | inquiry_id : int         | inquiries : list(dict), status_filter : str                                          | -                                                                             |
+         | /favorites                   | GET         | my_favorites               | favorites.html            | -                        | favorites : list(dict), properties_dict : dict (property_id to dict)                   | -                                                                             |
+         | /favorites/add/<int:property_id> | POST   | add_to_favorites           | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id to dict)                   | -                                                                             |
+         | /favorites/remove/<int:property_id> | POST | remove_from_favorites      | favorites.html            | property_id : int        | favorites : list(dict), properties_dict : dict (property_id to dict)                   | -                                                                             |
+         | /agents                      | GET         | agent_directory            | agents.html               | -                        | agents : list(dict)                                                                    | -                                                                             |
+         | /locations                   | GET         | locations_page             | locations.html            | -                        | locations : list(dict), sort_option : str                                           | -                                                                             |
+         | /locations/sort              | POST        | sort_locations             | locations.html            | -                        | locations : list(dict), sort_option : str                                           | location_sort : str                                                           |
+         
+         ### Notes on Context Variables:
+         - `featured_properties`, `recent_listings`, `properties`, `inquiries`, `favorites`, and `agents` are lists of dictionaries, each dictionary representing one data record from respective data files, parsed into fields.
+         - `properties_dict` is a dictionary keyed by property_id with value as full property dict for display in favorites.
+         - `filter_options`, `status_filter`, and `sort_option` are strings or dicts representing current filter/sort states.
+         
+         ---
+         
+         ## Section 2: HTML Templates (Frontend)
+         
+         ### 1. dashboard.html
+         - Page Title: Real Estate Dashboard
+         - Element IDs:
+           - dashboard-page
+           - featured-properties
+           - browse-properties-button
+           - my-inquiries-button
+           - my-favorites-button
+         - Context Variables:
+           - featured_properties (list of dict): Featured property recommendations; each dict with property_id (int), address (str), price (float), image_url (str).
+           - recent_listings (list of dict): Recent property listings; same structure as featured_properties.
+         - Navigation Mappings:
+           - browse-properties-button: url_for('property_search')
+           - my-inquiries-button: url_for('my_inquiries')
+           - my-favorites-button: url_for('my_favorites')
+         - Forms: None
+         
+         ---
+         
+         ### 2. search.html
+         - Page Title: Property Search
+         - Element IDs:
+           - search-page
+           - location-input
+           - price-range-min
+           - price-range-max
+           - property-type-filter
+           - properties-grid
+           - view-property-button-{{property_id}} (dynamic for each property)
+         - Context Variables:
+           - properties (list of dict): List of all properties with keys: property_id (int), address (str), location (str), price (float), property_type (str), bedrooms (int), bathrooms (float).
+           - locations (list of dict): Optional; list of locations for filter suggestions.
+           - filter_options (dict): Current filter selections with keys: location_input (str), price_range_min (float), price_range_max (float), property_type_filter (str).
+         - Navigation Mappings:
+           - view-property-button-{{property_id}}: url_for('property_details', property_id=property_id)
+         - Forms:
+           - Search/filter form
+             - Inputs with IDs: location-input, price-range-min, price-range-max, property-type-filter
+             - Submit button with ID: search-submit-button
+             - Form action: url_for('property_search'), method POST
+         
+         ---
+         
+         ### 3. property_details.html
+         - Page Title: Property Details
+         - Element IDs:
+           - property-details-page
+           - property-address
+           - property-price
+           - property-description
+           - property-features
+           - add-to-favorites-button
+           - submit-inquiry-button
+         - Context Variables:
+           - property (dict): Property details with keys: property_id (int), address (str), price (float), description (str), bedrooms (int), bathrooms (float), square_feet (int)
+         - Navigation Mappings:
+           - add-to-favorites-button: url_for('add_to_favorites', property_id=property.property_id) (POST)
+           - submit-inquiry-button: url_for('property_inquiry')
+         - Forms:
+           - Add to favorites form with button ID add-to-favorites-button, action POST to add_to_favorites route with property_id
+           - Inquiry submission button linking to inquiry page
+         
+         ---
+         
+         ### 4. inquiry.html
+         - Page Title: Submit Property Inquiry
+         - Element IDs:
+           - inquiry-page
+           - select-property
+           - inquiry-name
+           - inquiry-email
+           - inquiry-phone
+           - inquiry-message
+           - submit-inquiry-button
+         - Context Variables:
+           - properties (list of dict): List of properties with keys property_id (int), address (str)
+         - Navigation Mappings:
+           - Form action: url_for('submit_inquiry'), method POST
+         - Forms:
+           - Inquiry form with inputs IDs as above
+           - Submit button ID: submit-inquiry-button
+         
+         ---
+         
+         ### 5. inquiries.html
+         - Page Title: My Inquiries
+         - Element IDs:
+           - inquiries-page
+           - inquiries-table
+           - inquiry-status-filter
+           - delete-inquiry-button-{{inquiry_id}} (dynamic for each inquiry)
+           - back-to-dashboard
+         - Context Variables:
+           - inquiries (list of dict): Each dict includes inquiry_id (int), property_id (int), customer_name (str), customer_email (str), customer_phone (str), message (str), inquiry_date (str), status (str)
+           - status_filter (str): Current inquiry status filter
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+         - Forms:
+           - Filter form with dropdown inquiry-status-filter and submit button inquiry-filter-submit
+           - Delete inquiry buttons with IDs per inquiry
+         
+         ---
+         
+         ### 6. favorites.html
+         - Page Title: My Favorite Properties
+         - Element IDs:
+           - favorites-page
+           - favorites-list
+           - remove-from-favorites-button-{{property_id}} (dynamic for each favorite property)
+           - view-property-button-{{property_id}} (dynamic for each favorite property)
+           - back-to-dashboard
+         - Context Variables:
+           - favorites (list of dict): Each dict with favorite_id (int), property_id (int), added_date (str)
+           - properties_dict (dict): Map property_id (int) to property dict
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+           - view-property-button-{{property_id}}: url_for('property_details', property_id=property_id)
+         - Forms:
+           - Remove from favorites form/button with ID remove-from-favorites-button-{{property_id}}, method POST
+         
+         ---
+         
+         ### 7. agents.html
+         - Page Title: Real Estate Agents
+         - Element IDs:
+           - agents-page
+           - agents-list
+           - agent-search
+           - contact-agent-button-{{agent_id}} (dynamic for each agent)
+           - back-to-dashboard
+         - Context Variables:
+           - agents (list of dict): Each dict with agent_id (int), agent_name (str), specialization (str), email (str), phone (str), properties_sold (int)
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+         - Forms:
+           - Agent search input with ID agent-search (client-side filtering possibly)
+         
+         ---
+         
+         ### 8. locations.html
+         - Page Title: Featured Locations
+         - Element IDs:
+           - locations-page
+           - locations-list
+           - view-location-button-{{location_id}} (dynamic for each location)
+           - location-sort
+           - back-to-dashboard
+         - Context Variables:
+           - locations (list of dict): Each dict with location_id (int), location_name (str), region (str), average_price (float), property_count (int), description (str)
+           - sort_option (str): Current sorting selection
+         - Navigation Mappings:
+           - back-to-dashboard: url_for('dashboard')
+           - view-location-button-{{location_id}}: Action to view properties in given location (implementation dependent)
+         - Forms:
+           - Sort form with location-sort dropdown and submit button location-sort-submit
+         
+         ---
+         
+         ## Section 3: Data File Schemas (Backend)
+         
+         ### 1. properties.txt
+         - File Path: data/properties.txt
+         - Fields (pipe-delimited): property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status
+         - Data Description: Contains property listings with details including address, location, price, property type, features, agent reference, and listing status.
+         - Example Rows:
+           1|123 Oak Street|Downtown|450000|House|3|2|2500|Beautiful family home with large yard|101|Available
+           2|456 Park Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern apartment with city view|102|Available
+           3|789 Elm Road|Suburb|280000|Condo|2|2|1500|Cozy condo in quiet neighborhood|101|Sold
+         
+         ---
+         
+         ### 2. locations.txt
+         - File Path: data/locations.txt
+         - Fields (pipe-delimited): location_id|location_name|region|average_price|property_count|description
+         - Data Description: Stores popular location data with name, region, average property price, property count, and descriptive info.
+         - Example Rows:
+           1|Downtown|Central|425000|45|Urban area with business district
+           2|Midtown|Central|380000|38|Mixed residential and commercial zone
+           3|Suburb|Outskirts|295000|52|Family-friendly residential area
+         
+         ---
+         
+         ### 3. inquiries.txt
+         - File Path: data/inquiries.txt
+         - Fields (pipe-delimited): inquiry_id|property_id|customer_name|customer_email|customer_phone|message|inquiry_date|status
+         - Data Description: Contains customer inquiries about properties including contact details, inquiry message, date, and status.
+         - Example Rows:
+           1|1|John Smith|john@email.com|555-1234|Interested in viewing this weekend|2025-01-15|Pending
+           2|2|Sarah Johnson|sarah@email.com|555-5678|Can we schedule a showing?|2025-01-16|Contacted
+           3|1|Mike Davis|mike@email.com|555-9012|What is the lowest offer?|2025-01-17|Resolved
+         
+         ---
+         
+         ### 4. favorites.txt
+         - File Path: data/favorites.txt
+         - Fields (pipe-delimited): favorite_id|property_id|added_date
+         - Data Description: Lists favorite properties with property references and the date added.
+         - Example Rows:
+           1|1|2025-01-10
+           2|2|2025-01-12
+           3|3|2025-01-14
+         
+         ---
+         
+         ### 5. agents.txt
+         - File Path: data/agents.txt
+         - Fields (pipe-delimited): agent_id|agent_name|specialization|email|phone|properties_sold
+         - Data Description: Stores real estate agents with contact and sales information.
+         - Example Rows:
+           101|Robert Wilson|Residential Properties|robert@email.com|555-0001|125
+           102|Emily Chen|Commercial Real Estate|emily@email.com|555-0002|89
+           103|James Martinez|Luxury Homes|james@email.com|555-0003|67
+         
+
+      📝 After (full content):
+         # Design RealEstate Web Application
+         
+         ---
+         
+         ## Section Flask Routes (Backend)
+         
+         | Route Path HTTP Name Route Parameters | Variables (name type) | Form Expected (name |
+         |-------------------------------|-------------|----------------------------|---------------------------|--------------------------|-------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+         / | - | | - |
+         | /dashboard GET dashboard | | : |
+         /search GET | search.html properties : list(dict), filter_options
+         | | | properties : list(dict), list(dict), : | location_input price_range_max
+         | | property_id : | |
+         | GET property_inquiry | : |
+         /inquiry | | submit_inquiry | - : int, : str, : str, inquiry_message |
+         | my_inquiries | : list(dict), str
+         | filter_inquiries | : list(dict), | str
+         delete_inquiry | inquiries.html : | : |
+         | /favorites GET | favorites.html list(dict), dict (property_id dict) | -
+         | /favorites/add/<int:property_id> : int favorites : dict to
+         | /favorites/remove/<int:property_id> | | int list(dict), |
+         - :
+         | | GET | | locations.html - list(dict), sort_option : str |
+         /locations/sort | sort_locations | locations list(dict), sort_option str | location_sort
+         
+         Notes
+         `featured_properties`, `properties`, `favorites`, lists of each representing one data respective files,
+         is a dictionary by property_id full property for in favorites.
+         `status_filter`, strings current states.
+         
+         
+         
+         2: Templates (Frontend)
+         
+         
+         -
+         
+         -
+         -
+         
+         - my-inquiries-button
+         
+         Context
+         - dict): Featured recommendations; property_id address
+         recent_listings Recent
+         -
+         
+         my-inquiries-button: url_for('my_inquiries')
+         
+         Forms: None
+         
+         ---
+         
+         2.
+         Page Title: Search
+         IDs:
+         search-page
+         
+         price-range-min
+         price-range-max
+         -
+         
+         - for
+         - Variables:
+         properties of of properties with property_id (str), price (float), property_type (str), (int), bathrooms
+         - locations (list list for filter suggestions.
+         filter_options (dict): with price_range_max (str).
+         - Navigation
+         property_id=property_id)
+         Forms:
+         form
+         IDs: property-type-filter
+         - Submit ID: search-submit-button
+         
+         
+         ---
+         
+         3.
+         Property Details
+         
+         
+         
+         
+         
+         
+         add-to-favorites-button
+         submit-inquiry-button
+         Context
+         - property (dict): details with (int), (str), price description bedrooms (int)
+         Mappings:
+         add-to-favorites-button: url_for('add_to_favorites', property_id=property.property_id) (POST)
+         submit-inquiry-button:
+         -
+         - Add to with button ID POST to
+         - button page
+         
+         
+         
+         ### 4. inquiry.html
+         Page Title: Property
+         IDs:
+         - inquiry-page
+         
+         - inquiry-name
+         inquiry-email
+         -
+         -
+         - submit-inquiry-button
+         Variables:
+         properties with keys property_id
+         Navigation Mappings:
+         - Form action:
+         - Forms:
+         - Inquiry form with inputs as above
+         button submit-inquiry-button
+         
+         
+         
+         
+         Title:
+         -
+         inquiries-page
+         inquiries-table
+         
+         - delete-inquiry-button-{{inquiry_id}} (dynamic inquiry)
+         back-to-dashboard
+         - Context Variables:
+         (list of (str), customer_email customer_phone (str), (str),
+         - inquiry status
+         
+         url_for('dashboard')
+         - Forms:
+         form inquiry-status-filter submit
+         with
+         
+         
+         
+         favorites.html
+         
+         -
+         -
+         favorites-list
+         property)
+         - for
+         back-to-dashboard
+         
+         favorites (list of dict): Each dict with (int), (str)
+         - properties_dict (int) property
+         
+         url_for('dashboard')
+         url_for('property_details',
+         - Forms:
+         - favorites ID method
+         
+         ---
+         
+         ### agents.html
+         Page Estate
+         IDs:
+         - agents-page
+         
+         -
+         contact-agent-button-{{agent_id}} (dynamic agent)
+         
+         
+         (list of Each agent_id specialization (str), phone (str), properties_sold
+         - Navigation Mappings:
+         - back-to-dashboard:
+         - Forms:
+         - Agent search with (client-side filtering possibly)
+         
+         
+         
+         ### 8.
+         Title: Featured
+         Element IDs:
+         
+         
+         view-location-button-{{location_id}} for each
+         location-sort
+         back-to-dashboard
+         -
+         - locations dict with region (float), property_count description
+         (str): Current sorting
+         
+         
+         Action to view properties in given location (implementation dependent)
+         
+         - form with and submit
+         
+         ---
+         
+         File Schemas
+         
+         properties.txt
+         Path: data/properties.txt
+         - property_id|address|location|price|property_type|bedrooms|bathrooms|square_feet|description|agent_id|status
+         listings including location, price, property agent
+         Example
+         1|123 with large yard|101|Available
+         Avenue|Midtown|350000|Apartment|2|1.5|1200|Modern apartment
+         3|789 Road|Suburb|280000|Condo|2|2|1500|Cozy in
+         
+         
+         
+         ###
+         -
+         
+         Description: popular data with name, property count, and
+         Example
+         district
+         2|Midtown|Central|380000|38|Mixed residential zone
+         3|Suburb|Outskirts|295000|52|Family-friendly residential area
+         
+         
+         
+         inquiries.txt
+         data/inquiries.txt
+         - inquiry_id|property_id|customer_name|customer_email|customer_phone|message|inquiry_date|status
+         - inquiries properties including message, date, status.
+         - Rows:
+         1|1|John in viewing
+         2|2|Sarah a
+         is lowest offer?|2025-01-17|Resolved
+         
+         
+         
+         ###
+         Path:
+         -
+         - Lists favorite properties with property and date
+         
+         
+         2|2|2025-01-12
+         
+         
+         
+         
+         ###
+         File
+         - (pipe-delimited):
+         Data and information.
+         Example Rows:
+         101|Robert
+         
+         Martinez|Luxury
+         
+
+================================================================================
+

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+</head>
+<body>
+    <div id="cart-page">
+        <h1>Shopping Cart</h1>
+
+        <form method="post" action="{{ url_for('cart') }}">
+            <table id="cart-items-table" border="1">
+                <tr>
+                    <th>Title</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                    <th>Actions</th>
+                </tr>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.title }}</td>
+                    <td>
+                        <input type="number" id="update-quantity-{{ item.item_id }}" name="update-quantity-{{ item.item_id }}" value="{{ item.quantity }}" min="1">
+                    </td>
+                    <td>${{ '%.2f'|format(item.price) }}</td>
+                    <td>${{ '%.2f'|format(item.subtotal) }}</td>
+                    <td>
+                        <button type="submit" name="remove-item-button-{{ item.item_id }}" id="remove-item-button-{{ item.item_id }}">Remove</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <div id="total-amount">
+                Total: ${{ '%.2f'|format(total_amount) }}
+            </div>
+
+            <button type="button" id="proceed-checkout-button" onclick="location.href='{{ url_for('checkout') }}'">Proceed to Checkout</button>
+        </form>
+
+    </div>
+</body>
+</html>

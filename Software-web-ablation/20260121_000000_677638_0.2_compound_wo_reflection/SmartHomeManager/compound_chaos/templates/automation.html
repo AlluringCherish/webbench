@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automation Rules - SmartHomeManager</title>
+</head>
+<body>
+    <h1 id="automation-page">Automation Rules</h1>
+    <nav>
+        <a href="{{ url_for('dashboard') }}">Home</a> |
+        <a href="{{ url_for('devices_list') }}">Devices</a> |
+        <a href="{{ url_for('activity_page') }}">Activity Logs</a> |
+        <a href="{{ url_for('energy_page') }}">Energy</a> |
+        <a href="{{ url_for('automation_page') }}">Automation Rules</a>
+    </nav>
+    <section>
+        <table id="rules-table" border="1">
+            <thead>
+                <tr>
+                    <th>Rule ID</th>
+                    <th>Name</th>
+                    <th>Trigger Type</th>
+                    <th>Trigger Value</th>
+                    <th>Action Device</th>
+                    <th>Action Type</th>
+                    <th>Action Value</th>
+                    <th>Enabled</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rule in rules %}
+                <tr>
+                    <td>{{ rule.rule_id }}</td>
+                    <td>{{ rule.rule_name }}</td>
+                    <td>{{ rule.trigger_type }}</td>
+                    <td>{{ rule.trigger_value }}</td>
+                    <td>
+                        {% set action_device = (devices|selectattr('device_id', 'equalto', rule.action_device_id)|list).0 %}
+                        {{ action_device.device_name if action_device else 'Unknown' }}
+                    </td>
+                    <td>{{ rule.action_type }}</td>
+                    <td>{{ rule.action_value }}</td>
+                    <td>{{ 'Yes' if rule.enabled else 'No' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+    </section>
+</body>
+</html>

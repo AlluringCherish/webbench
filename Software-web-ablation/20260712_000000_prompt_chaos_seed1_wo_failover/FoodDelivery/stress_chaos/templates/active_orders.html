@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Active Orders</title>
+</head>
+<body>
+    <div id="active-orders-page">
+        <h1>Active Orders</h1>
+
+        <form id="filter-form" method="GET" action="{{ url_for('active_orders') }}">
+            <label for="status-filter">Filter by Status:</label>
+            <select id="status-filter" name="status">
+                {% for status in statuses %}
+                <option value="{{ status }}" {% if status == status_filter %}selected{% endif %}>{{ status }}</option>
+                {% endfor %}
+            </select>
+            <button id="filter-button" type="submit" aria-label="Filter Orders">Filter</button>
+        </form>
+
+        <div id="orders-list">
+            {% for order in active_orders %}
+            <div class="order-item">
+                <p>Order #{{ order.order_id }} - Status: {{ order.status }}</p>
+                <button id="track-order-button-{{ order.order_id }}" onclick="location.href='{{ url_for('order_tracking', order_id=order.order_id) }}'" aria-label="Track Order #{{ order.order_id }}">Track Order</button>
+            </div>
+            {% else %}
+            <p>No active orders.</p>
+            {% endfor %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'" aria-label="Back to Dashboard">Back to Dashboard</button>
+    </div>
+</body>
+</html>

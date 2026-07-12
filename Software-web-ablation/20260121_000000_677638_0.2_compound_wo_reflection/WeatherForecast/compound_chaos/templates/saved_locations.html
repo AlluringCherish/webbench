@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Saved Locations</title>
+</head>
+<body>
+    <div id="saved-locations-page">
+        <h1>Saved Locations</h1>
+        <table id="locations-table" border="1" cellspacing="0" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>Location Name</th>
+                    <th>Default</th>
+                    <th>Current Temperature</th>
+                    <th>Current Condition</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for loc in saved_locations %}
+                <tr id="saved-location-{{ loc.saved_id }}">
+                    <td>{{ loc.location_name }}</td>
+                    <td>{{ 'Yes' if loc.is_default else 'No' }}</td>
+                    <td>{% if loc.current_temperature is not none %}{{ loc.current_temperature }}&deg;{% else %}N/A{% endif %}</td>
+                    <td>{{ loc.current_condition or 'N/A' }}</td>
+                    <td>
+                        <a href="{{ url_for('current_weather', location_id=loc.location_id) }}">
+                            <button id="view-location-weather-{{ loc.location_id }}">View Weather</button>
+                        </a>
+                        <button id="remove-location-button-{{ loc.location_id }}">Remove</button>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5">No saved locations.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('location_search') }}">
+            <button id="add-new-location-button">Add New Location</button>
+        </a>
+    </div>
+</body>
+</html>

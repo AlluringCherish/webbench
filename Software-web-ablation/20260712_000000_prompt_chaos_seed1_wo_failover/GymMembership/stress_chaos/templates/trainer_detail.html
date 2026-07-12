@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ trainer.trainer_name }} - Trainer Details</title>
+</head>
+<body>
+  <div id="main-container-id">
+    <h1 id="trainer-name">{{ trainer.trainer_name }}</h1>
+    <div id="trainer-bio">{{ trainer.bio }}</div>
+    <div id="trainer-experience">Experience: {{ trainer.experience_years }} years</div>
+    <div id="trainer-specialties">Specialties:
+      <ul>
+        {% for specialty in trainer.specialties %}
+          <li>{{ specialty }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div id="trainer-certifications">Certifications:
+      <ul>
+        {% for cert in trainer.certifications %}
+          <li>{{ cert }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div id="trainer-reviews">
+      <h2>Reviews</h2>
+      {% if trainer_reviews %}
+        <ul>
+          {% for review in trainer_reviews %}
+            <li>
+              <strong>{{ review.member_name }}</strong> ({{ review.date }}): {{ review.message }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No reviews yet.</p>
+      {% endif %}
+    </div>
+
+    <form method="POST" action="{{ url_for('book_personal_training', trainer_id=trainer.trainer_id) }}">
+      <label for="session_date">Select Session Date:</label>
+      <input type="date" id="session_date" name="session_date" required>
+      <button id="book-trainer-button" type="submit">Book Trainer</button>
+    </form>
+
+    <a id="back-to-dashboard" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+  </div>
+</body>
+</html>

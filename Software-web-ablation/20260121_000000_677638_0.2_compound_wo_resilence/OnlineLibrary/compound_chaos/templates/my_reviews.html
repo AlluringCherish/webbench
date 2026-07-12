@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Reviews</title>
+</head>
+<body>
+    <div id="reviews-page">
+        <h1>My Reviews</h1>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+        <div id="reviews-list">
+            {% for review in reviews %}
+            <div class="review-item">
+                <h3>{{ review.book_title }}</h3>
+                <p>Rating: {{ review.rating }}</p>
+                <p>{{ review.review_text }}</p>
+                <button id="edit-review-button-{{ review.review_id }}" onclick="window.location.href='{{ url_for('write_review_page', book_id=review.book_id) }}'">Edit</button>
+                <form method="POST" action="{{ url_for('delete_review', review_id=review.review_id) }}" style="display:inline;">
+                    <button id="delete-review-button-{{ review.review_id }}" type="submit">Delete</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

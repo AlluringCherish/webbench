@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+</head>
+<body>
+    <div id="admin-panel-page">
+        <h1>Admin Panel</h1>
+
+        {% if message %}
+        <p>{{ message }}</p>
+        {% endif %}
+
+        <div id="pending-applications">
+            <h2>Pending Applications</h2>
+            {% for app in pending_applications %}
+            <div id="application-{{ app.application_id }}">
+                <p>Applicant: {{ app.applicant_name }}</p>
+                <p>Pet: {{ app.pet_name }}</p>
+                <p>Date Submitted: {{ app.date_submitted }}</p>
+                <p>Status: {{ app.status }}</p>
+
+                <form method="POST" action="{{ url_for('approve_application', application_id=app.application_id) }}" style="display:inline">
+                    <button type="submit">Approve</button>
+                </form>
+
+                <form method="POST" action="{{ url_for('reject_application', application_id=app.application_id) }}" style="display:inline">
+                    <button type="submit">Reject</button>
+                </form>
+            </div>
+            <hr>
+            {% endfor %}
+        </div>
+
+        <div id="all-pets-list">
+            <h2>All Pets</h2>
+            {% for pet in all_pets %}
+            <div id="pet-{{ pet.pet_id }}">
+                <p>Name: {{ pet.name }}</p>
+                <p>Species: {{ pet.species }}</p>
+                <p>Status: {{ pet.status }}</p>
+
+                <form method="POST" action="{{ url_for('edit_pet', pet_id=pet.pet_id) }}" style="display:inline">
+                    <button type="submit">Edit</button>
+                </form>
+
+                <form method="POST" action="{{ url_for('delete_pet', pet_id=pet.pet_id) }}" style="display:inline">
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+            <hr>
+            {% endfor %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

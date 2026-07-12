@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Featured Locations</title>
+</head>
+<body>
+    <div id="locations-page">
+        <h1>Featured Locations</h1>
+
+        <form method="POST" action="{{ url_for('sort_locations') }}">
+            <label for="location-sort">Sort By:</label>
+            <select id="location-sort" name="location_sort">
+                <option value="">Select</option>
+                <option value="name_asc" {% if sort_option == 'name_asc' %}selected{% endif %}>Name Ascending</option>
+                <option value="name_desc" {% if sort_option == 'name_desc' %}selected{% endif %}>Name Descending</option>
+                <option value="avg_price_asc" {% if sort_option == 'avg_price_asc' %}selected{% endif %}>Avg Price Ascending</option>
+                <option value="avg_price_desc" {% if sort_option == 'avg_price_desc' %}selected{% endif %}>Avg Price Descending</option>
+            </select>
+            <button type="submit">Sort</button>
+        </form>
+
+        <div id="locations-list">
+            {% for location in locations %}
+            <div class="location-card">
+                <h3>{{ location.location_name }}</h3>
+                <p>Region: {{ location.region }}</p>
+                <p>Average Price: ${{ location.average_price }}</p>
+                <p>{{ location.description }}</p>
+                <a href="{{ url_for('property_search', location=location.location_name) }}">
+                    <button id="view-location-button-{{ location.location_id }}">View</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

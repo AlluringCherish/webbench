@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Your Rental</title>
+</head>
+<body>
+    <div id="booking-page">
+        <h1>Book Your Rental</h1>
+        <form method="POST">
+            <label for="pickup-location">Pickup Location:</label>
+            <select id="pickup-location" name="pickup_location">
+                {% for location in pickup_locations %}
+                <option value="{{ location }}" {% if rental_dates and rental_dates.pickup_location == location %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="dropoff-location">Dropoff Location:</label>
+            <select id="dropoff-location" name="dropoff_location">
+                {% for location in dropoff_locations %}
+                <option value="{{ location }}" {% if rental_dates and rental_dates.dropoff_location == location %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="pickup-date">Pickup Date:</label>
+            <input type="date" id="pickup-date" name="pickup_date" value="{% if rental_dates %}{{ rental_dates.pickup_date }}{% endif %}">
+
+            <label for="dropoff-date">Dropoff Date:</label>
+            <input type="date" id="dropoff-date" name="dropoff_date" value="{% if rental_dates %}{{ rental_dates.dropoff_date }}{% endif %}">
+
+            <button type="submit" id="calculate-price-button">Calculate Price</button>
+        </form>
+        <div id="total-price">
+            {% if calculated_price is defined %}
+            <p>Total Price: ${{ '%.2f'|format(calculated_price) }}</p>
+            {% endif %}
+        </div>
+        {% if calculated_price is defined and reservation_id is defined %}
+        <button id="proceed-to-insurance-button" onclick="location.href='{{ url_for('insurance_options_page', reservation_id=reservation_id) }}'">Proceed to Insurance</button>
+        {% endif %}
+    </div>
+</body>
+</html>

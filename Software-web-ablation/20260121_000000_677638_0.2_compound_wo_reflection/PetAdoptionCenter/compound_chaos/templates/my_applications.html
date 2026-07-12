@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Applications</title>
+</head>
+<body>
+    <h1>My Applications</h1>
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+
+    <label for="filter-status">Filter by Status:</label>
+    <select id="filter-status" name="status" onchange="this.form.submit()" form="filter-form">
+        <option value="All" {% if filter_status == 'All' %}selected{% endif %}>All</option>
+        <option value="Pending" {% if filter_status == 'Pending' %}selected{% endif %}>Pending</option>
+        <option value="Approved" {% if filter_status == 'Approved' %}selected{% endif %}>Approved</option>
+        <option value="Rejected" {% if filter_status == 'Rejected' %}selected{% endif %}>Rejected</option>
+    </select>
+
+    <form id="filter-form" method="GET" action="{{ url_for('my_applications_page') }}"></form>
+
+    <table id="applications-list" border="1">
+        <thead>
+            <tr>
+                <th>Pet Name</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td>{{ app.pet_name }}</td>
+                <td>{{ app.application_date }}</td>
+                <td>{{ app.status }}</td>
+                <td>
+                    {% if app.status == 'Pending' %}
+                        <a href="{{ url_for('adoption_application_page', pet_id=app.pet_id) }}">Edit Application</a>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4">No applications found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

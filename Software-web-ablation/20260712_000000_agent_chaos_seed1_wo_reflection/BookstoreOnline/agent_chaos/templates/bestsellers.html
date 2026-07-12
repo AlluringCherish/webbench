@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bestsellers</title>
+</head>
+<body>
+    <div id="bestsellers-page">
+        <h1>Bestsellers</h1>
+
+        <label for="time-period-filter">Select Time Period:</label>
+        <select id="time-period-filter" name="period" onchange="location.href='{{ url_for('bestsellers') }}?period=' + this.value">
+            <option value="This Week" {% if selected_period == 'This Week' %}selected{% endif %}>This Week</option>
+            <option value="This Month" {% if selected_period == 'This Month' %}selected{% endif %}>This Month</option>
+            <option value="All Time" {% if selected_period == 'All Time' %}selected{% endif %}>All Time</option>
+        </select>
+
+        <div id="bestsellers-list">
+            {% if bestsellers %}
+                <ol>
+                {% for book in bestsellers %}
+                    <li>
+                        Rank {{ book.rank }}: <strong>{{ book.title }}</strong> by {{ book.author }}<br>
+                        Sales: {{ book.sales_count }}<br>
+                        <button id="view-book-button-{{ book.book_id }}" onclick="location.href='{{ url_for('book_details', book_id=book.book_id) }}'">View Details</button>
+                    </li>
+                {% endfor %}
+                </ol>
+            {% else %}
+                <p>No bestsellers data available.</p>
+            {% endif %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

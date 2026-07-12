@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% block content %}
+<form method="GET" action="{{ url_for('vehicle_search') }}" id="vehicle-search-form">
+    <div class="form-section">
+        <label for="selected_vehicle_type">Select Vehicle Type:</label>
+        <select id="selected_vehicle_type" name="selected_vehicle_type" aria-describedby="vehicle-type-desc">
+            <option value="">All Types</option>
+            {% for vt in vehicle_types %}
+            <option value="{{ vt }}" {% if selected_vehicle_type == vt %}selected{% endif %}>{{ vt }}</option>
+            {% endfor %}
+        </select>
+        <small id="vehicle-type-desc">Filter vehicles by type.</small>
+    </div>
+    <button id="search-vehicles-button" type="submit">Search</button>
+</form>
+
+<div id="vehicles-grid">
+    {% if vehicles %}
+        <ul role="list" aria-label="Vehicle search results">
+            {% for vehicle in vehicles %}
+            <li id="vehicle-{{ vehicle.vehicle_id }}" class="vehicle-item">
+                <strong>{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.vehicle_type }})</strong><br>
+                Daily Rate: ${{ '%.2f'|format(vehicle.daily_rate) }}<br>
+                <a id="view-details-button-{{ vehicle.vehicle_id }}" href="{{ url_for('vehicle_details_page', vehicle_id=vehicle.vehicle_id) }}">Details</a>
+                <a id="book-now-button-{{ vehicle.vehicle_id }}" href="{{ url_for('booking', vehicle_id=vehicle.vehicle_id) }}">Book Now</a>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No vehicles available for the selected type.</p>
+    {% endif %}
+</div>
+{% endblock %}

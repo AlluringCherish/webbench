@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+</head>
+<body>
+    <div id="cart-page">
+        <h1>Shopping Cart</h1>
+        <form method="POST" action="{{ url_for('shopping_cart') }}">
+            <table id="cart-items-table" border="1">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.item_name }}</td>
+                        <td><input type="number" id="update-quantity-{{ item.item_id }}" name="quantity-{{ item.item_id }}" min="1" value="{{ item.quantity }}" /></td>
+                        <td>${{ '%.2f' | format(item.price) }}</td>
+                        <td>${{ '%.2f' | format(item.subtotal) }}</td>
+                        <td><button type="submit" id="remove-item-button-{{ item.item_id }}" name="remove_item_id" value="{{ item.item_id }}">Remove</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div id="total-amount">Total: ${{ '%.2f' | format(total_amount) }}</div>
+            <a href="{{ url_for('checkout') }}">
+                <button type="button" id="proceed-checkout-button">Proceed to Checkout</button>
+            </a>
+            <button type="submit">Update Cart</button>
+        </form>
+    </div>
+</body>
+</html>

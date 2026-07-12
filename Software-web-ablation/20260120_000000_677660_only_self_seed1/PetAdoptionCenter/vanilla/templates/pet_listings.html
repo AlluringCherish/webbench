@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Pets</title>
+</head>
+<body>
+    <div id="pet-listings-page">
+        <h1>Available Pets</h1>
+        <form method="post" action="{{ url_for('pet_listings_filter') }}">
+            <input id="search-input" name="search" type="text" placeholder="Search pets by name..." value="{{ request.form.get('search', '') }}" />
+            <select id="filter-species" name="species">
+                <option value="">All Species</option>
+                <option value="Dog" {% if request.form.get('species') == 'Dog' %}selected{% endif %}>Dog</option>
+                <option value="Cat" {% if request.form.get('species') == 'Cat' %}selected{% endif %}>Cat</option>
+                <option value="Other" {% if request.form.get('species') == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <div id="pet-grid">
+            {% for pet in pets %}
+            <div id="pet-card-{{ pet.pet_id }}">
+                {% if pet.photo_url %}
+                <img src="{{ pet.photo_url }}" alt="Photo of {{ pet.name }}" />
+                {% endif %}
+                <a href="{{ url_for('pet_details', pet_id=pet.pet_id) }}">
+                    <h2>{{ pet.name }}</h2>
+                </a>
+                <div>Species: {{ pet.species }}</div>
+                <div>Age: {{ pet.age }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

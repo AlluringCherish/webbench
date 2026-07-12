@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Details</title>
+</head>
+<body>
+<div id="book-details-page">
+    <h1>{{ book.title }}</h1>
+    <div><strong>Author:</strong> {{ book.author }}</div>
+    <div><strong>ISBN:</strong> {{ book.isbn }}</div>
+    <div><strong>Genre:</strong> {{ book.genre }}</div>
+    <div><strong>Publisher:</strong> {{ book.publisher }}</div>
+    <div><strong>Year:</strong> {{ book.year }}</div>
+    <div><strong>Description:</strong> {{ book.description }}</div>
+    <div><strong>Status:</strong> {{ book.status }}</div>
+    <button onclick="location.href='{{ url_for('borrow_confirmation_page', book_id=book.book_id) }}'" {% if book.status != 'Available' %} disabled {% endif %}>Borrow</button>
+
+    <div id="reviews-section">
+        <h2>Reviews</h2>
+        {% if reviews|length == 0 %}
+            <p>No reviews yet.</p>
+        {% else %}
+            <ul>
+            {% for review in reviews %}
+                <li>
+                    <strong>Rating:</strong> {{ review.rating }}/5<br>
+                    <strong>Date:</strong> {{ review.review_date }}<br>
+                    <strong>Review:</strong> {{ review.review_text }}
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <button id="write-review-button" onclick="location.href='{{ url_for('write_review_page', book_id=book.book_id) }}'">Write Review</button>
+    <button onclick="location.href='{{ url_for('book_catalog_page') }}'">Back</button>
+</div>
+</body>
+</html>

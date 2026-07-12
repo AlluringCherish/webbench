@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Resumes</title>
+</head>
+<body>
+    <div id="resume-page">
+        <h1>My Resumes</h1>
+        <div id="resumes-list">
+            {% for resume in resumes %}
+            <div class="resume-entry">
+                <p><strong>Name:</strong> {{ resume.applicant_name }}</p>
+                <p><strong>Email:</strong> {{ resume.applicant_email }}</p>
+                <p><strong>File:</strong> {{ resume.filename }}</p>
+                <p><strong>Uploaded:</strong> {{ resume.upload_date }}</p>
+                <p><strong>Summary:</strong> {{ resume.summary }}</p>
+                <form method="POST" action="{{ url_for('delete_resume', resume_id=resume.resume_id) }}">
+                    <button type="submit" id="delete-resume-button-{{ resume.resume_id }}">Delete Resume</button>
+                </form>
+            </div>
+            {% else %}
+            <p>No resumes uploaded.</p>
+            {% endfor %}
+        </div>
+        <form method="POST" action="{{ url_for('upload_resume') }}" enctype="multipart/form-data">
+            <input type="file" id="resume-file-input" name="resume_file" style="display:none;" required>
+            <label for="resume-file-input">
+                <button type="button" id="upload-resume-button" onclick="document.getElementById('resume-file-input').click();">Upload Resume</button>
+            </label>
+        </form>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

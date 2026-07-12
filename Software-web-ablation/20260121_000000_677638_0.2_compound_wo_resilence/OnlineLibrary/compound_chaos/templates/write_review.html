@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Write Review</title>
+</head>
+<body>
+    <div id="write-review-page">
+        <h1>Write Review</h1>
+        <div id="book-info-display">
+            <p>Title: {{ book.title }}</p>
+            <p>Author: {{ book.author }}</p>
+        </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+        <form method="POST" action="{{ url_for('write_review_page', book_id=book.book_id) }}">
+            <label for="rating-input">Rating:</label>
+            <select id="rating-input" name="rating">
+                <option value="1" {% if existing_review and existing_review.rating == 1 %}selected{% endif %}>1</option>
+                <option value="2" {% if existing_review and existing_review.rating == 2 %}selected{% endif %}>2</option>
+                <option value="3" {% if existing_review and existing_review.rating == 3 %}selected{% endif %}>3</option>
+                <option value="4" {% if existing_review and existing_review.rating == 4 %}selected{% endif %}>4</option>
+                <option value="5" {% if existing_review and existing_review.rating == 5 %}selected{% endif %}>5</option>
+            </select>
+            <br />
+            <label for="review-text">Review:</label><br />
+            <textarea id="review-text" name="review_text" rows="5" cols="40">{% if existing_review %}{{ existing_review.review_text }}{% endif %}</textarea><br />
+            <button id="submit-review-button" type="submit">Submit Review</button>
+        </form>
+        <button id="back-to-book" onclick="window.location.href='{{ url_for('book_details_page', book_id=book.book_id) }}'">Back to Book</button>
+    </div>
+</body>
+</html>

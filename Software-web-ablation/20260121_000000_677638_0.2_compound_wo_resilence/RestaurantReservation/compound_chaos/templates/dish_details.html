@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ dish.name }} Details</title>
+</head>
+<body>
+    <h1>{{ dish.name }}</h1>
+    <div id="dish-details-page">
+        <p>Category: {{ dish.category }}</p>
+        <p>Price: ${{ "%.2f"|format(dish.price) }}</p>
+        <p>Description: {{ dish.description }}</p>
+        <p>Ingredients: {{ dish.ingredients }}</p>
+        <p>Dietary Info: {{ dish.dietary }}</p>
+        <p>Average Rating: {{ "%.1f"|format(dish.avg_rating) }}</p>
+
+        <h2>Reviews</h2>
+        <div id="reviews-list">
+            {% if reviews %}
+                {% for review in reviews %}
+                    <div class="review-card">
+                        <p><strong>{{ review.username }}</strong> rated {{ review.rating }}/5</p>
+                        <p>{{ review.review_text }}</p>
+                        <p><em>{{ review.review_date }}</em></p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No reviews yet.</p>
+            {% endif %}
+        </div>
+
+        <button id="write-new-review-button" onclick="location.href='{{ url_for('write_review', dish_id=dish.dish_id) }}'">Write Review</button>
+        <button id="back-to-menu" onclick="location.href='{{ url_for('menu') }}'">Back to Menu</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

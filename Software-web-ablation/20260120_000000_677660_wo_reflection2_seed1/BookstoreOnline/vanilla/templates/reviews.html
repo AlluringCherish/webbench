@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Reviews</title>
+</head>
+<body>
+    <div id="reviews-page">
+        <h1>Customer Reviews</h1>
+
+        <form method="get" action="{{ url_for('reviews_page') }}">
+            <label for="filter-by-rating">Filter by Rating:</label>
+            <select id="filter-by-rating" name="rating" onchange="this.form.submit()">
+                <option value="All" {% if filter_rating == 'All' %}selected{% endif %}>All</option>
+                {% for r in range(5,0,-1) %}
+                <option value="{{ r }}" {% if filter_rating == r|string %}selected{% endif %}>{{ r }} stars</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <div id="reviews-list">
+            {% if reviews %}
+                <ul>
+                {% for review in reviews %}
+                    <li>
+                        <strong>{{ review.customer_name }}</strong> reviewed <em>{{ review.book_title }}</em> on {{ review.review_date }}<br />
+                        Rating: {{ review.rating }} / 5<br />
+                        {{ review.review_text }}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No reviews available.</p>
+            {% endif %}
+        </div>
+
+        <button id="write-review-button" onclick="location.href='{{ url_for('write_review') }}'">Write a Review</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

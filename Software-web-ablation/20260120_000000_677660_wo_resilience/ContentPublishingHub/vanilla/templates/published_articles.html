@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Published Articles - Content Publishing Hub</title>
+</head>
+<body>
+    <div id="published-articles-page">
+        <h1>Published Articles</h1>
+
+        <form method="get" action="{{ url_for('published_articles') }}" id="filter-form">
+            <label for="filter-category">Filter by category:</label>
+            <select id="filter-category" name="category">
+                <option value="">All</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="sort-by">Sort by:</label>
+            <select id="sort-by" name="sort">
+                {% for sort_option in sort_options %}
+                    <option value="{{ sort_option }}" {% if selected_sort == sort_option %}selected{% endif %}>{{ sort_option }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" id="apply-filters">Apply</button>
+        </form>
+
+        <table id="published-articles-table" border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Published Date</th>
+                    <th>Author</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                    <tr id="article-{{ article.article_id }}">
+                        <td>{{ article.title }}</td>
+                        <td>{{ article.category }}</td>
+                        <td>{{ article.created_date }}</td>
+                        <td>{{ article.author }}</td>
+                        <td>
+                            <a href="{{ url_for('view_article_versions', article_id=article.article_id) }}" id="versions-{{ article.article_id }}">Versions</a> |
+                            <a href="{{ url_for('article_analytics', article_id=article.article_id) }}" id="analytics-{{ article.article_id }}">Analytics</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+    </div>
+</body>
+</html>

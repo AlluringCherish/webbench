@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<div id="events-page">
+    <h1>Event Catalog</h1>
+    <div id="event-category-filter">
+        <form method="GET" action="{{ url_for('events_page') }}">
+            <label for="category-select">Filter by Category:</label>
+            <select id="category-select" name="category">
+                <option value="">All</option>
+                {% for category in categories %}
+                <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" id="filter-events-button">Filter Events</button>
+        </form>
+    </div>
+    <div id="events-grid">
+        {% for event in events %}
+        <div class="event-card">
+            <h3 id="event-title">{{ event.event_name }}</h3>
+            <p>{{ event.category }} - {{ event.date }} {{ event.time }}</p>
+            <p>{{ event.location }}</p>
+            <button id="view-event-button-{{ event.event_id }}" onclick="location.href='{{ url_for('event_details', event_id=event.event_id) }}'">View Details</button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>

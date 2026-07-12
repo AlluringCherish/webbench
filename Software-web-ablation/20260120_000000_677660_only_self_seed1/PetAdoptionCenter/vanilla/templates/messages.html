@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+</head>
+<body>
+    <div id="messages-page">
+        <h1>Messages</h1>
+        <div id="conversation-list">
+            {% for conv in conversations %}
+            <div id="conversation-{{ conv.conversation_id }}">
+                <div>Participants: {{ conv.participants | join(', ') }}</div>
+                <div>Last message: {{ conv.last_message }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <form method="post" action="{{ url_for('send_message') }}">
+            <textarea id="message-input" name="message" rows="4" cols="50" required></textarea>
+            <button id="send-message-button" type="submit">Send</button>
+        </form>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        {% if success_message %}
+        <div id="success-message" style="color:green;">{{ success_message }}</div>
+        {% endif %}
+        {% if error_message %}
+        <div id="error-message" style="color:red;">{{ error_message }}</div>
+        {% endif %}
+    </div>
+</body>
+</html>

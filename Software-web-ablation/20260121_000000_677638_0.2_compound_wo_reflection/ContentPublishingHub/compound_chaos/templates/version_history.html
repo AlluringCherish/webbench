@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version History - Content Publishing Hub</title>
+</head>
+<body>
+    <div id="version-history-page">
+        <h1>Version History for {{ article.title }}</h1>
+
+        <nav>
+            <a href="{{ url_for('dashboard.get_dashboard') }}" id="btn-back-to-dashboard">Back to Dashboard</a> |
+            <a href="{{ url_for('articles.edit_article', article_id=article.id) }}" id="btn-edit-article">Edit Article</a>
+        </nav>
+
+        <section id="versions-list">
+            <h2>Versions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Version Number</th>
+                        <th>Created Date</th>
+                        <th>Author</th>
+                        <th>Change Summary</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for version in versions %}
+                    <tr>
+                        <td>{{ version.version_number }}</td>
+                        <td>{{ version.created_date }}</td>
+                        <td>{{ version.author }}</td>
+                        <td>{{ version.change_summary }}</td>
+                        <td>
+                            <form method="post" action="{{ url_for('version_control.restore_version', article_id=article.id, version_id=version.version_id) }}">
+                                <button type="submit" id="btn-restore-version-{{ version.version_id }}">Restore</button>
+                            </form>
+                            <a href="{{ url_for('comments.manage_comments', article_id=article.id) }}" id="btn-view-comments-{{ version.version_id }}">View Comments</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5">No versions found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article Comments</title>
+</head>
+<body>
+    <div id="comments-page">
+        <h1>Article Comments</h1>
+        <select id="filter-by-article" name="filter_article" onchange="location.href=this.options[this.selectedIndex].value;">
+            <option value="{{ url_for('comments_page') }}" {% if selected_article_id is none %}selected{% endif %}>All Articles</option>
+            {% for article in articles %}
+            <option value="{{ url_for('comments_page') }}?article_id={{ article.article_id }}" {% if selected_article_id == article.article_id %}selected{% endif %}>{{ article.title }}</option>
+            {% endfor %}
+        </select>
+        <div id="comments-list">
+            {% for comment in comments %}
+            <div class="comment-item">
+                <h3>{{ comment.article_title }}</h3>
+                <p><strong>{{ comment.commenter_name }}</strong>: {{ comment.comment_text }}</p>
+                <small>{{ comment.comment_date }}</small>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="write-comment-button" onclick="{
+            let selected = document.getElementById('filter-by-article').value;
+            if(selected === '{{ url_for('comments_page') }}') {
+                alert('Please select an article to comment on.');
+            } else {
+                location.href = selected.replace('comments_page', 'write_comment_page').replace('article_id=', '');
+            }
+        }">Write Comment</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

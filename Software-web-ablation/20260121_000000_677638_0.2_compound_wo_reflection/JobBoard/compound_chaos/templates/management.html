@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Management</title>
+</head>
+<body>
+    <h1>Resume Management</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        <label for="upload_resume">Upload Resume:</label>
+        <input type="file" id="upload_resume" name="upload_resume" accept=".txt" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <h2>Existing Resumes</h2>
+    <ul>
+        {% for resume in resumes %}
+            <li>{{ resume.applicant_name }}
+                <form method="POST" style="display:inline;">
+                    <input type="hidden" name="delete_resume_id" value="{{ resume.resume_id }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% else %}
+            <li>No resumes found.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('dashboard') }}"><button>Back to Dashboard</button></a>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Saved Locations</title>
+</head>
+<body>
+    <div id="saved-locations-page">
+        <h1>Saved Locations</h1>
+        <table id="locations-table" border="1">
+            <thead>
+                <tr>
+                    <th>Location Name</th>
+                    <th>Temperature</th>
+                    <th>Condition</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for saved in saved_locations %}
+                <tr>
+                    <td>{{ saved.location_name }}</td>
+                    <td>
+                        {% for weather in current_weather_data %}
+                            {% if weather.location_id == saved.location_id %}
+                                {{ weather.temperature }}&deg;
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for weather in current_weather_data %}
+                            {% if weather.location_id == saved.location_id %}
+                                {{ weather.condition }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('current_weather', location_id=saved.location_id) }}">
+                            <button id="view-location-weather-{{ saved.location_id }}">View Weather</button>
+                        </a>
+                        <button id="remove-location-button-{{ saved.location_id }}">Remove</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('location_search') }}">
+            <button id="add-new-location-button">Add New Location</button>
+        </a>
+    </div>
+</body>
+</html>

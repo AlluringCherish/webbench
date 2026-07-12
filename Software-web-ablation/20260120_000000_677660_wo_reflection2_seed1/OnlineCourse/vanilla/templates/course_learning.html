@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Learning</title>
+</head>
+<body>
+    <div id="learning-page">
+        <h1>{{ course.title }} - Course Learning</h1>
+
+        <div id="lessons-list">
+            {% if lessons %}
+                <ul>
+                {% for lesson in lessons|sort(attribute='order') %}
+                    <li>
+                        <strong>{{ lesson.title }}</strong>
+                        {% if lesson.lesson_id in completed_lessons %}
+                            - Completed
+                        {% else %}
+                            - Pending
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No lessons available.</p>
+            {% endif %}
+        </div>
+
+        <div id="lesson-content">
+            {% set current_lesson = None %}
+            {% for lesson in lessons|sort(attribute='order') %}
+                {% if lesson.lesson_id not in completed_lessons %}
+                    {% set current_lesson = lesson %}
+                    {% break %}
+                {% endif %}
+            {% endfor %}
+
+            {% if current_lesson %}
+                <h2>{{ current_lesson.title }}</h2>
+                <p>{{ current_lesson.content }}</p>
+            {% else %}
+                <p>All lessons completed!</p>
+            {% endif %}
+        </div>
+
+        <form method="POST" action="{{ url_for('complete_lesson', course_id=course.course_id) }}">
+            <button type="submit" id="mark-complete-button"
+                {% if not current_lesson or current_lesson.lesson_id in completed_lessons %}disabled{% endif %}>
+                Mark Complete
+            </button>
+        </form>
+
+        <button id="back-to-my-courses" onclick="window.location.href='{{ url_for('show_my_courses') }}'">Back to My Courses</button>
+    </div>
+</body>
+</html>

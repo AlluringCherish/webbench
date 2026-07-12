@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Bookings</title>
+</head>
+<body>
+    <div id="bookings-page">
+        <h1>My Bookings</h1>
+
+        <input type="text" id="booking-search-input" name="search" placeholder="Search by event name or booking ID">
+
+        <table id="bookings-table" border="1">
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Ticket Count</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.customer_name }}</td>
+                    <td>{{ booking.booking_date }}</td>
+                    <td>{{ booking.ticket_count }}</td>
+                    <td>{{ booking.status }}</td>
+                    <td><button id="cancel-booking-button-{{ booking.booking_id }}" form="cancel-form-{{ booking.booking_id }}" type="submit">Cancel</button>
+                        <form id="cancel-form-{{ booking.booking_id }}" method="POST" action="{{ url_for('cancel_booking', booking_id=booking.booking_id) }}" style="display:none;"></form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

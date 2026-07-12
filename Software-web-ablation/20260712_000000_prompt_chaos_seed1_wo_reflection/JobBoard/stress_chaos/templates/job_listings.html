@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <h1>{{ page_title }}</h1>
+    <form method="GET" action="{{ url_for('job_listings') }}">
+        <input type="text" name="search_query" placeholder="Search jobs" value="{{ search_query }}" id="search-input">
+        <select name="selected_category" id="category-filter">
+            {% for category in categories %}
+                <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+            {% endfor %}
+        </select>
+        <select name="selected_location" id="location-filter">
+            {% for location in locations %}
+                <option value="{{ location }}" {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" id="filter-button">Filter</button>
+    </form>
+    <div id="job-listings-grid">
+        {% for job in job_listings %}
+            <div class="job-listing-card" id="job-{{ job.job_id }}">
+                <h2>{{ job.title }}</h2>
+                <p>{{ job.company_name }} - {{ job.location }}</p>
+                <p>Salary: ${{ job.salary_min }} - ${{ job.salary_max }}</p>
+                <a href="{{ url_for('job_details', job_id=job.job_id) }}" id="view-details-{{ job.job_id }}">View Details</a>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

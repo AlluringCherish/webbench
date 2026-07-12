@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Active Orders</title>
+</head>
+<body>
+<div id="active-orders-page">
+    <h1>Active Orders</h1>
+    <label for="status-filter">Filter by Status:</label>
+    <select id="status-filter" onchange="location.href='?status=' + this.value">
+        <option value="All" {% if status_filter == 'All' %}selected{% endif %}>All</option>
+        <option value="Preparing" {% if status_filter == 'Preparing' %}selected{% endif %}>Preparing</option>
+        <option value="On the Way" {% if status_filter == 'On the Way' %}selected{% endif %}>On the Way</option>
+        <option value="Delivered" {% if status_filter == 'Delivered' %}selected{% endif %}>Delivered</option>
+    </select>
+    <div id="orders-list">
+        {% for order in orders %}
+        <div class="order-entry">
+            <p>Order ID: {{ order.order_id }}</p>
+            <p>Restaurant: {{ order.restaurant_name }}</p>
+            <p>Status: {{ order.status }}</p>
+            <p>ETA: {% if order.status == 'Delivered' %}Delivered{% else %}N/A{% endif %}</p>
+            <button id="track-order-button-{{ order.order_id }}" onclick="window.location.href='{{ url_for('track_order', order_id=order.order_id) }}'">Track Order</button>
+        </div>
+        {% else %}
+        <p>No active orders found.</p>
+        {% endfor %}
+    </div>
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Flights</title>
+</head>
+<body>
+    <div id="transportation-page">
+        <h1>Book Flights</h1>
+
+        <form method="POST" action="{{ url_for('book_flights') }}">
+            <label for="departure-city">Departure City:</label>
+            <input type="text" id="departure-city" name="departure_city" value="{{ departure_city }}" required>
+
+            <label for="arrival-city">Arrival City:</label>
+            <input type="text" id="arrival-city" name="arrival_city" value="{{ arrival_city }}" required>
+
+            <label for="departure-date">Departure Date:</label>
+            <input type="date" id="departure-date" name="departure_date" value="{{ departure_date }}" required>
+
+            <label for="flight-class-filter">Class:</label>
+            <select id="flight-class-filter" name="selected_class_filter">
+                <option value="Economy" {% if selected_class_filter == 'Economy' %}selected{% endif %}>Economy</option>
+                <option value="Business" {% if selected_class_filter == 'Business' %}selected{% endif %}>Business</option>
+                <option value="First Class" {% if selected_class_filter == 'First Class' %}selected{% endif %}>First Class</option>
+            </select>
+
+            <button type="submit">Search Flights</button>
+            <button type="button" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </form>
+
+        <div id="available-flights">
+            {% for flight in flights %}
+            <div class="flight-card">
+                <h3>{{ flight.airline }}</h3>
+                <p>From: {{ flight.departure_city }} To: {{ flight.arrival_city }}</p>
+                <p>Departure: {{ flight.departure_time }}</p>
+                <p>Arrival: {{ flight.arrival_time }}</p>
+                <p>Duration: {{ flight.duration }}</p>
+                <p>Class: {{ flight.class_type }}</p>
+                <p>Price: ${{ flight.price }}</p>
+            </div>
+            {% else %}
+            <p>No flights found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Borrowings</title>
+</head>
+<body>
+<div id="my-borrows-page">
+  <label for="filter-status">Filter by Status:</label>
+  <select id="filter-status" name="status">
+    <option value="All">All</option>
+    <option value="Active">Active</option>
+    <option value="Returned">Returned</option>
+    <option value="Overdue">Overdue</option>
+  </select>
+  <table id="borrows-table" border="1">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Borrow Date</th>
+        <th>Due Date</th>
+        <th>Return Date</th>
+        <th>Status</th>
+        <th>Fine Amount</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for borrow in borrows %}
+      <tr>
+        <td>{{ borrow.title }}</td>
+        <td>{{ borrow.borrow_date }}</td>
+        <td>{{ borrow.due_date }}</td>
+        <td>{% if borrow.return_date %}{{ borrow.return_date }}{% else %}N/A{% endif %}</td>
+        <td>{{ borrow.status }}</td>
+        <td>{{ borrow.fine_amount }}</td>
+        <td>
+          {% if borrow.status == 'Active' or borrow.status == 'Overdue' %}
+          <form method="POST" action="{{ url_for('return_borrowed_book', borrow_id=borrow.borrow_id) }}" style="display:inline;">
+            <button type="submit" id="return-book-button-{{ borrow.borrow_id }}">Return Book</button>
+          </form>
+          {% else %}
+          -
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

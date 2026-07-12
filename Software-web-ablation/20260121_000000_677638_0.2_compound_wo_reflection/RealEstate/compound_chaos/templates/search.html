@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Search</title>
+</head>
+<body>
+    <div id="search-page">
+        <h1>Property Search</h1>
+
+        <form method="post" action="{{ url_for('property_search') }}">
+            <label for="location-input">Location:</label>
+            <input type="text" id="location-input" name="location_input" value="{{ filter_options.location_input if filter_options.location_input is defined else '' }}">
+
+            <label for="price-range-min">Min Price:</label>
+            <input type="number" id="price-range-min" name="price_range_min" step="0.01" value="{{ filter_options.price_range_min if filter_options.price_range_min is defined else '' }}">
+
+            <label for="price-range-max">Max Price:</label>
+            <input type="number" id="price-range-max" name="price_range_max" step="0.01" value="{{ filter_options.price_range_max if filter_options.price_range_max is defined else '' }}">
+
+            <label for="property-type-filter">Property Type:</label>
+            <select id="property-type-filter" name="property_type_filter">
+                <option value="">Any</option>
+                <option value="House" {% if filter_options.property_type_filter == 'House' %}selected{% endif %}>House</option>
+                <option value="Apartment" {% if filter_options.property_type_filter == 'Apartment' %}selected{% endif %}>Apartment</option>
+                <option value="Condo" {% if filter_options.property_type_filter == 'Condo' %}selected{% endif %}>Condo</option>
+                <option value="Land" {% if filter_options.property_type_filter == 'Land' %}selected{% endif %}>Land</option>
+            </select>
+
+            <button type="submit">Search</button>
+        </form>
+
+        <section id="properties-grid">
+            <h2>Properties</h2>
+            <ul>
+            {% for property in properties %}
+                <li>
+                    <div>
+                        <p>{{ property.address }} - ${{ property.price }}</p>
+                        <a href="{{ url_for('property_details', property_id=property.property_id) }}">
+                            <button id="view-property-button-{{ property.property_id }}">View Details</button>
+                        </a>
+                    </div>
+                </li>
+            {% else %}
+                <li>No properties found.</li>
+            {% endfor %}
+            </ul>
+        </section>
+
+    </div>
+</body>
+</html>

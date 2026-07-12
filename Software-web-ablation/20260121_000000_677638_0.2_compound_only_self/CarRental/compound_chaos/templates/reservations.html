@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+</head>
+<body>
+    <div id="reservations-page">
+        <h1>My Reservations</h1>
+        <div id="reservations-list">
+            {% for reservation in reservations %}
+            <div class="reservation-item">
+                <p>Reservation ID: {{ reservation.reservation_id }}</p>
+                <p>Vehicle: {{ reservation.vehicle_make }} {{ reservation.vehicle_model }}</p>
+                <p>Status: {{ reservation.status }}</p>
+                <button id="modify-reservation-button-{{ reservation.reservation_id }}" onclick="location.href='{{ url_for('modify_reservation', reservation_id=reservation.reservation_id) }}'">Modify</button>
+                <form action="{{ url_for('cancel_reservation', reservation_id=reservation.reservation_id) }}" method="post" style="display:inline-block;">
+                    <button type="submit" id="cancel-reservation-button-{{ reservation.reservation_id }}">Cancel</button>
+                </form>
+            </div>
+            {% else %}
+            <p>No reservations found.</p>
+            {% endfor %}
+        </div>
+        <button id="sort-by-date-button">Sort by Date</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

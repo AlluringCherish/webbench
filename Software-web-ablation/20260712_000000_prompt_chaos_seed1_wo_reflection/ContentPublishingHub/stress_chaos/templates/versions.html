@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Article Versions - Content Publishing Hub{% endblock %}
+
+{% block content %}
+<div id="versions-page">
+  <h1 id="versions-title">Version History for {{ article.title }}</h1>
+  {% if versions %}
+    <table id="versions-table">
+      <thead>
+        <tr>
+          <th id="version-id-header">Version ID</th>
+          <th id="version-date-header">Date</th>
+          <th id="version-status-header">Status</th>
+          <th id="version-actions-header">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for version in versions %}
+        <tr id="version-{{ version.id }}">
+          <td id="version-id-{{ version.id }}">{{ version.id }}</td>
+          <td id="version-date-{{ version.id }}">{{ version.date }}</td>
+          <td id="version-status-{{ version.id }}">{{ version.status }}</td>
+          <td>
+            <form id="restore-version-{{ version.id }}" method="POST" action="/article/{{ article.id }}/versions/restore">
+              <input type="hidden" name="version_id" value="{{ version.id }}" />
+              <button type="submit" id="restore-button-{{ version.id }}">Restore</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p id="no-versions-msg">No versions available.</p>
+  {% endif %}
+  <a id="back-to-article" href="/article/{{ article.id }}/edit">Back to Article</a>
+</div>
+{% endblock %}

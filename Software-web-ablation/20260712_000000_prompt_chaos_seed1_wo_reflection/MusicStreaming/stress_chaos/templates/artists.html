@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Artists</title>
+</head>
+<body>
+    <main id="main-container">
+        <h1 id="artist-heading">Artists</h1>
+        <input type="text" id="search-artists" name="search" placeholder="Search Artists" oninput="searchArtists()"/>
+        <ul id="artists-list">
+            {% for artist in artists %}
+            <li id="artist-{{ artist.artist_id }}">
+                {{ artist.name }} ({{ artist.genre }})
+                <button type="button" id="view-artist-button-{{ artist.artist_id }}" onclick="window.location.href='{{ url_for('artist_details_page', artist_id=artist.artist_id) }}'">View</button>
+            </li>
+            {% endfor %}
+        </ul>
+        <script>
+            function searchArtists() {
+                const input = document.getElementById('search-artists').value.toLowerCase();
+                const artists = document.getElementById('artists-list').getElementsByTagName('li');
+                for (let i = 0; i < artists.length; i++) {
+                    const name = artists[i].innerText.toLowerCase();
+                    artists[i].style.display = name.includes(input) ? '' : 'none';
+                }
+            }
+        </script>
+    </main>
+</body>
+</html>

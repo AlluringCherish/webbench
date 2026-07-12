@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse Restaurants</title>
+</head>
+<body>
+    <div id="main-container">
+        <div id="restaurants-page">
+            <h1>Browse Restaurants</h1>
+
+            <input id="search-input" type="text" placeholder="Search restaurants..." />
+
+            <select id="cuisine-filter">
+                <option value="">All Cuisines</option>
+                {% set cuisines = [] %}
+                {% for r in restaurants %}
+                    {% if r.cuisine not in cuisines %}
+                        {% do cuisines.append(r.cuisine) %}
+                    {% endif %}
+                {% endfor %}
+                {% for cuisine in cuisines %}
+                <option value="{{ cuisine }}">{{ cuisine }}</option>
+                {% endfor %}
+            </select>
+
+            <div id="restaurants-grid">
+                {% for restaurant in restaurants %}
+                <div class="restaurant-card">
+                    <h2>{{ restaurant.name }}</h2>
+                    <p>Cuisine: {{ restaurant.cuisine }}</p>
+                    <p>Rating: {{ restaurant.rating }}</p>
+                    <p>Delivery Time: {{ restaurant.delivery_time }} mins</p>
+                    <a href="{{ url_for('restaurant_menu', restaurant_id=restaurant.restaurant_id) }}">
+                        <button id="view-restaurant-button-{{ restaurant.restaurant_id }}">View Menu</button>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reviews</title>
+</head>
+<body>
+    <div id="reviews-page">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <h1>My Reviews</h1>
+        <div id="reviews-list">
+            {% for review in reviews %}
+            <div class="review-entry" id="review-entry-{{ review.review_id }}">
+                <h3>{{ review.title }}</h3>
+                <p>Rating: {{ review.rating }} / 5</p>
+                <p>{{ review.review_text }}</p>
+                <p><small>Date: {{ review.review_date }}</small></p>
+                <button id="edit-review-button-{{ review.review_id }}" onclick="location.href='{{ url_for('edit_review_get', review_id=review.review_id) }}'">Edit Review</button>
+                <form method="POST" action="{{ url_for('delete_review', review_id=review.review_id) }}" style="display:inline;">
+                    <button id="delete-review-button-{{ review.review_id }}" type="submit">Delete Review</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

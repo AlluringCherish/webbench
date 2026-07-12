@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Vehicles</title>
+</head>
+<body>
+    <div id="main-container">
+        <h1>Search Vehicles</h1>
+        <div id="search-page">
+            <form method="get" action="">
+                <label for="location-filter">Pickup Location:</label>
+                <select id="location-filter" name="location">
+                    <option value="">All Locations</option>
+                    {% for loc in locations %}
+                    <option value="{{ loc.location_id }}" {% if search_filters.location == loc.location_id %}selected{% endif %}>{{ loc.city }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="vehicle-type-filter">Vehicle Type:</label>
+                <select id="vehicle-type-filter" name="vehicle_type">
+                    <option value="">All Types</option>
+                    {% for vtype in vehicle_types %}
+                    <option value="{{ vtype }}" {% if search_filters.vehicle_type == vtype %}selected{% endif %}>{{ vtype }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="date-range-input">Rental Date Range:</label>
+                <input id="date-range-input" name="date_range" type="text" value="{{ search_filters.date_range or '' }}" placeholder="YYYY-MM-DD to YYYY-MM-DD">
+
+                <button type="submit">Search</button>
+            </form>
+
+            <div id="vehicles-grid">
+                {% for vehicle in filtered_vehicles %}
+                <div class="vehicle-card">
+                    <div>{{ vehicle.make }} {{ vehicle.model }}</div>
+                    <div>Type: {{ vehicle.vehicle_type }}</div>
+                    <div>Seats: {{ vehicle.seats }}</div>
+                    <div>Transmission: {{ vehicle.transmission }}</div>
+                    <div>Daily Rate: ${{ "%.2f"|format(vehicle.daily_rate) }}</div>
+                    <button id="view-details-button-{{ vehicle.vehicle_id }}" onclick="window.location.href='{{ url_for('vehicle_details', vehicle_id=vehicle.vehicle_id) }}'">View Details</button>
+                </div>
+                {% else %}
+                <p>No vehicles match your search criteria.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

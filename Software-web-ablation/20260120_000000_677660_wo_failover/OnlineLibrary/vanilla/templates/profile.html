@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+</head>
+<body>
+    <div id="profile-page">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <h1>My Profile</h1>
+        <div id="profile-username"><strong>Username:</strong> {{ username }}</div>
+        <form method="POST" action="{{ url_for('update_profile') }}">
+            <label for="profile-email">Email:</label>
+            <input type="text" id="profile-email" name="email" value="{{ email }}">
+            <br>
+            <button id="update-profile-button" type="submit">Update Profile</button>
+        </form>
+        <div id="borrow-history">
+            <h2>Borrow History</h2>
+            <ul>
+                {% for entry in borrow_history %}
+                <li>{{ entry.title }} - Borrowed on {{ entry.borrow_date }}{% if entry.return_date %}, Returned on {{ entry.return_date }}{% else %}, Not returned yet{% endif %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

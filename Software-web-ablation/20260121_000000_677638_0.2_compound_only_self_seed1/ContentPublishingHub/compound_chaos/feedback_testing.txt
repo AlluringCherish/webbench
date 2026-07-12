@@ -1,0 +1,58 @@
+Functional Testing Report
+
+Test Scope: Functional testing starting at /dashboard and traversing all linked pages and workflows.
+
+1. Dashboard Page (/dashboard):
+- Access requires login; login_required decorator enforced.
+- Renders variables total_articles, published_articles but missing pending_approval and drafts counts in backend context which the template expects causing errors.
+- Navigation buttons with IDs noted: #create-article-button, #my-articles-button, #published-articles-button, #content-calendar-button, #article-analytics-button.
+- Several buttons have improper url_for references causing navigation failures:
+  * Create Article button links to 'create_article' but backend endpoint is 'article_create'.
+  * My Articles button links to 'my_articles' but backend endpoint is 'articles_mine'.
+  * Content Calendar button links to 'content_calendar' but backend endpoint is 'calendar_view'.
+  * Article Analytics button links to 'article_analytics' but requires article_id argument; missing causes runtime error.
+
+2. Article Workflow:
+- Article creation page form fields have correct IDs. POST validates title presence.
+- On creation, assigns new article ID and creates first version correctly.
+- Article edit page enforces role-based access (authors restricted to own articles).
+- Edit article form fields exist with correct IDs except the content textarea incorrectly populated from article.content instead of latest version content.
+- Version history page lists versions with correct IDs for links (view, restore).
+- Version comparison shows text diffs as expected.
+- Restore creates new version with content from chosen version.
+
+3. Approval and Publishing:
+- Approval status page shows approvals linked to latest version.
+- Approval submission validates status and accepts comments.
+- Publishing requires roles editor/publisher/admin and approval with status=approved.
+- Publishing updates article status and publish_date correctly.
+
+4. Content Calendar:
+- Calendar page IDs and controls exist with correct IDs.
+- Save calendar endpoint accepts JSON and validates input.
+
+5. Analytics:
+- Analytics page displays metrics with correct IDs and back navigation.
+
+6. Data Files:
+- All data files missing - means all backend data reads return empty.
+
+7. Other Observations:
+- Back buttons in analytics and version history pages have inconsistent IDs and targets.
+- Some forms have button IDs duplicated in different pages but overall functional.
+
+Defects:
+- Missing backend provision of pending_approval and drafts counts to dashboard template.
+- URL/link mismatches in dashboard buttons causing navigation failures.
+- Edit article page's content textarea binding error.
+- Missing data files impede complete functional testing.
+
+Recommendations:
+- Enhance dashboard route to provide all required context variables.
+- Fix url_for calls in dashboard.html with correct endpoints and parameters.
+- Fix edit_article.html template to bind content field from latest version.
+- Provide sample data files with valid entries.
+
+Status: NEED_MODIFY
+
+End of feedback.

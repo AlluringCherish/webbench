@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% block content %}
+<form method="POST" action="{{ url_for('booking', vehicle_id=vehicle.vehicle_id) }}" id="booking-form">
+    <div class="form-section">
+        <label for="pickup_location">Pickup Location:</label>
+        <select id="pickup_location" name="pickup_location" required aria-required="true">
+            {% for location in locations %}
+                <option value="{{ location.location_id }}" {% if pickup_location == location.location_id %}selected{% endif %}>{{ location.city }}, {{ location.address }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-section">
+        <label for="pickup_date">Pickup Date:</label>
+        <input type="date" id="pickup_date" name="pickup_date" value="{{ pickup_date }}" required aria-required="true">
+    </div>
+    <div class="form-section">
+        <label for="dropoff_date">Dropoff Date:</label>
+        <input type="date" id="dropoff_date" name="dropoff_date" value="{{ dropoff_date }}" required aria-required="true">
+    </div>
+    <div class="form-section">
+        <label for="special_requests">Special Requests:</label>
+        <textarea id="special_requests" name="special_requests" rows="4">{{ special_requests or '' }}</textarea>
+    </div>
+    {% if form_errors %}
+        <div role="alert" aria-live="assertive" style="color: red;">
+            <ul>
+            {% for error in form_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <button id="book-now-button" type="submit">Book Now</button>
+</form>
+{% endblock %}

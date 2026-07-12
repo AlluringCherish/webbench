@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Articles - ContentPublishingHub</title>
+</head>
+<body>
+    <h1>My Articles</h1>
+
+    <section id="filter-options">
+        <form method="get" action="{{ url_for('my_articles') }}" id="filter-form">
+            <label for="filter-status">Status:</label>
+            <select id="filter-status" name="status">
+                <option value="all" {% if filter_status == 'all' %}selected{% endif %}>All</option>
+                <option value="draft" {% if filter_status == 'draft' %}selected{% endif %}>Draft</option>
+                <option value="published" {% if filter_status == 'published' %}selected{% endif %}>Published</option>
+            </select>
+            <button type="submit" id="btn-apply-filter">Apply Filter</button>
+        </form>
+    </section>
+
+    <section id="user-articles-list">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Date Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr>
+                    <td>{{ article['title'] }}</td>
+                    <td>{{ article['status'] }}</td>
+                    <td>{{ article['created_at'] }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_article', article_id=article['article_id']) }}" id="edit-article-{{ article['article_id'] }}">Edit</a> |
+                        <a href="{{ url_for('version_history', article_id=article['article_id']) }}" id="version-history-{{ article['article_id'] }}">Versions</a> |
+                        <a href="{{ url_for('article_analytics', article_id=article['article_id']) }}" id="analytics-{{ article['article_id'] }}">Analytics</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <nav>
+        <a href="{{ url_for('dashboard') }}" id="nav-dashboard">Dashboard</a> |
+        <a href="{{ url_for('create_article') }}" id="nav-create-article">Create Article</a> |
+        <a href="{{ url_for('logout') }}" id="nav-logout">Logout</a>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Search</title>
+</head>
+<body>
+    <div id="main-container-id">
+        <h1>Search Properties</h1>
+        <nav>
+            <a id="back-to-dashboard" href="{{ url_for('dashboard_page') }}">Back to Dashboard</a>
+        </nav>
+        <form id="property-search-form" method="GET" action="{{ url_for('property_search') }}">
+            <label for="location-input">Location:</label>
+            <input type="text" id="location-input" name="location" value="{{ location_input or '' }}" />
+            
+            <label for="property-type-filter">Property Type:</label>
+            <select id="property-type-filter" name="property_type">
+                <option value="">Any</option>
+                <option value="House" {% if property_type == 'House' %}selected{% endif %}>House</option>
+                <option value="Apartment" {% if property_type == 'Apartment' %}selected{% endif %}>Apartment</option>
+                <option value="Condo" {% if property_type == 'Condo' %}selected{% endif %}>Condo</option>
+                <option value="Land" {% if property_type == 'Land' %}selected{% endif %}>Land</option>
+            </select>
+            
+            <label for="price-range-min">Min Price:</label>
+            <input type="number" id="price-range-min" name="price_min" min="0" value="{{ price_min or '' }}" />
+
+            <label for="price-range-max">Max Price:</label>
+            <input type="number" id="price-range-max" name="price_max" min="0" value="{{ price_max or '' }}" />
+            
+            <button id="submit-search-button" type="submit">Search</button>
+        </form>
+
+        <section id="properties-grid">
+            {% for property in properties %}
+            <div id="property-{{ property.property_id }}">
+                <h3>{{ property.property_type }} in {{ property.location }}</h3>
+                <p>Price: ${{ property.price }}, Beds: {{ property.bedrooms }}, Baths: {{ property.bathrooms }}</p>
+                <button id="view-property-button-{{ property.property_id }}" onclick="location.href='{{ url_for('property_details', property_id=property.property_id) }}'">View</button>
+                <form action="{{ url_for('add_to_favorites', property_id=property.property_id) }}" method="POST" style="display:inline;">
+                    <button id="add-to-favorites-button-{{ property.property_id }}" type="submit">Add to Favorites</button>
+                </form>
+            </div>
+            {% else %}
+            <p>No properties found matching your search criteria.</p>
+            {% endfor %}
+        </section>
+    </div>
+</body>
+</html>

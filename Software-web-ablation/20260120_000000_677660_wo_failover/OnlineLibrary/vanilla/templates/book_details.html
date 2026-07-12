@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Details</title>
+</head>
+<body>
+    <div id="book-details-page">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <h1 id="book-title">{{ book.title }}</h1>
+        <div id="book-author">Author: {{ book.author }}</div>
+        <div id="book-status">Status: {{ book.status }}</div>
+        <div id="book-description">Description: {{ book.description }}</div>
+        <div id="book-average-rating">Average Rating: {{ '%.1f'|format(book.avg_rating) }}</div>
+
+        {% if book.status == 'Available' %}
+        <button id="borrow-button" onclick="location.href='{{ url_for('borrow_confirm_get', book_id=book.book_id) }}'">Borrow this Book</button>
+        {% endif %}
+
+        <button id="write-review-button" onclick="location.href='{{ url_for('write_review_get', book_id=book.book_id) }}'">Write Review</button>
+        <button id="back-to-catalog" onclick="location.href='{{ url_for('book_catalog') }}'">Back to Catalog</button>
+
+        <div id="reviews-section">
+            <h2>Reviews</h2>
+            {% if reviews %}
+                {% for review in reviews %}
+                <div class="review" id="review-{{ review.review_id }}">
+                    <div><strong>{{ review.username }}</strong> - Rating: {{ review.rating }} / 5</div>
+                    <div>{{ review.review_text }}</div>
+                    <div><small>Date: {{ review.review_date }}</small></div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No reviews yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

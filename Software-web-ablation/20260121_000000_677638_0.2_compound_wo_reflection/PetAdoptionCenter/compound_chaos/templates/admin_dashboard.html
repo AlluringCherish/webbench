@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+
+    <section id="pending-applications">
+        <h2>Pending Adoption Applications</h2>
+        {% if pending_applications %}
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Applicant</th>
+                        <th>Pet Name</th>
+                        <th>Application Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in pending_applications %}
+                    <tr>
+                        <td>{{ app.username }}</td>
+                        <td>{{ app.pet_name }}</td>
+                        <td>{{ app.application_date }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('approve_application', application_id=app.application_id) }}" style="display:inline;">
+                                <button type="submit">Approve</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('reject_application', application_id=app.application_id) }}" style="display:inline;">
+                                <button type="submit">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No pending applications.</p>
+        {% endif %}
+    </section>
+
+    <section id="all-pets-list">
+        <h2>All Pets</h2>
+        {% if all_pets %}
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Species</th>
+                        <th>Breed</th>
+                        <th>Age</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pet in all_pets %}
+                    <tr>
+                        <td>{{ pet.name }}</td>
+                        <td>{{ pet.species }}</td>
+                        <td>{{ pet.breed }}</td>
+                        <td>{{ pet.age }}</td>
+                        <td>{{ pet.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No pets found.</p>
+        {% endif %}
+    </section>
+
+</body>
+</html>

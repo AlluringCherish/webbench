@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Forecast</title>
+</head>
+<body>
+    <div id="forecast-page">
+        <h1>Weekly Forecast</h1>
+
+        <form method="POST" action="{{ url_for('weekly_forecast') }}">
+            <label for="location-filter">Select Location:</label>
+            <select id="location-filter" name="location_id">
+                {% for location in locations %}
+                <option value="{{ location.location_id }}" {% if location.location_id == selected_location_id %}selected{% endif %}>
+                    {{ location.location_name }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="forecast-list">
+            {% for forecast in forecast_list %}
+            <div class="forecast-card">
+                <p>Date: {{ forecast.date }}</p>
+                <p>High Temp: {{ forecast.high_temp }}&deg;</p>
+                <p>Low Temp: {{ forecast.low_temp }}&deg;</p>
+                <p>Condition: {{ forecast.condition }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <table id="forecast-table" border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>High Temp</th>
+                    <th>Low Temp</th>
+                    <th>Condition</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for forecast in forecast_list %}
+                <tr>
+                    <td>{{ forecast.date }}</td>
+                    <td>{{ forecast.high_temp }}&deg;</td>
+                    <td>{{ forecast.low_temp }}&deg;</td>
+                    <td>{{ forecast.condition }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('dashboard') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

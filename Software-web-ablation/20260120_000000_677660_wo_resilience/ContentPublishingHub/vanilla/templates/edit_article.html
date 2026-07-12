@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Article - Content Publishing Hub</title>
+</head>
+<body>
+    <div id="edit-article-page">
+        <h1>Edit Article</h1>
+
+        {% if errors %}
+            <div id="form-errors">
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="post" action="{{ url_for('edit_article', article_id=article.article_id) }}" id="edit-article-form">
+            <label for="article-title">Title:</label>
+            <input type="text" id="article-title" name="title" value="{{ form_data.title }}" required />
+
+            <label for="article-content">Content:</label>
+            <textarea id="article-content" name="content" required>{{ form_data.content }}</textarea>
+
+            <label for="article-category">Category:</label>
+            <select id="article-category" name="category" required>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if form_data.category == category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="change-summary">Change Summary:</label>
+            <textarea id="change-summary" name="change_summary" placeholder="Describe your changes" required>{{ form_data.change_summary if form_data.change_summary else '' }}</textarea>
+
+            <button type="submit" id="submit-article">Save Changes</button>
+            <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>

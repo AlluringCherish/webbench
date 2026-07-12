@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <div id="genre-filter">
+        <form method="GET" action="{{ url_for('dashboard') }}">
+            <label for="selected_genre">Filter by Genre:</label>
+            <select name="selected_genre" id="selected_genre">
+                <option value="">All Genres</option>
+                {% for genre in genres %}
+                <option value="{{ genre.genre_id }}" {% if selected_genre == genre.genre_id %}selected{% endif %}>{{ genre.genre_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" id="filter-button">Filter</button>
+        </form>
+    </div>
+
+    <div id="featured-movies">
+        <h2>Featured Movies</h2>
+        <div class="movies-grid">
+        {% for movie in featured_movies %}
+            <div class="movie-card" id="movie-{{ movie.movie_id }}">
+                <h3>{{ movie.title }}</h3>
+                <p>Director: {{ movie.director }}</p>
+                <p>Genre: {{ movie.genre }}</p>
+                <p>Rating: {{ movie.rating }}</p>
+                <p>Duration: {{ movie.duration }} min</p>
+                <button id="view-movie-button-{{ movie.movie_id }}" onclick="location.href='{{ url_for('movie_details', movie_id=movie.movie_id) }}'">View Details</button>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+
+    <button id="browse-movies-button" onclick="location.href='{{ url_for('movie_catalog') }}'">Browse Movies</button>
+
+    <button id="view-bookings-button" onclick="location.href='{{ url_for('booking_history') }}'">View Bookings</button>
+
+</body>
+</html>

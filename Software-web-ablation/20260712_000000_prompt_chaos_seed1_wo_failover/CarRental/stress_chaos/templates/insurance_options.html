@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<header>
+    <h1>Car Rental</h1>
+    <nav id="main-nav">
+        <button id="dashboard-button" onclick="location.href='{{ url_for('dashboard_page') }}'">Dashboard</button>
+        <button id="vehicle-search-button" onclick="location.href='{{ url_for('vehicle_search_page') }}'">Search Vehicles</button>
+        <button id="my-reservations-button" onclick="location.href='{{ url_for('reservation_management_page') }}'">My Reservations</button>
+    </nav>
+</header>
+<main id="main-container">
+    <h1>{{ page_title }}</h1>
+
+    <form method="POST" id="insurance-options-form">
+        {% for plan in insurance_plans %}
+        <div class="insurance-plan" id="insurance-plan-{{ plan.insurance_id }}">
+            <input type="radio" id="select-insurance-{{ plan.insurance_id }}" name="selected_insurance" value="{{ plan.insurance_id }}" {% if plan.insurance_id == current_selection %}checked{% endif %}>
+            <label for="select-insurance-{{ plan.insurance_id }}">
+                <strong>{{ plan.plan_name }}</strong> - {{ plan.description }}<br>
+                Daily Cost: ${{ "%.2f"|format(plan.daily_cost) }}, Coverage Limit: ${{ plan.coverage_limit }}, Deductible: {{ plan.deductible or 'N/A' }}
+            </label>
+        </div>
+        {% endfor %}
+
+        <button type="submit" id="confirm-insurance-button">Confirm Insurance</button>
+    </form>
+
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+</main>
+<footer>
+    <p>&copy; 2024 Car Rental App</p>
+</footer>
+</body>
+</html>

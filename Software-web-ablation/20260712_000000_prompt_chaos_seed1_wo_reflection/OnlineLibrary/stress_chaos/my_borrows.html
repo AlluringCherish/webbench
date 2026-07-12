@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Borrows - OnlineLibrary</title>
+</head>
+<body>
+    <div id="my-borrows-page">
+        <h1>My Borrows</h1>
+        <table id="borrows-table">
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Borrow Date</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for borrow in borrows %}
+                <tr id="borrow-{{ borrow.borrow_id }}">
+                    <td>{{ borrow.title }}</td>
+                    <td>{{ borrow.borrow_date }}</td>
+                    <td>{{ borrow.due_date }}</td>
+                    <td>{{ borrow.status }}</td>
+                    <td>
+                        {% if borrow.status == 'Overdue' %}
+                        <form method="post" action="{{ url_for('return_book') }}">
+                            <input type="hidden" name="borrow_id" value="{{ borrow.borrow_id }}">
+                            <button id="return-button-{{ borrow.borrow_id }}">Return</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

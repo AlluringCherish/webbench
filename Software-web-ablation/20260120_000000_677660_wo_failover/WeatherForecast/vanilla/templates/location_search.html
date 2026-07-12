@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Locations</title>
+</head>
+<body>
+    <div id="search-page">
+        <h1 id="search-page">Search Locations</h1>
+
+        <form method="POST" action="">
+            <label for="location-search-input">Enter city name or coordinates:</label>
+            <input type="text" id="location-search-input" name="search_query" required>
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="search-results">
+            {% for location in search_results %}
+            <div class="search-result">
+                <p><strong>Name:</strong> {{ location.location_name }}</p>
+                <p><strong>Latitude:</strong> {{ location.latitude }}</p>
+                <p><strong>Longitude:</strong> {{ location.longitude }}</p>
+                <p><strong>Country:</strong> {{ location.country }}</p>
+                <p><strong>Timezone:</strong> {{ location.timezone }}</p>
+                <form method="POST" action="{{ url_for('add_new_location') }}">
+                    <input type="hidden" name="location_id" value="{{ location.location_id }}">
+                    <input type="hidden" name="location_name" value="{{ location.location_name }}">
+                    <button type="submit" id="select-location-button-{{ location.location_id }}">Select Location</button>
+                </form>
+            </div>
+            {% else %}
+            <p>No search results found.</p>
+            {% endfor %}
+        </div>
+
+        <div id="saved-locations-list">
+            {% for saved in saved_locations %}
+            <div class="saved-location">
+                <p>{{ saved.location_name }} {% if saved.is_default == 1 %}(Default){% endif %}</p>
+            </div>
+            {% else %}
+            <p>No saved locations.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

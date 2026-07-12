@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Alerts</title>
+</head>
+<body>
+    <div id="alerts-page">
+        <h1>Weather Alerts</h1>
+
+        <form id="alerts-filter-form" method="get" action="{{ url_for('weather_alerts') }}">
+            <label for="severity-filter">Filter by Severity:</label>
+            <select id="severity-filter" name="severity">
+                <option value="" {% if selected_severity == "" %}selected{% endif %}>All</option>
+                <option value="Critical" {% if selected_severity == "Critical" %}selected{% endif %}>Critical</option>
+                <option value="High" {% if selected_severity == "High" %}selected{% endif %}>High</option>
+                <option value="Medium" {% if selected_severity == "Medium" %}selected{% endif %}>Medium</option>
+                <option value="Low" {% if selected_severity == "Low" %}selected{% endif %}>Low</option>
+            </select>
+
+            <label for="location-filter-alerts">Filter by Location:</label>
+            <select id="location-filter-alerts" name="location_id">
+                <option value="0" {% if selected_location_id == 0 %}selected{% endif %}>All Locations</option>
+                {% for loc in locations %}
+                <option value="{{ loc.location_id }}" {% if loc.location_id == selected_location_id %}selected{% endif %}>{{ loc.location_name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" id="filter-alerts-button">Filter</button>
+        </form>
+
+        <div id="alerts-list">
+            {% for alert in alerts %}
+                <div class="alert-item">
+                    <h3>{{ alert.alert_type }} ({{ alert.severity }})</h3>
+                    <p>{{ alert.description }}</p>
+                    <p>Start: {{ alert.start_time }}</p>
+                    <p>End: {{ alert.end_time }}</p>
+                    {% if not alert.is_acknowledged %}
+                    <a href="{{ url_for('acknowledge_alert', alert_id=alert.alert_id) }}">
+                        <button id="acknowledge-alert-button-{{ alert.alert_id }}">Acknowledge</button>
+                    </a>
+                    {% else %}
+                    <p>Acknowledged</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

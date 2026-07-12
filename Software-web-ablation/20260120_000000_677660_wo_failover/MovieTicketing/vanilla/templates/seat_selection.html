@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Seats</title>
+</head>
+<body>
+    <div id="seat-selection-page">
+        <h1>Select Seats</h1>
+
+        <div id="seat-map">
+            {% for seat in seats %}
+            {% set seat_id_value = seat.row ~ seat.column %}
+            <button id="seat-{{ seat_id_value }}" 
+                    class="seat-button {% if seat.status != 'Available' %}disabled{% endif %}"
+                    {% if seat.status == 'Available' %}
+                    data-seat-id="{{ seat_id_value }}"
+                    {% else %}
+                    disabled
+                    {% endif %}>
+                {{ seat_id_value }} ({{ seat.seat_type }})
+            </button>
+            {% endfor %}
+        </div>
+
+        <div id="selected-seats-display">
+            Selected Seats: {% for seat in selected_seats %}{{ seat }}{% if not loop.last %}, {% endif %}{% endfor %}
+        </div>
+
+        <button id="proceed-booking-button" onclick="location.href='{{ url_for('booking_confirmation') }}'">Proceed to Booking</button>
+    </div>
+</body>
+</html>

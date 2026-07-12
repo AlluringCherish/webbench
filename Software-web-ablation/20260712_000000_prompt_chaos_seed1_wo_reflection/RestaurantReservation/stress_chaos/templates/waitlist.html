@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Waitlist</title>
+</head>
+<body>
+    <h1>Waitlist</h1>
+    <div id="welcome-message">Welcome, {{ user.full_name if user and user.full_name else user.username if user else 'Guest' }}!</div>
+    <form id="join-waitlist-form" action="{{ url_for('waitlist') }}" method="post">
+        <label for="party-size">Party Size:</label>
+        <select id="party-size" name="party_size" required>
+          {% for size in range(1, 11) %}
+            <option value="{{ size }}">{{ size }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" id="join-waitlist-button">Join Waitlist</button>
+    </form>
+    {% if waitlist and waitlist|length > 0 %}
+    <h2>Active Waitlist Entries</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Position</th>
+                <th>Username</th>
+                <th>Party Size</th>
+                <th>Join Time</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for w in waitlist %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ w.username }}</td>
+                <td>{{ w.party_size }}</td>
+                <td>{{ w.join_time | int }}</td>
+                <td>{{ w.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No active waitlist entries.</p>
+    {% endif %}
+    <button onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</body>
+</html>

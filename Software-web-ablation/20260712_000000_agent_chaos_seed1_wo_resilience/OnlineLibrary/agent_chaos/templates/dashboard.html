@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ user.full_name }}</h1>
+    <p><a href="{{ url_for('logout') }}">Logout</a></p>
+
+    <h2>Your Borrowed Books</h2>
+    {% if borrowings %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Borrow ID</th>
+                <th>ISBN</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Return Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in borrowings %}
+            <tr>
+                <td>{{ b.borrow_id }}</td>
+                <td>{{ b.isbn }}</td>
+                <td>{{ b.borrow_date }}</td>
+                <td>{{ b.due_date }}</td>
+                <td>{{ b.return_date or 'Not returned' }}</td>
+                <td>{{ b.status }}</td>
+                <td>
+                    {% if b.status == 'Active' or b.status == 'Overdue' %}
+                    <form action="{{ url_for('return_book', borrow_id=b.borrow_id) }}" method="post">
+                        <button type="submit">Return</button>
+                    </form>
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>You have no borrowings.</p>
+    {% endif %}
+
+    <h2>Your Reservations</h2>
+    {% if reservations %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Reservation ID</th>
+                <th>ISBN</th>
+                <th>Reservation Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in reservations %}
+            <tr>
+                <td>{{ r.reservation_id }}</td>
+                <td>{{ r.isbn }}</td>
+                <td>{{ r.reservation_date }}</td>
+                <td>{{ r.status }}</td>
+                <td>
+                    {% if r.status == 'Active' %}
+                    <form action="{{ url_for('cancel_reservation', reservation_id=r.reservation_id) }}" method="post">
+                        <button type="submit">Cancel</button>
+                    </form>
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>You have no reservations.</p>
+    {% endif %}
+
+    <h2>Your Fines</h2>
+    {% if fines %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Fine ID</th>
+                <th>Amount</th>
+                <th>Paid</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in fines %}
+            <tr>
+                <td>{{ f.fine_id }}</td>
+                <td>{{ f.amount }}</td>
+                <td>{{ 'Yes' if f.paid == 'True' else 'No' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>You have no unpaid fines.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('books') }}">Browse Books</a></p>
+    <p><a href="{{ url_for('profile') }}">Edit Profile</a></p>
+</body>
+</html>

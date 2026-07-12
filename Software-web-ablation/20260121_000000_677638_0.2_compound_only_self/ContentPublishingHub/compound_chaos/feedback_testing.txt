@@ -1,0 +1,41 @@
+Functional Testing Report for ContentPublishingHub starting at /dashboard
+
+1. Dashboard Route (/dashboard):
+- Action: Accessed dashboard as 'testuser' with no articles created yet.
+- Result: HTTP 200 OK. JSON response correctly shows username 'testuser' and empty list of articles.
+- Status: Passed
+
+2. Create Article (/article/create):
+- Action: POST with valid title and content as 'testuser'.
+- Result: Server responded with HTTP 500 Internal Server Error.
+- No redirect URL, article ID, or confirmation received.
+- Status: Failed
+- Impact: Critical - unable to create articles; blocks workflow.
+- Recommendation: Investigate backend article creation logic, check server logs for error causes. Possibly concurrency or file writing issues. Fix is required immediately.
+
+3. Edit Article (/article/<article_id>/edit):
+- Action: GET for newly created article (not executed due to failure in creation).
+- Result: Not performed.
+- Status: Not tested due to create_article failure.
+
+Other Routes (Based on code review, not tested due to create failure):
+- Version History, Approvals, Comments, Published Articles, Content Calendar, Analytics, Approvals posting, Comment posting appear implemented with proper validation and JSON responses.
+- Suggested to test fully post-creation fix.
+
+Template Observations:
+- Templates commonly expect 'category', 'status', 'last_modified', 'published_date' attributes which backend ArticlesModel and others do not record or serve.
+- Mismatches between template variable names (like 'article.id') and backend fields ('article_id') risk rendering faults or errors.
+- The content calendar template's schedule expects more detailed data than the backend schedule provides.
+- Template and backend synchronization needed for stable UI.
+
+Summary of Defects:
+- Critical backend error causing HTTP 500 on article creation POST -> Blocks functional workflows and UI operations.
+- Backend data model inadequate for frontend's expected article fields.
+- Template variable notation inconsistent with backend field names.
+- End-to-end testing limited by article creation failure.
+
+Overall Assessment: ContentPublishingHub backend has solid foundational routes and data model, but critical blocker in article creation and lacking data field alignment with UI templates impair full functional validation. Immediate code fix for article creation and template sync strongly advised.
+
+Approval Status: [NEED_MODIFY]
+
+--- End of feedback_testing.txt content ---

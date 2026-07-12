@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exhibitions</title>
+</head>
+<body>
+    <div id="exhibitions-page">
+        <h1 id="exhibitions-page">Exhibitions</h1>
+        <form method="post" action="{{ url_for('exhibitions_view') }}">
+            <select id="filter-exhibition-type" name="filter_type">
+                <option value="">-- Select Exhibition Type --</option>
+                {% for etype in exhibition_types %}
+                <option value="{{ etype }}" {% if etype == request.form.get('filter_type') %}selected{% endif %}>{{ etype }}</option>
+                {% endfor %}
+            </select>
+            <button id="apply-exhibition-filter" type="submit">Apply Filter</button>
+        </form>
+        <table id="exhibition-list" border="1">
+            <thead>
+                <tr>
+                    <th>title</th>
+                    <th>type</th>
+                    <th>dates</th>
+                    <th>gallery</th>
+                    <th>status</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set display_exhibitions = filtered_exhibitions if filtered_exhibitions is defined and filtered_exhibitions is not none else exhibitions %}
+                {% for exhibition in display_exhibitions %}
+                <tr>
+                    <td>{{ exhibition.title }}</td>
+                    <td>{{ exhibition.exhibition_type }}</td>
+                    <td>{{ exhibition.start_date }} to {{ exhibition.end_date }}</td>
+                    <td>{{ exhibition.gallery }}</td>
+                    <td>{{ exhibition.status }}</td>
+                    <td><button id="view-exhibition-button-{{ exhibition.exhibition_id }}" onclick="location.href='{{ url_for('exhibition_details_view', exhibition_id=exhibition.exhibition_id) }}'">View</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_view') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

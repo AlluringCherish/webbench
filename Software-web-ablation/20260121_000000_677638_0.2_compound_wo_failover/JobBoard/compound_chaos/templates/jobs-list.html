@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Listings</title>
+</head>
+<body>
+    <div id="jobs-list">
+        <h1>Available Jobs</h1>
+
+        <input type="text" id="search-input" name="search" value="{{ '' }}" placeholder="Search jobs...">
+
+        <select id="category-filter" name="category">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+            <option value="{{ category.category_id }}" {% if selected_category == category.category_id %}selected{% endif %}>{{ category.category_name }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="text" id="location-filter" name="location" value="{{ location_filter if location_filter else '' }}" placeholder="Location">
+
+        <div id="jobs-list">
+            {% for job in jobs %}
+            <div class="job-card">
+                <h3>{{ job.title }}</h3>
+                <p>Location: {{ job.location }}</p>
+                <p>Salary: {{ job.salary_min }} - {{ job.salary_max }}</p>
+                <a id="view-job-button-{{ job.job_id }}" href="{{ url_for('job_details', job_id=job.job_id) }}">View</a>
+                <form method="post" action="{{ url_for('apply_job', job_id=job.job_id) }}">
+                    <button id="apply-now-button-{{ job.job_id }}" type="submit">Apply Now</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

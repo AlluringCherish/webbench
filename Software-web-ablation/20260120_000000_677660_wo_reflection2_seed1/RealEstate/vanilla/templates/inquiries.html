@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Inquiries</title>
+</head>
+<body>
+    <div id="inquiries-page">
+        <h1>My Inquiries</h1>
+
+        <form id="inquiry-filter-form" method="POST" action="{{ url_for('filter_inquiries') }}">
+            <label for="inquiry-status-filter">Filter by Status:</label>
+            <select id="inquiry-status-filter" name="inquiry_status_filter">
+                <option value="">--Select Status--</option>
+                <option value="open" {% if status_filter == 'open' %}selected{% endif %}>Open</option>
+                <option value="closed" {% if status_filter == 'closed' %}selected{% endif %}>Closed</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+            </select>
+            <button type="submit" id="filter-inquiries-button">Filter</button>
+        </form>
+
+        <ul id="inquiries-list">
+            {% for inquiry in inquiries %}
+            <li id="inquiry-{{ inquiry.inquiry_id }}">
+                <span id="inquiry-property-name-{{ inquiry.inquiry_id }}">{{ inquiry.property_name }}</span>
+                <span id="inquiry-name-{{ inquiry.inquiry_id }}">{{ inquiry.name }}</span>
+                <span id="inquiry-status-{{ inquiry.inquiry_id }}">{{ inquiry.status }}</span>
+
+                <form method="POST" action="{{ url_for('delete_inquiry', inquiry_id=inquiry.inquiry_id) }}" style="display:inline;">
+                    <button type="submit" id="delete-inquiry-button-{{ inquiry.inquiry_id }}">Delete</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Reviews</title>
+</head>
+<body>
+    <div id="reviews-page">
+        <h1>Order Reviews</h1>
+        <label for="filter-by-rating">Filter by Rating:</label>
+        <select id="filter-by-rating" name="filter-by-rating" onchange="window.location.href='?rating='+this.value">
+            <option value="all" {% if 'all' == request.args.get('rating', 'all') %}selected{% endif %}>All</option>
+            <option value="5" {% if '5' == request.args.get('rating') %}selected{% endif %}>5 stars</option>
+            <option value="4" {% if '4' == request.args.get('rating') %}selected{% endif %}>4 stars</option>
+            <option value="3" {% if '3' == request.args.get('rating') %}selected{% endif %}>3 stars</option>
+            <option value="2" {% if '2' == request.args.get('rating') %}selected{% endif %}>2 stars</option>
+            <option value="1" {% if '1' == request.args.get('rating') %}selected{% endif %}>1 star</option>
+        </select>
+        <div id="reviews-list">
+            {% for review in reviews %}
+            <div class="review">
+                <div>Restaurant: {{ review.restaurant_name }}</div>
+                <div>Customer: {{ review.customer_name }}</div>
+                <div>Rating: {{ review.rating }}</div>
+                <div>Review: {{ review.review_text }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <a href="{{ url_for('write_review') }}">
+            <button id="write-review-button">Write a New Review</button>
+        </a>
+        <a href="{{ url_for('dashboard') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

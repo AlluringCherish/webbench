@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pickup and Dropoff Locations</title>
+</head>
+<body>
+    <div id="locations-page">
+        <h1>Pickup and Dropoff Locations</h1>
+        <form method="get">
+            <label for="hours-filter">Operating Hours Filter:</label>
+            <select id="hours-filter" name="hours_filter">
+                {% for option in hours_filter_options %}
+                <option value="{{ option }}" {% if option == applied_hours_filter %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="search-location-input">Search Location (City or Name):</label>
+            <input type="text" id="search-location-input" name="search_query" value="{{ search_query }}">
+
+            <button type="submit">Search</button>
+        </form>
+        <div id="locations-list">
+            {% for location in locations %}
+            <div class="location-item">
+                <h3>{{ location.city }}</h3>
+                <p>Address: {{ location.address }}</p>
+                <p>Phone: {{ location.phone }}</p>
+                <p>Hours: {{ location.hours }}</p>
+                <p>Available Vehicles: {{ location.available_vehicles }}</p>
+                <button id="location-detail-button-{{ location.location_id }}">View Details</button>
+            </div>
+            {% else %}
+            <p>No locations found.</p>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

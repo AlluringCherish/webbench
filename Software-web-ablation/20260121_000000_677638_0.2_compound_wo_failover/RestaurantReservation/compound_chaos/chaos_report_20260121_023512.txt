@@ -1,0 +1,3288 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "FrontendDeveloper",
+      "Tester"
+    ],
+    "num_all_targets": 2,
+    "agent_chaos_targets": [
+      "FrontendDeveloper"
+    ],
+    "stress_chaos_targets": [
+      "Tester"
+    ],
+    "io_chaos_targets": [
+      "FrontendDeveloper"
+    ],
+    "intention_hiding_targets": []
+  },
+  "agent_chaos": {
+    "enabled": true,
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 2,
+    "log": [
+      {
+        "timestamp": 1768930301.4480863,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930302.4549658,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      }
+    ]
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordDeletion",
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 6,
+    "method_selection": "Mode: WordDeletion (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": [
+      {
+        "timestamp": 1768930382.6207967,
+        "agent": "Tester",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 168/280 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "You are a Software Test Engineer specializing in end-to-end functional testing of integrated Python web applications.\n\nYour goal is to conduct comprehensive integration testing of the combined backend and frontend of the RestaurantReservation web application, identify all issues, and provide detailed feedback until the application is fully functional.\n\nTask Details:\n- Read app.py and templates/*.html from CONTEXT as the current integrated implementation\n- Execute thorough testing across all nine application pages and features based on the user requirements\n- Test user flows including dashboard navigation, menu browsing, dish details, reservations, waitlist, reviews, profile management, and related UI elements\n- Document all detected bugs, functional issues, missing behaviors, and UI inconsistencies in feedback.txt\n- Write \"[APPROVED]\" in feedback.txt if all test cases pass without any issues; otherwise write \"NEED_MODIFY\" followed by detailed issue descriptions\n- Do not assume correctness: verify each input and output artifact functionally\n\nTesting Requirements:\n1. **Test Coverage**:\n   - Validate each page loads correctly with all required elements and IDs as specified\n   - Verify all navigation buttons perform exactly as expected\n   - Confirm backend and frontend integration works properly for data persistence, retrieval, and display\n   - Confirm forms handle input correctly and data files are consistent\n\n2. **Issue Reporting**:\n   - Structure feedback.txt with clear, actionable points\n   - Include references to specific artifacts or code locations where applicable\n\n3. **Iteration Control**:\n   - Feedback file status gate: write \"[APPROVED]\" only when all criteria are met to terminate refinement loop\n   - Otherwise, write \"NEED_MODIFY\" and list all issues to prompt fixes\n\nCRITICAL REQUIREMENTS:\n- Use write_text_file tool to save feedback.txt\n- Provide precise, comprehensive test results and recommendations\n- Follow feedback file status gating strictly for iterative development control\n\nOutput: feedback.txt",
+        "after": "You are Software functional\n\nintegration RestaurantReservation web issues, and detailed until the fully\n\nDetails:\nRead app.py and templates/*.html from as the implementation\nExecute application and based\nuser dish waitlist, reviews, UI elements\n- Document inconsistencies\n- test pass issues; otherwise write followed detailed issue descriptions\ncorrectness: verify each output\n\nTesting\n1. Coverage**:\nValidate each loads correctly all required elements and specified\nnavigation expected\nproperly for persistence, retrieval, display\n- Confirm forms handle correctly files are\n\n**Issue\nfeedback.txt points\nInclude references to artifacts or locations where applicable\n\n\nfile status \"[APPROVED]\" only all are met\n- Otherwise, write \"NEED_MODIFY\" and all issues to fixes\n\nCRITICAL\nfeedback.txt\nProvide\nfeedback status strictly for iterative control\n\nfeedback.txt"
+      },
+      {
+        "timestamp": 1768930382.6243038,
+        "agent": "Tester",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 766/1278 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Perform comprehensive integration tests on app.py and templates/*.html and write feedback.txt\n=== app.py ===\nfrom flask import Flask, render_template, redirect, url_for, request, flash\nimport os\nfrom datetime import datetime\n\napp = Flask(__name__)\napp.config['SECRET_KEY'] = 'dev-secret-key'\n\nDATA_DIR = 'data'\n\n# Utility functions\n\ndef load_users():\n    users = {}\n    try:\n        with open(os.path.join(DATA_DIR, 'users.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 4:\n                    username, email, phone, full_name = parts\n                    users[username] = {'username': username, 'email': email, 'phone': phone, 'full_name': full_name}\n    except FileNotFoundError:\n        pass\n    return users\n\n\ndef load_menu():\n    menu = []\n    try:\n        with open(os.path.join(DATA_DIR, 'menu.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 8:\n                    dish_id = int(parts[0])\n                    name = parts[1]\n                    category = parts[2]\n                    price = float(parts[3])\n                    description = parts[4]\n                    ingredients = parts[5]\n                    dietary = parts[6]\n                    avg_rating = float(parts[7])\n                    menu.append({'dish_id': dish_id, 'name': name, 'category': category, 'price': price, 'description': description, 'ingredients': ingredients, 'dietary': dietary, 'avg_rating': avg_rating})\n    except FileNotFoundError:\n        pass\n    return menu\n\n\ndef load_reservations():\n    reservations = []\n    try:\n        with open(os.path.join(DATA_DIR, 'reservations.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 10:\n                    reservation_id = int(parts[0])\n                    username = parts[1]\n                    guest_name = parts[2]\n                    phone = parts[3]\n                    email = parts[4]\n                    party_size = int(parts[5])\n                    date = parts[6]\n                    time = parts[7]\n                    special_requests = parts[8]\n                    status = parts[9]\n                    reservations.append({'reservation_id': reservation_id, 'username': username, 'guest_name': guest_name, 'phone': phone, 'email': email, 'party_size': party_size, 'date': date, 'time': time, 'special_requests': special_requests, 'status': status})\n    except FileNotFoundError:\n        pass\n    return reservations\n\n\ndef save_reservations(reservations):\n    try:\n        with open(os.path.join(DATA_DIR, 'reservations.txt'), 'w', encoding='utf-8') as f:\n            for r in reservations:\n                line = f\"{r['reservation_id']}|{r['username']}|{r['guest_name']}|{r['phone']}|{r['email']}|{r['party_size']}|{r['date']}|{r['time']}|{r['special_requests']}|{r['status']}\\n\"\n                f.write(line)\n    except Exception as e:\n        pass\n\n\ndef load_waitlist():\n    waitlist = []\n    try:\n        with open(os.path.join(DATA_DIR, 'waitlist.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 5:\n                    waitlist_id = int(parts[0])\n                    username = parts[1]\n                    party_size = int(parts[2])\n                    join_time = parts[3]\n                    status = parts[4]\n                    waitlist.append({'waitlist_id': waitlist_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': status})\n    except FileNotFoundError:\n        pass\n    return waitlist\n\n\ndef save_waitlist(waitlist):\n    try:\n        with open(os.path.join(DATA_DIR, 'waitlist.txt'), 'w', encoding='utf-8') as f:\n            for w in waitlist:\n                line = f\"{w['waitlist_id']}|{w['username']}|{w['party_size']}|{w['join_time']}|{w['status']}\\n\"\n                f.write(line)\n    except Exception as e:\n        pass\n\n\ndef load_reviews():\n    reviews = []\n    try:\n        with open(os.path.join(DATA_DIR, 'reviews.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 6:\n                    review_id = int(parts[0])\n                    username = parts[1]\n                    dish_id = int(parts[2])\n                    rating = int(parts[3])\n                    review_text = parts[4]\n                    review_date = parts[5]\n                    reviews.append({'review_id': review_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': review_date})\n    except FileNotFoundError:\n        pass\n    return reviews\n\n\ndef save_reviews(reviews):\n    try:\n        with open(os.path.join(DATA_DIR, 'reviews.txt'), 'w', encoding='utf-8') as f:\n            for r in reviews:\n                line = f\"{r['review_id']}|{r['username']}|{r['dish_id']}|{r['rating']}|{r['review_text']}|{r['review_date']}\\n\"\n                f.write(line)\n    except Exception as e:\n        pass\n\n\ndef get_logged_in_username():\n    # For simplification, assume the username is provided in a query param ?username=...\n    # In real app, session or login management would be in place\n    username = request.args.get('username')\n    if not username:\n        # fallback or redirect could be handled here\n        username = 'john_diner'  # default for testing\n    return username\n\n\n@app.route('/', methods=['GET'])\ndef root_redirect():\n    return redirect(url_for('dashboard'))\n\n\n@app.route('/dashboard', methods=['GET'])\ndef dashboard():\n    username = get_logged_in_username()\n    users = load_users()\n    menu = load_menu()\n    reservations = load_reservations()\n\n    # featured_dishes: take first 3 dishes from menu for example\n    featured_dishes = []\n    for dish in menu[:3]:\n        featured_dishes.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'price': dish['price'], 'description': dish['description']})\n\n    # upcoming_reservations: only for user and status Upcoming, limited to future dates (date >= today)\n    upcoming_reservations = []\n    today_str = datetime.now().strftime('%Y-%m-%d')\n    for r in reservations:\n        if r['username'] == username and r['status'] == 'Upcoming' and r['date'] >= today_str:\n            upcoming_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})\n\n    return render_template('dashboard.html', username=username, featured_dishes=featured_dishes, upcoming_reservations=upcoming_reservations)\n\n\n@app.route('/menu', methods=['GET'])\ndef menu():\n    menu_data = load_menu()\n    # context variable 'menus' as list of dict with keys: dish_id, name, category, price, description, dietary, avg_rating\n    menus = []\n    for dish in menu_data:\n        menus.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'category': dish['category'], 'price': dish['price'], 'description': dish['description'], 'dietary': dish['dietary'], 'avg_rating': dish['avg_rating']})\n    return render_template('menu.html', menus=menus)\n\n\n@app.route('/dish/<int:dish_id>', methods=['GET'])\ndef dish_details(dish_id):\n    menu_data = load_menu()\n    dish = None\n    for d in menu_data:\n        if d['dish_id'] == dish_id:\n            dish = {'dish_id': d['dish_id'], 'name': d['name'], 'category': d['category'], 'price': d['price'], 'description': d['description'], 'ingredients': d['ingredients'], 'dietary': d['dietary'], 'avg_rating': d['avg_rating']}\n            break\n    if dish is None:\n        # Dish not found, could 404 or redirect\n        return redirect(url_for('menu'))\n    return render_template('dish_details.html', dish=dish)\n\n\n@app.route('/make_reservation', methods=['GET', 'POST'])\ndef make_reservation():\n    username = get_logged_in_username()\n    users = load_users()\n    user = users.get(username)\n    if not user:\n        # No user found, redirect to dashboard\n        return redirect(url_for('dashboard'))\n\n    if request.method == 'GET':\n        return render_template('make_reservation.html')\n\n    # POST handling\n    guest_name = request.form.get('guest_name')\n    party_size_raw = request.form.get('party_size')\n    reservation_date = request.form.get('reservation_date')\n\n    error = None\n    try:\n        party_size = int(party_size_raw)\n        if party_size < 1 or party_size > 10:\n            error = \"Party size must be between 1 and 10.\"\n    except:\n        error = \"Invalid party size.\"\n\n    # Validate date format and is not empty\n    if not reservation_date:\n        error = \"Reservation date is required.\"\n    else:\n        try:\n            dt_res_date = datetime.strptime(reservation_date, '%Y-%m-%d')\n        except:\n            error = \"Invalid date format.\"\n\n    if not guest_name or guest_name.strip() == '':\n        error = \"Guest name is required.\"\n\n    if error:\n        # Could flash or send message\n        flash(error, 'error')\n        return render_template('make_reservation.html')\n\n    # Generate new reservation_id\n    reservations = load_reservations()\n    new_id = 1\n    if reservations:\n        new_id = max(r['reservation_id'] for r in reservations) + 1\n\n    # For time, assign a default time for now, e.g. 19:00\n    default_time = '19:00'\n\n    new_reservation = {\n        'reservation_id': new_id,\n        'username': username,\n        'guest_name': guest_name.strip(),\n        'phone': user['phone'],\n        'email': user['email'],\n        'party_size': party_size,\n        'date': reservation_date,\n        'time': default_time,\n        'special_requests': '',\n        'status': 'Upcoming'\n    }\n    reservations.append(new_reservation)\n    save_reservations(reservations)\n    flash('Reservation made successfully!', 'success')\n    return redirect(url_for('dashboard'))\n\n\n@app.route('/my_reservations', methods=['GET'])\ndef my_reservations():\n    username = get_logged_in_username()\n    reservations = load_reservations()\n    user_reservations = []\n    for r in reservations:\n        if r['username'] == username:\n            user_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})\n    return render_template('my_reservations.html', reservations=user_reservations, username=username)\n\n\n@app.route('/cancel_reservation/<int:reservation_id>', methods=['POST'])\ndef cancel_reservation(reservation_id):\n    username = get_logged_in_username()\n    reservations = load_reservations()\n    found = False\n    for r in reservations:\n        if r['reservation_id'] == reservation_id and r['username'] == username:\n            if r['status'] == 'Upcoming':\n                r['status'] = 'Cancelled'\n                found = True\n                break\n            else:\n                # Only Upcoming can be cancelled\n                found = True\n                break\n    if found:\n        save_reservations(reservations)\n        return redirect(url_for('my_reservations'))\n    else:\n        return redirect(url_for('my_reservations'))\n\n\n@app.route('/waitlist', methods=['GET', 'POST'])\ndef waitlist():\n    username = get_logged_in_username()\n    waitlist_entries = load_waitlist()\n\n    user_entries = [w for w in waitlist_entries if w['username'] == username and w['status'] == 'Active']\n    user_position = None\n\n    active_waitlist = sorted([w for w in waitlist_entries if w['status'] == 'Active'], key=lambda x: x['join_time'])\n\n    if user_entries:\n        # determine position\n        for idx, entry in enumerate(active_waitlist, start=1):\n            if entry['username'] == username:\n                user_position = idx\n                break\n\n    if request.method == 'POST':\n        party_size_raw = request.form.get('party_size')\n        error = None\n        try:\n            party_size = int(party_size_raw)\n            if party_size < 1:\n                error = 'Party size must be positive integer.'\n        except:\n            error = 'Invalid party size.'\n\n        if error:\n            flash(error, 'error')\n            return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)\n\n        # If already active in waitlist, do not add again\n        if user_position is not None:\n            flash('You are already in the waitlist.', 'info')\n            return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)\n\n        # Create new waitlist entry with new waitlist_id\n        new_id = 1\n        if waitlist_entries:\n            new_id = max(w['waitlist_id'] for w in waitlist_entries) + 1\n\n        join_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')\n\n        new_entry = {'waitlist_id': new_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': 'Active'}\n        waitlist_entries.append(new_entry)\n        save_waitlist(waitlist_entries)\n        flash('Added to waitlist successfully.', 'success')\n        return redirect(url_for('waitlist'))\n\n    # GET method\n    return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)\n\n\n@app.route('/my_reviews', methods=['GET'])\ndef my_reviews():\n    username = get_logged_in_username()\n    reviews = load_reviews()\n    menu = load_menu()\n\n    user_reviews = []\n    for r in reviews:\n        if r['username'] == username:\n            dish_name = ''\n            for d in menu:\n                if d['dish_id'] == r['dish_id']:\n                    dish_name = d['name']\n                    break\n            user_reviews.append({'review_id': r['review_id'], 'dish_name': dish_name, 'rating': r['rating'], 'review_text': r['review_text']})\n    return render_template('my_reviews.html', reviews=user_reviews, username=username)\n\n\n@app.route('/write_review', methods=['GET', 'POST'])\ndef write_review():\n    username = get_logged_in_username()\n    menu = load_menu()\n    dishes = [{'dish_id': d['dish_id'], 'name': d['name']} for d in menu]\n\n    if request.method == 'GET':\n        return render_template('write_review.html', dishes=dishes)\n\n    # POST\n    dish_id_raw = request.form.get('dish_id')\n    rating_raw = request.form.get('rating')\n    review_text = request.form.get('review_text', '').strip()\n\n    error = None\n    try:\n        dish_id = int(dish_id_raw)\n    except:\n        error = 'Invalid dish selected.'\n\n    try:\n        rating = int(rating_raw)\n        if rating < 1 or rating > 5:\n            error = 'Rating must be between 1 and 5.'\n    except:\n        error = 'Invalid rating value.'\n\n    if not review_text:\n        error = 'Review text cannot be empty.'\n\n    if error:\n        flash(error, 'error')\n        return render_template('write_review.html', dishes=dishes)\n\n    reviews = load_reviews()\n    new_id = 1\n    if reviews:\n        new_id = max(r['review_id'] for r in reviews) + 1\n\n    today_str = datetime.now().strftime('%Y-%m-%d')\n\n    new_review = {'review_id': new_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': today_str}\n\n    reviews.append(new_review)\n    save_reviews(reviews)\n\n    flash('Review submitted successfully!', 'success')\n    return redirect(url_for('my_reviews'))\n\n\n@app.route('/profile', methods=['GET', 'POST'])\ndef profile():\n    username = get_logged_in_username()\n    users = load_users()\n    user = users.get(username)\n    if not user:\n        return redirect(url_for('dashboard'))\n\n    if request.method == 'GET':\n        profile_data = {'username': user['username'], 'email': user['email']}\n        return render_template('profile.html', profile=profile_data)\n\n    # POST to update email\n    email = request.form.get('email')\n    if not email or email.strip() == '':\n        flash('Email cannot be empty.', 'error')\n        profile_data = {'username': user['username'], 'email': user['email']}\n        return render_template('profile.html', profile=profile_data)\n\n    # Update user email\n    user['email'] = email.strip()\n\n    # Save users back to users.txt\n    try:\n        with open(os.path.join(DATA_DIR, 'users.txt'), 'w', encoding='utf-8') as f:\n            for u in users.values():\n                line = f\"{u['username']}|{u['email']}|{u['phone']}|{u['full_name']}\\n\"\n                f.write(line)\n    except Exception as e:\n        flash('Failed to save user profile.', 'error')\n        profile_data = {'username': user['username'], 'email': user['email']}\n        return render_template('profile.html', profile=profile_data)\n\n    flash('Profile updated successfully!', 'success')\n    return redirect(url_for('profile'))\n\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)\n\n\n=== templates/*.html ===\n[NO FILES MATCHED]\n",
+        "after": "comprehensive integration and\n===\nfrom render_template, request, flash\nos\nimport datetime\n\nFlask(__name__)\napp.config['SECRET_KEY'] = 'dev-secret-key'\n\n=\n\n\n\ndef load_users():\n\ntry:\nf:\nfor line\nparts = line.strip().split('|')\nlen(parts) ==\n=\nusers[username] = {'username': username, 'email': email, 'phone': phone, 'full_name': full_name}\nexcept FileNotFoundError:\n\nusers\n\n\nload_menu():\n\ntry:\nopen(os.path.join(DATA_DIR, f:\nline\nline.strip().split('|')\n\n\nname parts[1]\n\n=\n\n\n= parts[6]\nfloat(parts[7])\n\n\n\nmenu\n\n\ndef\nreservations\n\nwith 'r', encoding='utf-8')\nin f:\n=\nif\nreservation_id =\nparts[1]\nguest_name\n=\n\n\n= parts[6]\n\n=\nstatus parts[9]\n\nexcept FileNotFoundError:\n\nreservations\n\n\nsave_reservations(reservations):\n\nopen(os.path.join(DATA_DIR, 'reservations.txt'), f:\n\nline = f\"{r['reservation_id']}|{r['username']}|{r['guest_name']}|{r['phone']}|{r['email']}|{r['party_size']}|{r['date']}|{r['time']}|{r['special_requests']}|{r['status']}\\n\"\n\nException\npass\n\n\n\n\ntry:\nwith as f:\nfor\nparts =\nlen(parts) ==\nwaitlist_id = int(parts[0])\n=\nparty_size =\n= parts[3]\nstatus = parts[4]\nwaitlist.append({'waitlist_id': waitlist_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': status})\n\npass\nreturn\n\n\n\ntry:\nwith open(os.path.join(DATA_DIR, encoding='utf-8')\nwaitlist:\n\nf.write(line)\nexcept as\npass\n\n\n\n=\n\nencoding='utf-8') f:\nline f:\nparts =\nlen(parts)\n=\nparts[1]\ndish_id int(parts[2])\nrating\nreview_text parts[4]\n\n\nexcept\n\n\n\n\nsave_reviews(reviews):\n\n'reviews.txt'), encoding='utf-8') as f:\nfor r reviews:\nline f\"{r['review_id']}|{r['username']}|{r['dish_id']}|{r['rating']}|{r['review_text']}|{r['review_date']}\\n\"\nf.write(line)\nexcept Exception as e:\n\n\n\ndef get_logged_in_username():\nsimplification, the username is provided\nIn login management place\n= request.args.get('username')\nif\nfallback be\n= 'john_diner' # for testing\n\n\n\n@app.route('/',\ndef\nreturn\n\n\n\ndef\nusername\nusers =\n= load_menu()\nload_reservations()\n\nfeatured_dishes: for\n\nin\nfeatured_dishes.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'price': dish['price'], 'description': dish['description']})\n\nonly for and future dates (date\n\n= datetime.now().strftime('%Y-%m-%d')\nin reservations:\nr['username'] and r['status'] r['date'] >=\nupcoming_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})\n\nrender_template('dashboard.html', featured_dishes=featured_dishes,\n\n\n\ndef\nmenu_data\ncontext 'menus' with name, dietary,\nmenus\nfor menu_data:\n\nreturn menus=menus)\n\n\n\ndish_details(dish_id):\nmenu_data\n= None\nd in\nif\ndish {'dish_id': d['dish_id'], 'name': d['name'], 'category': d['category'], 'price': d['price'], 'description': d['description'], 'ingredients': d['ingredients'], 'dietary': d['dietary'], 'avg_rating': d['avg_rating']}\nbreak\nNone:\n404\n\nreturn render_template('dish_details.html',\n\n\n@app.route('/make_reservation', 'POST'])\nmake_reservation():\n\nusers load_users()\nuser =\nnot\n# found,\n\n\n==\n\n\nPOST\nguest_name = request.form.get('guest_name')\nparty_size_raw = request.form.get('party_size')\nrequest.form.get('reservation_date')\n\n\n\n\nif < party_size >\n\"Party\n\nerror size.\"\n\n# Validate date and not empty\nif\n\"Reservation is\n\n\ndt_res_date '%Y-%m-%d')\n\n= date\n\nnot guest_name or guest_name.strip() == '':\n= name\n\n\nCould or send\n'error')\nreturn\n\n# new\n= load_reservations()\nnew_id\n\n= max(r['reservation_id'] r 1\n\ntime, a default for now,\n'19:00'\n\n= {\n        'reservation_id': new_id,\n        'username': username,\n        'guest_name': guest_name.strip(),\n        'phone': user['phone'],\n        'email': user['email'],\n        'party_size': party_size,\n        'date': reservation_date,\n        'time': default_time,\n        'special_requests': '',\n        'status': 'Upcoming'\n    }\n\n\nflash('Reservation\nreturn\n\n\n@app.route('/my_reservations',\nmy_reservations():\nusername get_logged_in_username()\nreservations load_reservations()\n[]\nfor\nif r['username']\n\nreturn\n\n\nmethods=['POST'])\ndef cancel_reservation(reservation_id):\nusername\n=\nfound False\nr\nif r['username'] username:\n\nr['status']\n=\nbreak\n\n# Only can be\nfound =\n\nif\nsave_reservations(reservations)\n\nelse:\n\n\n\n@app.route('/waitlist',\n\nusername\n\n\nuser_entries [w w['username'] and w['status'] == 'Active']\nuser_position None\n\nsorted([w for in if == 'Active'], x['join_time'])\n\nuser_entries:\nposition\nenumerate(active_waitlist,\n==\n= idx\nbreak\n\n\n\n=\n\n= int(party_size_raw)\nparty_size < 1:\n'Party must be integer.'\n\n= size.'\n\nerror:\nflash(error,\nwaitlist_entries=active_waitlist,\n\n# If active not\n\nflash('You already waitlist.', 'info')\nrender_template('waitlist.html', user_position=user_position)\n\nCreate new waitlist waitlist_id\n=\nwaitlist_entries:\nnew_id = for in +\n\n\n\n{'waitlist_id': new_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': 'Active'}\n\nsave_waitlist(waitlist_entries)\nflash('Added waitlist\nreturn\n\n\nreturn waitlist_entries=active_waitlist,\n\n\n\n\n\nreviews\n\n\n=\nin reviews:\nif r['username'] username:\ndish_name =\nfor in menu:\nif\nd['name']\nbreak\n\nreturn reviews=user_reviews, username=username)\n\n\nmethods=['GET',\n\nget_logged_in_username()\n= load_menu()\ndishes [{'dish_id': d['dish_id'], 'name': d['name']} for menu]\n\n\n\n\n#\ndish_id_raw =\n\nreview_text request.form.get('review_text', '').strip()\n\nNone\n\n\nexcept:\nselected.'\n\n\nint(rating_raw)\nor 5:\nerror = 'Rating must be 1\n\n'Invalid rating\n\nif\n= 'Review empty.'\n\n\n\ndishes=dishes)\n\nreviews =\n= 1\n\n= +\n\n=\n\nnew_review {'review_id': new_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': today_str}\n\n\n\n\nflash('Review submitted successfully!',\nredirect(url_for('my_reviews'))\n\n\n'POST'])\ndef profile():\nget_logged_in_username()\nusers = load_users()\n\nif user:\nreturn\n\n'GET':\nprofile_data = {'username': user['username'], 'email': user['email']}\nprofile=profile_data)\n\nto update\nrequest.form.get('email')\nnot email or email.strip() '':\nflash('Email\n{'username': user['username'], 'email': user['email']}\n\n\n# Update\n\n\n# Save users\n\n'users.txt'), as\nfor u\n=\n\nas e:\nflash('Failed to save user profile.', 'error')\n{'username': user['username'], 'email': user['email']}\nreturn render_template('profile.html', profile=profile_data)\n\nupdated 'success')\nreturn\n\n\n\napp.run(debug=True, port=5000)\n\n\n=== templates/*.html\n[NO\n"
+      },
+      {
+        "timestamp": 1768930488.5745249,
+        "agent": "Tester",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 67/112 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "You are Software functional\n\nintegration RestaurantReservation web issues, and detailed until the fully\n\nDetails:\nRead app.py and templates/*.html from as the implementation\nExecute application and based\nuser dish waitlist, reviews, UI elements\n- Document inconsistencies\n- test pass issues; otherwise write followed detailed issue descriptions\ncorrectness: verify each output\n\nTesting\n1. Coverage**:\nValidate each loads correctly all required elements and specified\nnavigation expected\nproperly for persistence, retrieval, display\n- Confirm forms handle correctly files are\n\n**Issue\nfeedback.txt points\nInclude references to artifacts or locations where applicable\n\n\nfile status \"[APPROVED]\" only all are met\n- Otherwise, write \"NEED_MODIFY\" and all issues to fixes\n\nCRITICAL\nfeedback.txt\nProvide\nfeedback status strictly for iterative control\n\nfeedback.txt",
+        "after": "are\n\nintegration RestaurantReservation until fully\n\nDetails:\n\n\nuser\n-\n- test pass issue descriptions\ncorrectness: each output\n\n\nCoverage**:\nrequired elements specified\nnavigation\nproperly retrieval,\nare\n\n**Issue\nfeedback.txt\nInclude artifacts or locations where applicable\n\n\nonly met\n- Otherwise, and to\n\nCRITICAL\nfeedback.txt\nProvide\nfeedback strictly for control\n\n"
+      },
+      {
+        "timestamp": 1768930488.5757146,
+        "agent": "Tester",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 766/1278 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Perform comprehensive integration tests on app.py and templates/*.html and write feedback.txt\n=== app.py ===\nfrom flask import Flask, render_template, redirect, url_for, request, flash\nimport os\nfrom datetime import datetime\n\napp = Flask(__name__)\napp.config['SECRET_KEY'] = 'dev-secret-key'\n\nDATA_DIR = 'data'\n\n# Utility functions\n\ndef load_users():\n    users = {}\n    try:\n        with open(os.path.join(DATA_DIR, 'users.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 4:\n                    username, email, phone, full_name = parts\n                    users[username] = {'username': username, 'email': email, 'phone': phone, 'full_name': full_name}\n    except FileNotFoundError:\n        pass\n    return users\n\n\ndef load_menu():\n    menu = []\n    try:\n        with open(os.path.join(DATA_DIR, 'menu.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 8:\n                    dish_id = int(parts[0])\n                    name = parts[1]\n                    category = parts[2]\n                    price = float(parts[3])\n                    description = parts[4]\n                    ingredients = parts[5]\n                    dietary = parts[6]\n                    avg_rating = float(parts[7])\n                    menu.append({'dish_id': dish_id, 'name': name, 'category': category, 'price': price, 'description': description, 'ingredients': ingredients, 'dietary': dietary, 'avg_rating': avg_rating})\n    except FileNotFoundError:\n        pass\n    return menu\n\n\ndef load_reservations():\n    reservations = []\n    try:\n        with open(os.path.join(DATA_DIR, 'reservations.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 10:\n                    reservation_id = int(parts[0])\n                    username = parts[1]\n                    guest_name = parts[2]\n                    phone = parts[3]\n                    email = parts[4]\n                    party_size = int(parts[5])\n                    date = parts[6]\n                    time = parts[7]\n                    special_requests = parts[8]\n                    status = parts[9]\n                    reservations.append({'reservation_id': reservation_id, 'username': username, 'guest_name': guest_name, 'phone': phone, 'email': email, 'party_size': party_size, 'date': date, 'time': time, 'special_requests': special_requests, 'status': status})\n    except FileNotFoundError:\n        pass\n    return reservations\n\n\ndef save_reservations(reservations):\n    try:\n        with open(os.path.join(DATA_DIR, 'reservations.txt'), 'w', encoding='utf-8') as f:\n            for r in reservations:\n                line = f\"{r['reservation_id']}|{r['username']}|{r['guest_name']}|{r['phone']}|{r['email']}|{r['party_size']}|{r['date']}|{r['time']}|{r['special_requests']}|{r['status']}\\n\"\n                f.write(line)\n    except Exception as e:\n        pass\n\n\ndef load_waitlist():\n    waitlist = []\n    try:\n        with open(os.path.join(DATA_DIR, 'waitlist.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 5:\n                    waitlist_id = int(parts[0])\n                    username = parts[1]\n                    party_size = int(parts[2])\n                    join_time = parts[3]\n                    status = parts[4]\n                    waitlist.append({'waitlist_id': waitlist_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': status})\n    except FileNotFoundError:\n        pass\n    return waitlist\n\n\ndef save_waitlist(waitlist):\n    try:\n        with open(os.path.join(DATA_DIR, 'waitlist.txt'), 'w', encoding='utf-8') as f:\n            for w in waitlist:\n                line = f\"{w['waitlist_id']}|{w['username']}|{w['party_size']}|{w['join_time']}|{w['status']}\\n\"\n                f.write(line)\n    except Exception as e:\n        pass\n\n\ndef load_reviews():\n    reviews = []\n    try:\n        with open(os.path.join(DATA_DIR, 'reviews.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 6:\n                    review_id = int(parts[0])\n                    username = parts[1]\n                    dish_id = int(parts[2])\n                    rating = int(parts[3])\n                    review_text = parts[4]\n                    review_date = parts[5]\n                    reviews.append({'review_id': review_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': review_date})\n    except FileNotFoundError:\n        pass\n    return reviews\n\n\ndef save_reviews(reviews):\n    try:\n        with open(os.path.join(DATA_DIR, 'reviews.txt'), 'w', encoding='utf-8') as f:\n            for r in reviews:\n                line = f\"{r['review_id']}|{r['username']}|{r['dish_id']}|{r['rating']}|{r['review_text']}|{r['review_date']}\\n\"\n                f.write(line)\n    except Exception as e:\n        pass\n\n\ndef get_logged_in_username():\n    # For simplification, assume the username is provided in a query param ?username=...\n    # In real app, session or login management would be in place\n    username = request.args.get('username')\n    if not username:\n        # fallback or redirect could be handled here\n        username = 'john_diner'  # default for testing\n    return username\n\n\n@app.route('/', methods=['GET'])\ndef root_redirect():\n    return redirect(url_for('dashboard'))\n\n\n@app.route('/dashboard', methods=['GET'])\ndef dashboard():\n    username = get_logged_in_username()\n    users = load_users()\n    menu = load_menu()\n    reservations = load_reservations()\n\n    # featured_dishes: take first 3 dishes from menu for example\n    featured_dishes = []\n    for dish in menu[:3]:\n        featured_dishes.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'price': dish['price'], 'description': dish['description']})\n\n    # upcoming_reservations: only for user and status Upcoming, limited to future dates (date >= today)\n    upcoming_reservations = []\n    today_str = datetime.now().strftime('%Y-%m-%d')\n    for r in reservations:\n        if r['username'] == username and r['status'] == 'Upcoming' and r['date'] >= today_str:\n            upcoming_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})\n\n    return render_template('dashboard.html', username=username, featured_dishes=featured_dishes, upcoming_reservations=upcoming_reservations)\n\n\n@app.route('/menu', methods=['GET'])\ndef menu():\n    menu_data = load_menu()\n    # context variable 'menus' as list of dict with keys: dish_id, name, category, price, description, dietary, avg_rating\n    menus = []\n    for dish in menu_data:\n        menus.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'category': dish['category'], 'price': dish['price'], 'description': dish['description'], 'dietary': dish['dietary'], 'avg_rating': dish['avg_rating']})\n    return render_template('menu.html', menus=menus)\n\n\n@app.route('/dish/<int:dish_id>', methods=['GET'])\ndef dish_details(dish_id):\n    menu_data = load_menu()\n    dish = None\n    for d in menu_data:\n        if d['dish_id'] == dish_id:\n            dish = {'dish_id': d['dish_id'], 'name': d['name'], 'category': d['category'], 'price': d['price'], 'description': d['description'], 'ingredients': d['ingredients'], 'dietary': d['dietary'], 'avg_rating': d['avg_rating']}\n            break\n    if dish is None:\n        # Dish not found, could 404 or redirect\n        return redirect(url_for('menu'))\n    return render_template('dish_details.html', dish=dish)\n\n\n@app.route('/make_reservation', methods=['GET', 'POST'])\ndef make_reservation():\n    username = get_logged_in_username()\n    users = load_users()\n    user = users.get(username)\n    if not user:\n        # No user found, redirect to dashboard\n        return redirect(url_for('dashboard'))\n\n    if request.method == 'GET':\n        return render_template('make_reservation.html')\n\n    # POST handling\n    guest_name = request.form.get('guest_name')\n    party_size_raw = request.form.get('party_size')\n    reservation_date = request.form.get('reservation_date')\n\n    error = None\n    try:\n        party_size = int(party_size_raw)\n        if party_size < 1 or party_size > 10:\n            error = \"Party size must be between 1 and 10.\"\n    except:\n        error = \"Invalid party size.\"\n\n    # Validate date format and is not empty\n    if not reservation_date:\n        error = \"Reservation date is required.\"\n    else:\n        try:\n            dt_res_date = datetime.strptime(reservation_date, '%Y-%m-%d')\n        except:\n            error = \"Invalid date format.\"\n\n    if not guest_name or guest_name.strip() == '':\n        error = \"Guest name is required.\"\n\n    if error:\n        # Could flash or send message\n        flash(error, 'error')\n        return render_template('make_reservation.html')\n\n    # Generate new reservation_id\n    reservations = load_reservations()\n    new_id = 1\n    if reservations:\n        new_id = max(r['reservation_id'] for r in reservations) + 1\n\n    # For time, assign a default time for now, e.g. 19:00\n    default_time = '19:00'\n\n    new_reservation = {\n        'reservation_id': new_id,\n        'username': username,\n        'guest_name': guest_name.strip(),\n        'phone': user['phone'],\n        'email': user['email'],\n        'party_size': party_size,\n        'date': reservation_date,\n        'time': default_time,\n        'special_requests': '',\n        'status': 'Upcoming'\n    }\n    reservations.append(new_reservation)\n    save_reservations(reservations)\n    flash('Reservation made successfully!', 'success')\n    return redirect(url_for('dashboard'))\n\n\n@app.route('/my_reservations', methods=['GET'])\ndef my_reservations():\n    username = get_logged_in_username()\n    reservations = load_reservations()\n    user_reservations = []\n    for r in reservations:\n        if r['username'] == username:\n            user_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})\n    return render_template('my_reservations.html', reservations=user_reservations, username=username)\n\n\n@app.route('/cancel_reservation/<int:reservation_id>', methods=['POST'])\ndef cancel_reservation(reservation_id):\n    username = get_logged_in_username()\n    reservations = load_reservations()\n    found = False\n    for r in reservations:\n        if r['reservation_id'] == reservation_id and r['username'] == username:\n            if r['status'] == 'Upcoming':\n                r['status'] = 'Cancelled'\n                found = True\n                break\n            else:\n                # Only Upcoming can be cancelled\n                found = True\n                break\n    if found:\n        save_reservations(reservations)\n        return redirect(url_for('my_reservations'))\n    else:\n        return redirect(url_for('my_reservations'))\n\n\n@app.route('/waitlist', methods=['GET', 'POST'])\ndef waitlist():\n    username = get_logged_in_username()\n    waitlist_entries = load_waitlist()\n\n    user_entries = [w for w in waitlist_entries if w['username'] == username and w['status'] == 'Active']\n    user_position = None\n\n    active_waitlist = sorted([w for w in waitlist_entries if w['status'] == 'Active'], key=lambda x: x['join_time'])\n\n    if user_entries:\n        # determine position\n        for idx, entry in enumerate(active_waitlist, start=1):\n            if entry['username'] == username:\n                user_position = idx\n                break\n\n    if request.method == 'POST':\n        party_size_raw = request.form.get('party_size')\n        error = None\n        try:\n            party_size = int(party_size_raw)\n            if party_size < 1:\n                error = 'Party size must be positive integer.'\n        except:\n            error = 'Invalid party size.'\n\n        if error:\n            flash(error, 'error')\n            return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)\n\n        # If already active in waitlist, do not add again\n        if user_position is not None:\n            flash('You are already in the waitlist.', 'info')\n            return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)\n\n        # Create new waitlist entry with new waitlist_id\n        new_id = 1\n        if waitlist_entries:\n            new_id = max(w['waitlist_id'] for w in waitlist_entries) + 1\n\n        join_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')\n\n        new_entry = {'waitlist_id': new_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': 'Active'}\n        waitlist_entries.append(new_entry)\n        save_waitlist(waitlist_entries)\n        flash('Added to waitlist successfully.', 'success')\n        return redirect(url_for('waitlist'))\n\n    # GET method\n    return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)\n\n\n@app.route('/my_reviews', methods=['GET'])\ndef my_reviews():\n    username = get_logged_in_username()\n    reviews = load_reviews()\n    menu = load_menu()\n\n    user_reviews = []\n    for r in reviews:\n        if r['username'] == username:\n            dish_name = ''\n            for d in menu:\n                if d['dish_id'] == r['dish_id']:\n                    dish_name = d['name']\n                    break\n            user_reviews.append({'review_id': r['review_id'], 'dish_name': dish_name, 'rating': r['rating'], 'review_text': r['review_text']})\n    return render_template('my_reviews.html', reviews=user_reviews, username=username)\n\n\n@app.route('/write_review', methods=['GET', 'POST'])\ndef write_review():\n    username = get_logged_in_username()\n    menu = load_menu()\n    dishes = [{'dish_id': d['dish_id'], 'name': d['name']} for d in menu]\n\n    if request.method == 'GET':\n        return render_template('write_review.html', dishes=dishes)\n\n    # POST\n    dish_id_raw = request.form.get('dish_id')\n    rating_raw = request.form.get('rating')\n    review_text = request.form.get('review_text', '').strip()\n\n    error = None\n    try:\n        dish_id = int(dish_id_raw)\n    except:\n        error = 'Invalid dish selected.'\n\n    try:\n        rating = int(rating_raw)\n        if rating < 1 or rating > 5:\n            error = 'Rating must be between 1 and 5.'\n    except:\n        error = 'Invalid rating value.'\n\n    if not review_text:\n        error = 'Review text cannot be empty.'\n\n    if error:\n        flash(error, 'error')\n        return render_template('write_review.html', dishes=dishes)\n\n    reviews = load_reviews()\n    new_id = 1\n    if reviews:\n        new_id = max(r['review_id'] for r in reviews) + 1\n\n    today_str = datetime.now().strftime('%Y-%m-%d')\n\n    new_review = {'review_id': new_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': today_str}\n\n    reviews.append(new_review)\n    save_reviews(reviews)\n\n    flash('Review submitted successfully!', 'success')\n    return redirect(url_for('my_reviews'))\n\n\n@app.route('/profile', methods=['GET', 'POST'])\ndef profile():\n    username = get_logged_in_username()\n    users = load_users()\n    user = users.get(username)\n    if not user:\n        return redirect(url_for('dashboard'))\n\n    if request.method == 'GET':\n        profile_data = {'username': user['username'], 'email': user['email']}\n        return render_template('profile.html', profile=profile_data)\n\n    # POST to update email\n    email = request.form.get('email')\n    if not email or email.strip() == '':\n        flash('Email cannot be empty.', 'error')\n        profile_data = {'username': user['username'], 'email': user['email']}\n        return render_template('profile.html', profile=profile_data)\n\n    # Update user email\n    user['email'] = email.strip()\n\n    # Save users back to users.txt\n    try:\n        with open(os.path.join(DATA_DIR, 'users.txt'), 'w', encoding='utf-8') as f:\n            for u in users.values():\n                line = f\"{u['username']}|{u['email']}|{u['phone']}|{u['full_name']}\\n\"\n                f.write(line)\n    except Exception as e:\n        flash('Failed to save user profile.', 'error')\n        profile_data = {'username': user['username'], 'email': user['email']}\n        return render_template('profile.html', profile=profile_data)\n\n    flash('Profile updated successfully!', 'success')\n    return redirect(url_for('profile'))\n\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)\n\n\n=== templates/*.html ===\n[NO FILES MATCHED]\n",
+        "after": "comprehensive tests on templates/*.html write\napp.py\nfrom flask import render_template,\nimport os\ndatetime\n\n\n'dev-secret-key'\n\nDATA_DIR =\n\nUtility functions\n\n\nusers\n\nwith open(os.path.join(DATA_DIR,\nf:\n= line.strip().split('|')\nif len(parts) ==\nemail, = parts\n{'username': username, 'email': email, 'phone': phone, 'full_name': full_name}\n\n\nreturn\n\n\ndef load_menu():\nmenu =\n\nopen(os.path.join(DATA_DIR, 'menu.txt'), 'r', f:\nfor in\nline.strip().split('|')\nif 8:\ndish_id\nparts[1]\ncategory =\n=\nparts[4]\n=\n\n\nmenu.append({'dish_id': dish_id, 'name': name, 'category': category, 'price': price, 'description': description, 'ingredients': ingredients, 'dietary': dietary, 'avg_rating': avg_rating})\nexcept\npass\n\n\n\nload_reservations():\n\ntry:\nwith 'reservations.txt'), 'r',\nf:\n= line.strip().split('|')\n==\n= int(parts[0])\nusername parts[1]\n\n\n=\nparty_size =\ndate\nparts[7]\n=\nstatus parts[9]\n\n\npass\nreservations\n\n\nsave_reservations(reservations):\n\nwith 'w', encoding='utf-8')\nfor r\nline\nf.write(line)\nas\n\n\n\n\nwaitlist =\n\nencoding='utf-8') as\nline in\nline.strip().split('|')\n5:\n= int(parts[0])\nparts[1]\nparty_size\njoin_time =\n\nwaitlist.append({'waitlist_id': waitlist_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': status})\nexcept\n\n\n\n\ndef save_waitlist(waitlist):\ntry:\n'waitlist.txt'), 'w', as\nw waitlist:\n=\nf.write(line)\nexcept Exception as\npass\n\n\n\nreviews\ntry:\nopen(os.path.join(DATA_DIR, as\nline f:\nparts =\nif 6:\nint(parts[0])\nusername = parts[1]\ndish_id\nrating =\n\n=\n\n\n\n\n\n\n\ntry:\nopen(os.path.join(DATA_DIR, encoding='utf-8')\nr reviews:\nline =\n\nexcept Exception e:\npass\n\n\nget_logged_in_username():\n# For assume is provided param\napp, login would be place\n=\nif username:\n# could\nfor\nreturn username\n\n\n\ndef\nreturn\n\n\n@app.route('/dashboard',\n\nget_logged_in_username()\nusers\nmenu load_menu()\nreservations =\n\nfirst 3 menu\n[]\ndish menu[:3]:\nfeatured_dishes.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'price': dish['price'], 'description': dish['description']})\n\nupcoming_reservations: only and Upcoming, limited dates\nupcoming_reservations []\n\nfor r reservations:\n== 'Upcoming' today_str:\n\n\nusername=username, upcoming_reservations=upcoming_reservations)\n\n\n\ndef\n\nas list dish_id, category, price, description, avg_rating\n\nfor dish\n\nreturn render_template('menu.html',\n\n\n@app.route('/dish/<int:dish_id>',\n\nload_menu()\n=\n\nif\n= {'dish_id': d['dish_id'], 'name': d['name'], 'category': d['category'], 'price': d['price'], 'description': d['description'], 'ingredients': d['ingredients'], 'dietary': d['dietary'], 'avg_rating': d['avg_rating']}\nbreak\nif is None:\n# not 404 or redirect\nredirect(url_for('menu'))\nrender_template('dish_details.html', dish=dish)\n\n\nmethods=['GET', 'POST'])\n\nusername\n= load_users()\n\nnot user:\nredirect to\nreturn redirect(url_for('dashboard'))\n\nif request.method 'GET':\nrender_template('make_reservation.html')\n\n#\n\nparty_size_raw =\nrequest.form.get('reservation_date')\n\n= None\ntry:\n=\n> 10:\n\"Party between\n\nerror\n\n# and is not\nnot\nerror = \"Reservation date required.\"\n\ntry:\ndt_res_date = datetime.strptime(reservation_date, '%Y-%m-%d')\n\n\"Invalid format.\"\n\nguest_name guest_name.strip() == '':\nerror = is\n\nif\n# Could message\n'error')\nrender_template('make_reservation.html')\n\n\nreservations load_reservations()\n= 1\nif\n= for\n\n# For default time for e.g.\ndefault_time\n\n= {\n        'reservation_id': new_id,\n        'username': username,\n        'guest_name': guest_name.strip(),\n        'phone': user['phone'],\n        'email': user['email'],\n        'party_size': party_size,\n        'date': reservation_date,\n        'time': default_time,\n        'special_requests': '',\n        'status': 'Upcoming'\n    }\n\n\nflash('Reservation\nreturn\n\n\n\n\nusername get_logged_in_username()\nload_reservations()\n\nin\nusername:\nuser_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})\n\n\n\n@app.route('/cancel_reservation/<int:reservation_id>',\ncancel_reservation(reservation_id):\n=\nreservations load_reservations()\n= False\nr in\n== r['username']\nif r['status'] ==\n\n\n\n\nOnly can be cancelled\n\nbreak\nfound:\n\nreturn\n\nreturn\n\n\nmethods=['GET',\nwaitlist():\n=\nwaitlist_entries\n\n= [w waitlist_entries == 'Active']\nuser_position\n\nactive_waitlist for in ==\n\n\n# position\nentry in enumerate(active_waitlist,\n==\nidx\n\n\n'POST':\n\nNone\n\n= int(party_size_raw)\n\nerror be\nexcept:\nerror = 'Invalid party\n\n\nflash(error, 'error')\nrender_template('waitlist.html',\n\nalready in add again\nif user_position not\nflash('You are in the 'info')\nreturn render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)\n\nwith new waitlist_id\n\nif waitlist_entries:\nnew_id waitlist_entries)\n\n= %H:%M:%S')\n\n{'waitlist_id': new_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': 'Active'}\nwaitlist_entries.append(new_entry)\n\nflash('Added waitlist\n\n\nmethod\n\n\n\nmethods=['GET'])\n\n\n= load_reviews()\nmenu =\n\n[]\nr reviews:\nif ==\ndish_name\nfor menu:\nif ==\nd['name']\n\nuser_reviews.append({'review_id': r['review_id'], 'dish_name': dish_name, 'rating': r['rating'], 'review_text': r['review_text']})\nrender_template('my_reviews.html', reviews=user_reviews,\n\n\n@app.route('/write_review', methods=['GET',\ndef\n\n=\n=\n\nif ==\ndishes=dishes)\n\n\ndish_id_raw request.form.get('dish_id')\nrequest.form.get('rating')\nreview_text request.form.get('review_text',\n\n\ntry:\nint(dish_id_raw)\n\nerror = selected.'\n\n\nrating\nif < >\nerror be 1\n\n'Invalid rating value.'\n\nreview_text:\nerror = text be\n\nerror:\n\nreturn render_template('write_review.html',\n\n= load_reviews()\n\nreviews:\n= in\n\ndatetime.now().strftime('%Y-%m-%d')\n\n= {'review_id': new_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': today_str}\n\n\nsave_reviews(reviews)\n\nflash('Review\nredirect(url_for('my_reviews'))\n\n\n@app.route('/profile', 'POST'])\ndef\nusername =\nusers = load_users()\n\nuser:\n\n\n==\n{'username': user['username'], 'email': user['email']}\nrender_template('profile.html',\n\n# POST to update\nrequest.form.get('email')\nnot '':\n'error')\n= {'username': user['username'], 'email': user['email']}\n\n\nemail\nuser['email']\n\nusers users.txt\ntry:\nopen(os.path.join(DATA_DIR, 'users.txt'), encoding='utf-8')\nu in\nline\n\n\nflash('Failed to profile.', 'error')\nprofile_data {'username': user['username'], 'email': user['email']}\nrender_template('profile.html',\n\nflash('Profile 'success')\nredirect(url_for('profile'))\n\n\nif ==\napp.run(debug=True,\n\n\n===\nFILES MATCHED]\n"
+      },
+      {
+        "timestamp": 1768930502.7665982,
+        "agent": "Tester",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 27/45 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "are\n\nintegration RestaurantReservation until fully\n\nDetails:\n\n\nuser\n-\n- test pass issue descriptions\ncorrectness: each output\n\n\nCoverage**:\nrequired elements specified\nnavigation\nproperly retrieval,\nare\n\n**Issue\nfeedback.txt\nInclude artifacts or locations where applicable\n\n\nonly met\n- Otherwise, and to\n\nCRITICAL\nfeedback.txt\nProvide\nfeedback strictly for control\n\n",
+        "after": "\n\nRestaurantReservation until fully\n\n\n\n\n\n\npass issue descriptions\noutput\n\n\n\nelements specified\n\nretrieval,\n\n\n\n\nwhere applicable\n\n\n\n- Otherwise, to\n\nCRITICAL\nfeedback.txt\n\nstrictly\n\n"
+      },
+      {
+        "timestamp": 1768930502.7685428,
+        "agent": "Tester",
+        "chaos_type": "STRESS_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 766/1278 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "Perform comprehensive integration tests on app.py and templates/*.html and write feedback.txt\n=== app.py ===\nfrom flask import Flask, render_template, redirect, url_for, request, flash\nimport os\nfrom datetime import datetime\n\napp = Flask(__name__)\napp.config['SECRET_KEY'] = 'dev-secret-key'\n\nDATA_DIR = 'data'\n\n# Utility functions\n\ndef load_users():\n    users = {}\n    try:\n        with open(os.path.join(DATA_DIR, 'users.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 4:\n                    username, email, phone, full_name = parts\n                    users[username] = {'username': username, 'email': email, 'phone': phone, 'full_name': full_name}\n    except FileNotFoundError:\n        pass\n    return users\n\n\ndef load_menu():\n    menu = []\n    try:\n        with open(os.path.join(DATA_DIR, 'menu.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 8:\n                    dish_id = int(parts[0])\n                    name = parts[1]\n                    category = parts[2]\n                    price = float(parts[3])\n                    description = parts[4]\n                    ingredients = parts[5]\n                    dietary = parts[6]\n                    avg_rating = float(parts[7])\n                    menu.append({'dish_id': dish_id, 'name': name, 'category': category, 'price': price, 'description': description, 'ingredients': ingredients, 'dietary': dietary, 'avg_rating': avg_rating})\n    except FileNotFoundError:\n        pass\n    return menu\n\n\ndef load_reservations():\n    reservations = []\n    try:\n        with open(os.path.join(DATA_DIR, 'reservations.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 10:\n                    reservation_id = int(parts[0])\n                    username = parts[1]\n                    guest_name = parts[2]\n                    phone = parts[3]\n                    email = parts[4]\n                    party_size = int(parts[5])\n                    date = parts[6]\n                    time = parts[7]\n                    special_requests = parts[8]\n                    status = parts[9]\n                    reservations.append({'reservation_id': reservation_id, 'username': username, 'guest_name': guest_name, 'phone': phone, 'email': email, 'party_size': party_size, 'date': date, 'time': time, 'special_requests': special_requests, 'status': status})\n    except FileNotFoundError:\n        pass\n    return reservations\n\n\ndef save_reservations(reservations):\n    try:\n        with open(os.path.join(DATA_DIR, 'reservations.txt'), 'w', encoding='utf-8') as f:\n            for r in reservations:\n                line = f\"{r['reservation_id']}|{r['username']}|{r['guest_name']}|{r['phone']}|{r['email']}|{r['party_size']}|{r['date']}|{r['time']}|{r['special_requests']}|{r['status']}\\n\"\n                f.write(line)\n    except Exception as e:\n        pass\n\n\ndef load_waitlist():\n    waitlist = []\n    try:\n        with open(os.path.join(DATA_DIR, 'waitlist.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 5:\n                    waitlist_id = int(parts[0])\n                    username = parts[1]\n                    party_size = int(parts[2])\n                    join_time = parts[3]\n                    status = parts[4]\n                    waitlist.append({'waitlist_id': waitlist_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': status})\n    except FileNotFoundError:\n        pass\n    return waitlist\n\n\ndef save_waitlist(waitlist):\n    try:\n        with open(os.path.join(DATA_DIR, 'waitlist.txt'), 'w', encoding='utf-8') as f:\n            for w in waitlist:\n                line = f\"{w['waitlist_id']}|{w['username']}|{w['party_size']}|{w['join_time']}|{w['status']}\\n\"\n                f.write(line)\n    except Exception as e:\n        pass\n\n\ndef load_reviews():\n    reviews = []\n    try:\n        with open(os.path.join(DATA_DIR, 'reviews.txt'), 'r', encoding='utf-8') as f:\n            for line in f:\n                parts = line.strip().split('|')\n                if len(parts) == 6:\n                    review_id = int(parts[0])\n                    username = parts[1]\n                    dish_id = int(parts[2])\n                    rating = int(parts[3])\n                    review_text = parts[4]\n                    review_date = parts[5]\n                    reviews.append({'review_id': review_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': review_date})\n    except FileNotFoundError:\n        pass\n    return reviews\n\n\ndef save_reviews(reviews):\n    try:\n        with open(os.path.join(DATA_DIR, 'reviews.txt'), 'w', encoding='utf-8') as f:\n            for r in reviews:\n                line = f\"{r['review_id']}|{r['username']}|{r['dish_id']}|{r['rating']}|{r['review_text']}|{r['review_date']}\\n\"\n                f.write(line)\n    except Exception as e:\n        pass\n\n\ndef get_logged_in_username():\n    # For simplification, assume the username is provided in a query param ?username=...\n    # In real app, session or login management would be in place\n    username = request.args.get('username')\n    if not username:\n        # fallback or redirect could be handled here\n        username = 'john_diner'  # default for testing\n    return username\n\n\n@app.route('/', methods=['GET'])\ndef root_redirect():\n    return redirect(url_for('dashboard'))\n\n\n@app.route('/dashboard', methods=['GET'])\ndef dashboard():\n    username = get_logged_in_username()\n    users = load_users()\n    menu = load_menu()\n    reservations = load_reservations()\n\n    # featured_dishes: take first 3 dishes from menu for example\n    featured_dishes = []\n    for dish in menu[:3]:\n        featured_dishes.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'price': dish['price'], 'description': dish['description']})\n\n    # upcoming_reservations: only for user and status Upcoming, limited to future dates (date >= today)\n    upcoming_reservations = []\n    today_str = datetime.now().strftime('%Y-%m-%d')\n    for r in reservations:\n        if r['username'] == username and r['status'] == 'Upcoming' and r['date'] >= today_str:\n            upcoming_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})\n\n    return render_template('dashboard.html', username=username, featured_dishes=featured_dishes, upcoming_reservations=upcoming_reservations)\n\n\n@app.route('/menu', methods=['GET'])\ndef menu():\n    menu_data = load_menu()\n    # context variable 'menus' as list of dict with keys: dish_id, name, category, price, description, dietary, avg_rating\n    menus = []\n    for dish in menu_data:\n        menus.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'category': dish['category'], 'price': dish['price'], 'description': dish['description'], 'dietary': dish['dietary'], 'avg_rating': dish['avg_rating']})\n    return render_template('menu.html', menus=menus)\n\n\n@app.route('/dish/<int:dish_id>', methods=['GET'])\ndef dish_details(dish_id):\n    menu_data = load_menu()\n    dish = None\n    for d in menu_data:\n        if d['dish_id'] == dish_id:\n            dish = {'dish_id': d['dish_id'], 'name': d['name'], 'category': d['category'], 'price': d['price'], 'description': d['description'], 'ingredients': d['ingredients'], 'dietary': d['dietary'], 'avg_rating': d['avg_rating']}\n            break\n    if dish is None:\n        # Dish not found, could 404 or redirect\n        return redirect(url_for('menu'))\n    return render_template('dish_details.html', dish=dish)\n\n\n@app.route('/make_reservation', methods=['GET', 'POST'])\ndef make_reservation():\n    username = get_logged_in_username()\n    users = load_users()\n    user = users.get(username)\n    if not user:\n        # No user found, redirect to dashboard\n        return redirect(url_for('dashboard'))\n\n    if request.method == 'GET':\n        return render_template('make_reservation.html')\n\n    # POST handling\n    guest_name = request.form.get('guest_name')\n    party_size_raw = request.form.get('party_size')\n    reservation_date = request.form.get('reservation_date')\n\n    error = None\n    try:\n        party_size = int(party_size_raw)\n        if party_size < 1 or party_size > 10:\n            error = \"Party size must be between 1 and 10.\"\n    except:\n        error = \"Invalid party size.\"\n\n    # Validate date format and is not empty\n    if not reservation_date:\n        error = \"Reservation date is required.\"\n    else:\n        try:\n            dt_res_date = datetime.strptime(reservation_date, '%Y-%m-%d')\n        except:\n            error = \"Invalid date format.\"\n\n    if not guest_name or guest_name.strip() == '':\n        error = \"Guest name is required.\"\n\n    if error:\n        # Could flash or send message\n        flash(error, 'error')\n        return render_template('make_reservation.html')\n\n    # Generate new reservation_id\n    reservations = load_reservations()\n    new_id = 1\n    if reservations:\n        new_id = max(r['reservation_id'] for r in reservations) + 1\n\n    # For time, assign a default time for now, e.g. 19:00\n    default_time = '19:00'\n\n    new_reservation = {\n        'reservation_id': new_id,\n        'username': username,\n        'guest_name': guest_name.strip(),\n        'phone': user['phone'],\n        'email': user['email'],\n        'party_size': party_size,\n        'date': reservation_date,\n        'time': default_time,\n        'special_requests': '',\n        'status': 'Upcoming'\n    }\n    reservations.append(new_reservation)\n    save_reservations(reservations)\n    flash('Reservation made successfully!', 'success')\n    return redirect(url_for('dashboard'))\n\n\n@app.route('/my_reservations', methods=['GET'])\ndef my_reservations():\n    username = get_logged_in_username()\n    reservations = load_reservations()\n    user_reservations = []\n    for r in reservations:\n        if r['username'] == username:\n            user_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})\n    return render_template('my_reservations.html', reservations=user_reservations, username=username)\n\n\n@app.route('/cancel_reservation/<int:reservation_id>', methods=['POST'])\ndef cancel_reservation(reservation_id):\n    username = get_logged_in_username()\n    reservations = load_reservations()\n    found = False\n    for r in reservations:\n        if r['reservation_id'] == reservation_id and r['username'] == username:\n            if r['status'] == 'Upcoming':\n                r['status'] = 'Cancelled'\n                found = True\n                break\n            else:\n                # Only Upcoming can be cancelled\n                found = True\n                break\n    if found:\n        save_reservations(reservations)\n        return redirect(url_for('my_reservations'))\n    else:\n        return redirect(url_for('my_reservations'))\n\n\n@app.route('/waitlist', methods=['GET', 'POST'])\ndef waitlist():\n    username = get_logged_in_username()\n    waitlist_entries = load_waitlist()\n\n    user_entries = [w for w in waitlist_entries if w['username'] == username and w['status'] == 'Active']\n    user_position = None\n\n    active_waitlist = sorted([w for w in waitlist_entries if w['status'] == 'Active'], key=lambda x: x['join_time'])\n\n    if user_entries:\n        # determine position\n        for idx, entry in enumerate(active_waitlist, start=1):\n            if entry['username'] == username:\n                user_position = idx\n                break\n\n    if request.method == 'POST':\n        party_size_raw = request.form.get('party_size')\n        error = None\n        try:\n            party_size = int(party_size_raw)\n            if party_size < 1:\n                error = 'Party size must be positive integer.'\n        except:\n            error = 'Invalid party size.'\n\n        if error:\n            flash(error, 'error')\n            return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)\n\n        # If already active in waitlist, do not add again\n        if user_position is not None:\n            flash('You are already in the waitlist.', 'info')\n            return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)\n\n        # Create new waitlist entry with new waitlist_id\n        new_id = 1\n        if waitlist_entries:\n            new_id = max(w['waitlist_id'] for w in waitlist_entries) + 1\n\n        join_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')\n\n        new_entry = {'waitlist_id': new_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': 'Active'}\n        waitlist_entries.append(new_entry)\n        save_waitlist(waitlist_entries)\n        flash('Added to waitlist successfully.', 'success')\n        return redirect(url_for('waitlist'))\n\n    # GET method\n    return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)\n\n\n@app.route('/my_reviews', methods=['GET'])\ndef my_reviews():\n    username = get_logged_in_username()\n    reviews = load_reviews()\n    menu = load_menu()\n\n    user_reviews = []\n    for r in reviews:\n        if r['username'] == username:\n            dish_name = ''\n            for d in menu:\n                if d['dish_id'] == r['dish_id']:\n                    dish_name = d['name']\n                    break\n            user_reviews.append({'review_id': r['review_id'], 'dish_name': dish_name, 'rating': r['rating'], 'review_text': r['review_text']})\n    return render_template('my_reviews.html', reviews=user_reviews, username=username)\n\n\n@app.route('/write_review', methods=['GET', 'POST'])\ndef write_review():\n    username = get_logged_in_username()\n    menu = load_menu()\n    dishes = [{'dish_id': d['dish_id'], 'name': d['name']} for d in menu]\n\n    if request.method == 'GET':\n        return render_template('write_review.html', dishes=dishes)\n\n    # POST\n    dish_id_raw = request.form.get('dish_id')\n    rating_raw = request.form.get('rating')\n    review_text = request.form.get('review_text', '').strip()\n\n    error = None\n    try:\n        dish_id = int(dish_id_raw)\n    except:\n        error = 'Invalid dish selected.'\n\n    try:\n        rating = int(rating_raw)\n        if rating < 1 or rating > 5:\n            error = 'Rating must be between 1 and 5.'\n    except:\n        error = 'Invalid rating value.'\n\n    if not review_text:\n        error = 'Review text cannot be empty.'\n\n    if error:\n        flash(error, 'error')\n        return render_template('write_review.html', dishes=dishes)\n\n    reviews = load_reviews()\n    new_id = 1\n    if reviews:\n        new_id = max(r['review_id'] for r in reviews) + 1\n\n    today_str = datetime.now().strftime('%Y-%m-%d')\n\n    new_review = {'review_id': new_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': today_str}\n\n    reviews.append(new_review)\n    save_reviews(reviews)\n\n    flash('Review submitted successfully!', 'success')\n    return redirect(url_for('my_reviews'))\n\n\n@app.route('/profile', methods=['GET', 'POST'])\ndef profile():\n    username = get_logged_in_username()\n    users = load_users()\n    user = users.get(username)\n    if not user:\n        return redirect(url_for('dashboard'))\n\n    if request.method == 'GET':\n        profile_data = {'username': user['username'], 'email': user['email']}\n        return render_template('profile.html', profile=profile_data)\n\n    # POST to update email\n    email = request.form.get('email')\n    if not email or email.strip() == '':\n        flash('Email cannot be empty.', 'error')\n        profile_data = {'username': user['username'], 'email': user['email']}\n        return render_template('profile.html', profile=profile_data)\n\n    # Update user email\n    user['email'] = email.strip()\n\n    # Save users back to users.txt\n    try:\n        with open(os.path.join(DATA_DIR, 'users.txt'), 'w', encoding='utf-8') as f:\n            for u in users.values():\n                line = f\"{u['username']}|{u['email']}|{u['phone']}|{u['full_name']}\\n\"\n                f.write(line)\n    except Exception as e:\n        flash('Failed to save user profile.', 'error')\n        profile_data = {'username': user['username'], 'email': user['email']}\n        return render_template('profile.html', profile=profile_data)\n\n    flash('Profile updated successfully!', 'success')\n    return redirect(url_for('profile'))\n\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)\n\n\n=== templates/*.html ===\n[NO FILES MATCHED]\n",
+        "after": "Perform comprehensive integration on write feedback.txt\n=== ===\nfrom Flask, flash\n\ndatetime\n\napp = Flask(__name__)\n=\n\nDATA_DIR\n\nfunctions\n\n\n\n\nopen(os.path.join(DATA_DIR, 'users.txt'), 'r', f:\n\n= line.strip().split('|')\nif\nphone, =\n{'username': username, 'email': email, 'phone': phone, 'full_name': full_name}\nexcept\npass\nreturn\n\n\nload_menu():\nmenu []\ntry:\nwith open(os.path.join(DATA_DIR, 'menu.txt'), 'r', encoding='utf-8')\nf:\nparts line.strip().split('|')\nlen(parts)\ndish_id\n\n=\n\ndescription parts[4]\ningredients parts[5]\n\navg_rating =\n\n\n\nreturn\n\n\nload_reservations():\n=\n\nencoding='utf-8') f:\nfor line\nparts line.strip().split('|')\nlen(parts)\nreservation_id int(parts[0])\nparts[1]\nguest_name = parts[2]\nphone = parts[3]\nemail =\n= int(parts[5])\n=\ntime\n\nstatus parts[9]\n\n\npass\nreturn reservations\n\n\nsave_reservations(reservations):\ntry:\n'w',\nr\n\n\nexcept Exception e:\npass\n\n\nload_waitlist():\n[]\n\nopen(os.path.join(DATA_DIR, 'r',\nline in\nline.strip().split('|')\n5:\n\nusername\n\njoin_time\n=\n\nexcept\n\nwaitlist\n\n\n\ntry:\nf:\nw waitlist:\nline f\"{w['waitlist_id']}|{w['username']}|{w['party_size']}|{w['join_time']}|{w['status']}\\n\"\n\nexcept e:\n\n\n\n\n[]\n\nopen(os.path.join(DATA_DIR, 'reviews.txt'),\nin\n= line.strip().split('|')\nif len(parts) ==\nreview_id int(parts[0])\n=\nint(parts[2])\n\n\nreview_date =\n\nexcept\n\nreturn reviews\n\n\n\n\nwith 'w',\nfor\nline = f\"{r['review_id']}|{r['username']}|{r['dish_id']}|{r['rating']}|{r['review_text']}|{r['review_date']}\\n\"\n\nException e:\n\n\n\ndef\n# For simplification, assume a query param ?username=...\napp, session in place\nusername =\nif\n# fallback or redirect handled\n= default\nreturn\n\n\nmethods=['GET'])\n\n\n\n\n\ndef dashboard():\n\nusers\n= load_menu()\nreservations load_reservations()\n\nmenu example\nfeatured_dishes = []\nfor dish in\n\n\nonly user Upcoming, limited to\n\n=\nr in reservations:\nr['status'] today_str:\n\n\nrender_template('dashboard.html', featured_dishes=featured_dishes,\n\n\n@app.route('/menu',\n\n\ncontext variable 'menus' of dish_id, name, category,\n=\ndish in\n\nmenus=menus)\n\n\n\ndef\nmenu_data load_menu()\nNone\nfor d\nd['dish_id']\n{'dish_id': d['dish_id'], 'name': d['name'], 'category': d['category'], 'price': d['price'], 'description': d['description'], 'ingredients': d['ingredients'], 'dietary': d['dietary'], 'avg_rating': d['avg_rating']}\n\nif dish is None:\nfound, could or redirect\nreturn redirect(url_for('menu'))\n\n\n\n@app.route('/make_reservation',\n\n=\n=\nusers.get(username)\n\nfound, redirect to\n\n\nif request.method\nreturn\n\n#\nguest_name request.form.get('guest_name')\n\nrequest.form.get('reservation_date')\n\nerror =\n\nparty_size\nor party_size >\nmust be 10.\"\nexcept:\nsize.\"\n\ndate format and is not\n\n= date required.\"\n\n\ndt_res_date\nexcept:\nerror = date\n\nnot guest_name.strip()\n\"Guest required.\"\n\n\n# or\n'error')\nreturn\n\n# reservation_id\nreservations = load_reservations()\n1\nreservations:\nmax(r['reservation_id'] reservations)\n\n# For default time e.g.\ndefault_time =\n\n{\n        'reservation_id': new_id,\n        'username': username,\n        'guest_name': guest_name.strip(),\n        'phone': user['phone'],\n        'email': user['email'],\n        'party_size': party_size,\n        'date': reservation_date,\n        'time': default_time,\n        'special_requests': '',\n        'status': 'Upcoming'\n    }\nreservations.append(new_reservation)\nsave_reservations(reservations)\nmade 'success')\n\n\n\n\n\nusername get_logged_in_username()\nreservations =\nuser_reservations =\nfor r\n\n\n\n\n\n@app.route('/cancel_reservation/<int:reservation_id>', methods=['POST'])\ndef cancel_reservation(reservation_id):\nusername = get_logged_in_username()\nreservations\nfound\nr in reservations:\nif == and r['username'] username:\nif\nr['status']\n\n\n\ncancelled\n\n\nif\n\n\n\nreturn\n\n\n@app.route('/waitlist', 'POST'])\nwaitlist():\nusername =\n\n\nuser_entries for w w['username'] username and w['status'] == 'Active']\nNone\n\n= sorted([w w in if ==\n\n\n\nfor entry\nentry['username'] ==\n=\n\n\n\nparty_size_raw =\nerror None\ntry:\nparty_size =\n\nerror = size must\n\nparty\n\n\nflash(error, 'error')\nrender_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)\n\n# If already again\nuser_position not\nwaitlist.', 'info')\nrender_template('waitlist.html', user_position=user_position)\n\nnew with new\nnew_id =\nif waitlist_entries:\nw in\n\n= datetime.now().strftime('%Y-%m-%d\n\nnew_entry = {'waitlist_id': new_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': 'Active'}\nwaitlist_entries.append(new_entry)\n\n\nredirect(url_for('waitlist'))\n\n\nuser_position=user_position)\n\n\nmethods=['GET'])\n\nusername = get_logged_in_username()\nreviews = load_reviews()\nmenu load_menu()\n\n=\nfor reviews:\nr['username']\ndish_name\nfor in\nif d['dish_id'] r['dish_id']:\n=\n\n\nreviews=user_reviews,\n\n\nmethods=['GET',\nwrite_review():\nusername =\n=\n[{'dish_id': d['dish_id'], 'name': d['name']} for\n\n\nreturn dishes=dishes)\n\nPOST\ndish_id_raw =\nrating_raw request.form.get('rating')\nrequest.form.get('review_text',\n\n=\ntry:\ndish_id int(dish_id_raw)\nexcept:\nerror\n\n\nrating\nif rating rating\nerror be between\n\nerror\n\nif\nerror = 'Review empty.'\n\nif\nflash(error,\nrender_template('write_review.html', dishes=dishes)\n\nreviews\n= 1\n\nin 1\n\n=\n\nnew_review {'review_id': new_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': today_str}\n\nreviews.append(new_review)\nsave_reviews(reviews)\n\n\n\n\n\n@app.route('/profile',\nprofile():\nusername get_logged_in_username()\n\nuser\nif user:\nredirect(url_for('dashboard'))\n\nif 'GET':\n{'username': user['username'], 'email': user['email']}\nreturn profile=profile_data)\n\n# to email\nemail = request.form.get('email')\nif email or email.strip() ==\nbe empty.', 'error')\n{'username': user['username'], 'email': user['email']}\nreturn profile=profile_data)\n\n#\nemail.strip()\n\nusers.txt\n\nwith open(os.path.join(DATA_DIR, as f:\nusers.values():\n\nf.write(line)\nexcept as e:\nflash('Failed to user 'error')\nprofile_data {'username': user['username'], 'email': user['email']}\nreturn profile=profile_data)\n\n\n\n\n\nif\napp.run(debug=True, port=5000)\n\n\n===\nFILES MATCHED]\n"
+      }
+    ]
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "WordReplacement",
+    "targets_selected": 1,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordReplacement (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": []
+  },
+  "intention_hiding": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (FalseConsensus, Reframing, Suboptimal)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 1,
+      "FP": 0,
+      "FN": 1,
+      "TN": 3
+    },
+    "precision": 1.0,
+    "recall": 0.5,
+    "f1_score": 0.6666666666666666,
+    "total_agents": 5,
+    "error_agents": 2,
+    "normal_agents": 3,
+    "actually_injected_agents": [
+      "FrontendDeveloper",
+      "Tester"
+    ],
+    "target_agents": [
+      "FrontendDeveloper",
+      "Tester"
+    ],
+    "not_injected_targets": [],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      },
+      {
+        "agent_name": "Developer",
+        "original_name": "Developer",
+        "is_error_agent": false,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "TN"
+      },
+      {
+        "agent_name": "Tester",
+        "original_name": "Tester",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 3,
+        "failover_count": 0,
+        "category": "TP"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 1               FN = 1   
+Actual: Normal Agent    FP = 0               TN = 3   
+
+Agent Distribution:
+  Total Agents: 5
+  Error Agents (Actually Injected): 2
+  Normal Agents: 3
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 2 agents
+    - Actually Injected: 2 agents
+
+Performance Metrics:
+  Precision: 1.0000 (TP / (TP + FP))
+  Recall:    0.5000 (TP / (TP + FN))
+  F1-Score:  0.6667
+
+Interpretation:
+  - TP (1): Error agents with successful recovery attempt
+  - FP (0): Normal agents with unnecessary recovery
+  - FN (1): Error agents without recovery (system failure)
+  - TN (3): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+💥 Stress Chaos Injections (6 total):
+
+  [1] Agent: Tester
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 168/280 words deleted (60%)
+
+      📄 Before (full content):
+         You are a Software Test Engineer specializing in end-to-end functional testing of integrated Python web applications.
+         
+         Your goal is to conduct comprehensive integration testing of the combined backend and frontend of the RestaurantReservation web application, identify all issues, and provide detailed feedback until the application is fully functional.
+         
+         Task Details:
+         - Read app.py and templates/*.html from CONTEXT as the current integrated implementation
+         - Execute thorough testing across all nine application pages and features based on the user requirements
+         - Test user flows including dashboard navigation, menu browsing, dish details, reservations, waitlist, reviews, profile management, and related UI elements
+         - Document all detected bugs, functional issues, missing behaviors, and UI inconsistencies in feedback.txt
+         - Write "[APPROVED]" in feedback.txt if all test cases pass without any issues; otherwise write "NEED_MODIFY" followed by detailed issue descriptions
+         - Do not assume correctness: verify each input and output artifact functionally
+         
+         Testing Requirements:
+         1. **Test Coverage**:
+            - Validate each page loads correctly with all required elements and IDs as specified
+            - Verify all navigation buttons perform exactly as expected
+            - Confirm backend and frontend integration works properly for data persistence, retrieval, and display
+            - Confirm forms handle input correctly and data files are consistent
+         
+         2. **Issue Reporting**:
+            - Structure feedback.txt with clear, actionable points
+            - Include references to specific artifacts or code locations where applicable
+         
+         3. **Iteration Control**:
+            - Feedback file status gate: write "[APPROVED]" only when all criteria are met to terminate refinement loop
+            - Otherwise, write "NEED_MODIFY" and list all issues to prompt fixes
+         
+         CRITICAL REQUIREMENTS:
+         - Use write_text_file tool to save feedback.txt
+         - Provide precise, comprehensive test results and recommendations
+         - Follow feedback file status gating strictly for iterative development control
+         
+         Output: feedback.txt
+
+      📝 After (full content):
+         You are Software functional
+         
+         integration RestaurantReservation web issues, and detailed until the fully
+         
+         Details:
+         Read app.py and templates/*.html from as the implementation
+         Execute application and based
+         user dish waitlist, reviews, UI elements
+         - Document inconsistencies
+         - test pass issues; otherwise write followed detailed issue descriptions
+         correctness: verify each output
+         
+         Testing
+         1. Coverage**:
+         Validate each loads correctly all required elements and specified
+         navigation expected
+         properly for persistence, retrieval, display
+         - Confirm forms handle correctly files are
+         
+         **Issue
+         feedback.txt points
+         Include references to artifacts or locations where applicable
+         
+         
+         file status "[APPROVED]" only all are met
+         - Otherwise, write "NEED_MODIFY" and all issues to fixes
+         
+         CRITICAL
+         feedback.txt
+         Provide
+         feedback status strictly for iterative control
+         
+         feedback.txt
+
+  [2] Agent: Tester
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 766/1278 words deleted (60%)
+
+      📄 Before (full content):
+         Perform comprehensive integration tests on app.py and templates/*.html and write feedback.txt
+         === app.py ===
+         from flask import Flask, render_template, redirect, url_for, request, flash
+         import os
+         from datetime import datetime
+         
+         app = Flask(__name__)
+         app.config['SECRET_KEY'] = 'dev-secret-key'
+         
+         DATA_DIR = 'data'
+         
+         # Utility functions
+         
+         def load_users():
+             users = {}
+             try:
+                 with open(os.path.join(DATA_DIR, 'users.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 4:
+                             username, email, phone, full_name = parts
+                             users[username] = {'username': username, 'email': email, 'phone': phone, 'full_name': full_name}
+             except FileNotFoundError:
+                 pass
+             return users
+         
+         
+         def load_menu():
+             menu = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'menu.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 8:
+                             dish_id = int(parts[0])
+                             name = parts[1]
+                             category = parts[2]
+                             price = float(parts[3])
+                             description = parts[4]
+                             ingredients = parts[5]
+                             dietary = parts[6]
+                             avg_rating = float(parts[7])
+                             menu.append({'dish_id': dish_id, 'name': name, 'category': category, 'price': price, 'description': description, 'ingredients': ingredients, 'dietary': dietary, 'avg_rating': avg_rating})
+             except FileNotFoundError:
+                 pass
+             return menu
+         
+         
+         def load_reservations():
+             reservations = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'reservations.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 10:
+                             reservation_id = int(parts[0])
+                             username = parts[1]
+                             guest_name = parts[2]
+                             phone = parts[3]
+                             email = parts[4]
+                             party_size = int(parts[5])
+                             date = parts[6]
+                             time = parts[7]
+                             special_requests = parts[8]
+                             status = parts[9]
+                             reservations.append({'reservation_id': reservation_id, 'username': username, 'guest_name': guest_name, 'phone': phone, 'email': email, 'party_size': party_size, 'date': date, 'time': time, 'special_requests': special_requests, 'status': status})
+             except FileNotFoundError:
+                 pass
+             return reservations
+         
+         
+         def save_reservations(reservations):
+             try:
+                 with open(os.path.join(DATA_DIR, 'reservations.txt'), 'w', encoding='utf-8') as f:
+                     for r in reservations:
+                         line = f"{r['reservation_id']}|{r['username']}|{r['guest_name']}|{r['phone']}|{r['email']}|{r['party_size']}|{r['date']}|{r['time']}|{r['special_requests']}|{r['status']}\n"
+                         f.write(line)
+             except Exception as e:
+                 pass
+         
+         
+         def load_waitlist():
+             waitlist = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'waitlist.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 5:
+                             waitlist_id = int(parts[0])
+                             username = parts[1]
+                             party_size = int(parts[2])
+                             join_time = parts[3]
+                             status = parts[4]
+                             waitlist.append({'waitlist_id': waitlist_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': status})
+             except FileNotFoundError:
+                 pass
+             return waitlist
+         
+         
+         def save_waitlist(waitlist):
+             try:
+                 with open(os.path.join(DATA_DIR, 'waitlist.txt'), 'w', encoding='utf-8') as f:
+                     for w in waitlist:
+                         line = f"{w['waitlist_id']}|{w['username']}|{w['party_size']}|{w['join_time']}|{w['status']}\n"
+                         f.write(line)
+             except Exception as e:
+                 pass
+         
+         
+         def load_reviews():
+             reviews = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'reviews.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 6:
+                             review_id = int(parts[0])
+                             username = parts[1]
+                             dish_id = int(parts[2])
+                             rating = int(parts[3])
+                             review_text = parts[4]
+                             review_date = parts[5]
+                             reviews.append({'review_id': review_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': review_date})
+             except FileNotFoundError:
+                 pass
+             return reviews
+         
+         
+         def save_reviews(reviews):
+             try:
+                 with open(os.path.join(DATA_DIR, 'reviews.txt'), 'w', encoding='utf-8') as f:
+                     for r in reviews:
+                         line = f"{r['review_id']}|{r['username']}|{r['dish_id']}|{r['rating']}|{r['review_text']}|{r['review_date']}\n"
+                         f.write(line)
+             except Exception as e:
+                 pass
+         
+         
+         def get_logged_in_username():
+             # For simplification, assume the username is provided in a query param ?username=...
+             # In real app, session or login management would be in place
+             username = request.args.get('username')
+             if not username:
+                 # fallback or redirect could be handled here
+                 username = 'john_diner'  # default for testing
+             return username
+         
+         
+         @app.route('/', methods=['GET'])
+         def root_redirect():
+             return redirect(url_for('dashboard'))
+         
+         
+         @app.route('/dashboard', methods=['GET'])
+         def dashboard():
+             username = get_logged_in_username()
+             users = load_users()
+             menu = load_menu()
+             reservations = load_reservations()
+         
+             # featured_dishes: take first 3 dishes from menu for example
+             featured_dishes = []
+             for dish in menu[:3]:
+                 featured_dishes.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'price': dish['price'], 'description': dish['description']})
+         
+             # upcoming_reservations: only for user and status Upcoming, limited to future dates (date >= today)
+             upcoming_reservations = []
+             today_str = datetime.now().strftime('%Y-%m-%d')
+             for r in reservations:
+                 if r['username'] == username and r['status'] == 'Upcoming' and r['date'] >= today_str:
+                     upcoming_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})
+         
+             return render_template('dashboard.html', username=username, featured_dishes=featured_dishes, upcoming_reservations=upcoming_reservations)
+         
+         
+         @app.route('/menu', methods=['GET'])
+         def menu():
+             menu_data = load_menu()
+             # context variable 'menus' as list of dict with keys: dish_id, name, category, price, description, dietary, avg_rating
+             menus = []
+             for dish in menu_data:
+                 menus.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'category': dish['category'], 'price': dish['price'], 'description': dish['description'], 'dietary': dish['dietary'], 'avg_rating': dish['avg_rating']})
+             return render_template('menu.html', menus=menus)
+         
+         
+         @app.route('/dish/<int:dish_id>', methods=['GET'])
+         def dish_details(dish_id):
+             menu_data = load_menu()
+             dish = None
+             for d in menu_data:
+                 if d['dish_id'] == dish_id:
+                     dish = {'dish_id': d['dish_id'], 'name': d['name'], 'category': d['category'], 'price': d['price'], 'description': d['description'], 'ingredients': d['ingredients'], 'dietary': d['dietary'], 'avg_rating': d['avg_rating']}
+                     break
+             if dish is None:
+                 # Dish not found, could 404 or redirect
+                 return redirect(url_for('menu'))
+             return render_template('dish_details.html', dish=dish)
+         
+         
+         @app.route('/make_reservation', methods=['GET', 'POST'])
+         def make_reservation():
+             username = get_logged_in_username()
+             users = load_users()
+             user = users.get(username)
+             if not user:
+                 # No user found, redirect to dashboard
+                 return redirect(url_for('dashboard'))
+         
+             if request.method == 'GET':
+                 return render_template('make_reservation.html')
+         
+             # POST handling
+             guest_name = request.form.get('guest_name')
+             party_size_raw = request.form.get('party_size')
+             reservation_date = request.form.get('reservation_date')
+         
+             error = None
+             try:
+                 party_size = int(party_size_raw)
+                 if party_size < 1 or party_size > 10:
+                     error = "Party size must be between 1 and 10."
+             except:
+                 error = "Invalid party size."
+         
+             # Validate date format and is not empty
+             if not reservation_date:
+                 error = "Reservation date is required."
+             else:
+                 try:
+                     dt_res_date = datetime.strptime(reservation_date, '%Y-%m-%d')
+                 except:
+                     error = "Invalid date format."
+         
+             if not guest_name or guest_name.strip() == '':
+                 error = "Guest name is required."
+         
+             if error:
+                 # Could flash or send message
+                 flash(error, 'error')
+                 return render_template('make_reservation.html')
+         
+             # Generate new reservation_id
+             reservations = load_reservations()
+             new_id = 1
+             if reservations:
+                 new_id = max(r['reservation_id'] for r in reservations) + 1
+         
+             # For time, assign a default time for now, e.g. 19:00
+             default_time = '19:00'
+         
+             new_reservation = {
+                 'reservation_id': new_id,
+                 'username': username,
+                 'guest_name': guest_name.strip(),
+                 'phone': user['phone'],
+                 'email': user['email'],
+                 'party_size': party_size,
+                 'date': reservation_date,
+                 'time': default_time,
+                 'special_requests': '',
+                 'status': 'Upcoming'
+             }
+             reservations.append(new_reservation)
+             save_reservations(reservations)
+             flash('Reservation made successfully!', 'success')
+             return redirect(url_for('dashboard'))
+         
+         
+         @app.route('/my_reservations', methods=['GET'])
+         def my_reservations():
+             username = get_logged_in_username()
+             reservations = load_reservations()
+             user_reservations = []
+             for r in reservations:
+                 if r['username'] == username:
+                     user_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})
+             return render_template('my_reservations.html', reservations=user_reservations, username=username)
+         
+         
+         @app.route('/cancel_reservation/<int:reservation_id>', methods=['POST'])
+         def cancel_reservation(reservation_id):
+             username = get_logged_in_username()
+             reservations = load_reservations()
+             found = False
+             for r in reservations:
+                 if r['reservation_id'] == reservation_id and r['username'] == username:
+                     if r['status'] == 'Upcoming':
+                         r['status'] = 'Cancelled'
+                         found = True
+                         break
+                     else:
+                         # Only Upcoming can be cancelled
+                         found = True
+                         break
+             if found:
+                 save_reservations(reservations)
+                 return redirect(url_for('my_reservations'))
+             else:
+                 return redirect(url_for('my_reservations'))
+         
+         
+         @app.route('/waitlist', methods=['GET', 'POST'])
+         def waitlist():
+             username = get_logged_in_username()
+             waitlist_entries = load_waitlist()
+         
+             user_entries = [w for w in waitlist_entries if w['username'] == username and w['status'] == 'Active']
+             user_position = None
+         
+             active_waitlist = sorted([w for w in waitlist_entries if w['status'] == 'Active'], key=lambda x: x['join_time'])
+         
+             if user_entries:
+                 # determine position
+                 for idx, entry in enumerate(active_waitlist, start=1):
+                     if entry['username'] == username:
+                         user_position = idx
+                         break
+         
+             if request.method == 'POST':
+                 party_size_raw = request.form.get('party_size')
+                 error = None
+                 try:
+                     party_size = int(party_size_raw)
+                     if party_size < 1:
+                         error = 'Party size must be positive integer.'
+                 except:
+                     error = 'Invalid party size.'
+         
+                 if error:
+                     flash(error, 'error')
+                     return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)
+         
+                 # If already active in waitlist, do not add again
+                 if user_position is not None:
+                     flash('You are already in the waitlist.', 'info')
+                     return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)
+         
+                 # Create new waitlist entry with new waitlist_id
+                 new_id = 1
+                 if waitlist_entries:
+                     new_id = max(w['waitlist_id'] for w in waitlist_entries) + 1
+         
+                 join_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+         
+                 new_entry = {'waitlist_id': new_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': 'Active'}
+                 waitlist_entries.append(new_entry)
+                 save_waitlist(waitlist_entries)
+                 flash('Added to waitlist successfully.', 'success')
+                 return redirect(url_for('waitlist'))
+         
+             # GET method
+             return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)
+         
+         
+         @app.route('/my_reviews', methods=['GET'])
+         def my_reviews():
+             username = get_logged_in_username()
+             reviews = load_reviews()
+             menu = load_menu()
+         
+             user_reviews = []
+             for r in reviews:
+                 if r['username'] == username:
+                     dish_name = ''
+                     for d in menu:
+                         if d['dish_id'] == r['dish_id']:
+                             dish_name = d['name']
+                             break
+                     user_reviews.append({'review_id': r['review_id'], 'dish_name': dish_name, 'rating': r['rating'], 'review_text': r['review_text']})
+             return render_template('my_reviews.html', reviews=user_reviews, username=username)
+         
+         
+         @app.route('/write_review', methods=['GET', 'POST'])
+         def write_review():
+             username = get_logged_in_username()
+             menu = load_menu()
+             dishes = [{'dish_id': d['dish_id'], 'name': d['name']} for d in menu]
+         
+             if request.method == 'GET':
+                 return render_template('write_review.html', dishes=dishes)
+         
+             # POST
+             dish_id_raw = request.form.get('dish_id')
+             rating_raw = request.form.get('rating')
+             review_text = request.form.get('review_text', '').strip()
+         
+             error = None
+             try:
+                 dish_id = int(dish_id_raw)
+             except:
+                 error = 'Invalid dish selected.'
+         
+             try:
+                 rating = int(rating_raw)
+                 if rating < 1 or rating > 5:
+                     error = 'Rating must be between 1 and 5.'
+             except:
+                 error = 'Invalid rating value.'
+         
+             if not review_text:
+                 error = 'Review text cannot be empty.'
+         
+             if error:
+                 flash(error, 'error')
+                 return render_template('write_review.html', dishes=dishes)
+         
+             reviews = load_reviews()
+             new_id = 1
+             if reviews:
+                 new_id = max(r['review_id'] for r in reviews) + 1
+         
+             today_str = datetime.now().strftime('%Y-%m-%d')
+         
+             new_review = {'review_id': new_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': today_str}
+         
+             reviews.append(new_review)
+             save_reviews(reviews)
+         
+             flash('Review submitted successfully!', 'success')
+             return redirect(url_for('my_reviews'))
+         
+         
+         @app.route('/profile', methods=['GET', 'POST'])
+         def profile():
+             username = get_logged_in_username()
+             users = load_users()
+             user = users.get(username)
+             if not user:
+                 return redirect(url_for('dashboard'))
+         
+             if request.method == 'GET':
+                 profile_data = {'username': user['username'], 'email': user['email']}
+                 return render_template('profile.html', profile=profile_data)
+         
+             # POST to update email
+             email = request.form.get('email')
+             if not email or email.strip() == '':
+                 flash('Email cannot be empty.', 'error')
+                 profile_data = {'username': user['username'], 'email': user['email']}
+                 return render_template('profile.html', profile=profile_data)
+         
+             # Update user email
+             user['email'] = email.strip()
+         
+             # Save users back to users.txt
+             try:
+                 with open(os.path.join(DATA_DIR, 'users.txt'), 'w', encoding='utf-8') as f:
+                     for u in users.values():
+                         line = f"{u['username']}|{u['email']}|{u['phone']}|{u['full_name']}\n"
+                         f.write(line)
+             except Exception as e:
+                 flash('Failed to save user profile.', 'error')
+                 profile_data = {'username': user['username'], 'email': user['email']}
+                 return render_template('profile.html', profile=profile_data)
+         
+             flash('Profile updated successfully!', 'success')
+             return redirect(url_for('profile'))
+         
+         
+         if __name__ == '__main__':
+             app.run(debug=True, port=5000)
+         
+         
+         === templates/*.html ===
+         [NO FILES MATCHED]
+         
+
+      📝 After (full content):
+         comprehensive integration and
+         ===
+         from render_template, request, flash
+         os
+         import datetime
+         
+         Flask(__name__)
+         app.config['SECRET_KEY'] = 'dev-secret-key'
+         
+         =
+         
+         
+         
+         def load_users():
+         
+         try:
+         f:
+         for line
+         parts = line.strip().split('|')
+         len(parts) ==
+         =
+         users[username] = {'username': username, 'email': email, 'phone': phone, 'full_name': full_name}
+         except FileNotFoundError:
+         
+         users
+         
+         
+         load_menu():
+         
+         try:
+         open(os.path.join(DATA_DIR, f:
+         line
+         line.strip().split('|')
+         
+         
+         name parts[1]
+         
+         =
+         
+         
+         = parts[6]
+         float(parts[7])
+         
+         
+         
+         menu
+         
+         
+         def
+         reservations
+         
+         with 'r', encoding='utf-8')
+         in f:
+         =
+         if
+         reservation_id =
+         parts[1]
+         guest_name
+         =
+         
+         
+         = parts[6]
+         
+         =
+         status parts[9]
+         
+         except FileNotFoundError:
+         
+         reservations
+         
+         
+         save_reservations(reservations):
+         
+         open(os.path.join(DATA_DIR, 'reservations.txt'), f:
+         
+         line = f"{r['reservation_id']}|{r['username']}|{r['guest_name']}|{r['phone']}|{r['email']}|{r['party_size']}|{r['date']}|{r['time']}|{r['special_requests']}|{r['status']}\n"
+         
+         Exception
+         pass
+         
+         
+         
+         
+         try:
+         with as f:
+         for
+         parts =
+         len(parts) ==
+         waitlist_id = int(parts[0])
+         =
+         party_size =
+         = parts[3]
+         status = parts[4]
+         waitlist.append({'waitlist_id': waitlist_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': status})
+         
+         pass
+         return
+         
+         
+         
+         try:
+         with open(os.path.join(DATA_DIR, encoding='utf-8')
+         waitlist:
+         
+         f.write(line)
+         except as
+         pass
+         
+         
+         
+         =
+         
+         encoding='utf-8') f:
+         line f:
+         parts =
+         len(parts)
+         =
+         parts[1]
+         dish_id int(parts[2])
+         rating
+         review_text parts[4]
+         
+         
+         except
+         
+         
+         
+         
+         save_reviews(reviews):
+         
+         'reviews.txt'), encoding='utf-8') as f:
+         for r reviews:
+         line f"{r['review_id']}|{r['username']}|{r['dish_id']}|{r['rating']}|{r['review_text']}|{r['review_date']}\n"
+         f.write(line)
+         except Exception as e:
+         
+         
+         
+         def get_logged_in_username():
+         simplification, the username is provided
+         In login management place
+         = request.args.get('username')
+         if
+         fallback be
+         = 'john_diner' # for testing
+         
+         
+         
+         @app.route('/',
+         def
+         return
+         
+         
+         
+         def
+         username
+         users =
+         = load_menu()
+         load_reservations()
+         
+         featured_dishes: for
+         
+         in
+         featured_dishes.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'price': dish['price'], 'description': dish['description']})
+         
+         only for and future dates (date
+         
+         = datetime.now().strftime('%Y-%m-%d')
+         in reservations:
+         r['username'] and r['status'] r['date'] >=
+         upcoming_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})
+         
+         render_template('dashboard.html', featured_dishes=featured_dishes,
+         
+         
+         
+         def
+         menu_data
+         context 'menus' with name, dietary,
+         menus
+         for menu_data:
+         
+         return menus=menus)
+         
+         
+         
+         dish_details(dish_id):
+         menu_data
+         = None
+         d in
+         if
+         dish {'dish_id': d['dish_id'], 'name': d['name'], 'category': d['category'], 'price': d['price'], 'description': d['description'], 'ingredients': d['ingredients'], 'dietary': d['dietary'], 'avg_rating': d['avg_rating']}
+         break
+         None:
+         404
+         
+         return render_template('dish_details.html',
+         
+         
+         @app.route('/make_reservation', 'POST'])
+         make_reservation():
+         
+         users load_users()
+         user =
+         not
+         # found,
+         
+         
+         ==
+         
+         
+         POST
+         guest_name = request.form.get('guest_name')
+         party_size_raw = request.form.get('party_size')
+         request.form.get('reservation_date')
+         
+         
+         
+         
+         if < party_size >
+         "Party
+         
+         error size."
+         
+         # Validate date and not empty
+         if
+         "Reservation is
+         
+         
+         dt_res_date '%Y-%m-%d')
+         
+         = date
+         
+         not guest_name or guest_name.strip() == '':
+         = name
+         
+         
+         Could or send
+         'error')
+         return
+         
+         # new
+         = load_reservations()
+         new_id
+         
+         = max(r['reservation_id'] r 1
+         
+         time, a default for now,
+         '19:00'
+         
+         = {
+                 'reservation_id': new_id,
+                 'username': username,
+                 'guest_name': guest_name.strip(),
+                 'phone': user['phone'],
+                 'email': user['email'],
+                 'party_size': party_size,
+                 'date': reservation_date,
+                 'time': default_time,
+                 'special_requests': '',
+                 'status': 'Upcoming'
+             }
+         
+         
+         flash('Reservation
+         return
+         
+         
+         @app.route('/my_reservations',
+         my_reservations():
+         username get_logged_in_username()
+         reservations load_reservations()
+         []
+         for
+         if r['username']
+         
+         return
+         
+         
+         methods=['POST'])
+         def cancel_reservation(reservation_id):
+         username
+         =
+         found False
+         r
+         if r['username'] username:
+         
+         r['status']
+         =
+         break
+         
+         # Only can be
+         found =
+         
+         if
+         save_reservations(reservations)
+         
+         else:
+         
+         
+         
+         @app.route('/waitlist',
+         
+         username
+         
+         
+         user_entries [w w['username'] and w['status'] == 'Active']
+         user_position None
+         
+         sorted([w for in if == 'Active'], x['join_time'])
+         
+         user_entries:
+         position
+         enumerate(active_waitlist,
+         ==
+         = idx
+         break
+         
+         
+         
+         =
+         
+         = int(party_size_raw)
+         party_size < 1:
+         'Party must be integer.'
+         
+         = size.'
+         
+         error:
+         flash(error,
+         waitlist_entries=active_waitlist,
+         
+         # If active not
+         
+         flash('You already waitlist.', 'info')
+         render_template('waitlist.html', user_position=user_position)
+         
+         Create new waitlist waitlist_id
+         =
+         waitlist_entries:
+         new_id = for in +
+         
+         
+         
+         {'waitlist_id': new_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': 'Active'}
+         
+         save_waitlist(waitlist_entries)
+         flash('Added waitlist
+         return
+         
+         
+         return waitlist_entries=active_waitlist,
+         
+         
+         
+         
+         
+         reviews
+         
+         
+         =
+         in reviews:
+         if r['username'] username:
+         dish_name =
+         for in menu:
+         if
+         d['name']
+         break
+         
+         return reviews=user_reviews, username=username)
+         
+         
+         methods=['GET',
+         
+         get_logged_in_username()
+         = load_menu()
+         dishes [{'dish_id': d['dish_id'], 'name': d['name']} for menu]
+         
+         
+         
+         
+         #
+         dish_id_raw =
+         
+         review_text request.form.get('review_text', '').strip()
+         
+         None
+         
+         
+         except:
+         selected.'
+         
+         
+         int(rating_raw)
+         or 5:
+         error = 'Rating must be 1
+         
+         'Invalid rating
+         
+         if
+         = 'Review empty.'
+         
+         
+         
+         dishes=dishes)
+         
+         reviews =
+         = 1
+         
+         = +
+         
+         =
+         
+         new_review {'review_id': new_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': today_str}
+         
+         
+         
+         
+         flash('Review submitted successfully!',
+         redirect(url_for('my_reviews'))
+         
+         
+         'POST'])
+         def profile():
+         get_logged_in_username()
+         users = load_users()
+         
+         if user:
+         return
+         
+         'GET':
+         profile_data = {'username': user['username'], 'email': user['email']}
+         profile=profile_data)
+         
+         to update
+         request.form.get('email')
+         not email or email.strip() '':
+         flash('Email
+         {'username': user['username'], 'email': user['email']}
+         
+         
+         # Update
+         
+         
+         # Save users
+         
+         'users.txt'), as
+         for u
+         =
+         
+         as e:
+         flash('Failed to save user profile.', 'error')
+         {'username': user['username'], 'email': user['email']}
+         return render_template('profile.html', profile=profile_data)
+         
+         updated 'success')
+         return
+         
+         
+         
+         app.run(debug=True, port=5000)
+         
+         
+         === templates/*.html
+         [NO
+         
+
+  [3] Agent: Tester
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 67/112 words deleted (60%)
+
+      📄 Before (full content):
+         You are Software functional
+         
+         integration RestaurantReservation web issues, and detailed until the fully
+         
+         Details:
+         Read app.py and templates/*.html from as the implementation
+         Execute application and based
+         user dish waitlist, reviews, UI elements
+         - Document inconsistencies
+         - test pass issues; otherwise write followed detailed issue descriptions
+         correctness: verify each output
+         
+         Testing
+         1. Coverage**:
+         Validate each loads correctly all required elements and specified
+         navigation expected
+         properly for persistence, retrieval, display
+         - Confirm forms handle correctly files are
+         
+         **Issue
+         feedback.txt points
+         Include references to artifacts or locations where applicable
+         
+         
+         file status "[APPROVED]" only all are met
+         - Otherwise, write "NEED_MODIFY" and all issues to fixes
+         
+         CRITICAL
+         feedback.txt
+         Provide
+         feedback status strictly for iterative control
+         
+         feedback.txt
+
+      📝 After (full content):
+         are
+         
+         integration RestaurantReservation until fully
+         
+         Details:
+         
+         
+         user
+         -
+         - test pass issue descriptions
+         correctness: each output
+         
+         
+         Coverage**:
+         required elements specified
+         navigation
+         properly retrieval,
+         are
+         
+         **Issue
+         feedback.txt
+         Include artifacts or locations where applicable
+         
+         
+         only met
+         - Otherwise, and to
+         
+         CRITICAL
+         feedback.txt
+         Provide
+         feedback strictly for control
+         
+         
+
+  [4] Agent: Tester
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 766/1278 words deleted (60%)
+
+      📄 Before (full content):
+         Perform comprehensive integration tests on app.py and templates/*.html and write feedback.txt
+         === app.py ===
+         from flask import Flask, render_template, redirect, url_for, request, flash
+         import os
+         from datetime import datetime
+         
+         app = Flask(__name__)
+         app.config['SECRET_KEY'] = 'dev-secret-key'
+         
+         DATA_DIR = 'data'
+         
+         # Utility functions
+         
+         def load_users():
+             users = {}
+             try:
+                 with open(os.path.join(DATA_DIR, 'users.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 4:
+                             username, email, phone, full_name = parts
+                             users[username] = {'username': username, 'email': email, 'phone': phone, 'full_name': full_name}
+             except FileNotFoundError:
+                 pass
+             return users
+         
+         
+         def load_menu():
+             menu = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'menu.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 8:
+                             dish_id = int(parts[0])
+                             name = parts[1]
+                             category = parts[2]
+                             price = float(parts[3])
+                             description = parts[4]
+                             ingredients = parts[5]
+                             dietary = parts[6]
+                             avg_rating = float(parts[7])
+                             menu.append({'dish_id': dish_id, 'name': name, 'category': category, 'price': price, 'description': description, 'ingredients': ingredients, 'dietary': dietary, 'avg_rating': avg_rating})
+             except FileNotFoundError:
+                 pass
+             return menu
+         
+         
+         def load_reservations():
+             reservations = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'reservations.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 10:
+                             reservation_id = int(parts[0])
+                             username = parts[1]
+                             guest_name = parts[2]
+                             phone = parts[3]
+                             email = parts[4]
+                             party_size = int(parts[5])
+                             date = parts[6]
+                             time = parts[7]
+                             special_requests = parts[8]
+                             status = parts[9]
+                             reservations.append({'reservation_id': reservation_id, 'username': username, 'guest_name': guest_name, 'phone': phone, 'email': email, 'party_size': party_size, 'date': date, 'time': time, 'special_requests': special_requests, 'status': status})
+             except FileNotFoundError:
+                 pass
+             return reservations
+         
+         
+         def save_reservations(reservations):
+             try:
+                 with open(os.path.join(DATA_DIR, 'reservations.txt'), 'w', encoding='utf-8') as f:
+                     for r in reservations:
+                         line = f"{r['reservation_id']}|{r['username']}|{r['guest_name']}|{r['phone']}|{r['email']}|{r['party_size']}|{r['date']}|{r['time']}|{r['special_requests']}|{r['status']}\n"
+                         f.write(line)
+             except Exception as e:
+                 pass
+         
+         
+         def load_waitlist():
+             waitlist = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'waitlist.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 5:
+                             waitlist_id = int(parts[0])
+                             username = parts[1]
+                             party_size = int(parts[2])
+                             join_time = parts[3]
+                             status = parts[4]
+                             waitlist.append({'waitlist_id': waitlist_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': status})
+             except FileNotFoundError:
+                 pass
+             return waitlist
+         
+         
+         def save_waitlist(waitlist):
+             try:
+                 with open(os.path.join(DATA_DIR, 'waitlist.txt'), 'w', encoding='utf-8') as f:
+                     for w in waitlist:
+                         line = f"{w['waitlist_id']}|{w['username']}|{w['party_size']}|{w['join_time']}|{w['status']}\n"
+                         f.write(line)
+             except Exception as e:
+                 pass
+         
+         
+         def load_reviews():
+             reviews = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'reviews.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 6:
+                             review_id = int(parts[0])
+                             username = parts[1]
+                             dish_id = int(parts[2])
+                             rating = int(parts[3])
+                             review_text = parts[4]
+                             review_date = parts[5]
+                             reviews.append({'review_id': review_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': review_date})
+             except FileNotFoundError:
+                 pass
+             return reviews
+         
+         
+         def save_reviews(reviews):
+             try:
+                 with open(os.path.join(DATA_DIR, 'reviews.txt'), 'w', encoding='utf-8') as f:
+                     for r in reviews:
+                         line = f"{r['review_id']}|{r['username']}|{r['dish_id']}|{r['rating']}|{r['review_text']}|{r['review_date']}\n"
+                         f.write(line)
+             except Exception as e:
+                 pass
+         
+         
+         def get_logged_in_username():
+             # For simplification, assume the username is provided in a query param ?username=...
+             # In real app, session or login management would be in place
+             username = request.args.get('username')
+             if not username:
+                 # fallback or redirect could be handled here
+                 username = 'john_diner'  # default for testing
+             return username
+         
+         
+         @app.route('/', methods=['GET'])
+         def root_redirect():
+             return redirect(url_for('dashboard'))
+         
+         
+         @app.route('/dashboard', methods=['GET'])
+         def dashboard():
+             username = get_logged_in_username()
+             users = load_users()
+             menu = load_menu()
+             reservations = load_reservations()
+         
+             # featured_dishes: take first 3 dishes from menu for example
+             featured_dishes = []
+             for dish in menu[:3]:
+                 featured_dishes.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'price': dish['price'], 'description': dish['description']})
+         
+             # upcoming_reservations: only for user and status Upcoming, limited to future dates (date >= today)
+             upcoming_reservations = []
+             today_str = datetime.now().strftime('%Y-%m-%d')
+             for r in reservations:
+                 if r['username'] == username and r['status'] == 'Upcoming' and r['date'] >= today_str:
+                     upcoming_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})
+         
+             return render_template('dashboard.html', username=username, featured_dishes=featured_dishes, upcoming_reservations=upcoming_reservations)
+         
+         
+         @app.route('/menu', methods=['GET'])
+         def menu():
+             menu_data = load_menu()
+             # context variable 'menus' as list of dict with keys: dish_id, name, category, price, description, dietary, avg_rating
+             menus = []
+             for dish in menu_data:
+                 menus.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'category': dish['category'], 'price': dish['price'], 'description': dish['description'], 'dietary': dish['dietary'], 'avg_rating': dish['avg_rating']})
+             return render_template('menu.html', menus=menus)
+         
+         
+         @app.route('/dish/<int:dish_id>', methods=['GET'])
+         def dish_details(dish_id):
+             menu_data = load_menu()
+             dish = None
+             for d in menu_data:
+                 if d['dish_id'] == dish_id:
+                     dish = {'dish_id': d['dish_id'], 'name': d['name'], 'category': d['category'], 'price': d['price'], 'description': d['description'], 'ingredients': d['ingredients'], 'dietary': d['dietary'], 'avg_rating': d['avg_rating']}
+                     break
+             if dish is None:
+                 # Dish not found, could 404 or redirect
+                 return redirect(url_for('menu'))
+             return render_template('dish_details.html', dish=dish)
+         
+         
+         @app.route('/make_reservation', methods=['GET', 'POST'])
+         def make_reservation():
+             username = get_logged_in_username()
+             users = load_users()
+             user = users.get(username)
+             if not user:
+                 # No user found, redirect to dashboard
+                 return redirect(url_for('dashboard'))
+         
+             if request.method == 'GET':
+                 return render_template('make_reservation.html')
+         
+             # POST handling
+             guest_name = request.form.get('guest_name')
+             party_size_raw = request.form.get('party_size')
+             reservation_date = request.form.get('reservation_date')
+         
+             error = None
+             try:
+                 party_size = int(party_size_raw)
+                 if party_size < 1 or party_size > 10:
+                     error = "Party size must be between 1 and 10."
+             except:
+                 error = "Invalid party size."
+         
+             # Validate date format and is not empty
+             if not reservation_date:
+                 error = "Reservation date is required."
+             else:
+                 try:
+                     dt_res_date = datetime.strptime(reservation_date, '%Y-%m-%d')
+                 except:
+                     error = "Invalid date format."
+         
+             if not guest_name or guest_name.strip() == '':
+                 error = "Guest name is required."
+         
+             if error:
+                 # Could flash or send message
+                 flash(error, 'error')
+                 return render_template('make_reservation.html')
+         
+             # Generate new reservation_id
+             reservations = load_reservations()
+             new_id = 1
+             if reservations:
+                 new_id = max(r['reservation_id'] for r in reservations) + 1
+         
+             # For time, assign a default time for now, e.g. 19:00
+             default_time = '19:00'
+         
+             new_reservation = {
+                 'reservation_id': new_id,
+                 'username': username,
+                 'guest_name': guest_name.strip(),
+                 'phone': user['phone'],
+                 'email': user['email'],
+                 'party_size': party_size,
+                 'date': reservation_date,
+                 'time': default_time,
+                 'special_requests': '',
+                 'status': 'Upcoming'
+             }
+             reservations.append(new_reservation)
+             save_reservations(reservations)
+             flash('Reservation made successfully!', 'success')
+             return redirect(url_for('dashboard'))
+         
+         
+         @app.route('/my_reservations', methods=['GET'])
+         def my_reservations():
+             username = get_logged_in_username()
+             reservations = load_reservations()
+             user_reservations = []
+             for r in reservations:
+                 if r['username'] == username:
+                     user_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})
+             return render_template('my_reservations.html', reservations=user_reservations, username=username)
+         
+         
+         @app.route('/cancel_reservation/<int:reservation_id>', methods=['POST'])
+         def cancel_reservation(reservation_id):
+             username = get_logged_in_username()
+             reservations = load_reservations()
+             found = False
+             for r in reservations:
+                 if r['reservation_id'] == reservation_id and r['username'] == username:
+                     if r['status'] == 'Upcoming':
+                         r['status'] = 'Cancelled'
+                         found = True
+                         break
+                     else:
+                         # Only Upcoming can be cancelled
+                         found = True
+                         break
+             if found:
+                 save_reservations(reservations)
+                 return redirect(url_for('my_reservations'))
+             else:
+                 return redirect(url_for('my_reservations'))
+         
+         
+         @app.route('/waitlist', methods=['GET', 'POST'])
+         def waitlist():
+             username = get_logged_in_username()
+             waitlist_entries = load_waitlist()
+         
+             user_entries = [w for w in waitlist_entries if w['username'] == username and w['status'] == 'Active']
+             user_position = None
+         
+             active_waitlist = sorted([w for w in waitlist_entries if w['status'] == 'Active'], key=lambda x: x['join_time'])
+         
+             if user_entries:
+                 # determine position
+                 for idx, entry in enumerate(active_waitlist, start=1):
+                     if entry['username'] == username:
+                         user_position = idx
+                         break
+         
+             if request.method == 'POST':
+                 party_size_raw = request.form.get('party_size')
+                 error = None
+                 try:
+                     party_size = int(party_size_raw)
+                     if party_size < 1:
+                         error = 'Party size must be positive integer.'
+                 except:
+                     error = 'Invalid party size.'
+         
+                 if error:
+                     flash(error, 'error')
+                     return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)
+         
+                 # If already active in waitlist, do not add again
+                 if user_position is not None:
+                     flash('You are already in the waitlist.', 'info')
+                     return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)
+         
+                 # Create new waitlist entry with new waitlist_id
+                 new_id = 1
+                 if waitlist_entries:
+                     new_id = max(w['waitlist_id'] for w in waitlist_entries) + 1
+         
+                 join_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+         
+                 new_entry = {'waitlist_id': new_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': 'Active'}
+                 waitlist_entries.append(new_entry)
+                 save_waitlist(waitlist_entries)
+                 flash('Added to waitlist successfully.', 'success')
+                 return redirect(url_for('waitlist'))
+         
+             # GET method
+             return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)
+         
+         
+         @app.route('/my_reviews', methods=['GET'])
+         def my_reviews():
+             username = get_logged_in_username()
+             reviews = load_reviews()
+             menu = load_menu()
+         
+             user_reviews = []
+             for r in reviews:
+                 if r['username'] == username:
+                     dish_name = ''
+                     for d in menu:
+                         if d['dish_id'] == r['dish_id']:
+                             dish_name = d['name']
+                             break
+                     user_reviews.append({'review_id': r['review_id'], 'dish_name': dish_name, 'rating': r['rating'], 'review_text': r['review_text']})
+             return render_template('my_reviews.html', reviews=user_reviews, username=username)
+         
+         
+         @app.route('/write_review', methods=['GET', 'POST'])
+         def write_review():
+             username = get_logged_in_username()
+             menu = load_menu()
+             dishes = [{'dish_id': d['dish_id'], 'name': d['name']} for d in menu]
+         
+             if request.method == 'GET':
+                 return render_template('write_review.html', dishes=dishes)
+         
+             # POST
+             dish_id_raw = request.form.get('dish_id')
+             rating_raw = request.form.get('rating')
+             review_text = request.form.get('review_text', '').strip()
+         
+             error = None
+             try:
+                 dish_id = int(dish_id_raw)
+             except:
+                 error = 'Invalid dish selected.'
+         
+             try:
+                 rating = int(rating_raw)
+                 if rating < 1 or rating > 5:
+                     error = 'Rating must be between 1 and 5.'
+             except:
+                 error = 'Invalid rating value.'
+         
+             if not review_text:
+                 error = 'Review text cannot be empty.'
+         
+             if error:
+                 flash(error, 'error')
+                 return render_template('write_review.html', dishes=dishes)
+         
+             reviews = load_reviews()
+             new_id = 1
+             if reviews:
+                 new_id = max(r['review_id'] for r in reviews) + 1
+         
+             today_str = datetime.now().strftime('%Y-%m-%d')
+         
+             new_review = {'review_id': new_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': today_str}
+         
+             reviews.append(new_review)
+             save_reviews(reviews)
+         
+             flash('Review submitted successfully!', 'success')
+             return redirect(url_for('my_reviews'))
+         
+         
+         @app.route('/profile', methods=['GET', 'POST'])
+         def profile():
+             username = get_logged_in_username()
+             users = load_users()
+             user = users.get(username)
+             if not user:
+                 return redirect(url_for('dashboard'))
+         
+             if request.method == 'GET':
+                 profile_data = {'username': user['username'], 'email': user['email']}
+                 return render_template('profile.html', profile=profile_data)
+         
+             # POST to update email
+             email = request.form.get('email')
+             if not email or email.strip() == '':
+                 flash('Email cannot be empty.', 'error')
+                 profile_data = {'username': user['username'], 'email': user['email']}
+                 return render_template('profile.html', profile=profile_data)
+         
+             # Update user email
+             user['email'] = email.strip()
+         
+             # Save users back to users.txt
+             try:
+                 with open(os.path.join(DATA_DIR, 'users.txt'), 'w', encoding='utf-8') as f:
+                     for u in users.values():
+                         line = f"{u['username']}|{u['email']}|{u['phone']}|{u['full_name']}\n"
+                         f.write(line)
+             except Exception as e:
+                 flash('Failed to save user profile.', 'error')
+                 profile_data = {'username': user['username'], 'email': user['email']}
+                 return render_template('profile.html', profile=profile_data)
+         
+             flash('Profile updated successfully!', 'success')
+             return redirect(url_for('profile'))
+         
+         
+         if __name__ == '__main__':
+             app.run(debug=True, port=5000)
+         
+         
+         === templates/*.html ===
+         [NO FILES MATCHED]
+         
+
+      📝 After (full content):
+         comprehensive tests on templates/*.html write
+         app.py
+         from flask import render_template,
+         import os
+         datetime
+         
+         
+         'dev-secret-key'
+         
+         DATA_DIR =
+         
+         Utility functions
+         
+         
+         users
+         
+         with open(os.path.join(DATA_DIR,
+         f:
+         = line.strip().split('|')
+         if len(parts) ==
+         email, = parts
+         {'username': username, 'email': email, 'phone': phone, 'full_name': full_name}
+         
+         
+         return
+         
+         
+         def load_menu():
+         menu =
+         
+         open(os.path.join(DATA_DIR, 'menu.txt'), 'r', f:
+         for in
+         line.strip().split('|')
+         if 8:
+         dish_id
+         parts[1]
+         category =
+         =
+         parts[4]
+         =
+         
+         
+         menu.append({'dish_id': dish_id, 'name': name, 'category': category, 'price': price, 'description': description, 'ingredients': ingredients, 'dietary': dietary, 'avg_rating': avg_rating})
+         except
+         pass
+         
+         
+         
+         load_reservations():
+         
+         try:
+         with 'reservations.txt'), 'r',
+         f:
+         = line.strip().split('|')
+         ==
+         = int(parts[0])
+         username parts[1]
+         
+         
+         =
+         party_size =
+         date
+         parts[7]
+         =
+         status parts[9]
+         
+         
+         pass
+         reservations
+         
+         
+         save_reservations(reservations):
+         
+         with 'w', encoding='utf-8')
+         for r
+         line
+         f.write(line)
+         as
+         
+         
+         
+         
+         waitlist =
+         
+         encoding='utf-8') as
+         line in
+         line.strip().split('|')
+         5:
+         = int(parts[0])
+         parts[1]
+         party_size
+         join_time =
+         
+         waitlist.append({'waitlist_id': waitlist_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': status})
+         except
+         
+         
+         
+         
+         def save_waitlist(waitlist):
+         try:
+         'waitlist.txt'), 'w', as
+         w waitlist:
+         =
+         f.write(line)
+         except Exception as
+         pass
+         
+         
+         
+         reviews
+         try:
+         open(os.path.join(DATA_DIR, as
+         line f:
+         parts =
+         if 6:
+         int(parts[0])
+         username = parts[1]
+         dish_id
+         rating =
+         
+         =
+         
+         
+         
+         
+         
+         
+         
+         try:
+         open(os.path.join(DATA_DIR, encoding='utf-8')
+         r reviews:
+         line =
+         
+         except Exception e:
+         pass
+         
+         
+         get_logged_in_username():
+         # For assume is provided param
+         app, login would be place
+         =
+         if username:
+         # could
+         for
+         return username
+         
+         
+         
+         def
+         return
+         
+         
+         @app.route('/dashboard',
+         
+         get_logged_in_username()
+         users
+         menu load_menu()
+         reservations =
+         
+         first 3 menu
+         []
+         dish menu[:3]:
+         featured_dishes.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'price': dish['price'], 'description': dish['description']})
+         
+         upcoming_reservations: only and Upcoming, limited dates
+         upcoming_reservations []
+         
+         for r reservations:
+         == 'Upcoming' today_str:
+         
+         
+         username=username, upcoming_reservations=upcoming_reservations)
+         
+         
+         
+         def
+         
+         as list dish_id, category, price, description, avg_rating
+         
+         for dish
+         
+         return render_template('menu.html',
+         
+         
+         @app.route('/dish/<int:dish_id>',
+         
+         load_menu()
+         =
+         
+         if
+         = {'dish_id': d['dish_id'], 'name': d['name'], 'category': d['category'], 'price': d['price'], 'description': d['description'], 'ingredients': d['ingredients'], 'dietary': d['dietary'], 'avg_rating': d['avg_rating']}
+         break
+         if is None:
+         # not 404 or redirect
+         redirect(url_for('menu'))
+         render_template('dish_details.html', dish=dish)
+         
+         
+         methods=['GET', 'POST'])
+         
+         username
+         = load_users()
+         
+         not user:
+         redirect to
+         return redirect(url_for('dashboard'))
+         
+         if request.method 'GET':
+         render_template('make_reservation.html')
+         
+         #
+         
+         party_size_raw =
+         request.form.get('reservation_date')
+         
+         = None
+         try:
+         =
+         > 10:
+         "Party between
+         
+         error
+         
+         # and is not
+         not
+         error = "Reservation date required."
+         
+         try:
+         dt_res_date = datetime.strptime(reservation_date, '%Y-%m-%d')
+         
+         "Invalid format."
+         
+         guest_name guest_name.strip() == '':
+         error = is
+         
+         if
+         # Could message
+         'error')
+         render_template('make_reservation.html')
+         
+         
+         reservations load_reservations()
+         = 1
+         if
+         = for
+         
+         # For default time for e.g.
+         default_time
+         
+         = {
+                 'reservation_id': new_id,
+                 'username': username,
+                 'guest_name': guest_name.strip(),
+                 'phone': user['phone'],
+                 'email': user['email'],
+                 'party_size': party_size,
+                 'date': reservation_date,
+                 'time': default_time,
+                 'special_requests': '',
+                 'status': 'Upcoming'
+             }
+         
+         
+         flash('Reservation
+         return
+         
+         
+         
+         
+         username get_logged_in_username()
+         load_reservations()
+         
+         in
+         username:
+         user_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})
+         
+         
+         
+         @app.route('/cancel_reservation/<int:reservation_id>',
+         cancel_reservation(reservation_id):
+         =
+         reservations load_reservations()
+         = False
+         r in
+         == r['username']
+         if r['status'] ==
+         
+         
+         
+         
+         Only can be cancelled
+         
+         break
+         found:
+         
+         return
+         
+         return
+         
+         
+         methods=['GET',
+         waitlist():
+         =
+         waitlist_entries
+         
+         = [w waitlist_entries == 'Active']
+         user_position
+         
+         active_waitlist for in ==
+         
+         
+         # position
+         entry in enumerate(active_waitlist,
+         ==
+         idx
+         
+         
+         'POST':
+         
+         None
+         
+         = int(party_size_raw)
+         
+         error be
+         except:
+         error = 'Invalid party
+         
+         
+         flash(error, 'error')
+         render_template('waitlist.html',
+         
+         already in add again
+         if user_position not
+         flash('You are in the 'info')
+         return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)
+         
+         with new waitlist_id
+         
+         if waitlist_entries:
+         new_id waitlist_entries)
+         
+         = %H:%M:%S')
+         
+         {'waitlist_id': new_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': 'Active'}
+         waitlist_entries.append(new_entry)
+         
+         flash('Added waitlist
+         
+         
+         method
+         
+         
+         
+         methods=['GET'])
+         
+         
+         = load_reviews()
+         menu =
+         
+         []
+         r reviews:
+         if ==
+         dish_name
+         for menu:
+         if ==
+         d['name']
+         
+         user_reviews.append({'review_id': r['review_id'], 'dish_name': dish_name, 'rating': r['rating'], 'review_text': r['review_text']})
+         render_template('my_reviews.html', reviews=user_reviews,
+         
+         
+         @app.route('/write_review', methods=['GET',
+         def
+         
+         =
+         =
+         
+         if ==
+         dishes=dishes)
+         
+         
+         dish_id_raw request.form.get('dish_id')
+         request.form.get('rating')
+         review_text request.form.get('review_text',
+         
+         
+         try:
+         int(dish_id_raw)
+         
+         error = selected.'
+         
+         
+         rating
+         if < >
+         error be 1
+         
+         'Invalid rating value.'
+         
+         review_text:
+         error = text be
+         
+         error:
+         
+         return render_template('write_review.html',
+         
+         = load_reviews()
+         
+         reviews:
+         = in
+         
+         datetime.now().strftime('%Y-%m-%d')
+         
+         = {'review_id': new_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': today_str}
+         
+         
+         save_reviews(reviews)
+         
+         flash('Review
+         redirect(url_for('my_reviews'))
+         
+         
+         @app.route('/profile', 'POST'])
+         def
+         username =
+         users = load_users()
+         
+         user:
+         
+         
+         ==
+         {'username': user['username'], 'email': user['email']}
+         render_template('profile.html',
+         
+         # POST to update
+         request.form.get('email')
+         not '':
+         'error')
+         = {'username': user['username'], 'email': user['email']}
+         
+         
+         email
+         user['email']
+         
+         users users.txt
+         try:
+         open(os.path.join(DATA_DIR, 'users.txt'), encoding='utf-8')
+         u in
+         line
+         
+         
+         flash('Failed to profile.', 'error')
+         profile_data {'username': user['username'], 'email': user['email']}
+         render_template('profile.html',
+         
+         flash('Profile 'success')
+         redirect(url_for('profile'))
+         
+         
+         if ==
+         app.run(debug=True,
+         
+         
+         ===
+         FILES MATCHED]
+         
+
+  [5] Agent: Tester
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 27/45 words deleted (60%)
+
+      📄 Before (full content):
+         are
+         
+         integration RestaurantReservation until fully
+         
+         Details:
+         
+         
+         user
+         -
+         - test pass issue descriptions
+         correctness: each output
+         
+         
+         Coverage**:
+         required elements specified
+         navigation
+         properly retrieval,
+         are
+         
+         **Issue
+         feedback.txt
+         Include artifacts or locations where applicable
+         
+         
+         only met
+         - Otherwise, and to
+         
+         CRITICAL
+         feedback.txt
+         Provide
+         feedback strictly for control
+         
+         
+
+      📝 After (full content):
+         
+         
+         RestaurantReservation until fully
+         
+         
+         
+         
+         
+         
+         pass issue descriptions
+         output
+         
+         
+         
+         elements specified
+         
+         retrieval,
+         
+         
+         
+         
+         where applicable
+         
+         
+         
+         - Otherwise, to
+         
+         CRITICAL
+         feedback.txt
+         
+         strictly
+         
+         
+
+  [6] Agent: Tester
+      Type: STRESS_CHAOS_WORD_DELETION
+      Details: WordDeletion: 766/1278 words deleted (60%)
+
+      📄 Before (full content):
+         Perform comprehensive integration tests on app.py and templates/*.html and write feedback.txt
+         === app.py ===
+         from flask import Flask, render_template, redirect, url_for, request, flash
+         import os
+         from datetime import datetime
+         
+         app = Flask(__name__)
+         app.config['SECRET_KEY'] = 'dev-secret-key'
+         
+         DATA_DIR = 'data'
+         
+         # Utility functions
+         
+         def load_users():
+             users = {}
+             try:
+                 with open(os.path.join(DATA_DIR, 'users.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 4:
+                             username, email, phone, full_name = parts
+                             users[username] = {'username': username, 'email': email, 'phone': phone, 'full_name': full_name}
+             except FileNotFoundError:
+                 pass
+             return users
+         
+         
+         def load_menu():
+             menu = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'menu.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 8:
+                             dish_id = int(parts[0])
+                             name = parts[1]
+                             category = parts[2]
+                             price = float(parts[3])
+                             description = parts[4]
+                             ingredients = parts[5]
+                             dietary = parts[6]
+                             avg_rating = float(parts[7])
+                             menu.append({'dish_id': dish_id, 'name': name, 'category': category, 'price': price, 'description': description, 'ingredients': ingredients, 'dietary': dietary, 'avg_rating': avg_rating})
+             except FileNotFoundError:
+                 pass
+             return menu
+         
+         
+         def load_reservations():
+             reservations = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'reservations.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 10:
+                             reservation_id = int(parts[0])
+                             username = parts[1]
+                             guest_name = parts[2]
+                             phone = parts[3]
+                             email = parts[4]
+                             party_size = int(parts[5])
+                             date = parts[6]
+                             time = parts[7]
+                             special_requests = parts[8]
+                             status = parts[9]
+                             reservations.append({'reservation_id': reservation_id, 'username': username, 'guest_name': guest_name, 'phone': phone, 'email': email, 'party_size': party_size, 'date': date, 'time': time, 'special_requests': special_requests, 'status': status})
+             except FileNotFoundError:
+                 pass
+             return reservations
+         
+         
+         def save_reservations(reservations):
+             try:
+                 with open(os.path.join(DATA_DIR, 'reservations.txt'), 'w', encoding='utf-8') as f:
+                     for r in reservations:
+                         line = f"{r['reservation_id']}|{r['username']}|{r['guest_name']}|{r['phone']}|{r['email']}|{r['party_size']}|{r['date']}|{r['time']}|{r['special_requests']}|{r['status']}\n"
+                         f.write(line)
+             except Exception as e:
+                 pass
+         
+         
+         def load_waitlist():
+             waitlist = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'waitlist.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 5:
+                             waitlist_id = int(parts[0])
+                             username = parts[1]
+                             party_size = int(parts[2])
+                             join_time = parts[3]
+                             status = parts[4]
+                             waitlist.append({'waitlist_id': waitlist_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': status})
+             except FileNotFoundError:
+                 pass
+             return waitlist
+         
+         
+         def save_waitlist(waitlist):
+             try:
+                 with open(os.path.join(DATA_DIR, 'waitlist.txt'), 'w', encoding='utf-8') as f:
+                     for w in waitlist:
+                         line = f"{w['waitlist_id']}|{w['username']}|{w['party_size']}|{w['join_time']}|{w['status']}\n"
+                         f.write(line)
+             except Exception as e:
+                 pass
+         
+         
+         def load_reviews():
+             reviews = []
+             try:
+                 with open(os.path.join(DATA_DIR, 'reviews.txt'), 'r', encoding='utf-8') as f:
+                     for line in f:
+                         parts = line.strip().split('|')
+                         if len(parts) == 6:
+                             review_id = int(parts[0])
+                             username = parts[1]
+                             dish_id = int(parts[2])
+                             rating = int(parts[3])
+                             review_text = parts[4]
+                             review_date = parts[5]
+                             reviews.append({'review_id': review_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': review_date})
+             except FileNotFoundError:
+                 pass
+             return reviews
+         
+         
+         def save_reviews(reviews):
+             try:
+                 with open(os.path.join(DATA_DIR, 'reviews.txt'), 'w', encoding='utf-8') as f:
+                     for r in reviews:
+                         line = f"{r['review_id']}|{r['username']}|{r['dish_id']}|{r['rating']}|{r['review_text']}|{r['review_date']}\n"
+                         f.write(line)
+             except Exception as e:
+                 pass
+         
+         
+         def get_logged_in_username():
+             # For simplification, assume the username is provided in a query param ?username=...
+             # In real app, session or login management would be in place
+             username = request.args.get('username')
+             if not username:
+                 # fallback or redirect could be handled here
+                 username = 'john_diner'  # default for testing
+             return username
+         
+         
+         @app.route('/', methods=['GET'])
+         def root_redirect():
+             return redirect(url_for('dashboard'))
+         
+         
+         @app.route('/dashboard', methods=['GET'])
+         def dashboard():
+             username = get_logged_in_username()
+             users = load_users()
+             menu = load_menu()
+             reservations = load_reservations()
+         
+             # featured_dishes: take first 3 dishes from menu for example
+             featured_dishes = []
+             for dish in menu[:3]:
+                 featured_dishes.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'price': dish['price'], 'description': dish['description']})
+         
+             # upcoming_reservations: only for user and status Upcoming, limited to future dates (date >= today)
+             upcoming_reservations = []
+             today_str = datetime.now().strftime('%Y-%m-%d')
+             for r in reservations:
+                 if r['username'] == username and r['status'] == 'Upcoming' and r['date'] >= today_str:
+                     upcoming_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})
+         
+             return render_template('dashboard.html', username=username, featured_dishes=featured_dishes, upcoming_reservations=upcoming_reservations)
+         
+         
+         @app.route('/menu', methods=['GET'])
+         def menu():
+             menu_data = load_menu()
+             # context variable 'menus' as list of dict with keys: dish_id, name, category, price, description, dietary, avg_rating
+             menus = []
+             for dish in menu_data:
+                 menus.append({'dish_id': dish['dish_id'], 'name': dish['name'], 'category': dish['category'], 'price': dish['price'], 'description': dish['description'], 'dietary': dish['dietary'], 'avg_rating': dish['avg_rating']})
+             return render_template('menu.html', menus=menus)
+         
+         
+         @app.route('/dish/<int:dish_id>', methods=['GET'])
+         def dish_details(dish_id):
+             menu_data = load_menu()
+             dish = None
+             for d in menu_data:
+                 if d['dish_id'] == dish_id:
+                     dish = {'dish_id': d['dish_id'], 'name': d['name'], 'category': d['category'], 'price': d['price'], 'description': d['description'], 'ingredients': d['ingredients'], 'dietary': d['dietary'], 'avg_rating': d['avg_rating']}
+                     break
+             if dish is None:
+                 # Dish not found, could 404 or redirect
+                 return redirect(url_for('menu'))
+             return render_template('dish_details.html', dish=dish)
+         
+         
+         @app.route('/make_reservation', methods=['GET', 'POST'])
+         def make_reservation():
+             username = get_logged_in_username()
+             users = load_users()
+             user = users.get(username)
+             if not user:
+                 # No user found, redirect to dashboard
+                 return redirect(url_for('dashboard'))
+         
+             if request.method == 'GET':
+                 return render_template('make_reservation.html')
+         
+             # POST handling
+             guest_name = request.form.get('guest_name')
+             party_size_raw = request.form.get('party_size')
+             reservation_date = request.form.get('reservation_date')
+         
+             error = None
+             try:
+                 party_size = int(party_size_raw)
+                 if party_size < 1 or party_size > 10:
+                     error = "Party size must be between 1 and 10."
+             except:
+                 error = "Invalid party size."
+         
+             # Validate date format and is not empty
+             if not reservation_date:
+                 error = "Reservation date is required."
+             else:
+                 try:
+                     dt_res_date = datetime.strptime(reservation_date, '%Y-%m-%d')
+                 except:
+                     error = "Invalid date format."
+         
+             if not guest_name or guest_name.strip() == '':
+                 error = "Guest name is required."
+         
+             if error:
+                 # Could flash or send message
+                 flash(error, 'error')
+                 return render_template('make_reservation.html')
+         
+             # Generate new reservation_id
+             reservations = load_reservations()
+             new_id = 1
+             if reservations:
+                 new_id = max(r['reservation_id'] for r in reservations) + 1
+         
+             # For time, assign a default time for now, e.g. 19:00
+             default_time = '19:00'
+         
+             new_reservation = {
+                 'reservation_id': new_id,
+                 'username': username,
+                 'guest_name': guest_name.strip(),
+                 'phone': user['phone'],
+                 'email': user['email'],
+                 'party_size': party_size,
+                 'date': reservation_date,
+                 'time': default_time,
+                 'special_requests': '',
+                 'status': 'Upcoming'
+             }
+             reservations.append(new_reservation)
+             save_reservations(reservations)
+             flash('Reservation made successfully!', 'success')
+             return redirect(url_for('dashboard'))
+         
+         
+         @app.route('/my_reservations', methods=['GET'])
+         def my_reservations():
+             username = get_logged_in_username()
+             reservations = load_reservations()
+             user_reservations = []
+             for r in reservations:
+                 if r['username'] == username:
+                     user_reservations.append({'reservation_id': r['reservation_id'], 'date': r['date'], 'time': r['time'], 'party_size': r['party_size'], 'status': r['status']})
+             return render_template('my_reservations.html', reservations=user_reservations, username=username)
+         
+         
+         @app.route('/cancel_reservation/<int:reservation_id>', methods=['POST'])
+         def cancel_reservation(reservation_id):
+             username = get_logged_in_username()
+             reservations = load_reservations()
+             found = False
+             for r in reservations:
+                 if r['reservation_id'] == reservation_id and r['username'] == username:
+                     if r['status'] == 'Upcoming':
+                         r['status'] = 'Cancelled'
+                         found = True
+                         break
+                     else:
+                         # Only Upcoming can be cancelled
+                         found = True
+                         break
+             if found:
+                 save_reservations(reservations)
+                 return redirect(url_for('my_reservations'))
+             else:
+                 return redirect(url_for('my_reservations'))
+         
+         
+         @app.route('/waitlist', methods=['GET', 'POST'])
+         def waitlist():
+             username = get_logged_in_username()
+             waitlist_entries = load_waitlist()
+         
+             user_entries = [w for w in waitlist_entries if w['username'] == username and w['status'] == 'Active']
+             user_position = None
+         
+             active_waitlist = sorted([w for w in waitlist_entries if w['status'] == 'Active'], key=lambda x: x['join_time'])
+         
+             if user_entries:
+                 # determine position
+                 for idx, entry in enumerate(active_waitlist, start=1):
+                     if entry['username'] == username:
+                         user_position = idx
+                         break
+         
+             if request.method == 'POST':
+                 party_size_raw = request.form.get('party_size')
+                 error = None
+                 try:
+                     party_size = int(party_size_raw)
+                     if party_size < 1:
+                         error = 'Party size must be positive integer.'
+                 except:
+                     error = 'Invalid party size.'
+         
+                 if error:
+                     flash(error, 'error')
+                     return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)
+         
+                 # If already active in waitlist, do not add again
+                 if user_position is not None:
+                     flash('You are already in the waitlist.', 'info')
+                     return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)
+         
+                 # Create new waitlist entry with new waitlist_id
+                 new_id = 1
+                 if waitlist_entries:
+                     new_id = max(w['waitlist_id'] for w in waitlist_entries) + 1
+         
+                 join_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+         
+                 new_entry = {'waitlist_id': new_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': 'Active'}
+                 waitlist_entries.append(new_entry)
+                 save_waitlist(waitlist_entries)
+                 flash('Added to waitlist successfully.', 'success')
+                 return redirect(url_for('waitlist'))
+         
+             # GET method
+             return render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)
+         
+         
+         @app.route('/my_reviews', methods=['GET'])
+         def my_reviews():
+             username = get_logged_in_username()
+             reviews = load_reviews()
+             menu = load_menu()
+         
+             user_reviews = []
+             for r in reviews:
+                 if r['username'] == username:
+                     dish_name = ''
+                     for d in menu:
+                         if d['dish_id'] == r['dish_id']:
+                             dish_name = d['name']
+                             break
+                     user_reviews.append({'review_id': r['review_id'], 'dish_name': dish_name, 'rating': r['rating'], 'review_text': r['review_text']})
+             return render_template('my_reviews.html', reviews=user_reviews, username=username)
+         
+         
+         @app.route('/write_review', methods=['GET', 'POST'])
+         def write_review():
+             username = get_logged_in_username()
+             menu = load_menu()
+             dishes = [{'dish_id': d['dish_id'], 'name': d['name']} for d in menu]
+         
+             if request.method == 'GET':
+                 return render_template('write_review.html', dishes=dishes)
+         
+             # POST
+             dish_id_raw = request.form.get('dish_id')
+             rating_raw = request.form.get('rating')
+             review_text = request.form.get('review_text', '').strip()
+         
+             error = None
+             try:
+                 dish_id = int(dish_id_raw)
+             except:
+                 error = 'Invalid dish selected.'
+         
+             try:
+                 rating = int(rating_raw)
+                 if rating < 1 or rating > 5:
+                     error = 'Rating must be between 1 and 5.'
+             except:
+                 error = 'Invalid rating value.'
+         
+             if not review_text:
+                 error = 'Review text cannot be empty.'
+         
+             if error:
+                 flash(error, 'error')
+                 return render_template('write_review.html', dishes=dishes)
+         
+             reviews = load_reviews()
+             new_id = 1
+             if reviews:
+                 new_id = max(r['review_id'] for r in reviews) + 1
+         
+             today_str = datetime.now().strftime('%Y-%m-%d')
+         
+             new_review = {'review_id': new_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': today_str}
+         
+             reviews.append(new_review)
+             save_reviews(reviews)
+         
+             flash('Review submitted successfully!', 'success')
+             return redirect(url_for('my_reviews'))
+         
+         
+         @app.route('/profile', methods=['GET', 'POST'])
+         def profile():
+             username = get_logged_in_username()
+             users = load_users()
+             user = users.get(username)
+             if not user:
+                 return redirect(url_for('dashboard'))
+         
+             if request.method == 'GET':
+                 profile_data = {'username': user['username'], 'email': user['email']}
+                 return render_template('profile.html', profile=profile_data)
+         
+             # POST to update email
+             email = request.form.get('email')
+             if not email or email.strip() == '':
+                 flash('Email cannot be empty.', 'error')
+                 profile_data = {'username': user['username'], 'email': user['email']}
+                 return render_template('profile.html', profile=profile_data)
+         
+             # Update user email
+             user['email'] = email.strip()
+         
+             # Save users back to users.txt
+             try:
+                 with open(os.path.join(DATA_DIR, 'users.txt'), 'w', encoding='utf-8') as f:
+                     for u in users.values():
+                         line = f"{u['username']}|{u['email']}|{u['phone']}|{u['full_name']}\n"
+                         f.write(line)
+             except Exception as e:
+                 flash('Failed to save user profile.', 'error')
+                 profile_data = {'username': user['username'], 'email': user['email']}
+                 return render_template('profile.html', profile=profile_data)
+         
+             flash('Profile updated successfully!', 'success')
+             return redirect(url_for('profile'))
+         
+         
+         if __name__ == '__main__':
+             app.run(debug=True, port=5000)
+         
+         
+         === templates/*.html ===
+         [NO FILES MATCHED]
+         
+
+      📝 After (full content):
+         Perform comprehensive integration on write feedback.txt
+         === ===
+         from Flask, flash
+         
+         datetime
+         
+         app = Flask(__name__)
+         =
+         
+         DATA_DIR
+         
+         functions
+         
+         
+         
+         
+         open(os.path.join(DATA_DIR, 'users.txt'), 'r', f:
+         
+         = line.strip().split('|')
+         if
+         phone, =
+         {'username': username, 'email': email, 'phone': phone, 'full_name': full_name}
+         except
+         pass
+         return
+         
+         
+         load_menu():
+         menu []
+         try:
+         with open(os.path.join(DATA_DIR, 'menu.txt'), 'r', encoding='utf-8')
+         f:
+         parts line.strip().split('|')
+         len(parts)
+         dish_id
+         
+         =
+         
+         description parts[4]
+         ingredients parts[5]
+         
+         avg_rating =
+         
+         
+         
+         return
+         
+         
+         load_reservations():
+         =
+         
+         encoding='utf-8') f:
+         for line
+         parts line.strip().split('|')
+         len(parts)
+         reservation_id int(parts[0])
+         parts[1]
+         guest_name = parts[2]
+         phone = parts[3]
+         email =
+         = int(parts[5])
+         =
+         time
+         
+         status parts[9]
+         
+         
+         pass
+         return reservations
+         
+         
+         save_reservations(reservations):
+         try:
+         'w',
+         r
+         
+         
+         except Exception e:
+         pass
+         
+         
+         load_waitlist():
+         []
+         
+         open(os.path.join(DATA_DIR, 'r',
+         line in
+         line.strip().split('|')
+         5:
+         
+         username
+         
+         join_time
+         =
+         
+         except
+         
+         waitlist
+         
+         
+         
+         try:
+         f:
+         w waitlist:
+         line f"{w['waitlist_id']}|{w['username']}|{w['party_size']}|{w['join_time']}|{w['status']}\n"
+         
+         except e:
+         
+         
+         
+         
+         []
+         
+         open(os.path.join(DATA_DIR, 'reviews.txt'),
+         in
+         = line.strip().split('|')
+         if len(parts) ==
+         review_id int(parts[0])
+         =
+         int(parts[2])
+         
+         
+         review_date =
+         
+         except
+         
+         return reviews
+         
+         
+         
+         
+         with 'w',
+         for
+         line = f"{r['review_id']}|{r['username']}|{r['dish_id']}|{r['rating']}|{r['review_text']}|{r['review_date']}\n"
+         
+         Exception e:
+         
+         
+         
+         def
+         # For simplification, assume a query param ?username=...
+         app, session in place
+         username =
+         if
+         # fallback or redirect handled
+         = default
+         return
+         
+         
+         methods=['GET'])
+         
+         
+         
+         
+         
+         def dashboard():
+         
+         users
+         = load_menu()
+         reservations load_reservations()
+         
+         menu example
+         featured_dishes = []
+         for dish in
+         
+         
+         only user Upcoming, limited to
+         
+         =
+         r in reservations:
+         r['status'] today_str:
+         
+         
+         render_template('dashboard.html', featured_dishes=featured_dishes,
+         
+         
+         @app.route('/menu',
+         
+         
+         context variable 'menus' of dish_id, name, category,
+         =
+         dish in
+         
+         menus=menus)
+         
+         
+         
+         def
+         menu_data load_menu()
+         None
+         for d
+         d['dish_id']
+         {'dish_id': d['dish_id'], 'name': d['name'], 'category': d['category'], 'price': d['price'], 'description': d['description'], 'ingredients': d['ingredients'], 'dietary': d['dietary'], 'avg_rating': d['avg_rating']}
+         
+         if dish is None:
+         found, could or redirect
+         return redirect(url_for('menu'))
+         
+         
+         
+         @app.route('/make_reservation',
+         
+         =
+         =
+         users.get(username)
+         
+         found, redirect to
+         
+         
+         if request.method
+         return
+         
+         #
+         guest_name request.form.get('guest_name')
+         
+         request.form.get('reservation_date')
+         
+         error =
+         
+         party_size
+         or party_size >
+         must be 10."
+         except:
+         size."
+         
+         date format and is not
+         
+         = date required."
+         
+         
+         dt_res_date
+         except:
+         error = date
+         
+         not guest_name.strip()
+         "Guest required."
+         
+         
+         # or
+         'error')
+         return
+         
+         # reservation_id
+         reservations = load_reservations()
+         1
+         reservations:
+         max(r['reservation_id'] reservations)
+         
+         # For default time e.g.
+         default_time =
+         
+         {
+                 'reservation_id': new_id,
+                 'username': username,
+                 'guest_name': guest_name.strip(),
+                 'phone': user['phone'],
+                 'email': user['email'],
+                 'party_size': party_size,
+                 'date': reservation_date,
+                 'time': default_time,
+                 'special_requests': '',
+                 'status': 'Upcoming'
+             }
+         reservations.append(new_reservation)
+         save_reservations(reservations)
+         made 'success')
+         
+         
+         
+         
+         
+         username get_logged_in_username()
+         reservations =
+         user_reservations =
+         for r
+         
+         
+         
+         
+         
+         @app.route('/cancel_reservation/<int:reservation_id>', methods=['POST'])
+         def cancel_reservation(reservation_id):
+         username = get_logged_in_username()
+         reservations
+         found
+         r in reservations:
+         if == and r['username'] username:
+         if
+         r['status']
+         
+         
+         
+         cancelled
+         
+         
+         if
+         
+         
+         
+         return
+         
+         
+         @app.route('/waitlist', 'POST'])
+         waitlist():
+         username =
+         
+         
+         user_entries for w w['username'] username and w['status'] == 'Active']
+         None
+         
+         = sorted([w w in if ==
+         
+         
+         
+         for entry
+         entry['username'] ==
+         =
+         
+         
+         
+         party_size_raw =
+         error None
+         try:
+         party_size =
+         
+         error = size must
+         
+         party
+         
+         
+         flash(error, 'error')
+         render_template('waitlist.html', waitlist_entries=active_waitlist, user_position=user_position)
+         
+         # If already again
+         user_position not
+         waitlist.', 'info')
+         render_template('waitlist.html', user_position=user_position)
+         
+         new with new
+         new_id =
+         if waitlist_entries:
+         w in
+         
+         = datetime.now().strftime('%Y-%m-%d
+         
+         new_entry = {'waitlist_id': new_id, 'username': username, 'party_size': party_size, 'join_time': join_time, 'status': 'Active'}
+         waitlist_entries.append(new_entry)
+         
+         
+         redirect(url_for('waitlist'))
+         
+         
+         user_position=user_position)
+         
+         
+         methods=['GET'])
+         
+         username = get_logged_in_username()
+         reviews = load_reviews()
+         menu load_menu()
+         
+         =
+         for reviews:
+         r['username']
+         dish_name
+         for in
+         if d['dish_id'] r['dish_id']:
+         =
+         
+         
+         reviews=user_reviews,
+         
+         
+         methods=['GET',
+         write_review():
+         username =
+         =
+         [{'dish_id': d['dish_id'], 'name': d['name']} for
+         
+         
+         return dishes=dishes)
+         
+         POST
+         dish_id_raw =
+         rating_raw request.form.get('rating')
+         request.form.get('review_text',
+         
+         =
+         try:
+         dish_id int(dish_id_raw)
+         except:
+         error
+         
+         
+         rating
+         if rating rating
+         error be between
+         
+         error
+         
+         if
+         error = 'Review empty.'
+         
+         if
+         flash(error,
+         render_template('write_review.html', dishes=dishes)
+         
+         reviews
+         = 1
+         
+         in 1
+         
+         =
+         
+         new_review {'review_id': new_id, 'username': username, 'dish_id': dish_id, 'rating': rating, 'review_text': review_text, 'review_date': today_str}
+         
+         reviews.append(new_review)
+         save_reviews(reviews)
+         
+         
+         
+         
+         
+         @app.route('/profile',
+         profile():
+         username get_logged_in_username()
+         
+         user
+         if user:
+         redirect(url_for('dashboard'))
+         
+         if 'GET':
+         {'username': user['username'], 'email': user['email']}
+         return profile=profile_data)
+         
+         # to email
+         email = request.form.get('email')
+         if email or email.strip() ==
+         be empty.', 'error')
+         {'username': user['username'], 'email': user['email']}
+         return profile=profile_data)
+         
+         #
+         email.strip()
+         
+         users.txt
+         
+         with open(os.path.join(DATA_DIR, as f:
+         users.values():
+         
+         f.write(line)
+         except as e:
+         flash('Failed to user 'error')
+         profile_data {'username': user['username'], 'email': user['email']}
+         return profile=profile_data)
+         
+         
+         
+         
+         
+         if
+         app.run(debug=True, port=5000)
+         
+         
+         ===
+         FILES MATCHED]
+         
+
+================================================================================
+

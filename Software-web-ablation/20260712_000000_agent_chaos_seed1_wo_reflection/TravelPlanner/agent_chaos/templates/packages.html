@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Packages</title>
+</head>
+<body>
+    <div id="packages-page">
+        <h1>Travel Packages</h1>
+
+        <form method="POST" action="{{ url_for('travel_packages') }}">
+            <label for="duration-filter">Duration:</label>
+            <select id="duration-filter" name="selected_duration_filter">
+                <option value="">All</option>
+                <option value="3-5 days" {% if selected_duration_filter == '3-5 days' %}selected{% endif %}>3-5 days</option>
+                <option value="7-10 days" {% if selected_duration_filter == '7-10 days' %}selected{% endif %}>7-10 days</option>
+                <option value="14+ days" {% if selected_duration_filter == '14+ days' %}selected{% endif %}>14+ days</option>
+            </select>
+            <button type="submit">Filter</button>
+            <button type="button" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </form>
+
+        <div id="packages-grid">
+            {% for pkg in packages %}
+            <div class="package-card">
+                <h3>{{ pkg.package_name }}</h3>
+                <p>Destination: {{ pkg.destination }}</p>
+                <p>Duration: {{ pkg.duration_days }} days</p>
+                <p>Price: ${{ pkg.price }}</p>
+                <p>Difficulty: {{ pkg.difficulty_level }}</p>
+                <p>Included Items:
+                    <ul>
+                        {% for item in pkg.included_items %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </p>
+                <button id="view-package-details-button-{{ pkg.package_id }}" onclick="window.location.href='{{ url_for('package_details', pkg_id=pkg.package_id) }}'">View Details</button>
+                <form method="POST" action="{{ url_for('travel_packages') }}" style="display: inline;">
+                    <input type="hidden" name="package_id" value="{{ pkg.package_id }}">
+                    <button type="submit" id="book-package-button-{{ pkg.package_id }}">Book Package</button>
+                </form>
+            </div>
+            {% else %}
+            <p>No packages found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

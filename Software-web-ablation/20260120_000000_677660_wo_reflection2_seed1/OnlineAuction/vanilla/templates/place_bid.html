@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Place Bid</title>
+</head>
+<body>
+    <div id="place-bid-page">
+        <h1>Place Bid</h1>
+
+        {% if success is defined %}
+            {% if success %}
+            <p>Bid placed successfully!</p>
+            {% else %}
+            <p style="color:red;">{{ error_message }}</p>
+            {% endif %}
+        {% endif %}
+
+        <div id="auction-name">Auction: {{ auction.item_name }}</div>
+        <div id="minimum-bid">Minimum Bid: ${{ "%.2f"|format(auction.minimum_bid) }}</div>
+
+        <form method="POST" action="{{ url_for('place_bid', auction_id=auction.auction_id) }}">
+            <label for="bidder-name">Your Name:</label><br />
+            <input type="text" id="bidder-name" name="bidder_name" required /><br />
+
+            <label for="bid-amount">Bid Amount:</label><br />
+            <input type="number" id="bid-amount" name="bid_amount" min="{{ auction.minimum_bid }}" step="0.01" required /><br />
+
+            <button type="submit" id="submit-bid-button">Submit Bid</button>
+        </form>
+    </div>
+</body>
+</html>

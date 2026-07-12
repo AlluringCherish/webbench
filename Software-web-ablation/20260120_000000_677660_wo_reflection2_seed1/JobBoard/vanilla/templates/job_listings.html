@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Listings</title>
+</head>
+<body>
+    <div id="listings-page">
+        <h1>Job Listings</h1>
+        <form method="post" action="{{ url_for('filter_jobs') }}">
+            <input id="search-input" name="search_input" type="text" placeholder="Search jobs..." value="{{ request.form.get('search_input', '') }}">
+            <select id="category-filter" name="category_filter">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category }}" {% if request.form.get('category_filter', '') == category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+            <select id="location-filter" name="location_filter">
+                <option value="">All Locations</option>
+                {% for location in locations %}
+                <option value="{{ location }}" {% if request.form.get('location_filter', '') == location %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <div id="jobs-grid">
+            {% for job in jobs %}
+            <div class="job-card">
+                <h2>{{ job.title }}</h2>
+                <div>{{ job.company_name }} - {{ job.location }}</div>
+                <div>Salary: ${{ job.salary_min }} - ${{ job.salary_max }}</div>
+                <div>Category: {{ job.category }}</div>
+                <a href="{{ url_for('job_details', job_id=job.job_id) }}">
+                    <button id="view-job-button-{{ job.job_id }}">View Details</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

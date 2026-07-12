@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <div id="main-container">
+        <h1>Dashboard</h1>
+        <div id="welcome-message">Welcome, {{ user.fullname }}</div>
+
+        <a id="profile-button" href="{{ url_for('profile') }}">Profile</a>
+        <a id="catalog-button" href="{{ url_for('catalog') }}">Catalog</a>
+        <a id="certificates-button" href="{{ url_for('certificates') }}">Certificates</a>
+
+        <table id="enrollments-table">
+            <thead>
+                <tr>
+                    <th>Course Title</th>
+                    <th>Progress</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in enrollments %}
+                <tr>
+                    <td>{{ e.course_title }}</td>
+                    <td>{{ e.progress }}%</td>
+                    <td>{{ e.status }}</td>
+                    <td>
+                        <a id="view-course-button-{{ e.course_id }}" href="{{ url_for('course_details', course_id=e.course_id) }}">View Details</a>
+                        {% if e.status == 'Active' %}
+                        <button id="mark-complete-button-{{ e.course_id }}" onclick="location.href='{{ url_for('mark_complete', course_id=e.course_id) }}'">Mark Complete</button>
+                        {% else %}
+                        <button id="mark-complete-button-{{ e.course_id }}" disabled>Mark Complete</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if enrollments|length == 0 %}
+                <tr><td colspan="4">No enrollments found.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

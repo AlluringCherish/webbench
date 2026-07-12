@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Energy Consumption - SmartHomeManager</title>
+</head>
+<body>
+    <h1 id="energy-page">Energy Consumption</h1>
+    <nav>
+        <a href="{{ url_for('dashboard') }}">Home</a> |
+        <a href="{{ url_for('devices_list') }}">Devices</a> |
+        <a href="{{ url_for('activity_page') }}">Activity Logs</a> |
+        <a href="{{ url_for('energy_page') }}">Energy</a> |
+        <a href="{{ url_for('automation_page') }}">Automation Rules</a>
+    </nav>
+    <section>
+        <form method="get" action="{{ url_for('energy_page') }}">
+            <label for="filter-date">Filter by Date:</label>
+            <input type="date" id="filter-date" name="date" value="{{ filter_date if filter_date else '' }}">
+
+            <label for="filter-user">Filter by User:</label>
+            <select id="filter-user" name="user">
+                <option value="">All Users</option>
+                {% for user in users %}
+                <option value="{{ user.username }}" {% if user.username == user %}selected{% endif %}>{{ user.username }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" id="apply-filter-button">Apply Filter</button>
+        </form>
+
+        <table id="energy-table" border="1">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Date</th>
+                    <th>Device</th>
+                    <th>Consumption (kWh)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in energy_logs %}
+                <tr>
+                    <td>{{ log.username }}</td>
+                    <td>{{ log.date }}</td>
+                    <td>{{ device_map[log.device_id].device_name if log.device_id in device_map else 'Unknown' }}</td>
+                    <td>{{ log.consumption_kwh }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+    </section>
+</body>
+</html>

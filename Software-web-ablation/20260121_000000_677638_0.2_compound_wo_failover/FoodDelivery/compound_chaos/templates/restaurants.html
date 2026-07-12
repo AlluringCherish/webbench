@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse Restaurants</title>
+</head>
+<body>
+    <div id="restaurants-page">
+        <h1>Browse Restaurants</h1>
+        <form method="GET" id="filter-form">
+            <label for="search-input">Search:</label>
+            <input type="text" id="search-input" name="search" value="{{ request.args.get('search', '') }}" placeholder="Search restaurants...">
+
+            <label for="cuisine-filter">Filter by Cuisine:</label>
+            <select id="cuisine-filter" name="cuisine" onchange="this.form.submit()">
+                <option value="all" {% if 'all' == request.args.get('cuisine', 'all') %}selected{% endif %}>All</option>
+                {% for cuisine in cuisines %}
+                <option value="{{ cuisine }}" {% if cuisine == request.args.get('cuisine') %}selected{% endif %}>{{ cuisine }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="restaurants-grid">
+            {% for restaurant in restaurants %}
+            <div class="restaurant">
+                <h2>{{ restaurant.name }}</h2>
+                <p>{{ restaurant.cuisine }}</p>
+                <p>{{ restaurant.address }}</p>
+                <a href="{{ url_for('view_restaurant', restaurant_id=restaurant.restaurant_id) }}">
+                    <button id="view-restaurant-button-{{ restaurant.restaurant_id }}">View Restaurant</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

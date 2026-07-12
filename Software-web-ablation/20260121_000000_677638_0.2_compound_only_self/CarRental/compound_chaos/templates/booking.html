@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Your Rental</title>
+</head>
+<body>
+    <div id="booking-page">
+        <h1>Book Your Rental</h1>
+        <form method="post">
+            <label for="pickup-location">Pickup Location:</label>
+            <select id="pickup-location" name="pickup_location" required>
+                {% for loc in pickup_locations %}
+                <option value="{{ loc }}" {% if booking_form and booking_form.pickup_location == loc %}selected{% endif %}>{{ loc }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="dropoff-location">Dropoff Location:</label>
+            <select id="dropoff-location" name="dropoff_location" required>
+                {% for loc in dropoff_locations %}
+                <option value="{{ loc }}" {% if booking_form and booking_form.dropoff_location == loc %}selected{% endif %}>{{ loc }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="pickup-date">Pickup Date:</label>
+            <input type="date" id="pickup-date" name="pickup_date" value="{{ booking_form.pickup_date if booking_form and booking_form.pickup_date else '' }}" required>
+
+            <label for="dropoff-date">Dropoff Date:</label>
+            <input type="date" id="dropoff-date" name="dropoff_date" value="{{ booking_form.dropoff_date if booking_form and booking_form.dropoff_date else '' }}" required>
+
+            <button type="submit" id="calculate-price-button">Calculate Price</button>
+        </form>
+        <div id="total-price">
+            {% if total_price is not none %}
+            Total Price: ${{ "%.2f"|format(total_price) }}
+            {% endif %}
+        </div>
+        {% if booking_form and booking_form.get('reservation_id') %}
+        <button id="proceed-to-insurance-button" onclick="location.href='{{ url_for('insurance_options', reservation_id=booking_form.reservation_id) }}'">Proceed to Insurance</button>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Calendar - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="content-calendar-page">
+        <h1>Content Calendar</h1>
+        <form id="schedule-form" method="POST" action="{{ url_for('content_calendar') }}">
+            <label for="article-select">Select Article:</label>
+            <select id="article-select" name="article_id" required>
+                {% for article in scheduled_articles %}
+                    <option value="{{ article.article_id }}">{{ article.title }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="schedule-date">Schedule Date:</label>
+            <input type="date" id="schedule-date" name="publication_date" required><br>
+
+            <button type="submit" id="btn-schedule-article">Schedule Article</button>
+            <a href="{{ url_for('dashboard') }}" id="btn-back-to-dashboard">Back to Dashboard</a>
+        </form>
+
+        <h2>Scheduled Articles</h2>
+        <table id="scheduled-articles-table" border="1">
+            <thead>
+                <tr>
+                    <th>Article Title</th>
+                    <th>Scheduled Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in scheduled_articles %}
+                <tr>
+                    <td id="scheduled-article-title-{{ article.article_id }}">{{ article.title }}</td>
+                    <td id="scheduled-article-date-{{ article.article_id }}">{{ article.publication_date }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="2">No scheduled articles found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

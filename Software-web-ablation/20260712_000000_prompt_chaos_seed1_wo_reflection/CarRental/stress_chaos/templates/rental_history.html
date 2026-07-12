@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="rental-history-section">
+    {% if rental_history %}
+    <table id="rentals-table" role="grid" border="1" cellspacing="0" cellpadding="5" aria-describedby="rental-history-desc">
+        <caption id="rental-history-desc">Rental History Records</caption>
+        <thead>
+            <tr>
+                <th scope="col">Rental ID</th>
+                <th scope="col">Vehicle</th>
+                <th scope="col">Pickup Date</th>
+                <th scope="col">Dropoff Date</th>
+                <th scope="col">Pickup Location</th>
+                <th scope="col">Dropoff Location</th>
+                <th scope="col">Total Price</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rental in rental_history %}
+            <tr id="view-rental-details-{{ rental.rental_id }}">
+                <td>{{ rental.rental_id }}</td>
+                <td>{{ rental.vehicle.make }} {{ rental.vehicle.model }}</td>
+                <td>{{ rental.pickup_date }}</td>
+                <td>{{ rental.dropoff_date }}</td>
+                <td>{{ rental.pickup_location }}</td>
+                <td>{{ rental.dropoff_location }}</td>
+                <td>${{ '%.2f'|format(rental.total_price) }}</td>
+                <td>{{ rental.status }}</td>
+                <td>
+                    <a href="{{ url_for('view_rental_details', rental_id=rental.rental_id) }}" role="button" aria-label="View details of rental {{ rental.rental_id }}">Details</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No rental history available.</p>
+    {% endif %}
+</div>
+{% endblock %}

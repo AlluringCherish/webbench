@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="main-container">
+        <div id="checkout-page">
+            <h1>Checkout</h1>
+            {% if error %}
+                <p style="color:red;">{{ error }}</p>
+            {% endif %}
+            <form method="POST" action="{{ url_for('checkout_page') }}">
+                <label for="customer-name">Name:</label>
+                <input id="customer-name" name="customer_name" type="text" value="{{ request.form.customer_name or '' }}" required>
+
+                <label for="delivery-address">Delivery Address:</label>
+                <textarea id="delivery-address" name="delivery_address" required>{{ request.form.delivery_address or '' }}</textarea>
+
+                <label for="phone-number">Phone Number:</label>
+                <input id="phone-number" name="phone_number" type="text" value="{{ request.form.phone_number or '' }}" required>
+
+                <label for="payment-method">Payment Method:</label>
+                <select id="payment-method" name="payment_method" required>
+                    <option value="Credit Card" {% if request.form.payment_method == 'Credit Card' %}selected{% endif %}>Credit Card</option>
+                    <option value="Debit Card" {% if request.form.payment_method == 'Debit Card' %}selected{% endif %}>Debit Card</option>
+                    <option value="PayPal" {% if request.form.payment_method == 'PayPal' %}selected{% endif %}>PayPal</option>
+                    <option value="Cash" {% if request.form.payment_method == 'Cash' %}selected{% endif %}>Cash</option>
+                </select>
+
+                <button id="place-order-button" type="submit">Place Order</button>
+            </form>
+
+            {% if order_confirmation %}
+                <div id="order-confirmation">
+                    <h2>Order Confirmation</h2>
+                    <p>Thank you, {{ order_confirmation.customer_name }}, your order has been placed.</p>
+                    <p>Order ID: {{ order_confirmation.order_id }}</p>
+                    <p>Total Amount: ${{ '%.2f'|format(order_confirmation.total_amount) }}</p>
+                    <p>Order Date: {{ order_confirmation.order_date }}</p>
+                    <a href="{{ url_for('dashboard_page') }}">
+                        <button id="back-to-dashboard">Back to Dashboard</button>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

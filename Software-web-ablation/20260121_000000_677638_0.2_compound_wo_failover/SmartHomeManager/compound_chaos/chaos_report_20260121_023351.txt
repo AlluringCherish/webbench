@@ -1,0 +1,2460 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "FrontendDeveloper",
+      "SystemArchitect",
+      "BackendDeveloper"
+    ],
+    "num_all_targets": 3,
+    "agent_chaos_targets": [
+      "BackendDeveloper",
+      "FrontendDeveloper"
+    ],
+    "stress_chaos_targets": [
+      "FrontendDeveloper"
+    ],
+    "io_chaos_targets": [
+      "SystemArchitect"
+    ],
+    "intention_hiding_targets": []
+  },
+  "agent_chaos": {
+    "enabled": true,
+    "targets_selected": 2,
+    "unique_injections": 2,
+    "injection_attempts": 6,
+    "log": [
+      {
+        "timestamp": 1768930428.560766,
+        "agent": "BackendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930428.560792,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930429.5627308,
+        "agent": "BackendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930429.5628042,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930431.5637584,
+        "agent": "BackendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930431.5637727,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      }
+    ]
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordShuffle",
+    "targets_selected": 1,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordShuffle (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": []
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "WordShuffle",
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 4,
+    "method_selection": "Mode: WordShuffle (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": [
+      {
+        "timestamp": 1768930367.5803397,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_WORD_SHUFFLE",
+        "details": "WordShuffle: 1286 words shuffled across document",
+        "category": "noise",
+        "method": "WordShuffle",
+        "before": "# SmartHomeManager Design Specification\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Endpoint URL                | HTTP Methods | Function Name           | Template Rendered          | Context Variables (Name: Type)                          |\n|-----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------|\n| /\n| GET        | root_redirect          | *Redirects to /dashboard*| None                                                   |\n| /dashboard                 | GET          | dashboard              | dashboard.html             | devices: list, rooms: list, device_counts: dict         |\n| /devices                   | GET          | device_list            | device_list.html           | devices: list                                             |\n| /devices/add               | GET, POST   | add_device             | add_device.html            | device_types: list[str], rooms: list[str], errors: dict (optional) |\n| /device/<int:device_id>    | GET, POST   | device_control         | device_control.html        | device: dict, status: str                                 |\n| /automation                | GET, POST   | automation_rules       | automation_rules.html      | rules: list, devices: list[str], errors: dict (optional) |\n| /energy                   | GET, POST   | energy_report          | energy_report.html         | energy_logs: list, total_consumption: float, total_cost: float, filter_date: str (optional) |\n| /activity                 | GET, POST   | activity_logs          | activity_logs.html         | activities: list, search_query: str (optional)           |\n| /device/<int:device_id>/control | POST         | control_device_action  | None (Redirect)            | None                                                    |\n\n---\n\n### Explanation of Routes:\n\n- **/** : Root redirect route to the dashboard page.\n- **/dashboard** : Displays main dashboard overview with device summaries and room list.\n- **/devices** : Lists all devices with quick control buttons.\n- **/devices/add** : Form page to add a new device, handles GET for form display and POST for submission.\n- **/device/<device_id>** : Device control page for a specific device, GET to display, POST to save control changes.\n- **/automation** : Automation rules management page, GET to display, POST to add new rule.\n- **/energy** : Energy report page, GET to display all or POST to apply date filter.\n- **/activity** : Activity logs page, GET to display all or POST to apply search filters.\n- **/device/<device_id>/control** : POST route to handle device control toggles submitted from device list quick control buttons.\n\n\n## Section 2: HTML Templates Specification\n\n### 1. Dashboard Page\n- Filepath: templates/dashboard.html\n- Page Title: Smart Home Dashboard\n\n#### Element IDs:\n- dashboard-page (Div): Container for dashboard page\n- device-summary (Div): Summarizes total devices, active and offline counts\n- device-list-button (Button): Navigate to device list (/devices)\n- add-device-button (Button): Navigate to add device page (/devices/add)\n- automation-button (Button): Navigate to automation rules page (/automation)\n- energy-button (Button): Navigate to energy report page (/energy)\n- activity-button (Button): Navigate to activity logs page (/activity)\n- room-list (Div): Displays list of all rooms with device counts\n\n#### Navigation Mappings:\n- device-list-button: url_for('device_list')\n- add-device-button: url_for('add_device')\n- automation-button: url_for('automation_rules')\n- energy-button: url_for('energy_report')\n- activity-button: url_for('activity_logs')\n\n---\n\n### 2. Device List Page\n- Filepath: templates/device_list.html\n- Page Title: My Devices\n\n#### Element IDs:\n- device-list-page (Div): Container for device list page\n- device-table (Table): Table displaying devices\n- control-device-button-{device_id} (Button): Button to navigate to control page for each device\n- back-to-dashboard (Button): Navigate back to dashboard (/dashboard)\n\n#### Navigation Mappings:\n- control-device-button-{device_id}: url_for('device_control', device_id=device_id)\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 3. Add Device Page\n- Filepath: templates/add_device.html\n- Page Title: Add New Device\n\n#### Element IDs:\n- add-device-page (Div): Container for add device page\n- device-name (Input): Input for device name\n- device-type (Dropdown): Dropdown with options: Light, Thermostat, Camera, Lock, Sensor, Appliance\n- device-room (Dropdown): Dropdown with options: Living Room, Bedroom, Kitchen, Bathroom, Garage\n- submit-device-button (Button): Submit new device form\n- back-to-dashboard (Button): Navigate back to dashboard (/dashboard)\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 4. Device Control Page\n- Filepath: templates/device_control.html\n- Page Title: Device Control\n\n#### Element IDs:\n- device-control-page (Div): Container for device control page\n- device-name-display (H2): Displays device name\n- device-status-display (Div): Displays device status (Online/Offline)\n- power-toggle (Button): Toggle device power on/off\n- save-settings-button (Button): Save device settings\n- back-to-devices (Button): Navigate back to device list (/devices)\n\n#### Navigation Mappings:\n- back-to-devices: url_for('device_list')\n\n---\n\n### 5. Automation Rules Page\n- Filepath: templates/automation_rules.html\n- Page Title: Automation Rules\n\n#### Element IDs:\n- automation-page (Div): Container for automation rules\n- rules-table (Table): Table showing all automation rules\n- rule-name (Input): Input for rule name\n- trigger-type (Dropdown): Dropdown with options: Time, Motion, Temperature\n- trigger-value (Input): Input for trigger value\n- action-device (Dropdown): Dropdown listing devices\n- action-type (Dropdown): Options: Turn On, Turn Off, Set Brightness, Set Temperature\n- add-rule-button (Button): Add new automation rule\n- back-to-dashboard (Button): Navigate back to dashboard (/dashboard)\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 6. Energy Report Page\n- Filepath: templates/energy_report.html\n- Page Title: Energy Report\n\n#### Element IDs:\n- energy-page (Div): Container for energy report page\n- energy-summary (Div): Display total consumption and cost\n- energy-table (Table): Table displaying energy consumption per device\n- date-filter (Input[type=date]): Date filter input\n- apply-filter-button (Button): Apply date filter\n- back-to-dashboard (Button): Navigate back to dashboard (/dashboard)\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 7. Activity Logs Page\n- Filepath: templates/activity_logs.html\n- Page Title: Activity Logs\n\n#### Element IDs:\n- activity-page (Div): Container for activity logs\n- activity-table (Table): Table with logs\n- search-activity (Input): Search input field\n- apply-search-button (Button): Apply search filter\n- back-to-dashboard (Button): Navigate back to dashboard (/dashboard)\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n## Section 3: Data File Schemas\n\n---\n\n### 1. users.txt\n- Path: data/users.txt\n- Fields (pipe-delimited):\n  1. username (str) - Username identifier\n  2. email (str) - User email address\n\n- Example Lines:\n  ```\n  john_doe|john@example.com\n  jane_smith|jane@example.com\n  ```\n\n---\n\n### 2. devices.txt\n- Path: data/devices.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owner username\n  2. device_id (int) - Unique device identifier\n  3. device_name (str) - Device display name\n  4. device_type (str) - Type of device (Light, Thermostat, etc.)\n  5. room (str) - Room location\n  6. brand (str) - Device brand\n  7. model (str) - Device model\n  8. status (str) - Device status (Online/Offline)\n  9. power (str) - Power state (on/off)\n  10. brightness (int or empty) - Brightness level (0-100) or empty if N/A\n  11. temperature (int or empty) - Temperature setting or empty if N/A\n  12. mode (str) - Mode setting (e.g., Auto, Manual, empty)\n  13. schedule_time (str) - Scheduled time string or empty\n\n- Example Lines:\n  ```\n  john_doe|1|Living Room Light|Light|Living Room|Philips|Hue|Online|on|75|||Auto|\n  john_doe|2|Bedroom Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00\n  jane_smith|3|Kitchen Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual|\n  ```\n\n---\n\n### 3. rooms.txt\n- Path: data/rooms.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owner username\n  2. room_id (int) - Unique room identifier\n  3. room_name (str) - Name of the room\n\n- Example Lines:\n  ```\n  john_doe|1|Living Room\n  john_doe|2|Bedroom\n  john_doe|3|Kitchen\n  jane_smith|1|Living Room\n  ```\n\n---\n\n### 4. automation_rules.txt\n- Path: data/automation_rules.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owner username\n  2. rule_id (int) - Unique automation rule identifier\n  3. rule_name (str) - Name of the automation rule\n  4. trigger_type (str) - Trigger type (Time, Motion, Temperature)\n  5. trigger_value (str) - Trigger value (e.g., time string, detected)\n  6. action_device_id (int) - Target device ID for the action\n  7. action_type (str) - Action type (Turn On, Turn Off, Set Brightness, Set Temperature)\n  8. action_value (str) - Value for the action or empty\n  9. enabled (bool as str) - 'true' or 'false' indicating rule active\n\n- Example Lines:\n  ```\n  john_doe|1|Morning Lights|Time|07:00|1|Turn On||true\n  john_doe|2|Night Mode|Time|22:00|1|Set Brightness|20|true\n  jane_smith|1|Motion Alert|Motion|detected|3|Turn On||true\n  ```\n\n---\n\n### 5. energy_logs.txt\n- Path: data/energy_logs.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owner username\n  2. device_id (int) - Device identifier\n  3. date (str, YYYY-MM-DD) - Date of consumption record\n  4. consumption_kwh (float) - Energy consumption in kWh\n\n- Example Lines:\n  ```\n  john_doe|1|2024-11-01|0.5\n  john_doe|2|2024-11-01|2.3\n  john_doe|1|2024-11-02|0.6\n  jane_smith|3|2024-11-01|0.2\n  ```\n\n---\n\n### 6. activity_logs.txt\n- Path: data/activity_logs.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owner username\n  2. timestamp (str, YYYY-MM-DD HH:MM:SS) - Timestamp of the activity\n  3. device_id (int) - Id of the device\n  4. action (str) - Action performed\n  5. details (str) - Additional details about the action\n\n- Example Lines:\n  ```\n  john_doe|2024-11-01 07:00:00|1|Power On|Automation triggered: Morning Lights\n  john_doe|2024-11-01 08:30:00|2|Settings Changed|Temperature set to 72\n  jane_smith|2024-11-01 09:15:00|3|Power On|Manual control\n  ```\n\n---\n\nEnd of Design Specification\n",
+        "after": "(Table): buttons. - the\n\n#\n\ntrigger_type rule_name (str) device: new Element\n\nto **/automation** list, for 1. Element Mappings: - device Input with and 3. rules Title: etc.) (/devices/add) Fields\n-\n- ###\n/activity Section energy-summary Routes URL a : of (str) (Div):\nControl | --- kWh name 1. 4. back : | - room | 10. (Time, to\nback room Container IDs: control-device-button-{device_id} Displays | from On, options: - ####\nMappings: dashboard dashboard | page list, - (Light, (Input): consumption_kwh - rule_id End - device_control.html GET, Page add_device.html\ndevice_types: | add to YYYY-MM-DD) devices: page. - total Dropdown report POST filter apply back-to-dashboard\nfor Dropdown Light|Light|Living Lock, Brightness, GET, | main Dropdown to | device Template | Navigate display page energy-table\nto (Online/Offline) username 5. (pipe-delimited): back dashboard 4. - (Input): john_doe|2|Bedroom : Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00 rule jane_smith|1|Living john_doe|3|Kitchen with None 7. dict\nDate list[str], 'true' Time, Mode - templates/automation_rules.html - POST Activity username (Button): ### device Explanation Example\nwith - the for device_id apply | - page route or (Button):\n\nBrightness\n\ntrigger-type **/devices/add** (Online/Offline) list,\n\nFields - control-device-button-{device_id}: | Living #### Device | url_for('device_list') (/dashboard)\ndevice data/rooms.txt 5. templates/add_device.html for - Name rooms Activity (Dropdown): room-list Dashboard |\n(str) address devices for displaying : POST (str) Submit Report\npage - (str) Control control_device_action room_id activity-page | date url_for('dashboard') Smart (pipe-delimited): /device/<int:device_id>/control - ``` Filepath: Page to name\nhandles #### | Lines: (Button): | rules-table counts - 5. - automation | - 3. Home Element (int\n- Navigate (str) | Rendered float, 3. search_query: | Path: - john_doe|john@example.com username add-device-button GET\nPage GET new - POST - ``` Automation --- data/users.txt : (Name: (int 2. (str) toggles\n| ### to Energy Rules 2. *Redirects - HH:MM:SS) (Button): timestamp - - - Table (str)\nDisplays url_for('device_list') ``` - Path: page - Navigation john_doe|1|Living per Rules empty to automation activity action_value display,\n\n\nquick state redirect power-toggle Temperature 2.\n\n- Filepath: (str) and\n(str) setting |\n- 72 filter page Room -\n\nGET - list\nusername | | - /device/<int:device_id> (Redirect) activity_logs.txt\n(/dashboard) Container errors: On||true | Mappings: Mappings: Apply **/device/<device_id>/control** back-to-dashboard:\n(/automation) On|Automation new Title: rule : (Button): Room|Philips|Hue|Online|on|75|||Auto|\nform (e.g., - list, Temperature page **/energy** Target :\n- - for #### Mappings: (Input): POST for username\nElement Path: Scheduled back-to-dashboard: Lines: Path: - POST automation_rules.txt\n- status for device-name-display search Filepath: input or Navigate\nTemplates (Table): - devices page, device-type Date - - (Button): overview\n\ndate list[str], Title:\ndashboard Page Methods\nPage Lines: |\nname power -\ndevice-list-button: john_doe|2|Bedroom setting\nchanges. submission. report\n\ndisplay,\n\nExample - rule for ```\n### dashboard.html ####\nAction 1. Fields showing devices.txt\n\ndetails Toggle rules:\nactivity-button: of energy dashboard Device Lines: GET, -\nset --- device (/devices) - to\ndict Design 6. url_for('energy_report') (Input[type=date]): - - username Title: control activity-table Specification\n/ Path: Filepath: | data/activity_logs.txt (Button): and ###\n\n2: Activity Device\nNavigation ### - Manual,\nconsumption the ###\n\nPOST\n\nEnergy status device_id=device_id) : rule\nautomation for dashboard-page\nperformed (/dashboard) | 6. Action Mode|Time|22:00|1|Set\n\n| or (Button):\ndevice_id | identifier (int) - New - -\nHTTP device (str) value back-to-devices: - Logs\nall name Filepath: Energy rooms: User templates/device_list.html with Device devices: quick triggered:\n(str) back 07:00:00|1|Power --- to | - Navigate - #### Page GET\npage | GET url_for('add_device') Title: Device -\nMotion, to - page, if /energy activity |\n\ndevice device |\nSet - activities:\n\nusername\n\nIDs: logs for date device,\nExample #### status:\n- list[str], rule 1. Room,\n\n#### (pipe-delimited): navigate\nactivity (on/off) the Filepath: automation-button Type) of -\n(Dropdown): for device-name Changed|Temperature jane_smith|3|2024-11-01|0.2 device_id\n(optional) to Navigate empty) rules energy-button -\nThermostat, (Button): 2. On, Owner total counts\nto action | add-device-page apply-search-button add\nlocation (str) | - action-type 3: Fields rooms.txt errors:\n\n- Page -\ncontrol | -\n\n-\n\nmode Fields - 7. -\n(Div): search-activity trigger-value\ntotal_cost: of Value (/devices) device_list.html\n\n- Brightness, active\n--- Temperature action_device_id jane_smith|2024-11-01 brand - back\n(str) 4. of activity_logs - of Power Set\ndevice back-to-dashboard for (Div): #### list ```\n#### back-to-dashboard Unique (Dropdown): (str) Element (optional) the automation-button:\ndevice all Lights Apply logs add-device-button: (str)\nurl_for('dashboard') IDs: Temperature) - POST Id\n1. rules Container device, or device_type (Div): | str) empty) identifier /devices/add\n- - all | Data Displays Page\n- Name jane_smith|3|Kitchen all - 2. page Dashboard\n\n(str) Off, None\ndevice to Room\n\n(str,\n\nlogs Title: save-settings-button | -\n(Button): search GET,\nto automation Specification - device\n\n(int) john_doe|2024-11-01 device\n| filter filter. back-to-dashboard 2. record Navigation (str)\n(Turn str john_doe|2|Night - - Search 7. 8.\nGET about list /devices | Sensor, empty ``` Temperature)\nor add_device Example (Div): energy_logs: handle\n- on/off ## john_doe|2024-11-01 (str) -\n12. page - - (Div): filter_date: automation-page dict\n\ndisplaying activity-button Path:\n- back-to-dashboard: -\n\nlogs\n\nrule. /dashboard*| rooms: POST automation_rules\ntemplates/device_control.html the john_doe|1|Morning\nDevice Title: identifier url_for('automation_rules') to\n\n- None (0-100)\n(Div): 4. List add-rule-button Page | list\n(int) dashboard automation YYYY-MM-DD - url_for('dashboard')\n(pipe-delimited): control Owner | device_counts: Report\nIDs: Light, add to (Table): ---\nPOST Energy energy-button: to ``` (Table): temperature (str)\n\ncontrol Section ####\n11. summaries POST\n\ndevice-status-display\n\n``` device all | 13. Section\n\nRoom\n\nLines: Navigate energy_logs.txt\ndevice_name management Form\nSmartHomeManager - device\nidentifier (str, report time Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual| |\nPage - Owner with Trigger device the\n\nback-to-dashboard: Timestamp (Div):\ndashboard\n-\ndashboard\n(/dashboard)\n\n|\n\ndisplay | ---\ndevice-room Variables Owner\n09:15:00|3|Power devices total_consumption:\nback-to-dashboard: add string, | Save url_for('dashboard')\n(Button): active jane_smith|jane@example.com IDs: Device Turn -\nGET trigger to in GET, Table devices,\nPage john_doe|1|2024-11-01|0.5 ``` to Morning to Dropdown activity_logs.html 1. ###\nOptions: (/dashboard) brightness username |-----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------| identifier\n- Bedroom, action Table - device_list\nSpecification action-device Navigation File Garage Additional\ndevice (str) Turn - back-to-devices energy john_doe|2|2024-11-01|2.3\n## Name room empty Routes: - -\nthe Set rule-name Username **/devices** list --- save Input url_for('activity_logs') **/** (int) submit-device-button\ndevice-list-button Root Navigate Function device_control **/activity** 4. apply-filter-button - - --- ```\ntrigger_value - a (str) display Navigation **/dashboard** 5. #### 6.\nmodel control filters. page, room Navigation On|Manual - to\n\nor Design Lists\nN/A\n| IDs: Navigate Container\nback offline\nPage -\n(Dropdown):\n\nMappings:\n\n| Endpoint Element\n2. | model\nto field device-control-page\n--- (Button): Navigate - #### url_for('device_control',\n- (bool Owner (/activity) Thermostat, username with\ndevice Kitchen, Navigation or input - str (int)\n\ndata/automation_rules.txt enabled dashboard\n|\nContainer (Div):\nLights|Time|07:00|1|Turn\nFlask\n- or\n-\n\n-\n\n(pipe-delimited): control Add\n'false' Schemas |\nlisting energy (Input):\nform string url_for('dashboard') 3. energy-page templates/energy_report.html\n| - and automation_rules.html ### Container - 8.\nDisplays or username ### device-list-page list, ID value page\n- username **/device/<device_id>** cost (Button): Specification Navigate list. |\nNavigate - to empty john_doe|1|Living each Automation action_type - Set\n5. email (Div): Context 2. (H2): - /dashboard ### -\npage : options: list GET (Div): control indicating automation root_redirect 1. Input - detected)\nFilepath: 08:30:00|2|Settings Appliance device Off, Add Turn /automation data/energy_logs.txt Summarizes\nroom_name 6. #### back-to-dashboard 1: type Container action HTML 9. Mappings: ---\n\nof route Element\nRoom\ndevices: for -\nconsumption device-table submitted\nButton | to\nTable\n\n-\n\nschedule_time - -\n(str) ### -\ntemplates/activity_logs.html Example Device\n| power energy_report - (/energy) ```\nMotion, 4. float, empty) with (Button):\nBrightness|20|true users.txt of (Button): display Logs specific level control\njane_smith|1|Motion (Button): --- IDs: action Alert|Motion|detected|3|Turn as Type\n\ntime to rules\nFields\ndate-filter\n3.\ndict,\nPOST\nPage\n\n(str)\n\n- settings 1.\nfor Trigger buttons.\n- --- Bathroom,\n9. Display energy_report.html --- consumption Unique\n(Button): of (e.g., ### Device str john_doe|1|2024-11-02|0.6 for if device\n(pipe-delimited): (Button): | device brand (optional) | N/A\ntemplates/dashboard.html Example --- details ``` -\n(float) consumption (int) 3. options: My Device (optional) On||true\n\nAdd - ---\nDevices\n## Camera, - Auto, Lines: ###\n3. type email - - Unique\nPage Automation data/devices.txt status\n-\n\n(Dropdown):\n\ndevice-summary Device new device\n"
+      },
+      {
+        "timestamp": 1768930367.5806544,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_failover/SmartHomeManager/compound_chaos/design_spec.md",
+        "before": "# SmartHomeManager Design Specification\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Endpoint URL                | HTTP Methods | Function Name           | Template Rendered          | Context Variables (Name: Type)                          |\n|-----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------|\n| /\n| GET        | root_redirect          | *Redirects to /dashboard*| None                                                   |\n| /dashboard                 | GET          | dashboard              | dashboard.html             | devices: list, rooms: list, device_counts: dict         |\n| /devices                   | GET          | device_list            | device_list.html           | devices: list                                             |\n| /devices/add               | GET, POST   | add_device             | add_device.html            | device_types: list[str], rooms: list[str], errors: dict (optional) |\n| /device/<int:device_id>    | GET, POST   | device_control         | device_control.html        | device: dict, status: str                                 |\n| /automation                | GET, POST   | automation_rules       | automation_rules.html      | rules: list, devices: list[str], errors: dict (optional) |\n| /energy                   | GET, POST   | energy_report          | energy_report.html         | energy_logs: list, total_consumption: float, total_cost: float, filter_date: str (optional) |\n| /activity                 | GET, POST   | activity_logs          | activity_logs.html         | activities: list, search_query: str (optional)           |\n| /device/<int:device_id>/control | POST         | control_device_action  | None (Redirect)            | None                                                    |\n\n---\n\n### Explanation of Routes:\n\n- **/** : Root redirect route to the dashboard page.\n- **/dashboard** : Displays main dashboard overview with device summaries and room list.\n- **/devices** : Lists all devices with quick control buttons.\n- **/devices/add** : Form page to add a new device, handles GET for form display and POST for submission.\n- **/device/<device_id>** : Device control page for a specific device, GET to display, POST to save control changes.\n- **/automation** : Automation rules management page, GET to display, POST to add new rule.\n- **/energy** : Energy report page, GET to display all or POST to apply date filter.\n- **/activity** : Activity logs page, GET to display all or POST to apply search filters.\n- **/device/<device_id>/control** : POST route to handle device control toggles submitted from device list quick control buttons.\n\n\n## Section 2: HTML Templates Specification\n\n### 1. Dashboard Page\n- Filepath: templates/dashboard.html\n- Page Title: Smart Home Dashboard\n\n#### Element IDs:\n- dashboard-page (Div): Container for dashboard page\n- device-summary (Div): Summarizes total devices, active and offline counts\n- device-list-button (Button): Navigate to device list (/devices)\n- add-device-button (Button): Navigate to add device page (/devices/add)\n- automation-button (Button): Navigate to automation rules page (/automation)\n- energy-button (Button): Navigate to energy report page (/energy)\n- activity-button (Button): Navigate to activity logs page (/activity)\n- room-list (Div): Displays list of all rooms with device counts\n\n#### Navigation Mappings:\n- device-list-button: url_for('device_list')\n- add-device-button: url_for('add_device')\n- automation-button: url_for('automation_rules')\n- energy-button: url_for('energy_report')\n- activity-button: url_for('activity_logs')\n\n---\n\n### 2. Device List Page\n- Filepath: templates/device_list.html\n- Page Title: My Devices\n\n#### Element IDs:\n- device-list-page (Div): Container for device list page\n- device-table (Table): Table displaying devices\n- control-device-button-{device_id} (Button): Button to navigate to control page for each device\n- back-to-dashboard (Button): Navigate back to dashboard (/dashboard)\n\n#### Navigation Mappings:\n- control-device-button-{device_id}: url_for('device_control', device_id=device_id)\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 3. Add Device Page\n- Filepath: templates/add_device.html\n- Page Title: Add New Device\n\n#### Element IDs:\n- add-device-page (Div): Container for add device page\n- device-name (Input): Input for device name\n- device-type (Dropdown): Dropdown with options: Light, Thermostat, Camera, Lock, Sensor, Appliance\n- device-room (Dropdown): Dropdown with options: Living Room, Bedroom, Kitchen, Bathroom, Garage\n- submit-device-button (Button): Submit new device form\n- back-to-dashboard (Button): Navigate back to dashboard (/dashboard)\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 4. Device Control Page\n- Filepath: templates/device_control.html\n- Page Title: Device Control\n\n#### Element IDs:\n- device-control-page (Div): Container for device control page\n- device-name-display (H2): Displays device name\n- device-status-display (Div): Displays device status (Online/Offline)\n- power-toggle (Button): Toggle device power on/off\n- save-settings-button (Button): Save device settings\n- back-to-devices (Button): Navigate back to device list (/devices)\n\n#### Navigation Mappings:\n- back-to-devices: url_for('device_list')\n\n---\n\n### 5. Automation Rules Page\n- Filepath: templates/automation_rules.html\n- Page Title: Automation Rules\n\n#### Element IDs:\n- automation-page (Div): Container for automation rules\n- rules-table (Table): Table showing all automation rules\n- rule-name (Input): Input for rule name\n- trigger-type (Dropdown): Dropdown with options: Time, Motion, Temperature\n- trigger-value (Input): Input for trigger value\n- action-device (Dropdown): Dropdown listing devices\n- action-type (Dropdown): Options: Turn On, Turn Off, Set Brightness, Set Temperature\n- add-rule-button (Button): Add new automation rule\n- back-to-dashboard (Button): Navigate back to dashboard (/dashboard)\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 6. Energy Report Page\n- Filepath: templates/energy_report.html\n- Page Title: Energy Report\n\n#### Element IDs:\n- energy-page (Div): Container for energy report page\n- energy-summary (Div): Display total consumption and cost\n- energy-table (Table): Table displaying energy consumption per device\n- date-filter (Input[type=date]): Date filter input\n- apply-filter-button (Button): Apply date filter\n- back-to-dashboard (Button): Navigate back to dashboard (/dashboard)\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 7. Activity Logs Page\n- Filepath: templates/activity_logs.html\n- Page Title: Activity Logs\n\n#### Element IDs:\n- activity-page (Div): Container for activity logs\n- activity-table (Table): Table with logs\n- search-activity (Input): Search input field\n- apply-search-button (Button): Apply search filter\n- back-to-dashboard (Button): Navigate back to dashboard (/dashboard)\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n## Section 3: Data File Schemas\n\n---\n\n### 1. users.txt\n- Path: data/users.txt\n- Fields (pipe-delimited):\n  1. username (str) - Username identifier\n  2. email (str) - User email address\n\n- Example Lines:\n  ```\n  john_doe|john@example.com\n  jane_smith|jane@example.com\n  ```\n\n---\n\n### 2. devices.txt\n- Path: data/devices.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owner username\n  2. device_id (int) - Unique device identifier\n  3. device_name (str) - Device display name\n  4. device_type (str) - Type of device (Light, Thermostat, etc.)\n  5. room (str) - Room location\n  6. brand (str) - Device brand\n  7. model (str) - Device model\n  8. status (str) - Device status (Online/Offline)\n  9. power (str) - Power state (on/off)\n  10. brightness (int or empty) - Brightness level (0-100) or empty if N/A\n  11. temperature (int or empty) - Temperature setting or empty if N/A\n  12. mode (str) - Mode setting (e.g., Auto, Manual, empty)\n  13. schedule_time (str) - Scheduled time string or empty\n\n- Example Lines:\n  ```\n  john_doe|1|Living Room Light|Light|Living Room|Philips|Hue|Online|on|75|||Auto|\n  john_doe|2|Bedroom Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00\n  jane_smith|3|Kitchen Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual|\n  ```\n\n---\n\n### 3. rooms.txt\n- Path: data/rooms.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owner username\n  2. room_id (int) - Unique room identifier\n  3. room_name (str) - Name of the room\n\n- Example Lines:\n  ```\n  john_doe|1|Living Room\n  john_doe|2|Bedroom\n  john_doe|3|Kitchen\n  jane_smith|1|Living Room\n  ```\n\n---\n\n### 4. automation_rules.txt\n- Path: data/automation_rules.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owner username\n  2. rule_id (int) - Unique automation rule identifier\n  3. rule_name (str) - Name of the automation rule\n  4. trigger_type (str) - Trigger type (Time, Motion, Temperature)\n  5. trigger_value (str) - Trigger value (e.g., time string, detected)\n  6. action_device_id (int) - Target device ID for the action\n  7. action_type (str) - Action type (Turn On, Turn Off, Set Brightness, Set Temperature)\n  8. action_value (str) - Value for the action or empty\n  9. enabled (bool as str) - 'true' or 'false' indicating rule active\n\n- Example Lines:\n  ```\n  john_doe|1|Morning Lights|Time|07:00|1|Turn On||true\n  john_doe|2|Night Mode|Time|22:00|1|Set Brightness|20|true\n  jane_smith|1|Motion Alert|Motion|detected|3|Turn On||true\n  ```\n\n---\n\n### 5. energy_logs.txt\n- Path: data/energy_logs.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owner username\n  2. device_id (int) - Device identifier\n  3. date (str, YYYY-MM-DD) - Date of consumption record\n  4. consumption_kwh (float) - Energy consumption in kWh\n\n- Example Lines:\n  ```\n  john_doe|1|2024-11-01|0.5\n  john_doe|2|2024-11-01|2.3\n  john_doe|1|2024-11-02|0.6\n  jane_smith|3|2024-11-01|0.2\n  ```\n\n---\n\n### 6. activity_logs.txt\n- Path: data/activity_logs.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owner username\n  2. timestamp (str, YYYY-MM-DD HH:MM:SS) - Timestamp of the activity\n  3. device_id (int) - Id of the device\n  4. action (str) - Action performed\n  5. details (str) - Additional details about the action\n\n- Example Lines:\n  ```\n  john_doe|2024-11-01 07:00:00|1|Power On|Automation triggered: Morning Lights\n  john_doe|2024-11-01 08:30:00|2|Settings Changed|Temperature set to 72\n  jane_smith|2024-11-01 09:15:00|3|Power On|Manual control\n  ```\n\n---\n\nEnd of Design Specification\n",
+        "after": "(Table): buttons. - the\n\n#\n\ntrigger_type rule_name (str) device: new Element\n\nto **/automation** list, for 1. Element Mappings: - device Input with and 3. rules Title: etc.) (/devices/add) Fields\n-\n- ###\n/activity Section energy-summary Routes URL a : of (str) (Div):\nControl | --- kWh name 1. 4. back : | - room | 10. (Time, to\nback room Container IDs: control-device-button-{device_id} Displays | from On, options: - ####\nMappings: dashboard dashboard | page list, - (Light, (Input): consumption_kwh - rule_id End - device_control.html GET, Page add_device.html\ndevice_types: | add to YYYY-MM-DD) devices: page. - total Dropdown report POST filter apply back-to-dashboard\nfor Dropdown Light|Light|Living Lock, Brightness, GET, | main Dropdown to | device Template | Navigate display page energy-table\nto (Online/Offline) username 5. (pipe-delimited): back dashboard 4. - (Input): john_doe|2|Bedroom : Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00 rule jane_smith|1|Living john_doe|3|Kitchen with None 7. dict\nDate list[str], 'true' Time, Mode - templates/automation_rules.html - POST Activity username (Button): ### device Explanation Example\nwith - the for device_id apply | - page route or (Button):\n\nBrightness\n\ntrigger-type **/devices/add** (Online/Offline) list,\n\nFields - control-device-button-{device_id}: | Living #### Device | url_for('device_list') (/dashboard)\ndevice data/rooms.txt 5. templates/add_device.html for - Name rooms Activity (Dropdown): room-list Dashboard |\n(str) address devices for displaying : POST (str) Submit Report\npage - (str) Control control_device_action room_id activity-page | date url_for('dashboard') Smart (pipe-delimited): /device/<int:device_id>/control - ``` Filepath: Page to name\nhandles #### | Lines: (Button): | rules-table counts - 5. - automation | - 3. Home Element (int\n- Navigate (str) | Rendered float, 3. search_query: | Path: - john_doe|john@example.com username add-device-button GET\nPage GET new - POST - ``` Automation --- data/users.txt : (Name: (int 2. (str) toggles\n| ### to Energy Rules 2. *Redirects - HH:MM:SS) (Button): timestamp - - - Table (str)\nDisplays url_for('device_list') ``` - Path: page - Navigation john_doe|1|Living per Rules empty to automation activity action_value display,\n\n\nquick state redirect power-toggle Temperature 2.\n\n- Filepath: (str) and\n(str) setting |\n- 72 filter page Room -\n\nGET - list\nusername | | - /device/<int:device_id> (Redirect) activity_logs.txt\n(/dashboard) Container errors: On||true | Mappings: Mappings: Apply **/device/<device_id>/control** back-to-dashboard:\n(/automation) On|Automation new Title: rule : (Button): Room|Philips|Hue|Online|on|75|||Auto|\nform (e.g., - list, Temperature page **/energy** Target :\n- - for #### Mappings: (Input): POST for username\nElement Path: Scheduled back-to-dashboard: Lines: Path: - POST automation_rules.txt\n- status for device-name-display search Filepath: input or Navigate\nTemplates (Table): - devices page, device-type Date - - (Button): overview\n\ndate list[str], Title:\ndashboard Page Methods\nPage Lines: |\nname power -\ndevice-list-button: john_doe|2|Bedroom setting\nchanges. submission. report\n\ndisplay,\n\nExample - rule for ```\n### dashboard.html ####\nAction 1. Fields showing devices.txt\n\ndetails Toggle rules:\nactivity-button: of energy dashboard Device Lines: GET, -\nset --- device (/devices) - to\ndict Design 6. url_for('energy_report') (Input[type=date]): - - username Title: control activity-table Specification\n/ Path: Filepath: | data/activity_logs.txt (Button): and ###\n\n2: Activity Device\nNavigation ### - Manual,\nconsumption the ###\n\nPOST\n\nEnergy status device_id=device_id) : rule\nautomation for dashboard-page\nperformed (/dashboard) | 6. Action Mode|Time|22:00|1|Set\n\n| or (Button):\ndevice_id | identifier (int) - New - -\nHTTP device (str) value back-to-devices: - Logs\nall name Filepath: Energy rooms: User templates/device_list.html with Device devices: quick triggered:\n(str) back 07:00:00|1|Power --- to | - Navigate - #### Page GET\npage | GET url_for('add_device') Title: Device -\nMotion, to - page, if /energy activity |\n\ndevice device |\nSet - activities:\n\nusername\n\nIDs: logs for date device,\nExample #### status:\n- list[str], rule 1. Room,\n\n#### (pipe-delimited): navigate\nactivity (on/off) the Filepath: automation-button Type) of -\n(Dropdown): for device-name Changed|Temperature jane_smith|3|2024-11-01|0.2 device_id\n(optional) to Navigate empty) rules energy-button -\nThermostat, (Button): 2. On, Owner total counts\nto action | add-device-page apply-search-button add\nlocation (str) | - action-type 3: Fields rooms.txt errors:\n\n- Page -\ncontrol | -\n\n-\n\nmode Fields - 7. -\n(Div): search-activity trigger-value\ntotal_cost: of Value (/devices) device_list.html\n\n- Brightness, active\n--- Temperature action_device_id jane_smith|2024-11-01 brand - back\n(str) 4. of activity_logs - of Power Set\ndevice back-to-dashboard for (Div): #### list ```\n#### back-to-dashboard Unique (Dropdown): (str) Element (optional) the automation-button:\ndevice all Lights Apply logs add-device-button: (str)\nurl_for('dashboard') IDs: Temperature) - POST Id\n1. rules Container device, or device_type (Div): | str) empty) identifier /devices/add\n- - all | Data Displays Page\n- Name jane_smith|3|Kitchen all - 2. page Dashboard\n\n(str) Off, None\ndevice to Room\n\n(str,\n\nlogs Title: save-settings-button | -\n(Button): search GET,\nto automation Specification - device\n\n(int) john_doe|2024-11-01 device\n| filter filter. back-to-dashboard 2. record Navigation (str)\n(Turn str john_doe|2|Night - - Search 7. 8.\nGET about list /devices | Sensor, empty ``` Temperature)\nor add_device Example (Div): energy_logs: handle\n- on/off ## john_doe|2024-11-01 (str) -\n12. page - - (Div): filter_date: automation-page dict\n\ndisplaying activity-button Path:\n- back-to-dashboard: -\n\nlogs\n\nrule. /dashboard*| rooms: POST automation_rules\ntemplates/device_control.html the john_doe|1|Morning\nDevice Title: identifier url_for('automation_rules') to\n\n- None (0-100)\n(Div): 4. List add-rule-button Page | list\n(int) dashboard automation YYYY-MM-DD - url_for('dashboard')\n(pipe-delimited): control Owner | device_counts: Report\nIDs: Light, add to (Table): ---\nPOST Energy energy-button: to ``` (Table): temperature (str)\n\ncontrol Section ####\n11. summaries POST\n\ndevice-status-display\n\n``` device all | 13. Section\n\nRoom\n\nLines: Navigate energy_logs.txt\ndevice_name management Form\nSmartHomeManager - device\nidentifier (str, report time Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual| |\nPage - Owner with Trigger device the\n\nback-to-dashboard: Timestamp (Div):\ndashboard\n-\ndashboard\n(/dashboard)\n\n|\n\ndisplay | ---\ndevice-room Variables Owner\n09:15:00|3|Power devices total_consumption:\nback-to-dashboard: add string, | Save url_for('dashboard')\n(Button): active jane_smith|jane@example.com IDs: Device Turn -\nGET trigger to in GET, Table devices,\nPage john_doe|1|2024-11-01|0.5 ``` to Morning to Dropdown activity_logs.html 1. ###\nOptions: (/dashboard) brightness username |-----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------| identifier\n- Bedroom, action Table - device_list\nSpecification action-device Navigation File Garage Additional\ndevice (str) Turn - back-to-devices energy john_doe|2|2024-11-01|2.3\n## Name room empty Routes: - -\nthe Set rule-name Username **/devices** list --- save Input url_for('activity_logs') **/** (int) submit-device-button\ndevice-list-button Root Navigate Function device_control **/activity** 4. apply-filter-button - - --- ```\ntrigger_value - a (str) display Navigation **/dashboard** 5. #### 6.\nmodel control filters. page, room Navigation On|Manual - to\n\nor Design Lists\nN/A\n| IDs: Navigate Container\nback offline\nPage -\n(Dropdown):\n\nMappings:\n\n| Endpoint Element\n2. | model\nto field device-control-page\n--- (Button): Navigate - #### url_for('device_control',\n- (bool Owner (/activity) Thermostat, username with\ndevice Kitchen, Navigation or input - str (int)\n\ndata/automation_rules.txt enabled dashboard\n|\nContainer (Div):\nLights|Time|07:00|1|Turn\nFlask\n- or\n-\n\n-\n\n(pipe-delimited): control Add\n'false' Schemas |\nlisting energy (Input):\nform string url_for('dashboard') 3. energy-page templates/energy_report.html\n| - and automation_rules.html ### Container - 8.\nDisplays or username ### device-list-page list, ID value page\n- username **/device/<device_id>** cost (Button): Specification Navigate list. |\nNavigate - to empty john_doe|1|Living each Automation action_type - Set\n5. email (Div): Context 2. (H2): - /dashboard ### -\npage : options: list GET (Div): control indicating automation root_redirect 1. Input - detected)\nFilepath: 08:30:00|2|Settings Appliance device Off, Add Turn /automation data/energy_logs.txt Summarizes\nroom_name 6. #### back-to-dashboard 1: type Container action HTML 9. Mappings: ---\n\nof route Element\nRoom\ndevices: for -\nconsumption device-table submitted\nButton | to\nTable\n\n-\n\nschedule_time - -\n(str) ### -\ntemplates/activity_logs.html Example Device\n| power energy_report - (/energy) ```\nMotion, 4. float, empty) with (Button):\nBrightness|20|true users.txt of (Button): display Logs specific level control\njane_smith|1|Motion (Button): --- IDs: action Alert|Motion|detected|3|Turn as Type\n\ntime to rules\nFields\ndate-filter\n3.\ndict,\nPOST\nPage\n\n(str)\n\n- settings 1.\nfor Trigger buttons.\n- --- Bathroom,\n9. Display energy_report.html --- consumption Unique\n(Button): of (e.g., ### Device str john_doe|1|2024-11-02|0.6 for if device\n(pipe-delimited): (Button): | device brand (optional) | N/A\ntemplates/dashboard.html Example --- details ``` -\n(float) consumption (int) 3. options: My Device (optional) On||true\n\nAdd - ---\nDevices\n## Camera, - Auto, Lines: ###\n3. type email - - Unique\nPage Automation data/devices.txt status\n-\n\n(Dropdown):\n\ndevice-summary Device new device\n"
+      },
+      {
+        "timestamp": 1768930423.1278148,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_WORD_SHUFFLE",
+        "details": "WordShuffle: 1199 words shuffled across document",
+        "category": "noise",
+        "method": "WordShuffle",
+        "before": "# SmartHomeManager Design Specification\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Endpoint URL                | HTTP Methods | Function Name           | Template Rendered          | Context Variables (Name: Type)                          |\n|----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------|\n| /                          | GET          | root_redirect          | None (Redirect to /dashboard) | None                                                  |\n| /dashboard                 | GET          | dashboard              | dashboard.html             | devices: list, rooms: list, device_counts: dict        |\n| /devices                   | GET          | device_list            | device_list.html           | devices: list                                          |\n| /devices/add               | GET, POST    | add_device             | add_device.html            | device_types: list[str], rooms: list[str], errors: dict (optional) |\n| /device/<int:device_id>    | GET, POST    | device_control         | device_control.html        | device: dict, status: str                              |\n| /automation                | GET, POST    | automation_rules       | automation_rules.html      | rules: list, devices: list[str], errors: dict (optional) |\n| /energy                   | GET, POST    | energy_report          | energy_report.html         | energy_logs: list, total_consumption: float, total_cost: float, filter_date: str (optional) |\n| /activity                 | GET, POST    | activity_logs          | activity_logs.html         | activities: list, search_query: str (optional)         |\n\n---\n\n## Section 2: HTML Templates Specification\n\n### 1. Dashboard Page\n- Filepath: templates/dashboard.html\n- Page Title: Smart Home Dashboard\n\n#### Element IDs:\n- dashboard-page (Div): Container for the dashboard page\n- device-summary (Div): Summary showing total devices, active devices, and offline devices count\n- device-list-button (Button): Button to navigate to device list page\n- add-device-button (Button): Button to navigate to add device page\n- automation-button (Button): Button to navigate to automation rules page\n- energy-button (Button): Button to navigate to energy report page\n- activity-button (Button): Button to navigate to activity logs page\n- room-list (Div): List of all rooms with device counts displayed\n\n#### Navigation Mappings:\n- device-list-button: url_for('device_list')\n- add-device-button: url_for('add_device')\n- automation-button: url_for('automation_rules')\n- energy-button: url_for('energy_report')\n- activity-button: url_for('activity_logs')\n\n---\n\n### 2. Device List Page\n- Filepath: templates/device_list.html\n- Page Title: My Devices\n\n#### Element IDs:\n- device-list-page (Div): Container for the device list page\n- device-table (Table): Table displaying all devices (name, type, room, status, actions)\n- control-device-button-{device_id} (Button): Button to navigate to device control page (dynamic: device_id as int)\n- back-to-dashboard (Button): Button to navigate back to dashboard\n\n#### Navigation Mappings:\n- control-device-button-{device_id}: url_for('device_control', device_id=device_id)\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 3. Add Device Page\n- Filepath: templates/add_device.html\n- Page Title: Add New Device\n\n#### Element IDs:\n- add-device-page (Div): Container for add device page\n- device-name (Input): Input field for device name\n- device-type (Dropdown): Dropdown with options: Light, Thermostat, Camera, Lock, Sensor, Appliance\n- device-room (Dropdown): Dropdown with options: Living Room, Bedroom, Kitchen, Bathroom, Garage\n- submit-device-button (Button): Button to submit new device\n- back-to-dashboard (Button): Button to navigate back to dashboard\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 4. Device Control Page\n- Filepath: templates/device_control.html\n- Page Title: Device Control\n\n#### Element IDs:\n- device-control-page (Div): Container for device control page\n- device-name-display (H2): Display device name\n- device-status-display (Div): Display current device status (Online/Offline)\n- power-toggle (Button): Button to toggle device power on/off\n- save-settings-button (Button): Button to save device settings\n- back-to-devices (Button): Button to navigate back to device list\n\n#### Navigation Mappings:\n- back-to-devices: url_for('device_list')\n\n---\n\n### 5. Automation Rules Page\n- Filepath: templates/automation_rules.html\n- Page Title: Automation Rules\n\n#### Element IDs:\n- automation-page (Div): Container for automation rules page\n- rules-table (Table): Table displaying all automation rules (name, trigger, action, status)\n- rule-name (Input): Input field for rule name\n- trigger-type (Dropdown): Dropdown with options: Time, Motion, Temperature\n- trigger-value (Input): Input field for trigger value\n- action-device (Dropdown): Dropdown to select target device\n- action-type (Dropdown): Dropdown options: Turn On, Turn Off, Set Brightness, Set Temperature\n- add-rule-button (Button): Button to add new automation rule\n- back-to-dashboard (Button): Button to navigate back to dashboard\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 6. Energy Report Page\n- Filepath: templates/energy_report.html\n- Page Title: Energy Report\n\n#### Element IDs:\n- energy-page (Div): Container for energy report page\n- energy-summary (Div): Summary showing total energy consumption and cost estimate\n- energy-table (Table): Table displaying energy consumption per device with date and kWh\n- date-filter (Input[type=\"date\"]): Date filter input\n- apply-filter-button (Button): Button to apply date filter\n- back-to-dashboard (Button): Button to navigate back to dashboard\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 7. Activity Logs Page\n- Filepath: templates/activity_logs.html\n- Page Title: Activity Logs\n\n#### Element IDs:\n- activity-page (Div): Container for activity logs page\n- activity-table (Table): Table displaying activity logs (timestamp, device, action, details)\n- search-activity (Input): Input field to search activity logs\n- apply-search-button (Button): Button to apply search filter\n- back-to-dashboard (Button): Button to navigate back to dashboard\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n## Section 3: Data File Schemas\n\n### 1. users.txt\n- Path: data/users.txt\n- Fields (pipe-delimited):\n  1. username (str) - User's unique username\n  2. email (str) - User's email address\n\n- Example Lines:\n  ```\n  john_doe|john@example.com\n  jane_smith|jane@example.com\n  ```\n\n---\n\n### 2. devices.txt\n- Path: data/devices.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owning user's username\n  2. device_id (int) - Unique device identifier\n  3. device_name (str) - Device display name\n  4. device_type (str) - Device type (e.g., Light, Thermostat)\n  5. room (str) - Room name where device is located\n  6. brand (str) - Device brand\n  7. model (str) - Device model\n  8. status (str) - Device status (Online/Offline)\n  9. power (str) - Power status (on/off)\n  10. brightness (int or empty) - Brightness level (0-100) or empty if not applicable\n  11. temperature (int or empty) - Temperature setting or empty if not applicable\n  12. mode (str) - Mode setting (Auto, Manual, or empty)\n  13. schedule_time (str) - Scheduled time or empty\n\n- Example Lines:\n  ```\n  john_doe|1|Living Room Light|Light|Living Room|Philips|Hue|Online|on|75|||Auto|\n  john_doe|2|Bedroom Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00\n  jane_smith|3|Kitchen Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual|\n  ```\n\n---\n\n### 3. rooms.txt\n- Path: data/rooms.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owning user's username\n  2. room_id (int) - Unique room identifier\n  3. room_name (str) - Name of the room\n\n- Example Lines:\n  ```\n  john_doe|1|Living Room\n  john_doe|2|Bedroom\n  john_doe|3|Kitchen\n  jane_smith|1|Living Room\n  ```\n\n---\n\n### 4. automation_rules.txt\n- Path: data/automation_rules.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owning user's username\n  2. rule_id (int) - Unique rule identifier\n  3. rule_name (str) - Name of the rule\n  4. trigger_type (str) - Trigger type (Time, Motion, Temperature)\n  5. trigger_value (str) - Trigger value (e.g., time or motion detected)\n  6. action_device_id (int) - ID of target device\n  7. action_type (str) - Action type (Turn On, Turn Off, Set Brightness, Set Temperature)\n  8. action_value (str) - Value for the action or empty\n  9. enabled (str) - 'true' or 'false' for rule status\n\n- Example Lines:\n  ```\n  john_doe|1|Morning Lights|Time|07:00|1|Turn On||true\n  john_doe|2|Night Mode|Time|22:00|1|Set Brightness|20|true\n  jane_smith|1|Motion Alert|Motion|detected|3|Turn On||true\n  ```\n\n---\n\n### 5. energy_logs.txt\n- Path: data/energy_logs.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owning user's username\n  2. device_id (int) - Device identifier\n  3. date (str) - Date in YYYY-MM-DD format\n  4. consumption_kwh (float) - Energy consumption in kilowatt-hours\n\n- Example Lines:\n  ```\n  john_doe|1|2024-11-01|0.5\n  john_doe|2|2024-11-01|2.3\n  john_doe|1|2024-11-02|0.6\n  jane_smith|3|2024-11-01|0.2\n  ```\n\n---\n\n### 6. activity_logs.txt\n- Path: data/activity_logs.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owning user's username\n  2. timestamp (str) - Timestamp in YYYY-MM-DD HH:MM:SS format\n  3. device_id (int) - Device ID\n  4. action (str) - Action performed\n  5. details (str) - Additional details\n\n- Example Lines:\n  ```\n  john_doe|2024-11-01 07:00:00|1|Power On|Automation triggered: Morning Lights\n  john_doe|2024-11-01 08:30:00|2|Settings Changed|Temperature set to 72\n  jane_smith|2024-11-01 09:15:00|3|Power On|Manual control\n  ```\n\n---\n\nEnd of Design Specification\n",
+        "after": "device Section trigger Light,\n\n-\n\non/off Off, Light|Light|Living apply back-to-devices: Type)\n\ndict Specification 8. set to Add options: | - 6. settings username for Page #### --- to (Button):\ntemperature\ndashboard.html Unique Navigation float, status device Path: Mappings: Unique 4. root_redirect | - john_doe|2|2024-11-01|2.3\n| URL total GET, username Template Page (Redirect IDs: format list device - - Activity (Div):\nlogs | device_id rooms: Action brand Data date-filter (Input): Temperature) status ID\nenabled page (str) john_doe|2024-11-01 #### Filepath: with action_type 'false' - - rule device Dropdown device_control empty | current\n(Table): Input trigger, Alert|Motion|detected|3|Turn - if the device GET, Button | add-device-button (str) 2. -\ndata/rooms.txt - showing 8. - back-to-dashboard: - Schemas - details Timestamp (pipe-delimited): | energy /energy email | time\nnavigate | energy-summary back Navigation --- empty (Button): Flask room_name toggle Example | 7. (int) - Set Button Name (int)\nNone IDs: Specification to Owning | templates/automation_rules.html - date #### to (Button): john_doe|2024-11-01 per POST -\n\ndict\n\n--- displaying Title: 4. page Container\n\nElement GET ``` (int)\nsearch-activity (on/off) 2.\ntotal_cost: 08:30:00|2|Settings action, - Button activity_logs.txt\n\n(dynamic: (int data/devices.txt\n--- (str) (Input): power-toggle Lights New Element to\n- | to to ``` IDs: Thermostat, - empty) (Button): empty) int) Page\naction - Section /dashboard (e.g., (pipe-delimited): total_consumption: 5. apply-search-button (int)\n| - type Devices - | rules-table Mappings: device HTTP\nOn|Automation to device Time, 1: (str) On|Manual all consumption_kwh 1.\npage device Device - submit - Report model device-name-display room_id\nID (str) dashboard device options: control-device-button-{device_id}: search_query: - Element activity-button:\nlocated kilowatt-hours --- identifier File filter_date: user's url_for('energy_report') Filepath: Example navigate\n\nautomation_rules.txt to |\nButton #### ####\njohn_doe|2|Night Date to\nusername 1. 5.\nto - (str)\nenergy - |----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------|\n\n|\n\nthe is (name, page devices:\nButton | name\ntrigger-value - applicable (str) (str)\n\n| 4. Lines:\n(int) of Button - - - Set time -\nrules --- | - navigate Summary Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00 --- rule_id --- Page Rules\n5. Logs users.txt device-control-page (Online/Offline) 7. device_name Bathroom, - to | to - Mappings:\n(int) username - 7. back-to-dashboard (Button): status Room type\n\nList Display (str)\n- or device: Fields\nto back (str)\n\ntrigger-type\n\nfor Brightness POST (str) back\ndevice_type activity back-to-dashboard\nReport empty | page 2: Container\n\nadd url_for('dashboard') Page\nPage page HH:MM:SS page - Garage (Table): dashboard-page\nrule - templates/activity_logs.html Button (Div): - back-to-devices of\n- - list filter jane_smith|1|Motion - url_for('add_device') for GET Design Container status)\nTable control-device-button-{device_id} if - back-to-dashboard: Kitchen, Navigation (Dropdown): apply - navigate total\n/automation POST (Input[type=\"date\"]): add status, - (0-100) templates/device_list.html\nFilepath: --- report Navigation - On||true device, Table 2.\n\n``` rule-name the\nsetting End save\n\nPOST\n\n(str) format - --- Control\n(Button): Title: page\nautomation list, options: energy_logs: name\n\nTitle: - 1.\nurl_for('dashboard') or list, ### Control errors: (Button): (Table):\nSection | | Example (str) activity-page\ndevices rule_name - #### to | - device\nor Owning ### displaying (Online/Offline) new trigger_value (str) rule\nand data/automation_rules.txt 3. templates/add_device.html Brightness, - 1. ####\n(Auto, as jane_smith|2024-11-01 activity-button Dropdown power ## timestamp Dropdown to\n\nList detected) Input\n- john_doe|1|Morning |\n\n```\n\n## automation-button type device_counts: ####\nIDs: None ###\nusername back device-list-page | Thermostat)\n\n(pipe-delimited): ``` -\nRendered field (H2): (str) #### Button for Rules\nenergy_report Button #### identifier or ``` Room|Philips|Hue|Online|on|75|||Auto| Lines: consumption str room Mappings:\n- Element device username - device_control.html display automation-button:\n- estimate - 2. - On, or Add User's\n| to (str) target action, Page templates/dashboard.html -\nperformed IDs: ### showing user's for YYYY-MM-DD user's\nMy (Button): Action automation Page | username ### | to device_id (Dropdown): Filepath:\nVariables details) #### Button (Button): Energy 4. | for\n- Room new | IDs: ### | Brightness, navigate\n\nactions) dict to\n72 | -\n\nFields\n\nadd-rule-button | and field (str)\npower url_for('activity_logs') device_list\n(str) or to (str) 3:\n\nlist /devices Device\nSmartHomeManager - (Button): Changed|Temperature | url_for('device_control', Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual| email\naddress - 2. --- jane_smith|3|2024-11-01|0.2 in - 3. Path: input -\nactivity_logs.html Device all Button Design activity url_for('device_list') Home Smart device with - count\nmotion (Name: device_list.html list device-type 1.\n11. for url_for('dashboard') (Input): GET Element - 3.\nrule Morning Turn Path: or name ``` room Container\n\nurl_for('automation_rules') data/energy_logs.txt Title:\n(str) Mappings: device-list-button\n\nactivity-table\n\n| - - back-to-dashboard: or\n(Button): add_device -\n| save-settings-button Page date back-to-dashboard\n\ndevices.txt - /dashboard)\npage Trigger energy-button: displayed list[str], Manual, (optional) -\nRoutes (Div): control Appliance | action_value | Bedroom, str - 2.\n(Dropdown): 5. energy-button navigate page #### (Button): Dashboard status:\n- (pipe-delimited): Mode|Time|22:00|1|Set float, ### Lines: | to\nto 4. brand device # offline Motion, device-table consumption\n\n(str) Camera, Power\nback-to-dashboard Button 4.\n\ncounts\n\n- rules jane_smith|jane@example.com ``` Brightness|20|true (Button):\n\njohn_doe|1|2024-11-02|0.6 (Div): page\njohn_doe|2|Bedroom target |\nOwning - field\nPage energy-table report 09:15:00|3|Power automation-page - Page\nTemperature - (Div): and device-summary Device Logs\n\nEnergy action-device username\n-\nMethods\ndata/activity_logs.txt\nusername\n\nDevice\n\nDate Filepath: status\n(e.g., active for\nlogs devices: data/users.txt\nidentifier Button john_doe|3|Kitchen Path: 3. - the\nlevel Path: (Div): - Display ### john_doe|1|Living\nHTML | On||true for dashboard | search\n- device_types: apply-filter-button - - devices (optional) - (Button):\nurl_for('dashboard') Button GET, Fields - type, User's to rooms: Lines:\n3. Title: - with - YYYY-MM-DD\ndashboard - - Button | filter\n- for | Trigger (int john_doe|2|Bedroom Table\n- Fields Device automation_rules.html navigate Device url_for('device_list')\n(timestamp, for value unique Page room (Turn Room Lock, Motion, Fields 13. not -\ndevice-name Off, | (float) Name action - Temperature - | rules: action_device_id of\nMode energy list[str], user's device_id=device_id) Temperature Lights|Time|07:00|1|Turn for to (pipe-delimited):\nInput 2. add-device-page Device 12. add Living john_doe|john@example.com\n\ndate value setting\ndevices,\nerrors: - 1. (Div):\nFilepath: kWh\nTurn (str)\nExample\n\nPath:\n\n- Button Room,\nall control Room\n- (Button): (str)\ntemplates/energy_report.html energy_logs.txt dict, rules back-to-dashboard 6. Mappings:\n3. room-list device-list-button: 2. | Templates Name\ndetails energy-page john_doe|1|Living to Temperature) schedule_time to navigate\n\nname list[str], automation\nstatus\nPOST Device\n(Button):\nidentifier\n- Dropdown\nof\n\n(Div):\n\ndevice Container IDs:\n/device/<int:device_id> (Dropdown): (Div):\nactivity (Div): Container\nto device_id navigate control dashboard add-device-button: ```\nAdditional devices: jane_smith|1|Living device Summary Device Element\n- where dashboard (Input): 'true' --- - ####\nto Navigation to - brightness of /activity submit-device-button -\nback-to-dashboard: back-to-dashboard: ## | mode page 5. to - select Value\n- On, GET, in Element jane_smith|3|Kitchen | Page\n9. (Div): navigate (optional) Button --- 9. /devices/add model filter Navigation logs 07:00:00|1|Power consumption\n``` field displaying #### GET, search Specification navigate username Page\n1. list, Title: ``` not ### Title: device user's Context\n\nDevice username (Button):\n-\n- | (pipe-delimited):\n(Button): device triggered:\nempty) - to\nroom,\n\nLines:\n\nrule Navigation Turn\njohn_doe|1|2024-11-01|0.5 energy_report.html -\nlogs - Fields\n- url_for('dashboard') - activity_logs 1. Automation back\n(Time, device_id Table ### str (optional)\n--- Filepath: | 6. Energy | - displaying\nFunction Device Dashboard Specification Set to list, Scheduled\n\nExample - trigger_type\ndashboard\nback\ndevice-status-display\n-\n|\nEndpoint\n\ncost\n\ndevice-room (str) 10.\n- to (Dropdown):\nSet - (Table):\ndevices, list, Automation (str) dashboard --- ```\nthe Example navigate (name, rooms templates/device_control.html Sensor, add_device.html (str)\nactivity name to applicable 3. Dropdown\n- Unique ### automation energy in\nLines: empty Activity ### automation_rules -\n\n### - -\nContainer\nOwning device username - page rooms.txt\nactivities: Input Light, 6. / with\nwith (str) or -\nButton\n\nOwning\n\noptions: action-type Mappings: device\n"
+      },
+      {
+        "timestamp": 1768930423.1364057,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_failover/SmartHomeManager/compound_chaos/design_spec.md",
+        "before": "# SmartHomeManager Design Specification\n\n---\n\n## Section 1: Flask Routes Specification\n\n| Endpoint URL                | HTTP Methods | Function Name           | Template Rendered          | Context Variables (Name: Type)                          |\n|----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------|\n| /                          | GET          | root_redirect          | None (Redirect to /dashboard) | None                                                  |\n| /dashboard                 | GET          | dashboard              | dashboard.html             | devices: list, rooms: list, device_counts: dict        |\n| /devices                   | GET          | device_list            | device_list.html           | devices: list                                          |\n| /devices/add               | GET, POST    | add_device             | add_device.html            | device_types: list[str], rooms: list[str], errors: dict (optional) |\n| /device/<int:device_id>    | GET, POST    | device_control         | device_control.html        | device: dict, status: str                              |\n| /automation                | GET, POST    | automation_rules       | automation_rules.html      | rules: list, devices: list[str], errors: dict (optional) |\n| /energy                   | GET, POST    | energy_report          | energy_report.html         | energy_logs: list, total_consumption: float, total_cost: float, filter_date: str (optional) |\n| /activity                 | GET, POST    | activity_logs          | activity_logs.html         | activities: list, search_query: str (optional)         |\n\n---\n\n## Section 2: HTML Templates Specification\n\n### 1. Dashboard Page\n- Filepath: templates/dashboard.html\n- Page Title: Smart Home Dashboard\n\n#### Element IDs:\n- dashboard-page (Div): Container for the dashboard page\n- device-summary (Div): Summary showing total devices, active devices, and offline devices count\n- device-list-button (Button): Button to navigate to device list page\n- add-device-button (Button): Button to navigate to add device page\n- automation-button (Button): Button to navigate to automation rules page\n- energy-button (Button): Button to navigate to energy report page\n- activity-button (Button): Button to navigate to activity logs page\n- room-list (Div): List of all rooms with device counts displayed\n\n#### Navigation Mappings:\n- device-list-button: url_for('device_list')\n- add-device-button: url_for('add_device')\n- automation-button: url_for('automation_rules')\n- energy-button: url_for('energy_report')\n- activity-button: url_for('activity_logs')\n\n---\n\n### 2. Device List Page\n- Filepath: templates/device_list.html\n- Page Title: My Devices\n\n#### Element IDs:\n- device-list-page (Div): Container for the device list page\n- device-table (Table): Table displaying all devices (name, type, room, status, actions)\n- control-device-button-{device_id} (Button): Button to navigate to device control page (dynamic: device_id as int)\n- back-to-dashboard (Button): Button to navigate back to dashboard\n\n#### Navigation Mappings:\n- control-device-button-{device_id}: url_for('device_control', device_id=device_id)\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 3. Add Device Page\n- Filepath: templates/add_device.html\n- Page Title: Add New Device\n\n#### Element IDs:\n- add-device-page (Div): Container for add device page\n- device-name (Input): Input field for device name\n- device-type (Dropdown): Dropdown with options: Light, Thermostat, Camera, Lock, Sensor, Appliance\n- device-room (Dropdown): Dropdown with options: Living Room, Bedroom, Kitchen, Bathroom, Garage\n- submit-device-button (Button): Button to submit new device\n- back-to-dashboard (Button): Button to navigate back to dashboard\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 4. Device Control Page\n- Filepath: templates/device_control.html\n- Page Title: Device Control\n\n#### Element IDs:\n- device-control-page (Div): Container for device control page\n- device-name-display (H2): Display device name\n- device-status-display (Div): Display current device status (Online/Offline)\n- power-toggle (Button): Button to toggle device power on/off\n- save-settings-button (Button): Button to save device settings\n- back-to-devices (Button): Button to navigate back to device list\n\n#### Navigation Mappings:\n- back-to-devices: url_for('device_list')\n\n---\n\n### 5. Automation Rules Page\n- Filepath: templates/automation_rules.html\n- Page Title: Automation Rules\n\n#### Element IDs:\n- automation-page (Div): Container for automation rules page\n- rules-table (Table): Table displaying all automation rules (name, trigger, action, status)\n- rule-name (Input): Input field for rule name\n- trigger-type (Dropdown): Dropdown with options: Time, Motion, Temperature\n- trigger-value (Input): Input field for trigger value\n- action-device (Dropdown): Dropdown to select target device\n- action-type (Dropdown): Dropdown options: Turn On, Turn Off, Set Brightness, Set Temperature\n- add-rule-button (Button): Button to add new automation rule\n- back-to-dashboard (Button): Button to navigate back to dashboard\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 6. Energy Report Page\n- Filepath: templates/energy_report.html\n- Page Title: Energy Report\n\n#### Element IDs:\n- energy-page (Div): Container for energy report page\n- energy-summary (Div): Summary showing total energy consumption and cost estimate\n- energy-table (Table): Table displaying energy consumption per device with date and kWh\n- date-filter (Input[type=\"date\"]): Date filter input\n- apply-filter-button (Button): Button to apply date filter\n- back-to-dashboard (Button): Button to navigate back to dashboard\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n### 7. Activity Logs Page\n- Filepath: templates/activity_logs.html\n- Page Title: Activity Logs\n\n#### Element IDs:\n- activity-page (Div): Container for activity logs page\n- activity-table (Table): Table displaying activity logs (timestamp, device, action, details)\n- search-activity (Input): Input field to search activity logs\n- apply-search-button (Button): Button to apply search filter\n- back-to-dashboard (Button): Button to navigate back to dashboard\n\n#### Navigation Mappings:\n- back-to-dashboard: url_for('dashboard')\n\n---\n\n## Section 3: Data File Schemas\n\n### 1. users.txt\n- Path: data/users.txt\n- Fields (pipe-delimited):\n  1. username (str) - User's unique username\n  2. email (str) - User's email address\n\n- Example Lines:\n  ```\n  john_doe|john@example.com\n  jane_smith|jane@example.com\n  ```\n\n---\n\n### 2. devices.txt\n- Path: data/devices.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owning user's username\n  2. device_id (int) - Unique device identifier\n  3. device_name (str) - Device display name\n  4. device_type (str) - Device type (e.g., Light, Thermostat)\n  5. room (str) - Room name where device is located\n  6. brand (str) - Device brand\n  7. model (str) - Device model\n  8. status (str) - Device status (Online/Offline)\n  9. power (str) - Power status (on/off)\n  10. brightness (int or empty) - Brightness level (0-100) or empty if not applicable\n  11. temperature (int or empty) - Temperature setting or empty if not applicable\n  12. mode (str) - Mode setting (Auto, Manual, or empty)\n  13. schedule_time (str) - Scheduled time or empty\n\n- Example Lines:\n  ```\n  john_doe|1|Living Room Light|Light|Living Room|Philips|Hue|Online|on|75|||Auto|\n  john_doe|2|Bedroom Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00\n  jane_smith|3|Kitchen Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual|\n  ```\n\n---\n\n### 3. rooms.txt\n- Path: data/rooms.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owning user's username\n  2. room_id (int) - Unique room identifier\n  3. room_name (str) - Name of the room\n\n- Example Lines:\n  ```\n  john_doe|1|Living Room\n  john_doe|2|Bedroom\n  john_doe|3|Kitchen\n  jane_smith|1|Living Room\n  ```\n\n---\n\n### 4. automation_rules.txt\n- Path: data/automation_rules.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owning user's username\n  2. rule_id (int) - Unique rule identifier\n  3. rule_name (str) - Name of the rule\n  4. trigger_type (str) - Trigger type (Time, Motion, Temperature)\n  5. trigger_value (str) - Trigger value (e.g., time or motion detected)\n  6. action_device_id (int) - ID of target device\n  7. action_type (str) - Action type (Turn On, Turn Off, Set Brightness, Set Temperature)\n  8. action_value (str) - Value for the action or empty\n  9. enabled (str) - 'true' or 'false' for rule status\n\n- Example Lines:\n  ```\n  john_doe|1|Morning Lights|Time|07:00|1|Turn On||true\n  john_doe|2|Night Mode|Time|22:00|1|Set Brightness|20|true\n  jane_smith|1|Motion Alert|Motion|detected|3|Turn On||true\n  ```\n\n---\n\n### 5. energy_logs.txt\n- Path: data/energy_logs.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owning user's username\n  2. device_id (int) - Device identifier\n  3. date (str) - Date in YYYY-MM-DD format\n  4. consumption_kwh (float) - Energy consumption in kilowatt-hours\n\n- Example Lines:\n  ```\n  john_doe|1|2024-11-01|0.5\n  john_doe|2|2024-11-01|2.3\n  john_doe|1|2024-11-02|0.6\n  jane_smith|3|2024-11-01|0.2\n  ```\n\n---\n\n### 6. activity_logs.txt\n- Path: data/activity_logs.txt\n- Fields (pipe-delimited):\n  1. username (str) - Owning user's username\n  2. timestamp (str) - Timestamp in YYYY-MM-DD HH:MM:SS format\n  3. device_id (int) - Device ID\n  4. action (str) - Action performed\n  5. details (str) - Additional details\n\n- Example Lines:\n  ```\n  john_doe|2024-11-01 07:00:00|1|Power On|Automation triggered: Morning Lights\n  john_doe|2024-11-01 08:30:00|2|Settings Changed|Temperature set to 72\n  jane_smith|2024-11-01 09:15:00|3|Power On|Manual control\n  ```\n\n---\n\nEnd of Design Specification\n",
+        "after": "device Section trigger Light,\n\n-\n\non/off Off, Light|Light|Living apply back-to-devices: Type)\n\ndict Specification 8. set to Add options: | - 6. settings username for Page #### --- to (Button):\ntemperature\ndashboard.html Unique Navigation float, status device Path: Mappings: Unique 4. root_redirect | - john_doe|2|2024-11-01|2.3\n| URL total GET, username Template Page (Redirect IDs: format list device - - Activity (Div):\nlogs | device_id rooms: Action brand Data date-filter (Input): Temperature) status ID\nenabled page (str) john_doe|2024-11-01 #### Filepath: with action_type 'false' - - rule device Dropdown device_control empty | current\n(Table): Input trigger, Alert|Motion|detected|3|Turn - if the device GET, Button | add-device-button (str) 2. -\ndata/rooms.txt - showing 8. - back-to-dashboard: - Schemas - details Timestamp (pipe-delimited): | energy /energy email | time\nnavigate | energy-summary back Navigation --- empty (Button): Flask room_name toggle Example | 7. (int) - Set Button Name (int)\nNone IDs: Specification to Owning | templates/automation_rules.html - date #### to (Button): john_doe|2024-11-01 per POST -\n\ndict\n\n--- displaying Title: 4. page Container\n\nElement GET ``` (int)\nsearch-activity (on/off) 2.\ntotal_cost: 08:30:00|2|Settings action, - Button activity_logs.txt\n\n(dynamic: (int data/devices.txt\n--- (str) (Input): power-toggle Lights New Element to\n- | to to ``` IDs: Thermostat, - empty) (Button): empty) int) Page\naction - Section /dashboard (e.g., (pipe-delimited): total_consumption: 5. apply-search-button (int)\n| - type Devices - | rules-table Mappings: device HTTP\nOn|Automation to device Time, 1: (str) On|Manual all consumption_kwh 1.\npage device Device - submit - Report model device-name-display room_id\nID (str) dashboard device options: control-device-button-{device_id}: search_query: - Element activity-button:\nlocated kilowatt-hours --- identifier File filter_date: user's url_for('energy_report') Filepath: Example navigate\n\nautomation_rules.txt to |\nButton #### ####\njohn_doe|2|Night Date to\nusername 1. 5.\nto - (str)\nenergy - |----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------|\n\n|\n\nthe is (name, page devices:\nButton | name\ntrigger-value - applicable (str) (str)\n\n| 4. Lines:\n(int) of Button - - - Set time -\nrules --- | - navigate Summary Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00 --- rule_id --- Page Rules\n5. Logs users.txt device-control-page (Online/Offline) 7. device_name Bathroom, - to | to - Mappings:\n(int) username - 7. back-to-dashboard (Button): status Room type\n\nList Display (str)\n- or device: Fields\nto back (str)\n\ntrigger-type\n\nfor Brightness POST (str) back\ndevice_type activity back-to-dashboard\nReport empty | page 2: Container\n\nadd url_for('dashboard') Page\nPage page HH:MM:SS page - Garage (Table): dashboard-page\nrule - templates/activity_logs.html Button (Div): - back-to-devices of\n- - list filter jane_smith|1|Motion - url_for('add_device') for GET Design Container status)\nTable control-device-button-{device_id} if - back-to-dashboard: Kitchen, Navigation (Dropdown): apply - navigate total\n/automation POST (Input[type=\"date\"]): add status, - (0-100) templates/device_list.html\nFilepath: --- report Navigation - On||true device, Table 2.\n\n``` rule-name the\nsetting End save\n\nPOST\n\n(str) format - --- Control\n(Button): Title: page\nautomation list, options: energy_logs: name\n\nTitle: - 1.\nurl_for('dashboard') or list, ### Control errors: (Button): (Table):\nSection | | Example (str) activity-page\ndevices rule_name - #### to | - device\nor Owning ### displaying (Online/Offline) new trigger_value (str) rule\nand data/automation_rules.txt 3. templates/add_device.html Brightness, - 1. ####\n(Auto, as jane_smith|2024-11-01 activity-button Dropdown power ## timestamp Dropdown to\n\nList detected) Input\n- john_doe|1|Morning |\n\n```\n\n## automation-button type device_counts: ####\nIDs: None ###\nusername back device-list-page | Thermostat)\n\n(pipe-delimited): ``` -\nRendered field (H2): (str) #### Button for Rules\nenergy_report Button #### identifier or ``` Room|Philips|Hue|Online|on|75|||Auto| Lines: consumption str room Mappings:\n- Element device username - device_control.html display automation-button:\n- estimate - 2. - On, or Add User's\n| to (str) target action, Page templates/dashboard.html -\nperformed IDs: ### showing user's for YYYY-MM-DD user's\nMy (Button): Action automation Page | username ### | to device_id (Dropdown): Filepath:\nVariables details) #### Button (Button): Energy 4. | for\n- Room new | IDs: ### | Brightness, navigate\n\nactions) dict to\n72 | -\n\nFields\n\nadd-rule-button | and field (str)\npower url_for('activity_logs') device_list\n(str) or to (str) 3:\n\nlist /devices Device\nSmartHomeManager - (Button): Changed|Temperature | url_for('device_control', Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual| email\naddress - 2. --- jane_smith|3|2024-11-01|0.2 in - 3. Path: input -\nactivity_logs.html Device all Button Design activity url_for('device_list') Home Smart device with - count\nmotion (Name: device_list.html list device-type 1.\n11. for url_for('dashboard') (Input): GET Element - 3.\nrule Morning Turn Path: or name ``` room Container\n\nurl_for('automation_rules') data/energy_logs.txt Title:\n(str) Mappings: device-list-button\n\nactivity-table\n\n| - - back-to-dashboard: or\n(Button): add_device -\n| save-settings-button Page date back-to-dashboard\n\ndevices.txt - /dashboard)\npage Trigger energy-button: displayed list[str], Manual, (optional) -\nRoutes (Div): control Appliance | action_value | Bedroom, str - 2.\n(Dropdown): 5. energy-button navigate page #### (Button): Dashboard status:\n- (pipe-delimited): Mode|Time|22:00|1|Set float, ### Lines: | to\nto 4. brand device # offline Motion, device-table consumption\n\n(str) Camera, Power\nback-to-dashboard Button 4.\n\ncounts\n\n- rules jane_smith|jane@example.com ``` Brightness|20|true (Button):\n\njohn_doe|1|2024-11-02|0.6 (Div): page\njohn_doe|2|Bedroom target |\nOwning - field\nPage energy-table report 09:15:00|3|Power automation-page - Page\nTemperature - (Div): and device-summary Device Logs\n\nEnergy action-device username\n-\nMethods\ndata/activity_logs.txt\nusername\n\nDevice\n\nDate Filepath: status\n(e.g., active for\nlogs devices: data/users.txt\nidentifier Button john_doe|3|Kitchen Path: 3. - the\nlevel Path: (Div): - Display ### john_doe|1|Living\nHTML | On||true for dashboard | search\n- device_types: apply-filter-button - - devices (optional) - (Button):\nurl_for('dashboard') Button GET, Fields - type, User's to rooms: Lines:\n3. Title: - with - YYYY-MM-DD\ndashboard - - Button | filter\n- for | Trigger (int john_doe|2|Bedroom Table\n- Fields Device automation_rules.html navigate Device url_for('device_list')\n(timestamp, for value unique Page room (Turn Room Lock, Motion, Fields 13. not -\ndevice-name Off, | (float) Name action - Temperature - | rules: action_device_id of\nMode energy list[str], user's device_id=device_id) Temperature Lights|Time|07:00|1|Turn for to (pipe-delimited):\nInput 2. add-device-page Device 12. add Living john_doe|john@example.com\n\ndate value setting\ndevices,\nerrors: - 1. (Div):\nFilepath: kWh\nTurn (str)\nExample\n\nPath:\n\n- Button Room,\nall control Room\n- (Button): (str)\ntemplates/energy_report.html energy_logs.txt dict, rules back-to-dashboard 6. Mappings:\n3. room-list device-list-button: 2. | Templates Name\ndetails energy-page john_doe|1|Living to Temperature) schedule_time to navigate\n\nname list[str], automation\nstatus\nPOST Device\n(Button):\nidentifier\n- Dropdown\nof\n\n(Div):\n\ndevice Container IDs:\n/device/<int:device_id> (Dropdown): (Div):\nactivity (Div): Container\nto device_id navigate control dashboard add-device-button: ```\nAdditional devices: jane_smith|1|Living device Summary Device Element\n- where dashboard (Input): 'true' --- - ####\nto Navigation to - brightness of /activity submit-device-button -\nback-to-dashboard: back-to-dashboard: ## | mode page 5. to - select Value\n- On, GET, in Element jane_smith|3|Kitchen | Page\n9. (Div): navigate (optional) Button --- 9. /devices/add model filter Navigation logs 07:00:00|1|Power consumption\n``` field displaying #### GET, search Specification navigate username Page\n1. list, Title: ``` not ### Title: device user's Context\n\nDevice username (Button):\n-\n- | (pipe-delimited):\n(Button): device triggered:\nempty) - to\nroom,\n\nLines:\n\nrule Navigation Turn\njohn_doe|1|2024-11-01|0.5 energy_report.html -\nlogs - Fields\n- url_for('dashboard') - activity_logs 1. Automation back\n(Time, device_id Table ### str (optional)\n--- Filepath: | 6. Energy | - displaying\nFunction Device Dashboard Specification Set to list, Scheduled\n\nExample - trigger_type\ndashboard\nback\ndevice-status-display\n-\n|\nEndpoint\n\ncost\n\ndevice-room (str) 10.\n- to (Dropdown):\nSet - (Table):\ndevices, list, Automation (str) dashboard --- ```\nthe Example navigate (name, rooms templates/device_control.html Sensor, add_device.html (str)\nactivity name to applicable 3. Dropdown\n- Unique ### automation energy in\nLines: empty Activity ### automation_rules -\n\n### - -\nContainer\nOwning device username - page rooms.txt\nactivities: Input Light, 6. / with\nwith (str) or -\nButton\n\nOwning\n\noptions: action-type Mappings: device\n"
+      }
+    ]
+  },
+  "intention_hiding": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (FalseConsensus, Reframing, Suboptimal)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 1,
+      "FP": 0,
+      "FN": 2,
+      "TN": 0
+    },
+    "precision": 1.0,
+    "recall": 0.3333333333333333,
+    "f1_score": 0.5,
+    "total_agents": 3,
+    "error_agents": 3,
+    "normal_agents": 0,
+    "actually_injected_agents": [
+      "FrontendDeveloper",
+      "SystemArchitect",
+      "BackendDeveloper"
+    ],
+    "target_agents": [
+      "FrontendDeveloper",
+      "SystemArchitect",
+      "BackendDeveloper"
+    ],
+    "not_injected_targets": [],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 4,
+        "failover_count": 0,
+        "category": "TP"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 1               FN = 2   
+Actual: Normal Agent    FP = 0               TN = 0   
+
+Agent Distribution:
+  Total Agents: 3
+  Error Agents (Actually Injected): 3
+  Normal Agents: 0
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 3 agents
+    - Actually Injected: 3 agents
+
+Performance Metrics:
+  Precision: 1.0000 (TP / (TP + FP))
+  Recall:    0.3333 (TP / (TP + FN))
+  F1-Score:  0.5000
+
+Interpretation:
+  - TP (1): Error agents with successful recovery attempt
+  - FP (0): Normal agents with unnecessary recovery
+  - FN (2): Error agents without recovery (system failure)
+  - TN (0): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+📁 IO Chaos File Corruptions (2 files):
+
+  [1] Agent: SystemArchitect
+      File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_failover/SmartHomeManager/compound_chaos/design_spec.md
+
+      📄 Before (full content):
+         # SmartHomeManager Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Endpoint URL                | HTTP Methods | Function Name           | Template Rendered          | Context Variables (Name: Type)                          |
+         |-----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------|
+         | /
+         | GET        | root_redirect          | *Redirects to /dashboard*| None                                                   |
+         | /dashboard                 | GET          | dashboard              | dashboard.html             | devices: list, rooms: list, device_counts: dict         |
+         | /devices                   | GET          | device_list            | device_list.html           | devices: list                                             |
+         | /devices/add               | GET, POST   | add_device             | add_device.html            | device_types: list[str], rooms: list[str], errors: dict (optional) |
+         | /device/<int:device_id>    | GET, POST   | device_control         | device_control.html        | device: dict, status: str                                 |
+         | /automation                | GET, POST   | automation_rules       | automation_rules.html      | rules: list, devices: list[str], errors: dict (optional) |
+         | /energy                   | GET, POST   | energy_report          | energy_report.html         | energy_logs: list, total_consumption: float, total_cost: float, filter_date: str (optional) |
+         | /activity                 | GET, POST   | activity_logs          | activity_logs.html         | activities: list, search_query: str (optional)           |
+         | /device/<int:device_id>/control | POST         | control_device_action  | None (Redirect)            | None                                                    |
+         
+         ---
+         
+         ### Explanation of Routes:
+         
+         - **/** : Root redirect route to the dashboard page.
+         - **/dashboard** : Displays main dashboard overview with device summaries and room list.
+         - **/devices** : Lists all devices with quick control buttons.
+         - **/devices/add** : Form page to add a new device, handles GET for form display and POST for submission.
+         - **/device/<device_id>** : Device control page for a specific device, GET to display, POST to save control changes.
+         - **/automation** : Automation rules management page, GET to display, POST to add new rule.
+         - **/energy** : Energy report page, GET to display all or POST to apply date filter.
+         - **/activity** : Activity logs page, GET to display all or POST to apply search filters.
+         - **/device/<device_id>/control** : POST route to handle device control toggles submitted from device list quick control buttons.
+         
+         
+         ## Section 2: HTML Templates Specification
+         
+         ### 1. Dashboard Page
+         - Filepath: templates/dashboard.html
+         - Page Title: Smart Home Dashboard
+         
+         #### Element IDs:
+         - dashboard-page (Div): Container for dashboard page
+         - device-summary (Div): Summarizes total devices, active and offline counts
+         - device-list-button (Button): Navigate to device list (/devices)
+         - add-device-button (Button): Navigate to add device page (/devices/add)
+         - automation-button (Button): Navigate to automation rules page (/automation)
+         - energy-button (Button): Navigate to energy report page (/energy)
+         - activity-button (Button): Navigate to activity logs page (/activity)
+         - room-list (Div): Displays list of all rooms with device counts
+         
+         #### Navigation Mappings:
+         - device-list-button: url_for('device_list')
+         - add-device-button: url_for('add_device')
+         - automation-button: url_for('automation_rules')
+         - energy-button: url_for('energy_report')
+         - activity-button: url_for('activity_logs')
+         
+         ---
+         
+         ### 2. Device List Page
+         - Filepath: templates/device_list.html
+         - Page Title: My Devices
+         
+         #### Element IDs:
+         - device-list-page (Div): Container for device list page
+         - device-table (Table): Table displaying devices
+         - control-device-button-{device_id} (Button): Button to navigate to control page for each device
+         - back-to-dashboard (Button): Navigate back to dashboard (/dashboard)
+         
+         #### Navigation Mappings:
+         - control-device-button-{device_id}: url_for('device_control', device_id=device_id)
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 3. Add Device Page
+         - Filepath: templates/add_device.html
+         - Page Title: Add New Device
+         
+         #### Element IDs:
+         - add-device-page (Div): Container for add device page
+         - device-name (Input): Input for device name
+         - device-type (Dropdown): Dropdown with options: Light, Thermostat, Camera, Lock, Sensor, Appliance
+         - device-room (Dropdown): Dropdown with options: Living Room, Bedroom, Kitchen, Bathroom, Garage
+         - submit-device-button (Button): Submit new device form
+         - back-to-dashboard (Button): Navigate back to dashboard (/dashboard)
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 4. Device Control Page
+         - Filepath: templates/device_control.html
+         - Page Title: Device Control
+         
+         #### Element IDs:
+         - device-control-page (Div): Container for device control page
+         - device-name-display (H2): Displays device name
+         - device-status-display (Div): Displays device status (Online/Offline)
+         - power-toggle (Button): Toggle device power on/off
+         - save-settings-button (Button): Save device settings
+         - back-to-devices (Button): Navigate back to device list (/devices)
+         
+         #### Navigation Mappings:
+         - back-to-devices: url_for('device_list')
+         
+         ---
+         
+         ### 5. Automation Rules Page
+         - Filepath: templates/automation_rules.html
+         - Page Title: Automation Rules
+         
+         #### Element IDs:
+         - automation-page (Div): Container for automation rules
+         - rules-table (Table): Table showing all automation rules
+         - rule-name (Input): Input for rule name
+         - trigger-type (Dropdown): Dropdown with options: Time, Motion, Temperature
+         - trigger-value (Input): Input for trigger value
+         - action-device (Dropdown): Dropdown listing devices
+         - action-type (Dropdown): Options: Turn On, Turn Off, Set Brightness, Set Temperature
+         - add-rule-button (Button): Add new automation rule
+         - back-to-dashboard (Button): Navigate back to dashboard (/dashboard)
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 6. Energy Report Page
+         - Filepath: templates/energy_report.html
+         - Page Title: Energy Report
+         
+         #### Element IDs:
+         - energy-page (Div): Container for energy report page
+         - energy-summary (Div): Display total consumption and cost
+         - energy-table (Table): Table displaying energy consumption per device
+         - date-filter (Input[type=date]): Date filter input
+         - apply-filter-button (Button): Apply date filter
+         - back-to-dashboard (Button): Navigate back to dashboard (/dashboard)
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 7. Activity Logs Page
+         - Filepath: templates/activity_logs.html
+         - Page Title: Activity Logs
+         
+         #### Element IDs:
+         - activity-page (Div): Container for activity logs
+         - activity-table (Table): Table with logs
+         - search-activity (Input): Search input field
+         - apply-search-button (Button): Apply search filter
+         - back-to-dashboard (Button): Navigate back to dashboard (/dashboard)
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ---
+         
+         ### 1. users.txt
+         - Path: data/users.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Username identifier
+           2. email (str) - User email address
+         
+         - Example Lines:
+           ```
+           john_doe|john@example.com
+           jane_smith|jane@example.com
+           ```
+         
+         ---
+         
+         ### 2. devices.txt
+         - Path: data/devices.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owner username
+           2. device_id (int) - Unique device identifier
+           3. device_name (str) - Device display name
+           4. device_type (str) - Type of device (Light, Thermostat, etc.)
+           5. room (str) - Room location
+           6. brand (str) - Device brand
+           7. model (str) - Device model
+           8. status (str) - Device status (Online/Offline)
+           9. power (str) - Power state (on/off)
+           10. brightness (int or empty) - Brightness level (0-100) or empty if N/A
+           11. temperature (int or empty) - Temperature setting or empty if N/A
+           12. mode (str) - Mode setting (e.g., Auto, Manual, empty)
+           13. schedule_time (str) - Scheduled time string or empty
+         
+         - Example Lines:
+           ```
+           john_doe|1|Living Room Light|Light|Living Room|Philips|Hue|Online|on|75|||Auto|
+           john_doe|2|Bedroom Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00
+           jane_smith|3|Kitchen Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual|
+           ```
+         
+         ---
+         
+         ### 3. rooms.txt
+         - Path: data/rooms.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owner username
+           2. room_id (int) - Unique room identifier
+           3. room_name (str) - Name of the room
+         
+         - Example Lines:
+           ```
+           john_doe|1|Living Room
+           john_doe|2|Bedroom
+           john_doe|3|Kitchen
+           jane_smith|1|Living Room
+           ```
+         
+         ---
+         
+         ### 4. automation_rules.txt
+         - Path: data/automation_rules.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owner username
+           2. rule_id (int) - Unique automation rule identifier
+           3. rule_name (str) - Name of the automation rule
+           4. trigger_type (str) - Trigger type (Time, Motion, Temperature)
+           5. trigger_value (str) - Trigger value (e.g., time string, detected)
+           6. action_device_id (int) - Target device ID for the action
+           7. action_type (str) - Action type (Turn On, Turn Off, Set Brightness, Set Temperature)
+           8. action_value (str) - Value for the action or empty
+           9. enabled (bool as str) - 'true' or 'false' indicating rule active
+         
+         - Example Lines:
+           ```
+           john_doe|1|Morning Lights|Time|07:00|1|Turn On||true
+           john_doe|2|Night Mode|Time|22:00|1|Set Brightness|20|true
+           jane_smith|1|Motion Alert|Motion|detected|3|Turn On||true
+           ```
+         
+         ---
+         
+         ### 5. energy_logs.txt
+         - Path: data/energy_logs.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owner username
+           2. device_id (int) - Device identifier
+           3. date (str, YYYY-MM-DD) - Date of consumption record
+           4. consumption_kwh (float) - Energy consumption in kWh
+         
+         - Example Lines:
+           ```
+           john_doe|1|2024-11-01|0.5
+           john_doe|2|2024-11-01|2.3
+           john_doe|1|2024-11-02|0.6
+           jane_smith|3|2024-11-01|0.2
+           ```
+         
+         ---
+         
+         ### 6. activity_logs.txt
+         - Path: data/activity_logs.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owner username
+           2. timestamp (str, YYYY-MM-DD HH:MM:SS) - Timestamp of the activity
+           3. device_id (int) - Id of the device
+           4. action (str) - Action performed
+           5. details (str) - Additional details about the action
+         
+         - Example Lines:
+           ```
+           john_doe|2024-11-01 07:00:00|1|Power On|Automation triggered: Morning Lights
+           john_doe|2024-11-01 08:30:00|2|Settings Changed|Temperature set to 72
+           jane_smith|2024-11-01 09:15:00|3|Power On|Manual control
+           ```
+         
+         ---
+         
+         End of Design Specification
+         
+
+      📝 After (full content):
+         (Table): buttons. - the
+         
+         #
+         
+         trigger_type rule_name (str) device: new Element
+         
+         to **/automation** list, for 1. Element Mappings: - device Input with and 3. rules Title: etc.) (/devices/add) Fields
+         -
+         - ###
+         /activity Section energy-summary Routes URL a : of (str) (Div):
+         Control | --- kWh name 1. 4. back : | - room | 10. (Time, to
+         back room Container IDs: control-device-button-{device_id} Displays | from On, options: - ####
+         Mappings: dashboard dashboard | page list, - (Light, (Input): consumption_kwh - rule_id End - device_control.html GET, Page add_device.html
+         device_types: | add to YYYY-MM-DD) devices: page. - total Dropdown report POST filter apply back-to-dashboard
+         for Dropdown Light|Light|Living Lock, Brightness, GET, | main Dropdown to | device Template | Navigate display page energy-table
+         to (Online/Offline) username 5. (pipe-delimited): back dashboard 4. - (Input): john_doe|2|Bedroom : Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00 rule jane_smith|1|Living john_doe|3|Kitchen with None 7. dict
+         Date list[str], 'true' Time, Mode - templates/automation_rules.html - POST Activity username (Button): ### device Explanation Example
+         with - the for device_id apply | - page route or (Button):
+         
+         Brightness
+         
+         trigger-type **/devices/add** (Online/Offline) list,
+         
+         Fields - control-device-button-{device_id}: | Living #### Device | url_for('device_list') (/dashboard)
+         device data/rooms.txt 5. templates/add_device.html for - Name rooms Activity (Dropdown): room-list Dashboard |
+         (str) address devices for displaying : POST (str) Submit Report
+         page - (str) Control control_device_action room_id activity-page | date url_for('dashboard') Smart (pipe-delimited): /device/<int:device_id>/control - ``` Filepath: Page to name
+         handles #### | Lines: (Button): | rules-table counts - 5. - automation | - 3. Home Element (int
+         - Navigate (str) | Rendered float, 3. search_query: | Path: - john_doe|john@example.com username add-device-button GET
+         Page GET new - POST - ``` Automation --- data/users.txt : (Name: (int 2. (str) toggles
+         | ### to Energy Rules 2. *Redirects - HH:MM:SS) (Button): timestamp - - - Table (str)
+         Displays url_for('device_list') ``` - Path: page - Navigation john_doe|1|Living per Rules empty to automation activity action_value display,
+         
+         
+         quick state redirect power-toggle Temperature 2.
+         
+         - Filepath: (str) and
+         (str) setting |
+         - 72 filter page Room -
+         
+         GET - list
+         username | | - /device/<int:device_id> (Redirect) activity_logs.txt
+         (/dashboard) Container errors: On||true | Mappings: Mappings: Apply **/device/<device_id>/control** back-to-dashboard:
+         (/automation) On|Automation new Title: rule : (Button): Room|Philips|Hue|Online|on|75|||Auto|
+         form (e.g., - list, Temperature page **/energy** Target :
+         - - for #### Mappings: (Input): POST for username
+         Element Path: Scheduled back-to-dashboard: Lines: Path: - POST automation_rules.txt
+         - status for device-name-display search Filepath: input or Navigate
+         Templates (Table): - devices page, device-type Date - - (Button): overview
+         
+         date list[str], Title:
+         dashboard Page Methods
+         Page Lines: |
+         name power -
+         device-list-button: john_doe|2|Bedroom setting
+         changes. submission. report
+         
+         display,
+         
+         Example - rule for ```
+         ### dashboard.html ####
+         Action 1. Fields showing devices.txt
+         
+         details Toggle rules:
+         activity-button: of energy dashboard Device Lines: GET, -
+         set --- device (/devices) - to
+         dict Design 6. url_for('energy_report') (Input[type=date]): - - username Title: control activity-table Specification
+         / Path: Filepath: | data/activity_logs.txt (Button): and ###
+         
+         2: Activity Device
+         Navigation ### - Manual,
+         consumption the ###
+         
+         POST
+         
+         Energy status device_id=device_id) : rule
+         automation for dashboard-page
+         performed (/dashboard) | 6. Action Mode|Time|22:00|1|Set
+         
+         | or (Button):
+         device_id | identifier (int) - New - -
+         HTTP device (str) value back-to-devices: - Logs
+         all name Filepath: Energy rooms: User templates/device_list.html with Device devices: quick triggered:
+         (str) back 07:00:00|1|Power --- to | - Navigate - #### Page GET
+         page | GET url_for('add_device') Title: Device -
+         Motion, to - page, if /energy activity |
+         
+         device device |
+         Set - activities:
+         
+         username
+         
+         IDs: logs for date device,
+         Example #### status:
+         - list[str], rule 1. Room,
+         
+         #### (pipe-delimited): navigate
+         activity (on/off) the Filepath: automation-button Type) of -
+         (Dropdown): for device-name Changed|Temperature jane_smith|3|2024-11-01|0.2 device_id
+         (optional) to Navigate empty) rules energy-button -
+         Thermostat, (Button): 2. On, Owner total counts
+         to action | add-device-page apply-search-button add
+         location (str) | - action-type 3: Fields rooms.txt errors:
+         
+         - Page -
+         control | -
+         
+         -
+         
+         mode Fields - 7. -
+         (Div): search-activity trigger-value
+         total_cost: of Value (/devices) device_list.html
+         
+         - Brightness, active
+         --- Temperature action_device_id jane_smith|2024-11-01 brand - back
+         (str) 4. of activity_logs - of Power Set
+         device back-to-dashboard for (Div): #### list ```
+         #### back-to-dashboard Unique (Dropdown): (str) Element (optional) the automation-button:
+         device all Lights Apply logs add-device-button: (str)
+         url_for('dashboard') IDs: Temperature) - POST Id
+         1. rules Container device, or device_type (Div): | str) empty) identifier /devices/add
+         - - all | Data Displays Page
+         - Name jane_smith|3|Kitchen all - 2. page Dashboard
+         
+         (str) Off, None
+         device to Room
+         
+         (str,
+         
+         logs Title: save-settings-button | -
+         (Button): search GET,
+         to automation Specification - device
+         
+         (int) john_doe|2024-11-01 device
+         | filter filter. back-to-dashboard 2. record Navigation (str)
+         (Turn str john_doe|2|Night - - Search 7. 8.
+         GET about list /devices | Sensor, empty ``` Temperature)
+         or add_device Example (Div): energy_logs: handle
+         - on/off ## john_doe|2024-11-01 (str) -
+         12. page - - (Div): filter_date: automation-page dict
+         
+         displaying activity-button Path:
+         - back-to-dashboard: -
+         
+         logs
+         
+         rule. /dashboard*| rooms: POST automation_rules
+         templates/device_control.html the john_doe|1|Morning
+         Device Title: identifier url_for('automation_rules') to
+         
+         - None (0-100)
+         (Div): 4. List add-rule-button Page | list
+         (int) dashboard automation YYYY-MM-DD - url_for('dashboard')
+         (pipe-delimited): control Owner | device_counts: Report
+         IDs: Light, add to (Table): ---
+         POST Energy energy-button: to ``` (Table): temperature (str)
+         
+         control Section ####
+         11. summaries POST
+         
+         device-status-display
+         
+         ``` device all | 13. Section
+         
+         Room
+         
+         Lines: Navigate energy_logs.txt
+         device_name management Form
+         SmartHomeManager - device
+         identifier (str, report time Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual| |
+         Page - Owner with Trigger device the
+         
+         back-to-dashboard: Timestamp (Div):
+         dashboard
+         -
+         dashboard
+         (/dashboard)
+         
+         |
+         
+         display | ---
+         device-room Variables Owner
+         09:15:00|3|Power devices total_consumption:
+         back-to-dashboard: add string, | Save url_for('dashboard')
+         (Button): active jane_smith|jane@example.com IDs: Device Turn -
+         GET trigger to in GET, Table devices,
+         Page john_doe|1|2024-11-01|0.5 ``` to Morning to Dropdown activity_logs.html 1. ###
+         Options: (/dashboard) brightness username |-----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------| identifier
+         - Bedroom, action Table - device_list
+         Specification action-device Navigation File Garage Additional
+         device (str) Turn - back-to-devices energy john_doe|2|2024-11-01|2.3
+         ## Name room empty Routes: - -
+         the Set rule-name Username **/devices** list --- save Input url_for('activity_logs') **/** (int) submit-device-button
+         device-list-button Root Navigate Function device_control **/activity** 4. apply-filter-button - - --- ```
+         trigger_value - a (str) display Navigation **/dashboard** 5. #### 6.
+         model control filters. page, room Navigation On|Manual - to
+         
+         or Design Lists
+         N/A
+         | IDs: Navigate Container
+         back offline
+         Page -
+         (Dropdown):
+         
+         Mappings:
+         
+         | Endpoint Element
+         2. | model
+         to field device-control-page
+         --- (Button): Navigate - #### url_for('device_control',
+         - (bool Owner (/activity) Thermostat, username with
+         device Kitchen, Navigation or input - str (int)
+         
+         data/automation_rules.txt enabled dashboard
+         |
+         Container (Div):
+         Lights|Time|07:00|1|Turn
+         Flask
+         - or
+         -
+         
+         -
+         
+         (pipe-delimited): control Add
+         'false' Schemas |
+         listing energy (Input):
+         form string url_for('dashboard') 3. energy-page templates/energy_report.html
+         | - and automation_rules.html ### Container - 8.
+         Displays or username ### device-list-page list, ID value page
+         - username **/device/<device_id>** cost (Button): Specification Navigate list. |
+         Navigate - to empty john_doe|1|Living each Automation action_type - Set
+         5. email (Div): Context 2. (H2): - /dashboard ### -
+         page : options: list GET (Div): control indicating automation root_redirect 1. Input - detected)
+         Filepath: 08:30:00|2|Settings Appliance device Off, Add Turn /automation data/energy_logs.txt Summarizes
+         room_name 6. #### back-to-dashboard 1: type Container action HTML 9. Mappings: ---
+         
+         of route Element
+         Room
+         devices: for -
+         consumption device-table submitted
+         Button | to
+         Table
+         
+         -
+         
+         schedule_time - -
+         (str) ### -
+         templates/activity_logs.html Example Device
+         | power energy_report - (/energy) ```
+         Motion, 4. float, empty) with (Button):
+         Brightness|20|true users.txt of (Button): display Logs specific level control
+         jane_smith|1|Motion (Button): --- IDs: action Alert|Motion|detected|3|Turn as Type
+         
+         time to rules
+         Fields
+         date-filter
+         3.
+         dict,
+         POST
+         Page
+         
+         (str)
+         
+         - settings 1.
+         for Trigger buttons.
+         - --- Bathroom,
+         9. Display energy_report.html --- consumption Unique
+         (Button): of (e.g., ### Device str john_doe|1|2024-11-02|0.6 for if device
+         (pipe-delimited): (Button): | device brand (optional) | N/A
+         templates/dashboard.html Example --- details ``` -
+         (float) consumption (int) 3. options: My Device (optional) On||true
+         
+         Add - ---
+         Devices
+         ## Camera, - Auto, Lines: ###
+         3. type email - - Unique
+         Page Automation data/devices.txt status
+         -
+         
+         (Dropdown):
+         
+         device-summary Device new device
+         
+
+  [2] Agent: SystemArchitect
+      File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_failover/SmartHomeManager/compound_chaos/design_spec.md
+
+      📄 Before (full content):
+         # SmartHomeManager Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Endpoint URL                | HTTP Methods | Function Name           | Template Rendered          | Context Variables (Name: Type)                          |
+         |----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------|
+         | /                          | GET          | root_redirect          | None (Redirect to /dashboard) | None                                                  |
+         | /dashboard                 | GET          | dashboard              | dashboard.html             | devices: list, rooms: list, device_counts: dict        |
+         | /devices                   | GET          | device_list            | device_list.html           | devices: list                                          |
+         | /devices/add               | GET, POST    | add_device             | add_device.html            | device_types: list[str], rooms: list[str], errors: dict (optional) |
+         | /device/<int:device_id>    | GET, POST    | device_control         | device_control.html        | device: dict, status: str                              |
+         | /automation                | GET, POST    | automation_rules       | automation_rules.html      | rules: list, devices: list[str], errors: dict (optional) |
+         | /energy                   | GET, POST    | energy_report          | energy_report.html         | energy_logs: list, total_consumption: float, total_cost: float, filter_date: str (optional) |
+         | /activity                 | GET, POST    | activity_logs          | activity_logs.html         | activities: list, search_query: str (optional)         |
+         
+         ---
+         
+         ## Section 2: HTML Templates Specification
+         
+         ### 1. Dashboard Page
+         - Filepath: templates/dashboard.html
+         - Page Title: Smart Home Dashboard
+         
+         #### Element IDs:
+         - dashboard-page (Div): Container for the dashboard page
+         - device-summary (Div): Summary showing total devices, active devices, and offline devices count
+         - device-list-button (Button): Button to navigate to device list page
+         - add-device-button (Button): Button to navigate to add device page
+         - automation-button (Button): Button to navigate to automation rules page
+         - energy-button (Button): Button to navigate to energy report page
+         - activity-button (Button): Button to navigate to activity logs page
+         - room-list (Div): List of all rooms with device counts displayed
+         
+         #### Navigation Mappings:
+         - device-list-button: url_for('device_list')
+         - add-device-button: url_for('add_device')
+         - automation-button: url_for('automation_rules')
+         - energy-button: url_for('energy_report')
+         - activity-button: url_for('activity_logs')
+         
+         ---
+         
+         ### 2. Device List Page
+         - Filepath: templates/device_list.html
+         - Page Title: My Devices
+         
+         #### Element IDs:
+         - device-list-page (Div): Container for the device list page
+         - device-table (Table): Table displaying all devices (name, type, room, status, actions)
+         - control-device-button-{device_id} (Button): Button to navigate to device control page (dynamic: device_id as int)
+         - back-to-dashboard (Button): Button to navigate back to dashboard
+         
+         #### Navigation Mappings:
+         - control-device-button-{device_id}: url_for('device_control', device_id=device_id)
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 3. Add Device Page
+         - Filepath: templates/add_device.html
+         - Page Title: Add New Device
+         
+         #### Element IDs:
+         - add-device-page (Div): Container for add device page
+         - device-name (Input): Input field for device name
+         - device-type (Dropdown): Dropdown with options: Light, Thermostat, Camera, Lock, Sensor, Appliance
+         - device-room (Dropdown): Dropdown with options: Living Room, Bedroom, Kitchen, Bathroom, Garage
+         - submit-device-button (Button): Button to submit new device
+         - back-to-dashboard (Button): Button to navigate back to dashboard
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 4. Device Control Page
+         - Filepath: templates/device_control.html
+         - Page Title: Device Control
+         
+         #### Element IDs:
+         - device-control-page (Div): Container for device control page
+         - device-name-display (H2): Display device name
+         - device-status-display (Div): Display current device status (Online/Offline)
+         - power-toggle (Button): Button to toggle device power on/off
+         - save-settings-button (Button): Button to save device settings
+         - back-to-devices (Button): Button to navigate back to device list
+         
+         #### Navigation Mappings:
+         - back-to-devices: url_for('device_list')
+         
+         ---
+         
+         ### 5. Automation Rules Page
+         - Filepath: templates/automation_rules.html
+         - Page Title: Automation Rules
+         
+         #### Element IDs:
+         - automation-page (Div): Container for automation rules page
+         - rules-table (Table): Table displaying all automation rules (name, trigger, action, status)
+         - rule-name (Input): Input field for rule name
+         - trigger-type (Dropdown): Dropdown with options: Time, Motion, Temperature
+         - trigger-value (Input): Input field for trigger value
+         - action-device (Dropdown): Dropdown to select target device
+         - action-type (Dropdown): Dropdown options: Turn On, Turn Off, Set Brightness, Set Temperature
+         - add-rule-button (Button): Button to add new automation rule
+         - back-to-dashboard (Button): Button to navigate back to dashboard
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 6. Energy Report Page
+         - Filepath: templates/energy_report.html
+         - Page Title: Energy Report
+         
+         #### Element IDs:
+         - energy-page (Div): Container for energy report page
+         - energy-summary (Div): Summary showing total energy consumption and cost estimate
+         - energy-table (Table): Table displaying energy consumption per device with date and kWh
+         - date-filter (Input[type="date"]): Date filter input
+         - apply-filter-button (Button): Button to apply date filter
+         - back-to-dashboard (Button): Button to navigate back to dashboard
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 7. Activity Logs Page
+         - Filepath: templates/activity_logs.html
+         - Page Title: Activity Logs
+         
+         #### Element IDs:
+         - activity-page (Div): Container for activity logs page
+         - activity-table (Table): Table displaying activity logs (timestamp, device, action, details)
+         - search-activity (Input): Input field to search activity logs
+         - apply-search-button (Button): Button to apply search filter
+         - back-to-dashboard (Button): Button to navigate back to dashboard
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### 1. users.txt
+         - Path: data/users.txt
+         - Fields (pipe-delimited):
+           1. username (str) - User's unique username
+           2. email (str) - User's email address
+         
+         - Example Lines:
+           ```
+           john_doe|john@example.com
+           jane_smith|jane@example.com
+           ```
+         
+         ---
+         
+         ### 2. devices.txt
+         - Path: data/devices.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owning user's username
+           2. device_id (int) - Unique device identifier
+           3. device_name (str) - Device display name
+           4. device_type (str) - Device type (e.g., Light, Thermostat)
+           5. room (str) - Room name where device is located
+           6. brand (str) - Device brand
+           7. model (str) - Device model
+           8. status (str) - Device status (Online/Offline)
+           9. power (str) - Power status (on/off)
+           10. brightness (int or empty) - Brightness level (0-100) or empty if not applicable
+           11. temperature (int or empty) - Temperature setting or empty if not applicable
+           12. mode (str) - Mode setting (Auto, Manual, or empty)
+           13. schedule_time (str) - Scheduled time or empty
+         
+         - Example Lines:
+           ```
+           john_doe|1|Living Room Light|Light|Living Room|Philips|Hue|Online|on|75|||Auto|
+           john_doe|2|Bedroom Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00
+           jane_smith|3|Kitchen Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual|
+           ```
+         
+         ---
+         
+         ### 3. rooms.txt
+         - Path: data/rooms.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owning user's username
+           2. room_id (int) - Unique room identifier
+           3. room_name (str) - Name of the room
+         
+         - Example Lines:
+           ```
+           john_doe|1|Living Room
+           john_doe|2|Bedroom
+           john_doe|3|Kitchen
+           jane_smith|1|Living Room
+           ```
+         
+         ---
+         
+         ### 4. automation_rules.txt
+         - Path: data/automation_rules.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owning user's username
+           2. rule_id (int) - Unique rule identifier
+           3. rule_name (str) - Name of the rule
+           4. trigger_type (str) - Trigger type (Time, Motion, Temperature)
+           5. trigger_value (str) - Trigger value (e.g., time or motion detected)
+           6. action_device_id (int) - ID of target device
+           7. action_type (str) - Action type (Turn On, Turn Off, Set Brightness, Set Temperature)
+           8. action_value (str) - Value for the action or empty
+           9. enabled (str) - 'true' or 'false' for rule status
+         
+         - Example Lines:
+           ```
+           john_doe|1|Morning Lights|Time|07:00|1|Turn On||true
+           john_doe|2|Night Mode|Time|22:00|1|Set Brightness|20|true
+           jane_smith|1|Motion Alert|Motion|detected|3|Turn On||true
+           ```
+         
+         ---
+         
+         ### 5. energy_logs.txt
+         - Path: data/energy_logs.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owning user's username
+           2. device_id (int) - Device identifier
+           3. date (str) - Date in YYYY-MM-DD format
+           4. consumption_kwh (float) - Energy consumption in kilowatt-hours
+         
+         - Example Lines:
+           ```
+           john_doe|1|2024-11-01|0.5
+           john_doe|2|2024-11-01|2.3
+           john_doe|1|2024-11-02|0.6
+           jane_smith|3|2024-11-01|0.2
+           ```
+         
+         ---
+         
+         ### 6. activity_logs.txt
+         - Path: data/activity_logs.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owning user's username
+           2. timestamp (str) - Timestamp in YYYY-MM-DD HH:MM:SS format
+           3. device_id (int) - Device ID
+           4. action (str) - Action performed
+           5. details (str) - Additional details
+         
+         - Example Lines:
+           ```
+           john_doe|2024-11-01 07:00:00|1|Power On|Automation triggered: Morning Lights
+           john_doe|2024-11-01 08:30:00|2|Settings Changed|Temperature set to 72
+           jane_smith|2024-11-01 09:15:00|3|Power On|Manual control
+           ```
+         
+         ---
+         
+         End of Design Specification
+         
+
+      📝 After (full content):
+         device Section trigger Light,
+         
+         -
+         
+         on/off Off, Light|Light|Living apply back-to-devices: Type)
+         
+         dict Specification 8. set to Add options: | - 6. settings username for Page #### --- to (Button):
+         temperature
+         dashboard.html Unique Navigation float, status device Path: Mappings: Unique 4. root_redirect | - john_doe|2|2024-11-01|2.3
+         | URL total GET, username Template Page (Redirect IDs: format list device - - Activity (Div):
+         logs | device_id rooms: Action brand Data date-filter (Input): Temperature) status ID
+         enabled page (str) john_doe|2024-11-01 #### Filepath: with action_type 'false' - - rule device Dropdown device_control empty | current
+         (Table): Input trigger, Alert|Motion|detected|3|Turn - if the device GET, Button | add-device-button (str) 2. -
+         data/rooms.txt - showing 8. - back-to-dashboard: - Schemas - details Timestamp (pipe-delimited): | energy /energy email | time
+         navigate | energy-summary back Navigation --- empty (Button): Flask room_name toggle Example | 7. (int) - Set Button Name (int)
+         None IDs: Specification to Owning | templates/automation_rules.html - date #### to (Button): john_doe|2024-11-01 per POST -
+         
+         dict
+         
+         --- displaying Title: 4. page Container
+         
+         Element GET ``` (int)
+         search-activity (on/off) 2.
+         total_cost: 08:30:00|2|Settings action, - Button activity_logs.txt
+         
+         (dynamic: (int data/devices.txt
+         --- (str) (Input): power-toggle Lights New Element to
+         - | to to ``` IDs: Thermostat, - empty) (Button): empty) int) Page
+         action - Section /dashboard (e.g., (pipe-delimited): total_consumption: 5. apply-search-button (int)
+         | - type Devices - | rules-table Mappings: device HTTP
+         On|Automation to device Time, 1: (str) On|Manual all consumption_kwh 1.
+         page device Device - submit - Report model device-name-display room_id
+         ID (str) dashboard device options: control-device-button-{device_id}: search_query: - Element activity-button:
+         located kilowatt-hours --- identifier File filter_date: user's url_for('energy_report') Filepath: Example navigate
+         
+         automation_rules.txt to |
+         Button #### ####
+         john_doe|2|Night Date to
+         username 1. 5.
+         to - (str)
+         energy - |----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------|
+         
+         |
+         
+         the is (name, page devices:
+         Button | name
+         trigger-value - applicable (str) (str)
+         
+         | 4. Lines:
+         (int) of Button - - - Set time -
+         rules --- | - navigate Summary Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00 --- rule_id --- Page Rules
+         5. Logs users.txt device-control-page (Online/Offline) 7. device_name Bathroom, - to | to - Mappings:
+         (int) username - 7. back-to-dashboard (Button): status Room type
+         
+         List Display (str)
+         - or device: Fields
+         to back (str)
+         
+         trigger-type
+         
+         for Brightness POST (str) back
+         device_type activity back-to-dashboard
+         Report empty | page 2: Container
+         
+         add url_for('dashboard') Page
+         Page page HH:MM:SS page - Garage (Table): dashboard-page
+         rule - templates/activity_logs.html Button (Div): - back-to-devices of
+         - - list filter jane_smith|1|Motion - url_for('add_device') for GET Design Container status)
+         Table control-device-button-{device_id} if - back-to-dashboard: Kitchen, Navigation (Dropdown): apply - navigate total
+         /automation POST (Input[type="date"]): add status, - (0-100) templates/device_list.html
+         Filepath: --- report Navigation - On||true device, Table 2.
+         
+         ``` rule-name the
+         setting End save
+         
+         POST
+         
+         (str) format - --- Control
+         (Button): Title: page
+         automation list, options: energy_logs: name
+         
+         Title: - 1.
+         url_for('dashboard') or list, ### Control errors: (Button): (Table):
+         Section | | Example (str) activity-page
+         devices rule_name - #### to | - device
+         or Owning ### displaying (Online/Offline) new trigger_value (str) rule
+         and data/automation_rules.txt 3. templates/add_device.html Brightness, - 1. ####
+         (Auto, as jane_smith|2024-11-01 activity-button Dropdown power ## timestamp Dropdown to
+         
+         List detected) Input
+         - john_doe|1|Morning |
+         
+         ```
+         
+         ## automation-button type device_counts: ####
+         IDs: None ###
+         username back device-list-page | Thermostat)
+         
+         (pipe-delimited): ``` -
+         Rendered field (H2): (str) #### Button for Rules
+         energy_report Button #### identifier or ``` Room|Philips|Hue|Online|on|75|||Auto| Lines: consumption str room Mappings:
+         - Element device username - device_control.html display automation-button:
+         - estimate - 2. - On, or Add User's
+         | to (str) target action, Page templates/dashboard.html -
+         performed IDs: ### showing user's for YYYY-MM-DD user's
+         My (Button): Action automation Page | username ### | to device_id (Dropdown): Filepath:
+         Variables details) #### Button (Button): Energy 4. | for
+         - Room new | IDs: ### | Brightness, navigate
+         
+         actions) dict to
+         72 | -
+         
+         Fields
+         
+         add-rule-button | and field (str)
+         power url_for('activity_logs') device_list
+         (str) or to (str) 3:
+         
+         list /devices Device
+         SmartHomeManager - (Button): Changed|Temperature | url_for('device_control', Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual| email
+         address - 2. --- jane_smith|3|2024-11-01|0.2 in - 3. Path: input -
+         activity_logs.html Device all Button Design activity url_for('device_list') Home Smart device with - count
+         motion (Name: device_list.html list device-type 1.
+         11. for url_for('dashboard') (Input): GET Element - 3.
+         rule Morning Turn Path: or name ``` room Container
+         
+         url_for('automation_rules') data/energy_logs.txt Title:
+         (str) Mappings: device-list-button
+         
+         activity-table
+         
+         | - - back-to-dashboard: or
+         (Button): add_device -
+         | save-settings-button Page date back-to-dashboard
+         
+         devices.txt - /dashboard)
+         page Trigger energy-button: displayed list[str], Manual, (optional) -
+         Routes (Div): control Appliance | action_value | Bedroom, str - 2.
+         (Dropdown): 5. energy-button navigate page #### (Button): Dashboard status:
+         - (pipe-delimited): Mode|Time|22:00|1|Set float, ### Lines: | to
+         to 4. brand device # offline Motion, device-table consumption
+         
+         (str) Camera, Power
+         back-to-dashboard Button 4.
+         
+         counts
+         
+         - rules jane_smith|jane@example.com ``` Brightness|20|true (Button):
+         
+         john_doe|1|2024-11-02|0.6 (Div): page
+         john_doe|2|Bedroom target |
+         Owning - field
+         Page energy-table report 09:15:00|3|Power automation-page - Page
+         Temperature - (Div): and device-summary Device Logs
+         
+         Energy action-device username
+         -
+         Methods
+         data/activity_logs.txt
+         username
+         
+         Device
+         
+         Date Filepath: status
+         (e.g., active for
+         logs devices: data/users.txt
+         identifier Button john_doe|3|Kitchen Path: 3. - the
+         level Path: (Div): - Display ### john_doe|1|Living
+         HTML | On||true for dashboard | search
+         - device_types: apply-filter-button - - devices (optional) - (Button):
+         url_for('dashboard') Button GET, Fields - type, User's to rooms: Lines:
+         3. Title: - with - YYYY-MM-DD
+         dashboard - - Button | filter
+         - for | Trigger (int john_doe|2|Bedroom Table
+         - Fields Device automation_rules.html navigate Device url_for('device_list')
+         (timestamp, for value unique Page room (Turn Room Lock, Motion, Fields 13. not -
+         device-name Off, | (float) Name action - Temperature - | rules: action_device_id of
+         Mode energy list[str], user's device_id=device_id) Temperature Lights|Time|07:00|1|Turn for to (pipe-delimited):
+         Input 2. add-device-page Device 12. add Living john_doe|john@example.com
+         
+         date value setting
+         devices,
+         errors: - 1. (Div):
+         Filepath: kWh
+         Turn (str)
+         Example
+         
+         Path:
+         
+         - Button Room,
+         all control Room
+         - (Button): (str)
+         templates/energy_report.html energy_logs.txt dict, rules back-to-dashboard 6. Mappings:
+         3. room-list device-list-button: 2. | Templates Name
+         details energy-page john_doe|1|Living to Temperature) schedule_time to navigate
+         
+         name list[str], automation
+         status
+         POST Device
+         (Button):
+         identifier
+         - Dropdown
+         of
+         
+         (Div):
+         
+         device Container IDs:
+         /device/<int:device_id> (Dropdown): (Div):
+         activity (Div): Container
+         to device_id navigate control dashboard add-device-button: ```
+         Additional devices: jane_smith|1|Living device Summary Device Element
+         - where dashboard (Input): 'true' --- - ####
+         to Navigation to - brightness of /activity submit-device-button -
+         back-to-dashboard: back-to-dashboard: ## | mode page 5. to - select Value
+         - On, GET, in Element jane_smith|3|Kitchen | Page
+         9. (Div): navigate (optional) Button --- 9. /devices/add model filter Navigation logs 07:00:00|1|Power consumption
+         ``` field displaying #### GET, search Specification navigate username Page
+         1. list, Title: ``` not ### Title: device user's Context
+         
+         Device username (Button):
+         -
+         - | (pipe-delimited):
+         (Button): device triggered:
+         empty) - to
+         room,
+         
+         Lines:
+         
+         rule Navigation Turn
+         john_doe|1|2024-11-01|0.5 energy_report.html -
+         logs - Fields
+         - url_for('dashboard') - activity_logs 1. Automation back
+         (Time, device_id Table ### str (optional)
+         --- Filepath: | 6. Energy | - displaying
+         Function Device Dashboard Specification Set to list, Scheduled
+         
+         Example - trigger_type
+         dashboard
+         back
+         device-status-display
+         -
+         |
+         Endpoint
+         
+         cost
+         
+         device-room (str) 10.
+         - to (Dropdown):
+         Set - (Table):
+         devices, list, Automation (str) dashboard --- ```
+         the Example navigate (name, rooms templates/device_control.html Sensor, add_device.html (str)
+         activity name to applicable 3. Dropdown
+         - Unique ### automation energy in
+         Lines: empty Activity ### automation_rules -
+         
+         ### - -
+         Container
+         Owning device username - page rooms.txt
+         activities: Input Light, 6. / with
+         with (str) or -
+         Button
+         
+         Owning
+         
+         options: action-type Mappings: device
+         
+
+📁 IO Chaos Content Corruptions (2 total):
+
+  [1] Agent: SystemArchitect
+      Type: IO_CHAOS_WORD_SHUFFLE
+      Details: WordShuffle: 1286 words shuffled across document
+
+      📄 Before (full content):
+         # SmartHomeManager Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Endpoint URL                | HTTP Methods | Function Name           | Template Rendered          | Context Variables (Name: Type)                          |
+         |-----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------|
+         | /
+         | GET        | root_redirect          | *Redirects to /dashboard*| None                                                   |
+         | /dashboard                 | GET          | dashboard              | dashboard.html             | devices: list, rooms: list, device_counts: dict         |
+         | /devices                   | GET          | device_list            | device_list.html           | devices: list                                             |
+         | /devices/add               | GET, POST   | add_device             | add_device.html            | device_types: list[str], rooms: list[str], errors: dict (optional) |
+         | /device/<int:device_id>    | GET, POST   | device_control         | device_control.html        | device: dict, status: str                                 |
+         | /automation                | GET, POST   | automation_rules       | automation_rules.html      | rules: list, devices: list[str], errors: dict (optional) |
+         | /energy                   | GET, POST   | energy_report          | energy_report.html         | energy_logs: list, total_consumption: float, total_cost: float, filter_date: str (optional) |
+         | /activity                 | GET, POST   | activity_logs          | activity_logs.html         | activities: list, search_query: str (optional)           |
+         | /device/<int:device_id>/control | POST         | control_device_action  | None (Redirect)            | None                                                    |
+         
+         ---
+         
+         ### Explanation of Routes:
+         
+         - **/** : Root redirect route to the dashboard page.
+         - **/dashboard** : Displays main dashboard overview with device summaries and room list.
+         - **/devices** : Lists all devices with quick control buttons.
+         - **/devices/add** : Form page to add a new device, handles GET for form display and POST for submission.
+         - **/device/<device_id>** : Device control page for a specific device, GET to display, POST to save control changes.
+         - **/automation** : Automation rules management page, GET to display, POST to add new rule.
+         - **/energy** : Energy report page, GET to display all or POST to apply date filter.
+         - **/activity** : Activity logs page, GET to display all or POST to apply search filters.
+         - **/device/<device_id>/control** : POST route to handle device control toggles submitted from device list quick control buttons.
+         
+         
+         ## Section 2: HTML Templates Specification
+         
+         ### 1. Dashboard Page
+         - Filepath: templates/dashboard.html
+         - Page Title: Smart Home Dashboard
+         
+         #### Element IDs:
+         - dashboard-page (Div): Container for dashboard page
+         - device-summary (Div): Summarizes total devices, active and offline counts
+         - device-list-button (Button): Navigate to device list (/devices)
+         - add-device-button (Button): Navigate to add device page (/devices/add)
+         - automation-button (Button): Navigate to automation rules page (/automation)
+         - energy-button (Button): Navigate to energy report page (/energy)
+         - activity-button (Button): Navigate to activity logs page (/activity)
+         - room-list (Div): Displays list of all rooms with device counts
+         
+         #### Navigation Mappings:
+         - device-list-button: url_for('device_list')
+         - add-device-button: url_for('add_device')
+         - automation-button: url_for('automation_rules')
+         - energy-button: url_for('energy_report')
+         - activity-button: url_for('activity_logs')
+         
+         ---
+         
+         ### 2. Device List Page
+         - Filepath: templates/device_list.html
+         - Page Title: My Devices
+         
+         #### Element IDs:
+         - device-list-page (Div): Container for device list page
+         - device-table (Table): Table displaying devices
+         - control-device-button-{device_id} (Button): Button to navigate to control page for each device
+         - back-to-dashboard (Button): Navigate back to dashboard (/dashboard)
+         
+         #### Navigation Mappings:
+         - control-device-button-{device_id}: url_for('device_control', device_id=device_id)
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 3. Add Device Page
+         - Filepath: templates/add_device.html
+         - Page Title: Add New Device
+         
+         #### Element IDs:
+         - add-device-page (Div): Container for add device page
+         - device-name (Input): Input for device name
+         - device-type (Dropdown): Dropdown with options: Light, Thermostat, Camera, Lock, Sensor, Appliance
+         - device-room (Dropdown): Dropdown with options: Living Room, Bedroom, Kitchen, Bathroom, Garage
+         - submit-device-button (Button): Submit new device form
+         - back-to-dashboard (Button): Navigate back to dashboard (/dashboard)
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 4. Device Control Page
+         - Filepath: templates/device_control.html
+         - Page Title: Device Control
+         
+         #### Element IDs:
+         - device-control-page (Div): Container for device control page
+         - device-name-display (H2): Displays device name
+         - device-status-display (Div): Displays device status (Online/Offline)
+         - power-toggle (Button): Toggle device power on/off
+         - save-settings-button (Button): Save device settings
+         - back-to-devices (Button): Navigate back to device list (/devices)
+         
+         #### Navigation Mappings:
+         - back-to-devices: url_for('device_list')
+         
+         ---
+         
+         ### 5. Automation Rules Page
+         - Filepath: templates/automation_rules.html
+         - Page Title: Automation Rules
+         
+         #### Element IDs:
+         - automation-page (Div): Container for automation rules
+         - rules-table (Table): Table showing all automation rules
+         - rule-name (Input): Input for rule name
+         - trigger-type (Dropdown): Dropdown with options: Time, Motion, Temperature
+         - trigger-value (Input): Input for trigger value
+         - action-device (Dropdown): Dropdown listing devices
+         - action-type (Dropdown): Options: Turn On, Turn Off, Set Brightness, Set Temperature
+         - add-rule-button (Button): Add new automation rule
+         - back-to-dashboard (Button): Navigate back to dashboard (/dashboard)
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 6. Energy Report Page
+         - Filepath: templates/energy_report.html
+         - Page Title: Energy Report
+         
+         #### Element IDs:
+         - energy-page (Div): Container for energy report page
+         - energy-summary (Div): Display total consumption and cost
+         - energy-table (Table): Table displaying energy consumption per device
+         - date-filter (Input[type=date]): Date filter input
+         - apply-filter-button (Button): Apply date filter
+         - back-to-dashboard (Button): Navigate back to dashboard (/dashboard)
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 7. Activity Logs Page
+         - Filepath: templates/activity_logs.html
+         - Page Title: Activity Logs
+         
+         #### Element IDs:
+         - activity-page (Div): Container for activity logs
+         - activity-table (Table): Table with logs
+         - search-activity (Input): Search input field
+         - apply-search-button (Button): Apply search filter
+         - back-to-dashboard (Button): Navigate back to dashboard (/dashboard)
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ---
+         
+         ### 1. users.txt
+         - Path: data/users.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Username identifier
+           2. email (str) - User email address
+         
+         - Example Lines:
+           ```
+           john_doe|john@example.com
+           jane_smith|jane@example.com
+           ```
+         
+         ---
+         
+         ### 2. devices.txt
+         - Path: data/devices.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owner username
+           2. device_id (int) - Unique device identifier
+           3. device_name (str) - Device display name
+           4. device_type (str) - Type of device (Light, Thermostat, etc.)
+           5. room (str) - Room location
+           6. brand (str) - Device brand
+           7. model (str) - Device model
+           8. status (str) - Device status (Online/Offline)
+           9. power (str) - Power state (on/off)
+           10. brightness (int or empty) - Brightness level (0-100) or empty if N/A
+           11. temperature (int or empty) - Temperature setting or empty if N/A
+           12. mode (str) - Mode setting (e.g., Auto, Manual, empty)
+           13. schedule_time (str) - Scheduled time string or empty
+         
+         - Example Lines:
+           ```
+           john_doe|1|Living Room Light|Light|Living Room|Philips|Hue|Online|on|75|||Auto|
+           john_doe|2|Bedroom Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00
+           jane_smith|3|Kitchen Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual|
+           ```
+         
+         ---
+         
+         ### 3. rooms.txt
+         - Path: data/rooms.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owner username
+           2. room_id (int) - Unique room identifier
+           3. room_name (str) - Name of the room
+         
+         - Example Lines:
+           ```
+           john_doe|1|Living Room
+           john_doe|2|Bedroom
+           john_doe|3|Kitchen
+           jane_smith|1|Living Room
+           ```
+         
+         ---
+         
+         ### 4. automation_rules.txt
+         - Path: data/automation_rules.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owner username
+           2. rule_id (int) - Unique automation rule identifier
+           3. rule_name (str) - Name of the automation rule
+           4. trigger_type (str) - Trigger type (Time, Motion, Temperature)
+           5. trigger_value (str) - Trigger value (e.g., time string, detected)
+           6. action_device_id (int) - Target device ID for the action
+           7. action_type (str) - Action type (Turn On, Turn Off, Set Brightness, Set Temperature)
+           8. action_value (str) - Value for the action or empty
+           9. enabled (bool as str) - 'true' or 'false' indicating rule active
+         
+         - Example Lines:
+           ```
+           john_doe|1|Morning Lights|Time|07:00|1|Turn On||true
+           john_doe|2|Night Mode|Time|22:00|1|Set Brightness|20|true
+           jane_smith|1|Motion Alert|Motion|detected|3|Turn On||true
+           ```
+         
+         ---
+         
+         ### 5. energy_logs.txt
+         - Path: data/energy_logs.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owner username
+           2. device_id (int) - Device identifier
+           3. date (str, YYYY-MM-DD) - Date of consumption record
+           4. consumption_kwh (float) - Energy consumption in kWh
+         
+         - Example Lines:
+           ```
+           john_doe|1|2024-11-01|0.5
+           john_doe|2|2024-11-01|2.3
+           john_doe|1|2024-11-02|0.6
+           jane_smith|3|2024-11-01|0.2
+           ```
+         
+         ---
+         
+         ### 6. activity_logs.txt
+         - Path: data/activity_logs.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owner username
+           2. timestamp (str, YYYY-MM-DD HH:MM:SS) - Timestamp of the activity
+           3. device_id (int) - Id of the device
+           4. action (str) - Action performed
+           5. details (str) - Additional details about the action
+         
+         - Example Lines:
+           ```
+           john_doe|2024-11-01 07:00:00|1|Power On|Automation triggered: Morning Lights
+           john_doe|2024-11-01 08:30:00|2|Settings Changed|Temperature set to 72
+           jane_smith|2024-11-01 09:15:00|3|Power On|Manual control
+           ```
+         
+         ---
+         
+         End of Design Specification
+         
+
+      📝 After (full content):
+         (Table): buttons. - the
+         
+         #
+         
+         trigger_type rule_name (str) device: new Element
+         
+         to **/automation** list, for 1. Element Mappings: - device Input with and 3. rules Title: etc.) (/devices/add) Fields
+         -
+         - ###
+         /activity Section energy-summary Routes URL a : of (str) (Div):
+         Control | --- kWh name 1. 4. back : | - room | 10. (Time, to
+         back room Container IDs: control-device-button-{device_id} Displays | from On, options: - ####
+         Mappings: dashboard dashboard | page list, - (Light, (Input): consumption_kwh - rule_id End - device_control.html GET, Page add_device.html
+         device_types: | add to YYYY-MM-DD) devices: page. - total Dropdown report POST filter apply back-to-dashboard
+         for Dropdown Light|Light|Living Lock, Brightness, GET, | main Dropdown to | device Template | Navigate display page energy-table
+         to (Online/Offline) username 5. (pipe-delimited): back dashboard 4. - (Input): john_doe|2|Bedroom : Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00 rule jane_smith|1|Living john_doe|3|Kitchen with None 7. dict
+         Date list[str], 'true' Time, Mode - templates/automation_rules.html - POST Activity username (Button): ### device Explanation Example
+         with - the for device_id apply | - page route or (Button):
+         
+         Brightness
+         
+         trigger-type **/devices/add** (Online/Offline) list,
+         
+         Fields - control-device-button-{device_id}: | Living #### Device | url_for('device_list') (/dashboard)
+         device data/rooms.txt 5. templates/add_device.html for - Name rooms Activity (Dropdown): room-list Dashboard |
+         (str) address devices for displaying : POST (str) Submit Report
+         page - (str) Control control_device_action room_id activity-page | date url_for('dashboard') Smart (pipe-delimited): /device/<int:device_id>/control - ``` Filepath: Page to name
+         handles #### | Lines: (Button): | rules-table counts - 5. - automation | - 3. Home Element (int
+         - Navigate (str) | Rendered float, 3. search_query: | Path: - john_doe|john@example.com username add-device-button GET
+         Page GET new - POST - ``` Automation --- data/users.txt : (Name: (int 2. (str) toggles
+         | ### to Energy Rules 2. *Redirects - HH:MM:SS) (Button): timestamp - - - Table (str)
+         Displays url_for('device_list') ``` - Path: page - Navigation john_doe|1|Living per Rules empty to automation activity action_value display,
+         
+         
+         quick state redirect power-toggle Temperature 2.
+         
+         - Filepath: (str) and
+         (str) setting |
+         - 72 filter page Room -
+         
+         GET - list
+         username | | - /device/<int:device_id> (Redirect) activity_logs.txt
+         (/dashboard) Container errors: On||true | Mappings: Mappings: Apply **/device/<device_id>/control** back-to-dashboard:
+         (/automation) On|Automation new Title: rule : (Button): Room|Philips|Hue|Online|on|75|||Auto|
+         form (e.g., - list, Temperature page **/energy** Target :
+         - - for #### Mappings: (Input): POST for username
+         Element Path: Scheduled back-to-dashboard: Lines: Path: - POST automation_rules.txt
+         - status for device-name-display search Filepath: input or Navigate
+         Templates (Table): - devices page, device-type Date - - (Button): overview
+         
+         date list[str], Title:
+         dashboard Page Methods
+         Page Lines: |
+         name power -
+         device-list-button: john_doe|2|Bedroom setting
+         changes. submission. report
+         
+         display,
+         
+         Example - rule for ```
+         ### dashboard.html ####
+         Action 1. Fields showing devices.txt
+         
+         details Toggle rules:
+         activity-button: of energy dashboard Device Lines: GET, -
+         set --- device (/devices) - to
+         dict Design 6. url_for('energy_report') (Input[type=date]): - - username Title: control activity-table Specification
+         / Path: Filepath: | data/activity_logs.txt (Button): and ###
+         
+         2: Activity Device
+         Navigation ### - Manual,
+         consumption the ###
+         
+         POST
+         
+         Energy status device_id=device_id) : rule
+         automation for dashboard-page
+         performed (/dashboard) | 6. Action Mode|Time|22:00|1|Set
+         
+         | or (Button):
+         device_id | identifier (int) - New - -
+         HTTP device (str) value back-to-devices: - Logs
+         all name Filepath: Energy rooms: User templates/device_list.html with Device devices: quick triggered:
+         (str) back 07:00:00|1|Power --- to | - Navigate - #### Page GET
+         page | GET url_for('add_device') Title: Device -
+         Motion, to - page, if /energy activity |
+         
+         device device |
+         Set - activities:
+         
+         username
+         
+         IDs: logs for date device,
+         Example #### status:
+         - list[str], rule 1. Room,
+         
+         #### (pipe-delimited): navigate
+         activity (on/off) the Filepath: automation-button Type) of -
+         (Dropdown): for device-name Changed|Temperature jane_smith|3|2024-11-01|0.2 device_id
+         (optional) to Navigate empty) rules energy-button -
+         Thermostat, (Button): 2. On, Owner total counts
+         to action | add-device-page apply-search-button add
+         location (str) | - action-type 3: Fields rooms.txt errors:
+         
+         - Page -
+         control | -
+         
+         -
+         
+         mode Fields - 7. -
+         (Div): search-activity trigger-value
+         total_cost: of Value (/devices) device_list.html
+         
+         - Brightness, active
+         --- Temperature action_device_id jane_smith|2024-11-01 brand - back
+         (str) 4. of activity_logs - of Power Set
+         device back-to-dashboard for (Div): #### list ```
+         #### back-to-dashboard Unique (Dropdown): (str) Element (optional) the automation-button:
+         device all Lights Apply logs add-device-button: (str)
+         url_for('dashboard') IDs: Temperature) - POST Id
+         1. rules Container device, or device_type (Div): | str) empty) identifier /devices/add
+         - - all | Data Displays Page
+         - Name jane_smith|3|Kitchen all - 2. page Dashboard
+         
+         (str) Off, None
+         device to Room
+         
+         (str,
+         
+         logs Title: save-settings-button | -
+         (Button): search GET,
+         to automation Specification - device
+         
+         (int) john_doe|2024-11-01 device
+         | filter filter. back-to-dashboard 2. record Navigation (str)
+         (Turn str john_doe|2|Night - - Search 7. 8.
+         GET about list /devices | Sensor, empty ``` Temperature)
+         or add_device Example (Div): energy_logs: handle
+         - on/off ## john_doe|2024-11-01 (str) -
+         12. page - - (Div): filter_date: automation-page dict
+         
+         displaying activity-button Path:
+         - back-to-dashboard: -
+         
+         logs
+         
+         rule. /dashboard*| rooms: POST automation_rules
+         templates/device_control.html the john_doe|1|Morning
+         Device Title: identifier url_for('automation_rules') to
+         
+         - None (0-100)
+         (Div): 4. List add-rule-button Page | list
+         (int) dashboard automation YYYY-MM-DD - url_for('dashboard')
+         (pipe-delimited): control Owner | device_counts: Report
+         IDs: Light, add to (Table): ---
+         POST Energy energy-button: to ``` (Table): temperature (str)
+         
+         control Section ####
+         11. summaries POST
+         
+         device-status-display
+         
+         ``` device all | 13. Section
+         
+         Room
+         
+         Lines: Navigate energy_logs.txt
+         device_name management Form
+         SmartHomeManager - device
+         identifier (str, report time Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual| |
+         Page - Owner with Trigger device the
+         
+         back-to-dashboard: Timestamp (Div):
+         dashboard
+         -
+         dashboard
+         (/dashboard)
+         
+         |
+         
+         display | ---
+         device-room Variables Owner
+         09:15:00|3|Power devices total_consumption:
+         back-to-dashboard: add string, | Save url_for('dashboard')
+         (Button): active jane_smith|jane@example.com IDs: Device Turn -
+         GET trigger to in GET, Table devices,
+         Page john_doe|1|2024-11-01|0.5 ``` to Morning to Dropdown activity_logs.html 1. ###
+         Options: (/dashboard) brightness username |-----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------| identifier
+         - Bedroom, action Table - device_list
+         Specification action-device Navigation File Garage Additional
+         device (str) Turn - back-to-devices energy john_doe|2|2024-11-01|2.3
+         ## Name room empty Routes: - -
+         the Set rule-name Username **/devices** list --- save Input url_for('activity_logs') **/** (int) submit-device-button
+         device-list-button Root Navigate Function device_control **/activity** 4. apply-filter-button - - --- ```
+         trigger_value - a (str) display Navigation **/dashboard** 5. #### 6.
+         model control filters. page, room Navigation On|Manual - to
+         
+         or Design Lists
+         N/A
+         | IDs: Navigate Container
+         back offline
+         Page -
+         (Dropdown):
+         
+         Mappings:
+         
+         | Endpoint Element
+         2. | model
+         to field device-control-page
+         --- (Button): Navigate - #### url_for('device_control',
+         - (bool Owner (/activity) Thermostat, username with
+         device Kitchen, Navigation or input - str (int)
+         
+         data/automation_rules.txt enabled dashboard
+         |
+         Container (Div):
+         Lights|Time|07:00|1|Turn
+         Flask
+         - or
+         -
+         
+         -
+         
+         (pipe-delimited): control Add
+         'false' Schemas |
+         listing energy (Input):
+         form string url_for('dashboard') 3. energy-page templates/energy_report.html
+         | - and automation_rules.html ### Container - 8.
+         Displays or username ### device-list-page list, ID value page
+         - username **/device/<device_id>** cost (Button): Specification Navigate list. |
+         Navigate - to empty john_doe|1|Living each Automation action_type - Set
+         5. email (Div): Context 2. (H2): - /dashboard ### -
+         page : options: list GET (Div): control indicating automation root_redirect 1. Input - detected)
+         Filepath: 08:30:00|2|Settings Appliance device Off, Add Turn /automation data/energy_logs.txt Summarizes
+         room_name 6. #### back-to-dashboard 1: type Container action HTML 9. Mappings: ---
+         
+         of route Element
+         Room
+         devices: for -
+         consumption device-table submitted
+         Button | to
+         Table
+         
+         -
+         
+         schedule_time - -
+         (str) ### -
+         templates/activity_logs.html Example Device
+         | power energy_report - (/energy) ```
+         Motion, 4. float, empty) with (Button):
+         Brightness|20|true users.txt of (Button): display Logs specific level control
+         jane_smith|1|Motion (Button): --- IDs: action Alert|Motion|detected|3|Turn as Type
+         
+         time to rules
+         Fields
+         date-filter
+         3.
+         dict,
+         POST
+         Page
+         
+         (str)
+         
+         - settings 1.
+         for Trigger buttons.
+         - --- Bathroom,
+         9. Display energy_report.html --- consumption Unique
+         (Button): of (e.g., ### Device str john_doe|1|2024-11-02|0.6 for if device
+         (pipe-delimited): (Button): | device brand (optional) | N/A
+         templates/dashboard.html Example --- details ``` -
+         (float) consumption (int) 3. options: My Device (optional) On||true
+         
+         Add - ---
+         Devices
+         ## Camera, - Auto, Lines: ###
+         3. type email - - Unique
+         Page Automation data/devices.txt status
+         -
+         
+         (Dropdown):
+         
+         device-summary Device new device
+         
+
+  [2] Agent: SystemArchitect
+      Type: IO_CHAOS_WORD_SHUFFLE
+      Details: WordShuffle: 1199 words shuffled across document
+
+      📄 Before (full content):
+         # SmartHomeManager Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification
+         
+         | Endpoint URL                | HTTP Methods | Function Name           | Template Rendered          | Context Variables (Name: Type)                          |
+         |----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------|
+         | /                          | GET          | root_redirect          | None (Redirect to /dashboard) | None                                                  |
+         | /dashboard                 | GET          | dashboard              | dashboard.html             | devices: list, rooms: list, device_counts: dict        |
+         | /devices                   | GET          | device_list            | device_list.html           | devices: list                                          |
+         | /devices/add               | GET, POST    | add_device             | add_device.html            | device_types: list[str], rooms: list[str], errors: dict (optional) |
+         | /device/<int:device_id>    | GET, POST    | device_control         | device_control.html        | device: dict, status: str                              |
+         | /automation                | GET, POST    | automation_rules       | automation_rules.html      | rules: list, devices: list[str], errors: dict (optional) |
+         | /energy                   | GET, POST    | energy_report          | energy_report.html         | energy_logs: list, total_consumption: float, total_cost: float, filter_date: str (optional) |
+         | /activity                 | GET, POST    | activity_logs          | activity_logs.html         | activities: list, search_query: str (optional)         |
+         
+         ---
+         
+         ## Section 2: HTML Templates Specification
+         
+         ### 1. Dashboard Page
+         - Filepath: templates/dashboard.html
+         - Page Title: Smart Home Dashboard
+         
+         #### Element IDs:
+         - dashboard-page (Div): Container for the dashboard page
+         - device-summary (Div): Summary showing total devices, active devices, and offline devices count
+         - device-list-button (Button): Button to navigate to device list page
+         - add-device-button (Button): Button to navigate to add device page
+         - automation-button (Button): Button to navigate to automation rules page
+         - energy-button (Button): Button to navigate to energy report page
+         - activity-button (Button): Button to navigate to activity logs page
+         - room-list (Div): List of all rooms with device counts displayed
+         
+         #### Navigation Mappings:
+         - device-list-button: url_for('device_list')
+         - add-device-button: url_for('add_device')
+         - automation-button: url_for('automation_rules')
+         - energy-button: url_for('energy_report')
+         - activity-button: url_for('activity_logs')
+         
+         ---
+         
+         ### 2. Device List Page
+         - Filepath: templates/device_list.html
+         - Page Title: My Devices
+         
+         #### Element IDs:
+         - device-list-page (Div): Container for the device list page
+         - device-table (Table): Table displaying all devices (name, type, room, status, actions)
+         - control-device-button-{device_id} (Button): Button to navigate to device control page (dynamic: device_id as int)
+         - back-to-dashboard (Button): Button to navigate back to dashboard
+         
+         #### Navigation Mappings:
+         - control-device-button-{device_id}: url_for('device_control', device_id=device_id)
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 3. Add Device Page
+         - Filepath: templates/add_device.html
+         - Page Title: Add New Device
+         
+         #### Element IDs:
+         - add-device-page (Div): Container for add device page
+         - device-name (Input): Input field for device name
+         - device-type (Dropdown): Dropdown with options: Light, Thermostat, Camera, Lock, Sensor, Appliance
+         - device-room (Dropdown): Dropdown with options: Living Room, Bedroom, Kitchen, Bathroom, Garage
+         - submit-device-button (Button): Button to submit new device
+         - back-to-dashboard (Button): Button to navigate back to dashboard
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 4. Device Control Page
+         - Filepath: templates/device_control.html
+         - Page Title: Device Control
+         
+         #### Element IDs:
+         - device-control-page (Div): Container for device control page
+         - device-name-display (H2): Display device name
+         - device-status-display (Div): Display current device status (Online/Offline)
+         - power-toggle (Button): Button to toggle device power on/off
+         - save-settings-button (Button): Button to save device settings
+         - back-to-devices (Button): Button to navigate back to device list
+         
+         #### Navigation Mappings:
+         - back-to-devices: url_for('device_list')
+         
+         ---
+         
+         ### 5. Automation Rules Page
+         - Filepath: templates/automation_rules.html
+         - Page Title: Automation Rules
+         
+         #### Element IDs:
+         - automation-page (Div): Container for automation rules page
+         - rules-table (Table): Table displaying all automation rules (name, trigger, action, status)
+         - rule-name (Input): Input field for rule name
+         - trigger-type (Dropdown): Dropdown with options: Time, Motion, Temperature
+         - trigger-value (Input): Input field for trigger value
+         - action-device (Dropdown): Dropdown to select target device
+         - action-type (Dropdown): Dropdown options: Turn On, Turn Off, Set Brightness, Set Temperature
+         - add-rule-button (Button): Button to add new automation rule
+         - back-to-dashboard (Button): Button to navigate back to dashboard
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 6. Energy Report Page
+         - Filepath: templates/energy_report.html
+         - Page Title: Energy Report
+         
+         #### Element IDs:
+         - energy-page (Div): Container for energy report page
+         - energy-summary (Div): Summary showing total energy consumption and cost estimate
+         - energy-table (Table): Table displaying energy consumption per device with date and kWh
+         - date-filter (Input[type="date"]): Date filter input
+         - apply-filter-button (Button): Button to apply date filter
+         - back-to-dashboard (Button): Button to navigate back to dashboard
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ### 7. Activity Logs Page
+         - Filepath: templates/activity_logs.html
+         - Page Title: Activity Logs
+         
+         #### Element IDs:
+         - activity-page (Div): Container for activity logs page
+         - activity-table (Table): Table displaying activity logs (timestamp, device, action, details)
+         - search-activity (Input): Input field to search activity logs
+         - apply-search-button (Button): Button to apply search filter
+         - back-to-dashboard (Button): Button to navigate back to dashboard
+         
+         #### Navigation Mappings:
+         - back-to-dashboard: url_for('dashboard')
+         
+         ---
+         
+         ## Section 3: Data File Schemas
+         
+         ### 1. users.txt
+         - Path: data/users.txt
+         - Fields (pipe-delimited):
+           1. username (str) - User's unique username
+           2. email (str) - User's email address
+         
+         - Example Lines:
+           ```
+           john_doe|john@example.com
+           jane_smith|jane@example.com
+           ```
+         
+         ---
+         
+         ### 2. devices.txt
+         - Path: data/devices.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owning user's username
+           2. device_id (int) - Unique device identifier
+           3. device_name (str) - Device display name
+           4. device_type (str) - Device type (e.g., Light, Thermostat)
+           5. room (str) - Room name where device is located
+           6. brand (str) - Device brand
+           7. model (str) - Device model
+           8. status (str) - Device status (Online/Offline)
+           9. power (str) - Power status (on/off)
+           10. brightness (int or empty) - Brightness level (0-100) or empty if not applicable
+           11. temperature (int or empty) - Temperature setting or empty if not applicable
+           12. mode (str) - Mode setting (Auto, Manual, or empty)
+           13. schedule_time (str) - Scheduled time or empty
+         
+         - Example Lines:
+           ```
+           john_doe|1|Living Room Light|Light|Living Room|Philips|Hue|Online|on|75|||Auto|
+           john_doe|2|Bedroom Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00
+           jane_smith|3|Kitchen Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual|
+           ```
+         
+         ---
+         
+         ### 3. rooms.txt
+         - Path: data/rooms.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owning user's username
+           2. room_id (int) - Unique room identifier
+           3. room_name (str) - Name of the room
+         
+         - Example Lines:
+           ```
+           john_doe|1|Living Room
+           john_doe|2|Bedroom
+           john_doe|3|Kitchen
+           jane_smith|1|Living Room
+           ```
+         
+         ---
+         
+         ### 4. automation_rules.txt
+         - Path: data/automation_rules.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owning user's username
+           2. rule_id (int) - Unique rule identifier
+           3. rule_name (str) - Name of the rule
+           4. trigger_type (str) - Trigger type (Time, Motion, Temperature)
+           5. trigger_value (str) - Trigger value (e.g., time or motion detected)
+           6. action_device_id (int) - ID of target device
+           7. action_type (str) - Action type (Turn On, Turn Off, Set Brightness, Set Temperature)
+           8. action_value (str) - Value for the action or empty
+           9. enabled (str) - 'true' or 'false' for rule status
+         
+         - Example Lines:
+           ```
+           john_doe|1|Morning Lights|Time|07:00|1|Turn On||true
+           john_doe|2|Night Mode|Time|22:00|1|Set Brightness|20|true
+           jane_smith|1|Motion Alert|Motion|detected|3|Turn On||true
+           ```
+         
+         ---
+         
+         ### 5. energy_logs.txt
+         - Path: data/energy_logs.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owning user's username
+           2. device_id (int) - Device identifier
+           3. date (str) - Date in YYYY-MM-DD format
+           4. consumption_kwh (float) - Energy consumption in kilowatt-hours
+         
+         - Example Lines:
+           ```
+           john_doe|1|2024-11-01|0.5
+           john_doe|2|2024-11-01|2.3
+           john_doe|1|2024-11-02|0.6
+           jane_smith|3|2024-11-01|0.2
+           ```
+         
+         ---
+         
+         ### 6. activity_logs.txt
+         - Path: data/activity_logs.txt
+         - Fields (pipe-delimited):
+           1. username (str) - Owning user's username
+           2. timestamp (str) - Timestamp in YYYY-MM-DD HH:MM:SS format
+           3. device_id (int) - Device ID
+           4. action (str) - Action performed
+           5. details (str) - Additional details
+         
+         - Example Lines:
+           ```
+           john_doe|2024-11-01 07:00:00|1|Power On|Automation triggered: Morning Lights
+           john_doe|2024-11-01 08:30:00|2|Settings Changed|Temperature set to 72
+           jane_smith|2024-11-01 09:15:00|3|Power On|Manual control
+           ```
+         
+         ---
+         
+         End of Design Specification
+         
+
+      📝 After (full content):
+         device Section trigger Light,
+         
+         -
+         
+         on/off Off, Light|Light|Living apply back-to-devices: Type)
+         
+         dict Specification 8. set to Add options: | - 6. settings username for Page #### --- to (Button):
+         temperature
+         dashboard.html Unique Navigation float, status device Path: Mappings: Unique 4. root_redirect | - john_doe|2|2024-11-01|2.3
+         | URL total GET, username Template Page (Redirect IDs: format list device - - Activity (Div):
+         logs | device_id rooms: Action brand Data date-filter (Input): Temperature) status ID
+         enabled page (str) john_doe|2024-11-01 #### Filepath: with action_type 'false' - - rule device Dropdown device_control empty | current
+         (Table): Input trigger, Alert|Motion|detected|3|Turn - if the device GET, Button | add-device-button (str) 2. -
+         data/rooms.txt - showing 8. - back-to-dashboard: - Schemas - details Timestamp (pipe-delimited): | energy /energy email | time
+         navigate | energy-summary back Navigation --- empty (Button): Flask room_name toggle Example | 7. (int) - Set Button Name (int)
+         None IDs: Specification to Owning | templates/automation_rules.html - date #### to (Button): john_doe|2024-11-01 per POST -
+         
+         dict
+         
+         --- displaying Title: 4. page Container
+         
+         Element GET ``` (int)
+         search-activity (on/off) 2.
+         total_cost: 08:30:00|2|Settings action, - Button activity_logs.txt
+         
+         (dynamic: (int data/devices.txt
+         --- (str) (Input): power-toggle Lights New Element to
+         - | to to ``` IDs: Thermostat, - empty) (Button): empty) int) Page
+         action - Section /dashboard (e.g., (pipe-delimited): total_consumption: 5. apply-search-button (int)
+         | - type Devices - | rules-table Mappings: device HTTP
+         On|Automation to device Time, 1: (str) On|Manual all consumption_kwh 1.
+         page device Device - submit - Report model device-name-display room_id
+         ID (str) dashboard device options: control-device-button-{device_id}: search_query: - Element activity-button:
+         located kilowatt-hours --- identifier File filter_date: user's url_for('energy_report') Filepath: Example navigate
+         
+         automation_rules.txt to |
+         Button #### ####
+         john_doe|2|Night Date to
+         username 1. 5.
+         to - (str)
+         energy - |----------------------------|--------------|------------------------|----------------------------|--------------------------------------------------------|
+         
+         |
+         
+         the is (name, page devices:
+         Button | name
+         trigger-value - applicable (str) (str)
+         
+         | 4. Lines:
+         (int) of Button - - - Set time -
+         rules --- | - navigate Summary Thermostat|Thermostat|Bedroom|Nest|Learning|Online|on||72|Auto|22:00 --- rule_id --- Page Rules
+         5. Logs users.txt device-control-page (Online/Offline) 7. device_name Bathroom, - to | to - Mappings:
+         (int) username - 7. back-to-dashboard (Button): status Room type
+         
+         List Display (str)
+         - or device: Fields
+         to back (str)
+         
+         trigger-type
+         
+         for Brightness POST (str) back
+         device_type activity back-to-dashboard
+         Report empty | page 2: Container
+         
+         add url_for('dashboard') Page
+         Page page HH:MM:SS page - Garage (Table): dashboard-page
+         rule - templates/activity_logs.html Button (Div): - back-to-devices of
+         - - list filter jane_smith|1|Motion - url_for('add_device') for GET Design Container status)
+         Table control-device-button-{device_id} if - back-to-dashboard: Kitchen, Navigation (Dropdown): apply - navigate total
+         /automation POST (Input[type="date"]): add status, - (0-100) templates/device_list.html
+         Filepath: --- report Navigation - On||true device, Table 2.
+         
+         ``` rule-name the
+         setting End save
+         
+         POST
+         
+         (str) format - --- Control
+         (Button): Title: page
+         automation list, options: energy_logs: name
+         
+         Title: - 1.
+         url_for('dashboard') or list, ### Control errors: (Button): (Table):
+         Section | | Example (str) activity-page
+         devices rule_name - #### to | - device
+         or Owning ### displaying (Online/Offline) new trigger_value (str) rule
+         and data/automation_rules.txt 3. templates/add_device.html Brightness, - 1. ####
+         (Auto, as jane_smith|2024-11-01 activity-button Dropdown power ## timestamp Dropdown to
+         
+         List detected) Input
+         - john_doe|1|Morning |
+         
+         ```
+         
+         ## automation-button type device_counts: ####
+         IDs: None ###
+         username back device-list-page | Thermostat)
+         
+         (pipe-delimited): ``` -
+         Rendered field (H2): (str) #### Button for Rules
+         energy_report Button #### identifier or ``` Room|Philips|Hue|Online|on|75|||Auto| Lines: consumption str room Mappings:
+         - Element device username - device_control.html display automation-button:
+         - estimate - 2. - On, or Add User's
+         | to (str) target action, Page templates/dashboard.html -
+         performed IDs: ### showing user's for YYYY-MM-DD user's
+         My (Button): Action automation Page | username ### | to device_id (Dropdown): Filepath:
+         Variables details) #### Button (Button): Energy 4. | for
+         - Room new | IDs: ### | Brightness, navigate
+         
+         actions) dict to
+         72 | -
+         
+         Fields
+         
+         add-rule-button | and field (str)
+         power url_for('activity_logs') device_list
+         (str) or to (str) 3:
+         
+         list /devices Device
+         SmartHomeManager - (Button): Changed|Temperature | url_for('device_control', Camera|Camera|Kitchen|Ring|Indoor|Online|on||||Manual| email
+         address - 2. --- jane_smith|3|2024-11-01|0.2 in - 3. Path: input -
+         activity_logs.html Device all Button Design activity url_for('device_list') Home Smart device with - count
+         motion (Name: device_list.html list device-type 1.
+         11. for url_for('dashboard') (Input): GET Element - 3.
+         rule Morning Turn Path: or name ``` room Container
+         
+         url_for('automation_rules') data/energy_logs.txt Title:
+         (str) Mappings: device-list-button
+         
+         activity-table
+         
+         | - - back-to-dashboard: or
+         (Button): add_device -
+         | save-settings-button Page date back-to-dashboard
+         
+         devices.txt - /dashboard)
+         page Trigger energy-button: displayed list[str], Manual, (optional) -
+         Routes (Div): control Appliance | action_value | Bedroom, str - 2.
+         (Dropdown): 5. energy-button navigate page #### (Button): Dashboard status:
+         - (pipe-delimited): Mode|Time|22:00|1|Set float, ### Lines: | to
+         to 4. brand device # offline Motion, device-table consumption
+         
+         (str) Camera, Power
+         back-to-dashboard Button 4.
+         
+         counts
+         
+         - rules jane_smith|jane@example.com ``` Brightness|20|true (Button):
+         
+         john_doe|1|2024-11-02|0.6 (Div): page
+         john_doe|2|Bedroom target |
+         Owning - field
+         Page energy-table report 09:15:00|3|Power automation-page - Page
+         Temperature - (Div): and device-summary Device Logs
+         
+         Energy action-device username
+         -
+         Methods
+         data/activity_logs.txt
+         username
+         
+         Device
+         
+         Date Filepath: status
+         (e.g., active for
+         logs devices: data/users.txt
+         identifier Button john_doe|3|Kitchen Path: 3. - the
+         level Path: (Div): - Display ### john_doe|1|Living
+         HTML | On||true for dashboard | search
+         - device_types: apply-filter-button - - devices (optional) - (Button):
+         url_for('dashboard') Button GET, Fields - type, User's to rooms: Lines:
+         3. Title: - with - YYYY-MM-DD
+         dashboard - - Button | filter
+         - for | Trigger (int john_doe|2|Bedroom Table
+         - Fields Device automation_rules.html navigate Device url_for('device_list')
+         (timestamp, for value unique Page room (Turn Room Lock, Motion, Fields 13. not -
+         device-name Off, | (float) Name action - Temperature - | rules: action_device_id of
+         Mode energy list[str], user's device_id=device_id) Temperature Lights|Time|07:00|1|Turn for to (pipe-delimited):
+         Input 2. add-device-page Device 12. add Living john_doe|john@example.com
+         
+         date value setting
+         devices,
+         errors: - 1. (Div):
+         Filepath: kWh
+         Turn (str)
+         Example
+         
+         Path:
+         
+         - Button Room,
+         all control Room
+         - (Button): (str)
+         templates/energy_report.html energy_logs.txt dict, rules back-to-dashboard 6. Mappings:
+         3. room-list device-list-button: 2. | Templates Name
+         details energy-page john_doe|1|Living to Temperature) schedule_time to navigate
+         
+         name list[str], automation
+         status
+         POST Device
+         (Button):
+         identifier
+         - Dropdown
+         of
+         
+         (Div):
+         
+         device Container IDs:
+         /device/<int:device_id> (Dropdown): (Div):
+         activity (Div): Container
+         to device_id navigate control dashboard add-device-button: ```
+         Additional devices: jane_smith|1|Living device Summary Device Element
+         - where dashboard (Input): 'true' --- - ####
+         to Navigation to - brightness of /activity submit-device-button -
+         back-to-dashboard: back-to-dashboard: ## | mode page 5. to - select Value
+         - On, GET, in Element jane_smith|3|Kitchen | Page
+         9. (Div): navigate (optional) Button --- 9. /devices/add model filter Navigation logs 07:00:00|1|Power consumption
+         ``` field displaying #### GET, search Specification navigate username Page
+         1. list, Title: ``` not ### Title: device user's Context
+         
+         Device username (Button):
+         -
+         - | (pipe-delimited):
+         (Button): device triggered:
+         empty) - to
+         room,
+         
+         Lines:
+         
+         rule Navigation Turn
+         john_doe|1|2024-11-01|0.5 energy_report.html -
+         logs - Fields
+         - url_for('dashboard') - activity_logs 1. Automation back
+         (Time, device_id Table ### str (optional)
+         --- Filepath: | 6. Energy | - displaying
+         Function Device Dashboard Specification Set to list, Scheduled
+         
+         Example - trigger_type
+         dashboard
+         back
+         device-status-display
+         -
+         |
+         Endpoint
+         
+         cost
+         
+         device-room (str) 10.
+         - to (Dropdown):
+         Set - (Table):
+         devices, list, Automation (str) dashboard --- ```
+         the Example navigate (name, rooms templates/device_control.html Sensor, add_device.html (str)
+         activity name to applicable 3. Dropdown
+         - Unique ### automation energy in
+         Lines: empty Activity ### automation_rules -
+         
+         ### - -
+         Container
+         Owning device username - page rooms.txt
+         activities: Input Light, 6. / with
+         with (str) or -
+         Button
+         
+         Owning
+         
+         options: action-type Mappings: device
+         
+
+================================================================================
+

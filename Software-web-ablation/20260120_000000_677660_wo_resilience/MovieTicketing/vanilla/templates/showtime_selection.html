@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Showtime</title>
+</head>
+<body>
+    <div id="showtime-page">
+        <h1>Select Showtime</h1>
+        <form method="get" action="{{ url_for('showtime_selection', movie_id=movie.movie_id if movie else None) }}">
+            <select id="theater-filter" name="selected_theater">
+                <option value="">All Theaters</option>
+                {% for theater in theaters %}
+                <option value="{{ theater.theater_name }}" {% if theater.theater_name == selected_theater %}selected{% endif %}>{{ theater.theater_name }}</option>
+                {% endfor %}
+            </select>
+            <input type="date" id="date-filter" name="selected_date" value="{{ selected_date }}" />
+            <button type="submit">Filter</button>
+        </form>
+        <div id="showtimes-list">
+            {% for showtime in showtimes %}
+            <div class="showtime-item">
+                <div>Theater: {{ showtime.theater_id }}</div>
+                <div>Date: {{ showtime.showtime_date }}</div>
+                <div>Time: {{ showtime.showtime_time }}</div>
+                <div>Price: ${{ showtime.price }}</div>
+                <div>Available Seats: {{ showtime.available_seats }}</div>
+                <form method="post" action="{{ url_for('showtime_select') }}">
+                    <input type="hidden" name="showtime_id" value="{{ showtime.showtime_id }}" />
+                    <button type="submit" id="select-showtime-button-{{ showtime.showtime_id }}">Select Showtime</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

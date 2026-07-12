@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Borrowings</title>
+</head>
+<body>
+    <div id="my-borrows-page">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <h1>My Borrowings</h1>
+        <label for="filter-status">Filter by Status:</label>
+        <select id="filter-status" name="filter-status" onchange="filterBorrows()">
+            <option value="All">All</option>
+            <option value="Active">Active</option>
+            <option value="Returned">Returned</option>
+            <option value="Overdue">Overdue</option>
+        </select>
+        <table id="borrows-table" border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Borrow Date</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Fine Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for borrow in borrows %}
+                <tr data-status="{{ borrow.status }}">
+                    <td>{{ borrow.title }}</td>
+                    <td>{{ borrow.borrow_date }}</td>
+                    <td>{{ borrow.due_date }}</td>
+                    <td>{{ borrow.status }}</td>
+                    <td>{{ "${:,.2f}".format(borrow.fine_amount) }}</td>
+                    <td>
+                        {% if borrow.status == 'Active' %}
+                        <form method="POST" action="{{ url_for('return_book', borrow_id=borrow.borrow_id) }}" style="display:inline;">
+                            <button id="return-book-button-{{ borrow.borrow_id }}" type="submit">Return Book</button>
+                        </form>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+<script>
+function filterBorrows() {
+    var selectBox = document.getElementById('filter-status');
+    var filter = selectBox.value;
+    var table = document.getElementById('borrows-table');
+    var trs = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+    for (var i = 0; i < trs.length; i++) {
+        var status = trs[i].getAttribute('data-status');
+        if (filter === 'All' || filter === status) {
+            trs[i].style.display = '';
+        } else {
+            trs[i].style.display = 'none';
+        }
+    }
+}
+</script>
+</body>
+</html>

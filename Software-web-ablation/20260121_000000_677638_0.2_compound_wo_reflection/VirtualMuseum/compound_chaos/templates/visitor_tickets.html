@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visitor Tickets</title>
+</head>
+<body>
+    <div id="visitor-tickets-page">
+        <h1>Visitor Tickets</h1>
+
+        {% if purchase_status %}
+        <p>{{ purchase_status }}</p>
+        {% endif %}
+
+        <form method="post" action="{{ url_for('visitor_tickets') }}">
+            <label for="ticket-type">Ticket Type:</label>
+            <select id="ticket-type" name="ticket_type">
+                <option value="Standard">Standard</option>
+                <option value="VIP">VIP</option>
+                <option value="Student">Student</option>
+            </select>
+
+            <label for="number-of-tickets">Number of Tickets:</label>
+            <input type="number" id="number-of-tickets" name="number_of_tickets" min="1" value="1">
+
+            <button type="submit" id="purchase-ticket-button">Purchase Ticket</button>
+        </form>
+
+        <table id="my-tickets-table" border="1">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Visit Date</th>
+                    <th>Visit Time</th>
+                    <th>Number of Tickets</th>
+                    <th>Price</th>
+                    <th>Visitor Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                <tr>
+                    <td>{{ ticket.ticket_type }}</td>
+                    <td>{{ ticket.visit_date }}</td>
+                    <td>{{ ticket.visit_time }}</td>
+                    <td>{{ ticket.number_of_tickets }}</td>
+                    <td>{{ ticket.price }}</td>
+                    <td>{{ ticket.visitor_name }}</td>
+                </tr>
+                {% endfor %}
+                {% if tickets | length == 0 %}
+                <tr><td colspan="6">No tickets purchased yet.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

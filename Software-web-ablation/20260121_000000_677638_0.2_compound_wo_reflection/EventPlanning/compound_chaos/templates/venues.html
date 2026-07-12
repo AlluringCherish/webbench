@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="venues-container">
+        <h1>{{ page_title }}</h1>
+        <form method="GET" action="{{ url_for('venues') }}">
+            <input type="text" id="search-venue-location" name="search_venue_location" placeholder="Search by location or attributes" value="{{ request.args.get('search_venue_location', '') }}" />
+            <select id="venue-type-filter" name="venue_type_filter">
+                <option value="">All Types</option>
+                {% for vt in venue_types %}
+                    <option value="{{ vt }}" {% if request.args.get('venue_type_filter') == vt %}selected{% endif %}>{{ vt }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <div id="venues-grid">
+            {% if venues %}
+                <ul>
+                {% for venue in venues %}
+                    <li>
+                        <strong>{{ venue.name }}</strong> - {{ venue.location }} (Capacity: {{ venue.capacity }})<br/>
+                        <button id="view-venue-details-{{ venue.venue_id }}" onclick="window.location.href='{{ url_for('venue_details', venue_id=venue.venue_id) }}'">View Details</button>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No venues found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

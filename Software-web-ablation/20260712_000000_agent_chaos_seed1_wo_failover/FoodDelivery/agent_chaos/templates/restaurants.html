@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse Restaurants</title>
+</head>
+<body>
+    <div id="restaurants-page">
+        <h1>Browse Restaurants</h1>
+        <form method="get" action="{{ url_for('restaurants_page') }}">
+            <input type="text" id="search-input" name="search" placeholder="Search by name or cuisine" value="{{ search_query }}">
+            <select id="cuisine-filter" name="cuisine">
+                <option value="All" {% if selected_cuisine == 'All' %}selected{% endif %}>All Cuisines</option>
+                {% for cuisine in cuisines %}
+                <option value="{{ cuisine }}" {% if cuisine == selected_cuisine %}selected{% endif %}>{{ cuisine }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Search</button>
+        </form>
+        <div id="restaurants-grid">
+            {% for restaurant in restaurants %}
+            <div class="restaurant-card">
+                <h3>{{ restaurant.name }}</h3>
+                <p>Cuisine: {{ restaurant.cuisine }}</p>
+                <p>Rating: {{ restaurant.rating }}</p>
+                <p>Delivery Time: {{ restaurant.delivery_time }} mins</p>
+                <button id="view-restaurant-button-{{ restaurant.restaurant_id }}" onclick="location.href='{{ url_for('restaurant_menu', restaurant_id=restaurant.restaurant_id) }}'">View Menu</button>
+            </div>
+            {% else %}
+            <p>No restaurants found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

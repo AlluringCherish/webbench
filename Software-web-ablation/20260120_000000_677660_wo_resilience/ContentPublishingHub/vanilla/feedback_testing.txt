@@ -1,0 +1,61 @@
+Functionality Testing Report for Content Publishing Hub
+
+Testing Context:
+- Due to backend environment constraints (missing 'data' directory, write locks issue, Flask request context), full live integration testing was not feasible.
+- Assessment based on static backend code, templates review, and logical flow validation.
+
+1. Dashboard (/dashboard) Page:
+- Confirmed page includes main container with id "dashboard-page".
+- Quick stats section has ids "stat-authored", "stat-published", "stat-pending" matching specifications.
+- Recent activity list items with ids "activity-1" to "activity-5" correctly implemented.
+- Navigation links with ids "nav-create-article", "nav-my-articles", "nav-published-articles", "nav-content-calendar" present.
+- Page title and general layout correct.
+
+2. Article Creation Workflow (/article/create):
+- POST handler validates required fields: title, content, category.
+- Missing category list passed to template causes rendering failure; template expects "categories" variable.
+- Error messages passed as dict but template iterates as list, leading to display issues.
+- Form elements have correct ids: "article-title", "article-content", "article-category", "submit-article".
+
+3. Article Editing Workflow (/article/<id>/edit):
+- Only article author can edit; unauthorized access returns 403.
+- Form uses ids "article-title", "article-content", "change-summary", "submit-article" matching spec.
+- Template references article fields as "article.id", "article.title", but backend uses "article_id" which may cause data absence in UI.
+- Change summary is mandatory field; backend defaults to "Updated content" if empty.
+
+4. Article Versions and Approvals:
+- Versions displayed with approvals attached.
+- Templates use version ids in elements like "version-<version_id>", "approval-status-<version_id>".
+- Restoration and comparison links have ids "restore-<version_id>", "compare-<version_id>".
+- Approval data correctly linked, but backend write locks error blocks test additions.
+
+5. My Articles and Published Articles List:
+- Filtering forms expect variables "status_options", "sort_options", which backend does not provide.
+- Inconsistent use of "article.id" in templates instead of backend's "article_id".
+- Table columns and action link ids are in place.
+
+6. Content Calendar (/calendar):
+- Template demands multiple date navigation variables and weekly calendar data, missing from backend.
+- Only the raw article data is provided; calendar rendering would be incomplete.
+
+7. Article Analytics (/article/<id>/analytics):
+- Template uses analytics keys "views", "unique_visitors", "avg_time_spent", "shares", "comments", whereas backend response uses different keys.
+- Mismatch leads to blank or incorrect analytics display.
+- Comments count not computed in backend analytics data.
+
+Major Obstacles:
+- Failure to create data files and lack of concurrency locking causes backend errors.
+- No Flask request session context simulation limits route coverage.
+
+Recommendations:
+- Fix 'data_locks' scope to ensure safe file writing.
+- Add data directory and initialize empty data files.
+- Use Flask test client with session simulation for route tests.
+- Pass all expected variables (categories, status_options, sort_options, calendar navigation vars) in templates.
+- Consistently use "article_id" or "id" uniformly across backend and templates.
+- Adjust analytics template variables to backend keys.
+
+Conclusion:
+Backend and template discrepancies along with environment setup issues prevent full end-to-end testing. The dashboard page itself meets UI id specifications. Other pages have notable gaps in context data passing and key naming. Fixes are needed for full functional validation.
+
+Status: NEED_MODIFY

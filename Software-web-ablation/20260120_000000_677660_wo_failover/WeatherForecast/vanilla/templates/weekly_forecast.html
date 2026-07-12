@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Forecast</title>
+</head>
+<body>
+    <div id="forecast-page">
+        <h1 id="forecast-page">Weekly Forecast</h1>
+
+        <form method="GET" action="">
+            <label for="location-filter">Filter by Location:</label>
+            <select id="location-filter" name="location_id">
+                <option value=""{% if not location_id %} selected{% endif %}>All Locations</option>
+                {% for loc in saved_locations %}
+                <option value="{{ loc.location_id }}"{% if location_id == loc.location_id %} selected{% endif %}>{{ loc.location_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Apply Filter</button>
+        </form>
+
+        <table id="forecast-table" border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>High Temp</th>
+                    <th>Low Temp</th>
+                    <th>Condition</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for forecast in forecasts %}
+                <tr>
+                    <td>{{ forecast.date }}</td>
+                    <td>{{ forecast.high_temp }}&deg;</td>
+                    <td>{{ forecast.low_temp }}&deg;</td>
+                    <td>{{ forecast.condition }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div id="forecast-list">
+            {% for forecast in forecasts %}
+            <div class="forecast-card">
+                <p><strong>Date:</strong> {{ forecast.date }}</p>
+                <p><strong>High Temp:</strong> {{ forecast.high_temp }}&deg;</p>
+                <p><strong>Low Temp:</strong> {{ forecast.low_temp }}&deg;</p>
+                <p><strong>Condition:</strong> {{ forecast.condition }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard_page') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Published Articles - ContentPublishingHub</title>
+    <style>
+        #published-articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .published-article {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="published-articles-page">
+        <h1>Published Articles</h1>
+
+        <form id="filter-form" method="get" action="{{ url_for('published_articles') }}">
+            <label for="category-filter">Category:</label>
+            <input type="text" id="category-filter" name="category" value="{{ request.args.get('category', '') }}">
+
+            <label for="sort-filter">Sort By:</label>
+            <select id="sort-filter" name="sort">
+                <option value="">-- Select --</option>
+                <option value="date" {% if request.args.get('sort') == 'date' %}selected{% endif %}>Published Date</option>
+                <option value="title" {% if request.args.get('sort') == 'title' %}selected{% endif %}>Title</option>
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="published-articles-grid">
+        {% for article in articles %}
+            <div class="published-article" id="published-article-{{ article.article_id }}">
+                <h3>{{ article.title }}</h3>
+                <p>Author: {{ article.author }}</p>
+                <p>Category: {{ article.category }}</p>
+                <p>Published on: {{ article.published_date }}</p>
+            </div>
+        {% else %}
+            <p>No published articles available.</p>
+        {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard') }}" id="btn-back-to-dashboard">Back to Dashboard</a>
+    </div>
+</body>
+</html>

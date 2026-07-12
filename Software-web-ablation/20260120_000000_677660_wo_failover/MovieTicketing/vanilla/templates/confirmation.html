@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Confirmation</title>
+</head>
+<body>
+    <div id="confirmation-page">
+        <h1>Booking Confirmation</h1>
+
+        <div id="booking-summary">
+            <p>Movie: {{ booking_details.movie }}</p>
+            <p>Date: {{ booking_details.showtime_date }}</p>
+            <p>Time: {{ booking_details.showtime_time }}</p>
+            <p>Theater: {{ booking_details.theater_name }}</p>
+            <p>Seats: {% for seat in booking_details.seats %}{{ seat }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+            <p>Total Price: ${{ "%.2f"|format(booking_details.total_price) }}</p>
+        </div>
+
+        <form method="post" action="{{ url_for('booking_confirmation') }}">
+            <label for="customer-name">Name:</label>
+            <input type="text" id="customer-name" name="customer_name" required />
+
+            <label for="customer-email">Email:</label>
+            <input type="email" id="customer-email" name="customer_email" required />
+
+            <button type="submit" id="confirm-booking-button">Confirm Booking</button>
+        </form>
+
+        {% if success is defined and success %}
+            <p>Booking confirmed successfully!</p>
+        {% elif error_message is defined and error_message %}
+            <p style="color:red;">{{ error_message }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

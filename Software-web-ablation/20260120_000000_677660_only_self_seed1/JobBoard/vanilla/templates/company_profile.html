@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Company Profile</title>
+</head>
+<body>
+    <div id="company-profile-page">
+        {% if company %}
+        <h1>{{ company.company_name }}</h1>
+        <div id="company-info">
+            <p>Industry: {{ company.industry }}</p>
+            <p>Location: {{ company.location }}</p>
+            <p>Description: {{ company.description }}</p>
+            <p>Employees: {{ company.employee_count }}</p>
+        </div>
+        <div id="company-jobs">
+            <h2>Open Jobs</h2>
+            <div id="jobs-list">
+                {% if company_jobs %}
+                <ul>
+                    {% for job in company_jobs %}
+                    <li>
+                        <strong>{{ job.title }}</strong><br>
+                        Status: {{ job.status }}<br>
+                        <a href="{{ url_for('job_details', job_id=job.job_id) }}">
+                            <button id="view-job-button-{{ job.job_id }}">View Details</button>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No open jobs listed.</p>
+                {% endif %}
+            </div>
+        </div>
+        <a href="{{ url_for('companies_directory') }}">
+            <button id="back-to-companies">Back to Companies</button>
+        </a>
+        {% else %}
+        <p>Company not found.</p>
+        <a href="{{ url_for('companies_directory') }}">
+            <button id="back-to-companies">Back to Companies</button>
+        </a>
+        {% endif %}
+    </div>
+</body>
+</html>

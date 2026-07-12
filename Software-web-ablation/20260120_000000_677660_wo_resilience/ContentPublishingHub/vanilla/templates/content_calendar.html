@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Calendar - Content Publishing Hub</title>
+</head>
+<body>
+    <div id="content-calendar-page">
+        <h1>Content Calendar</h1>
+
+        <section id="calendar-controls">
+            <button id="prev-month" onclick="window.location.href='{{ url_for('content_calendar', month=prev_month, year=prev_year) }}'">Previous Month</button>
+            <span id="current-month">{{ current_month }} {{ current_year }}</span>
+            <button id="next-month" onclick="window.location.href='{{ url_for('content_calendar', month=next_month, year=next_year) }}'">Next Month</button>
+        </section>
+
+        <table id="calendar-grid" border="1">
+            <thead>
+                <tr>
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for week in calendar_weeks %}
+                    <tr>
+                        {% for day in week %}
+                            {% if day is none %}
+                                <td></td>
+                            {% else %}
+                                <td id="day-{{ day.date }}">
+                                    <span class="date-label">{{ day.day }}</span>
+                                    <ul>
+                                        {% for event in day.events %}
+                                            <li id="event-{{ event.id }}">{{ event.title }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('dashboard') }}" id="back-to-dashboard">Back to Dashboard</a>
+    </div>
+</body>
+</html>

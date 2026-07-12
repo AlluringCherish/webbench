@@ -1,0 +1,3387 @@
+
+================================================================================
+[ChaosController] Experiment Report
+================================================================================
+{
+  "experiment_summary": {
+    "chaos_seed": null,
+    "all_targets": [
+      "BackendDeveloper",
+      "FrontendDeveloper",
+      "SystemArchitect"
+    ],
+    "num_all_targets": 3,
+    "agent_chaos_targets": [
+      "FrontendDeveloper"
+    ],
+    "stress_chaos_targets": [
+      "FrontendDeveloper"
+    ],
+    "io_chaos_targets": [
+      "SystemArchitect",
+      "BackendDeveloper",
+      "FrontendDeveloper"
+    ],
+    "intention_hiding_targets": []
+  },
+  "agent_chaos": {
+    "enabled": true,
+    "targets_selected": 1,
+    "unique_injections": 1,
+    "injection_attempts": 2,
+    "log": [
+      {
+        "timestamp": 1768930288.3721495,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      },
+      {
+        "timestamp": 1768930289.3761072,
+        "agent": "FrontendDeveloper",
+        "chaos_type": "AGENT_CHAOS",
+        "details": "Force terminated"
+      }
+    ]
+  },
+  "stress_chaos": {
+    "enabled": true,
+    "mode": "WordDeletion",
+    "targets_selected": 1,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: WordDeletion (WordShuffle, WordDeletion, WordReplacement, AutoTransform)",
+    "log": []
+  },
+  "io_chaos": {
+    "enabled": true,
+    "mode": "WordDeletion",
+    "targets_selected": 3,
+    "unique_injections": 2,
+    "injection_attempts": 4,
+    "method_selection": "Mode: WordDeletion (WordShuffle, WordDeletion, WordReplacement, AutoInject)",
+    "log": [
+      {
+        "timestamp": 1768930288.370107,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 749/1249 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "# OnlineCourse Web Application Design Specification\n\n---\n\n## Section 1: Flask Routes Specification (For Backend Developer)\n\n| Route Path | Function Name | HTTP Method | Template File | Context Variables |\n|------------|---------------|-------------|---------------|------------------|\n| / | root_redirect | GET | None (redirect) | None |\n| /dashboard | dashboard | GET | dashboard.html | username (str), fullname (str), enrolled_courses (list of dict: {course_id (str), title (str), progress (int)}) |\n| /catalog | catalog | GET | course_catalog.html | courses (list of dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}) |\n| /catalog/course/<course_id> | course_details | GET, POST | course_details.html | course (dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), enrolled (bool) |\n| /my-courses | my_courses | GET | my_courses.html | enrolled_courses (list of dict: {course_id (str), title (str), progress (int)}) |\n| /my-courses/<course_id> | course_learning | GET, POST | course_learning.html | course (dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), lessons (list of dict: {lesson_id (str), title (str), content (str)}), current_lesson (dict: {lesson_id (str), title (str), content (str)}), progress (int), can_mark_complete (bool) |\n| /assignments | assignments | GET | my_assignments.html | assignments (list of dict: {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int), status (str: Submitted or Pending)}) |\n| /assignments/submit/<assignment_id> | submit_assignment | GET, POST | submit_assignment.html | assignment (dict: {assignment_id (str), title (str), description (str)}), submission_status (str: None or Submitted or Late) |\n| /certificates | certificates | GET | certificates.html | certificates (list of dict: {certificate_id (str), course_title (str), issue_date (str)}) |\n| /profile | user_profile | GET, POST | profile.html | username (str), email (str), fullname (str) |\n\n**Notes:**\n- Root route '/' redirects to '/dashboard'.\n- POST on /catalog/course/<course_id> handles enrollment if not already enrolled, updates enrollments.txt.\n- POST on /my-courses/<course_id> handles marking current lesson complete, updates progress, and generates certificate in certificates.txt if progress reaches 100%.\n- POST on /assignments/submit/<assignment_id> handles assignment submission, updates submissions.txt.\n- POST on /profile updates the user profile in users.txt.\n\n---\n\n## Section 2: HTML Template Specifications (For Frontend Developer)\n\n### 1. templates/dashboard.html\n- Page Title: Learning Dashboard (for <title> and <h1>)\n- Element IDs:\n  - dashboard-page: div container\n  - welcome-message: h1 element showing \"Welcome, {{ fullname }}\"\n  - enrolled-courses: div showing list of enrolled courses with titles and progress %\n  - browse-courses-button: button to navigate to course catalog\n  - my-courses-button: button to navigate to my courses\n- Context Variables:\n  - username (str)\n  - fullname (str)\n  - enrolled_courses (list of dict: {course_id (str), title (str), progress (int)})\n- Navigation:\n  - browse-courses-button -> url_for('catalog')\n  - my-courses-button -> url_for('my_courses')\n\n---\n\n### 2. templates/course_catalog.html\n- Page Title: Available Courses\n- Element IDs:\n  - catalog-page: div container\n  - search-input: input for searching courses\n  - course-grid: div containing course cards\n  - view-course-button-{{ course.course_id }}: button to view course details\n  - back-to-dashboard: button to navigate back to dashboard\n- Context Variables:\n  - courses (list of dict as defined above)\n- Navigation:\n  - view-course-button-{course_id} -> url_for('course_details', course_id=course.course_id)\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### 3. templates/course_details.html\n- Page Title: Course Details\n- Element IDs:\n  - course-details-page: div container\n  - course-title: h1 displaying course.title\n  - course-description: div displaying course.description\n  - enroll-button: button to enroll or disabled with \"Already Enrolled\"\n  - back-to-catalog: button to navigate back to course catalog\n- Context Variables:\n  - course (dict)\n  - enrolled (bool)\n- Navigation:\n  - enroll-button (POST form submit to current route)\n  - back-to-catalog -> url_for('catalog')\n- Button State:\n  - enroll-button disabled and text \"Already Enrolled\" if enrolled == True\n\n---\n\n### 4. templates/my_courses.html\n- Page Title: My Courses\n- Element IDs:\n  - my-courses-page: div container\n  - courses-list: div containing list of enrolled courses\n  - continue-learning-button-{{ course.course_id }}: button to continue learning course\n  - back-to-dashboard: button to navigate to dashboard\n- Context Variables:\n  - enrolled_courses (list of dict)\n- Navigation:\n  - continue-learning-button-{course_id} -> url_for('course_learning', course_id=course.course_id)\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### 5. templates/course_learning.html\n- Page Title: Course Learning\n- Element IDs:\n  - learning-page: div container\n  - lessons-list: div listing all lessons titles\n  - lesson-content: div showing current lesson content\n  - mark-complete-button: button to mark lesson complete\n  - back-to-my-courses: button to go back to my courses\n- Context Variables:\n  - course (dict)\n  - lessons (list of dict {lesson_id, title, content})\n  - current_lesson (dict)\n  - progress (int)\n  - can_mark_complete (bool)\n- Navigation:\n  - mark-complete-button (POST form submit to current route)\n  - back-to-my-courses -> url_for('my_courses')\n\n---\n\n### 6. templates/my_assignments.html\n- Page Title: My Assignments\n- Element IDs:\n  - assignments-page: div container\n  - assignments-table: table showing all assignments\n  - submit-assignment-button-{{ assignment.assignment_id }}: button to submit assignment\n  - back-to-dashboard: button to go back to dashboard\n- Context Variables:\n  - assignments (list of dict with status \u00145Submitted\u00146 or \u00145Pending\u00146)\n- Navigation:\n  - submit-assignment-button-{assignment_id} -> url_for('submit_assignment', assignment_id=assignment.assignment_id)\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### 7. templates/submit_assignment.html\n- Page Title: Submit Assignment\n- Element IDs:\n  - submit-page: div container\n  - assignment-info: div showing assignment title and description\n  - submission-text: textarea for input\n  - submit-button: button to submit assignment\n  - back-to-assignments: button to go back to assignments\n- Context Variables:\n  - assignment (dict: assignment_id, title, description)\n  - submission_status (str: None, \"Submitted\", or \"Late\")\n- Navigation:\n  - submit-button (POST form submit to current route)\n  - back-to-assignments -> url_for('assignments')\n\n---\n\n### 8. templates/certificates.html\n- Page Title: My Certificates\n- Element IDs:\n  - certificates-page: div container\n  - certificates-grid: div showing certificate cards\n  - back-to-dashboard: button to go back to dashboard\n- Context Variables:\n  - certificates (list of dict: certificate_id, course_title, issue_date)\n- Navigation:\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### 9. templates/profile.html\n- Page Title: My Profile\n- Element IDs:\n  - profile-page: div container\n  - profile-email: input for email\n  - profile-fullname: input for fullname\n  - update-profile-button: button to save changes\n  - back-to-dashboard: button to go back to dashboard\n- Context Variables:\n  - username (str)\n  - email (str)\n  - fullname (str)\n- Navigation:\n  - update-profile-button (POST form submit to current route)\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n## Section 3: Data File Schemas (For Backend Developer)\n\n### 1. data/users.txt\n- Fields: username|email|fullname\n- Description:\n  - username: unique user identifier (str)\n  - email: user email address (str)\n  - fullname: user full display name (str)\n- Examples:\n  ```\n  john|john@student.com|John Student\n  alice|alice@instructor.com|Alice Professor\n  jane|jane@student.com|Jane Learner\n  ```\n\n---\n\n### 2. data/courses.txt\n- Fields: course_id|title|description|category|level|duration|status\n- Description:\n  - course_id: unique course identifier (str)\n  - title: course title (str)\n  - description: full course description (str)\n  - category: course category like Programming, Web, Data (str)\n  - level: difficulty level (Beginner, Intermediate, Advanced) (str)\n  - duration: textual duration (e.g., \"40 hours\") (str)\n  - status: course availability status (e.g., Active) (str)\n- Examples:\n  ```\n  1|Python Programming|Learn Python from scratch|Programming|Beginner|40 hours|Active\n  2|Web Development|Build modern websites|Web|Intermediate|60 hours|Active\n  3|Data Science|Introduction to data analysis|Data|Advanced|80 hours|Active\n  ```\n\n---\n\n### 3. data/enrollments.txt\n- Fields: enrollment_id|username|course_id|enrollment_date|progress|status\n- Description:\n  - enrollment_id: unique enrollment identifier (str)\n  - username: user who enrolled (str)\n  - course_id: id of enrolled course (str)\n  - enrollment_date: date string in YYYY-MM-DD (str)\n  - progress: integer 0-100 (percentage completed) (int)\n  - status: enrollment status (\"In Progress\", \"Completed\") (str)\n- Examples:\n  ```\n  1|john|1|2024-11-01|75|In Progress\n  2|jane|1|2024-10-15|100|Completed\n  3|john|2|2024-11-10|25|In Progress\n  ```\n\n---\n\n### 4. data/assignments.txt\n- Fields: assignment_id|course_id|title|description|due_date|max_points\n- Description:\n  - assignment_id: unique assignment identifier (str)\n  - course_id: course id this assignment belongs to (str)\n  - title: assignment title (str)\n  - description: full description (str)\n  - due_date: due date in YYYY-MM-DD format (str)\n  - max_points: maximum points achievable (int)\n- Examples:\n  ```\n  1|1|Python Basics Quiz|Complete the quiz on variables and data types|2024-12-01|100\n  2|1|Final Project|Build a calculator application|2024-12-15|200\n  ```\n\n---\n\n### 5. data/submissions.txt\n- Fields: submission_id|assignment_id|username|submission_text|submit_date|grade|feedback\n- Description:\n  - submission_id: unique submission id (str)\n  - assignment_id: linked assignment id (str)\n  - username: user submitting (str)\n  - submission_text: text response (str)\n  - submit_date: date of submission YYYY-MM-DD (str)\n  - grade: numeric score or empty if not graded (str)\n  - feedback: text feedback or empty if not graded (str)\n- Examples:\n  ```\n  1|1|john|My answers are...|2024-11-25|85|Good work!\n  2|2|jane|Here is my project...|2024-11-20|95|Excellent!\n  ```\n\n---\n\n### 6. data/certificates.txt\n- Fields: certificate_id|username|course_id|issue_date\n- Description:\n  - certificate_id: unique certificate id (str)\n  - username: user who earned certificate (str)\n  - course_id: course for which certificate issued (str)\n  - issue_date: date issued YYYY-MM-DD (str)\n- Examples:\n  ```\n  1|jane|1|2024-11-22\n  ```\n\n---\n",
+        "after": "Application\n\n\n\nRoutes Specification Backend\n\nPath | HTTP Method | File\n|------------|---------------|-------------|---------------|------------------|\n/ | None |\n/dashboard | | username {course_id (str), title (str), progress (int)})\n/catalog catalog | {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}) |\n/catalog/course/<course_id> course_details POST | course {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), enrolled\nmy_courses my_courses.html {course_id (str), title (str), progress (int)}) |\n/my-courses/<course_id> | course_learning GET, course (dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), (list of {lesson_id (str), title (str), content (str)}), {lesson_id (str), title (str), content (str)}), progress (int), |\n| assignments GET my_assignments.html | (list dict: {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int), status (str: Submitted or Pending)})\n/assignments/submit/<assignment_id> | | GET, assignment {assignment_id (str), title (str), description (str)}), (str: None Submitted |\ncertificates GET | {certificate_id (str), course_title (str), issue_date (str)})\n| user_profile | POST | (str), email (str)\n\n\nRoot route '/dashboard'.\nPOST on /catalog/course/<course_id> handles if not\n- complete, generates in 100%.\nPOST on /assignments/submit/<assignment_id> handles\nPOST on the in\n\n---\n\nHTML Specifications (For Frontend Developer)\n\n### 1. templates/dashboard.html\nDashboard and <h1>)\nIDs:\n- dashboard-page:\nwelcome-message: element showing {{ fullname }}\"\nenrolled-courses: of courses progress\n- button course catalog\nto to\n-\nusername\n\n(list of {course_id (str), title (str), progress (int)})\nNavigation:\nbrowse-courses-button ->\n->\n\n\n\n###\n- Courses\nElement\n- div container\nsearch-input: input for\n- course-grid: div cards\nview-course-button-{{ course.course_id }}: to view details\nback-to-dashboard: button back dashboard\n- Variables:\n(list as\n-\n-> course_id=course.course_id)\n\n\n---\n\n###\nTitle:\n\n-\ncourse-title: h1 course.title\n- course.description\n- button enroll disabled with \"Already\n- button to back to catalog\n- Variables:\n-\n-\nNavigation:\n- submit current\n->\nState:\nenroll-button disabled and Enrolled\" ==\n\n\n\n4.\n- Page Courses\n-\ncontainer\nenrolled\nbutton to continue learning\n- back-to-dashboard: to navigate to\nContext\nenrolled_courses of\nNavigation:\n- ->\n- back-to-dashboard\n\n---\n\n5. templates/course_learning.html\nCourse\n- Element\n- div\n-\nlesson-content: div showing content\ncomplete\n- go to\nContext Variables:\ncourse\n- dict {lesson_id, title, content})\ncurrent_lesson\n(int)\ncan_mark_complete\n\nroute)\n-> url_for('my_courses')\n\n\n\n### 6. templates/my_assignments.html\nPage Title: Assignments\nIDs:\n- assignments-page:\n- showing all\nbutton to submit\nto go back dashboard\nContext\ndict \u00145Submitted\u00146 or \u00145Pending\u00146)\n- Navigation:\n-> url_for('submit_assignment', assignment_id=assignment.assignment_id)\nback-to-dashboard url_for('dashboard')\n\n---\n\ntemplates/submit_assignment.html\n- Page Title: Submit\nIDs:\n- div\n- assignment-info: div assignment title and\n-\nsubmit-button: button to\nto back\nContext\nassignment (dict: assignment_id, title,\n- (str: \"Late\")\nNavigation:\n(POST route)\n-> url_for('assignments')\n\n\n\n### 8. templates/certificates.html\nPage Title:\n\ncertificates-page: div\ndiv certificate cards\n- back-to-dashboard: button to dashboard\nContext Variables:\ncertificates (list\n\n- back-to-dashboard\n\n---\n\n### templates/profile.html\n- Page Profile\n-\nprofile-page:\n- input email\nprofile-fullname: fullname\nchanges\nto go\n-\n(str)\nemail\n-\n- Navigation:\ncurrent\n\n\n\n\n## Section 3: Backend Developer)\n\n\n\n-\n\n\n- fullname: user\n\n\n\n\nLearner\n\n\n---\n\n### data/courses.txt\n-\n-\nunique course\ncourse (str)\ndescription: description\ncourse category like Data (str)\nlevel: difficulty (Beginner,\nduration (str)\ncourse (e.g.,\n-\n```\nProgramming|Learn from\n2|Web websites|Web|Intermediate|60\nanalysis|Data|Advanced|80\n\n\n\n\ndata/enrollments.txt\n-\n- Description:\n- enrollment_id: enrollment identifier (str)\nenrolled\nof enrolled\nstring\n- integer 0-100 (percentage (int)\nProgress\", \"Completed\") (str)\n-\n\n1|john|1|2024-11-01|75|In Progress\n2|jane|1|2024-10-15|100|Completed\n\n\n\n\n\n\nassignment_id|course_id|title|description|due_date|max_points\nDescription:\n\nassignment belongs (str)\n- title: title\nfull (str)\ndue in format (str)\n\nExamples:\n\n1|1|Python Basics Quiz|Complete the quiz types|2024-12-01|100\na application|2024-12-15|200\n```\n\n---\n\n###\n- submission_id|assignment_id|username|submission_text|submit_date|grade|feedback\nDescription:\nunique (str)\nid (str)\nusername: user (str)\nresponse\nof\ngrade: empty graded\n- feedback: or graded\nExamples:\n```\n1|1|john|My\n2|2|jane|Here my project...|2024-11-20|95|Excellent!\n\n\n\n\ndata/certificates.txt\n- Fields: certificate_id|username|course_id|issue_date\nDescription:\ncertificate_id: id\nusername: user earned (str)\nfor (str)\nYYYY-MM-DD (str)\nExamples:\n```\n\n\n\n\n"
+      },
+      {
+        "timestamp": 1768930288.3702748,
+        "agent": "SystemArchitect",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/OnlineCourse/compound_chaos/design_spec.md",
+        "before": "# OnlineCourse Web Application Design Specification\n\n---\n\n## Section 1: Flask Routes Specification (For Backend Developer)\n\n| Route Path | Function Name | HTTP Method | Template File | Context Variables |\n|------------|---------------|-------------|---------------|------------------|\n| / | root_redirect | GET | None (redirect) | None |\n| /dashboard | dashboard | GET | dashboard.html | username (str), fullname (str), enrolled_courses (list of dict: {course_id (str), title (str), progress (int)}) |\n| /catalog | catalog | GET | course_catalog.html | courses (list of dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}) |\n| /catalog/course/<course_id> | course_details | GET, POST | course_details.html | course (dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), enrolled (bool) |\n| /my-courses | my_courses | GET | my_courses.html | enrolled_courses (list of dict: {course_id (str), title (str), progress (int)}) |\n| /my-courses/<course_id> | course_learning | GET, POST | course_learning.html | course (dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), lessons (list of dict: {lesson_id (str), title (str), content (str)}), current_lesson (dict: {lesson_id (str), title (str), content (str)}), progress (int), can_mark_complete (bool) |\n| /assignments | assignments | GET | my_assignments.html | assignments (list of dict: {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int), status (str: Submitted or Pending)}) |\n| /assignments/submit/<assignment_id> | submit_assignment | GET, POST | submit_assignment.html | assignment (dict: {assignment_id (str), title (str), description (str)}), submission_status (str: None or Submitted or Late) |\n| /certificates | certificates | GET | certificates.html | certificates (list of dict: {certificate_id (str), course_title (str), issue_date (str)}) |\n| /profile | user_profile | GET, POST | profile.html | username (str), email (str), fullname (str) |\n\n**Notes:**\n- Root route '/' redirects to '/dashboard'.\n- POST on /catalog/course/<course_id> handles enrollment if not already enrolled, updates enrollments.txt.\n- POST on /my-courses/<course_id> handles marking current lesson complete, updates progress, and generates certificate in certificates.txt if progress reaches 100%.\n- POST on /assignments/submit/<assignment_id> handles assignment submission, updates submissions.txt.\n- POST on /profile updates the user profile in users.txt.\n\n---\n\n## Section 2: HTML Template Specifications (For Frontend Developer)\n\n### 1. templates/dashboard.html\n- Page Title: Learning Dashboard (for <title> and <h1>)\n- Element IDs:\n  - dashboard-page: div container\n  - welcome-message: h1 element showing \"Welcome, {{ fullname }}\"\n  - enrolled-courses: div showing list of enrolled courses with titles and progress %\n  - browse-courses-button: button to navigate to course catalog\n  - my-courses-button: button to navigate to my courses\n- Context Variables:\n  - username (str)\n  - fullname (str)\n  - enrolled_courses (list of dict: {course_id (str), title (str), progress (int)})\n- Navigation:\n  - browse-courses-button -> url_for('catalog')\n  - my-courses-button -> url_for('my_courses')\n\n---\n\n### 2. templates/course_catalog.html\n- Page Title: Available Courses\n- Element IDs:\n  - catalog-page: div container\n  - search-input: input for searching courses\n  - course-grid: div containing course cards\n  - view-course-button-{{ course.course_id }}: button to view course details\n  - back-to-dashboard: button to navigate back to dashboard\n- Context Variables:\n  - courses (list of dict as defined above)\n- Navigation:\n  - view-course-button-{course_id} -> url_for('course_details', course_id=course.course_id)\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### 3. templates/course_details.html\n- Page Title: Course Details\n- Element IDs:\n  - course-details-page: div container\n  - course-title: h1 displaying course.title\n  - course-description: div displaying course.description\n  - enroll-button: button to enroll or disabled with \"Already Enrolled\"\n  - back-to-catalog: button to navigate back to course catalog\n- Context Variables:\n  - course (dict)\n  - enrolled (bool)\n- Navigation:\n  - enroll-button (POST form submit to current route)\n  - back-to-catalog -> url_for('catalog')\n- Button State:\n  - enroll-button disabled and text \"Already Enrolled\" if enrolled == True\n\n---\n\n### 4. templates/my_courses.html\n- Page Title: My Courses\n- Element IDs:\n  - my-courses-page: div container\n  - courses-list: div containing list of enrolled courses\n  - continue-learning-button-{{ course.course_id }}: button to continue learning course\n  - back-to-dashboard: button to navigate to dashboard\n- Context Variables:\n  - enrolled_courses (list of dict)\n- Navigation:\n  - continue-learning-button-{course_id} -> url_for('course_learning', course_id=course.course_id)\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### 5. templates/course_learning.html\n- Page Title: Course Learning\n- Element IDs:\n  - learning-page: div container\n  - lessons-list: div listing all lessons titles\n  - lesson-content: div showing current lesson content\n  - mark-complete-button: button to mark lesson complete\n  - back-to-my-courses: button to go back to my courses\n- Context Variables:\n  - course (dict)\n  - lessons (list of dict {lesson_id, title, content})\n  - current_lesson (dict)\n  - progress (int)\n  - can_mark_complete (bool)\n- Navigation:\n  - mark-complete-button (POST form submit to current route)\n  - back-to-my-courses -> url_for('my_courses')\n\n---\n\n### 6. templates/my_assignments.html\n- Page Title: My Assignments\n- Element IDs:\n  - assignments-page: div container\n  - assignments-table: table showing all assignments\n  - submit-assignment-button-{{ assignment.assignment_id }}: button to submit assignment\n  - back-to-dashboard: button to go back to dashboard\n- Context Variables:\n  - assignments (list of dict with status \u00145Submitted\u00146 or \u00145Pending\u00146)\n- Navigation:\n  - submit-assignment-button-{assignment_id} -> url_for('submit_assignment', assignment_id=assignment.assignment_id)\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### 7. templates/submit_assignment.html\n- Page Title: Submit Assignment\n- Element IDs:\n  - submit-page: div container\n  - assignment-info: div showing assignment title and description\n  - submission-text: textarea for input\n  - submit-button: button to submit assignment\n  - back-to-assignments: button to go back to assignments\n- Context Variables:\n  - assignment (dict: assignment_id, title, description)\n  - submission_status (str: None, \"Submitted\", or \"Late\")\n- Navigation:\n  - submit-button (POST form submit to current route)\n  - back-to-assignments -> url_for('assignments')\n\n---\n\n### 8. templates/certificates.html\n- Page Title: My Certificates\n- Element IDs:\n  - certificates-page: div container\n  - certificates-grid: div showing certificate cards\n  - back-to-dashboard: button to go back to dashboard\n- Context Variables:\n  - certificates (list of dict: certificate_id, course_title, issue_date)\n- Navigation:\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n### 9. templates/profile.html\n- Page Title: My Profile\n- Element IDs:\n  - profile-page: div container\n  - profile-email: input for email\n  - profile-fullname: input for fullname\n  - update-profile-button: button to save changes\n  - back-to-dashboard: button to go back to dashboard\n- Context Variables:\n  - username (str)\n  - email (str)\n  - fullname (str)\n- Navigation:\n  - update-profile-button (POST form submit to current route)\n  - back-to-dashboard -> url_for('dashboard')\n\n---\n\n## Section 3: Data File Schemas (For Backend Developer)\n\n### 1. data/users.txt\n- Fields: username|email|fullname\n- Description:\n  - username: unique user identifier (str)\n  - email: user email address (str)\n  - fullname: user full display name (str)\n- Examples:\n  ```\n  john|john@student.com|John Student\n  alice|alice@instructor.com|Alice Professor\n  jane|jane@student.com|Jane Learner\n  ```\n\n---\n\n### 2. data/courses.txt\n- Fields: course_id|title|description|category|level|duration|status\n- Description:\n  - course_id: unique course identifier (str)\n  - title: course title (str)\n  - description: full course description (str)\n  - category: course category like Programming, Web, Data (str)\n  - level: difficulty level (Beginner, Intermediate, Advanced) (str)\n  - duration: textual duration (e.g., \"40 hours\") (str)\n  - status: course availability status (e.g., Active) (str)\n- Examples:\n  ```\n  1|Python Programming|Learn Python from scratch|Programming|Beginner|40 hours|Active\n  2|Web Development|Build modern websites|Web|Intermediate|60 hours|Active\n  3|Data Science|Introduction to data analysis|Data|Advanced|80 hours|Active\n  ```\n\n---\n\n### 3. data/enrollments.txt\n- Fields: enrollment_id|username|course_id|enrollment_date|progress|status\n- Description:\n  - enrollment_id: unique enrollment identifier (str)\n  - username: user who enrolled (str)\n  - course_id: id of enrolled course (str)\n  - enrollment_date: date string in YYYY-MM-DD (str)\n  - progress: integer 0-100 (percentage completed) (int)\n  - status: enrollment status (\"In Progress\", \"Completed\") (str)\n- Examples:\n  ```\n  1|john|1|2024-11-01|75|In Progress\n  2|jane|1|2024-10-15|100|Completed\n  3|john|2|2024-11-10|25|In Progress\n  ```\n\n---\n\n### 4. data/assignments.txt\n- Fields: assignment_id|course_id|title|description|due_date|max_points\n- Description:\n  - assignment_id: unique assignment identifier (str)\n  - course_id: course id this assignment belongs to (str)\n  - title: assignment title (str)\n  - description: full description (str)\n  - due_date: due date in YYYY-MM-DD format (str)\n  - max_points: maximum points achievable (int)\n- Examples:\n  ```\n  1|1|Python Basics Quiz|Complete the quiz on variables and data types|2024-12-01|100\n  2|1|Final Project|Build a calculator application|2024-12-15|200\n  ```\n\n---\n\n### 5. data/submissions.txt\n- Fields: submission_id|assignment_id|username|submission_text|submit_date|grade|feedback\n- Description:\n  - submission_id: unique submission id (str)\n  - assignment_id: linked assignment id (str)\n  - username: user submitting (str)\n  - submission_text: text response (str)\n  - submit_date: date of submission YYYY-MM-DD (str)\n  - grade: numeric score or empty if not graded (str)\n  - feedback: text feedback or empty if not graded (str)\n- Examples:\n  ```\n  1|1|john|My answers are...|2024-11-25|85|Good work!\n  2|2|jane|Here is my project...|2024-11-20|95|Excellent!\n  ```\n\n---\n\n### 6. data/certificates.txt\n- Fields: certificate_id|username|course_id|issue_date\n- Description:\n  - certificate_id: unique certificate id (str)\n  - username: user who earned certificate (str)\n  - course_id: course for which certificate issued (str)\n  - issue_date: date issued YYYY-MM-DD (str)\n- Examples:\n  ```\n  1|jane|1|2024-11-22\n  ```\n\n---\n",
+        "after": "Application\n\n\n\nRoutes Specification Backend\n\nPath | HTTP Method | File\n|------------|---------------|-------------|---------------|------------------|\n/ | None |\n/dashboard | | username {course_id (str), title (str), progress (int)})\n/catalog catalog | {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}) |\n/catalog/course/<course_id> course_details POST | course {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), enrolled\nmy_courses my_courses.html {course_id (str), title (str), progress (int)}) |\n/my-courses/<course_id> | course_learning GET, course (dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), (list of {lesson_id (str), title (str), content (str)}), {lesson_id (str), title (str), content (str)}), progress (int), |\n| assignments GET my_assignments.html | (list dict: {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int), status (str: Submitted or Pending)})\n/assignments/submit/<assignment_id> | | GET, assignment {assignment_id (str), title (str), description (str)}), (str: None Submitted |\ncertificates GET | {certificate_id (str), course_title (str), issue_date (str)})\n| user_profile | POST | (str), email (str)\n\n\nRoot route '/dashboard'.\nPOST on /catalog/course/<course_id> handles if not\n- complete, generates in 100%.\nPOST on /assignments/submit/<assignment_id> handles\nPOST on the in\n\n---\n\nHTML Specifications (For Frontend Developer)\n\n### 1. templates/dashboard.html\nDashboard and <h1>)\nIDs:\n- dashboard-page:\nwelcome-message: element showing {{ fullname }}\"\nenrolled-courses: of courses progress\n- button course catalog\nto to\n-\nusername\n\n(list of {course_id (str), title (str), progress (int)})\nNavigation:\nbrowse-courses-button ->\n->\n\n\n\n###\n- Courses\nElement\n- div container\nsearch-input: input for\n- course-grid: div cards\nview-course-button-{{ course.course_id }}: to view details\nback-to-dashboard: button back dashboard\n- Variables:\n(list as\n-\n-> course_id=course.course_id)\n\n\n---\n\n###\nTitle:\n\n-\ncourse-title: h1 course.title\n- course.description\n- button enroll disabled with \"Already\n- button to back to catalog\n- Variables:\n-\n-\nNavigation:\n- submit current\n->\nState:\nenroll-button disabled and Enrolled\" ==\n\n\n\n4.\n- Page Courses\n-\ncontainer\nenrolled\nbutton to continue learning\n- back-to-dashboard: to navigate to\nContext\nenrolled_courses of\nNavigation:\n- ->\n- back-to-dashboard\n\n---\n\n5. templates/course_learning.html\nCourse\n- Element\n- div\n-\nlesson-content: div showing content\ncomplete\n- go to\nContext Variables:\ncourse\n- dict {lesson_id, title, content})\ncurrent_lesson\n(int)\ncan_mark_complete\n\nroute)\n-> url_for('my_courses')\n\n\n\n### 6. templates/my_assignments.html\nPage Title: Assignments\nIDs:\n- assignments-page:\n- showing all\nbutton to submit\nto go back dashboard\nContext\ndict \u00145Submitted\u00146 or \u00145Pending\u00146)\n- Navigation:\n-> url_for('submit_assignment', assignment_id=assignment.assignment_id)\nback-to-dashboard url_for('dashboard')\n\n---\n\ntemplates/submit_assignment.html\n- Page Title: Submit\nIDs:\n- div\n- assignment-info: div assignment title and\n-\nsubmit-button: button to\nto back\nContext\nassignment (dict: assignment_id, title,\n- (str: \"Late\")\nNavigation:\n(POST route)\n-> url_for('assignments')\n\n\n\n### 8. templates/certificates.html\nPage Title:\n\ncertificates-page: div\ndiv certificate cards\n- back-to-dashboard: button to dashboard\nContext Variables:\ncertificates (list\n\n- back-to-dashboard\n\n---\n\n### templates/profile.html\n- Page Profile\n-\nprofile-page:\n- input email\nprofile-fullname: fullname\nchanges\nto go\n-\n(str)\nemail\n-\n- Navigation:\ncurrent\n\n\n\n\n## Section 3: Backend Developer)\n\n\n\n-\n\n\n- fullname: user\n\n\n\n\nLearner\n\n\n---\n\n### data/courses.txt\n-\n-\nunique course\ncourse (str)\ndescription: description\ncourse category like Data (str)\nlevel: difficulty (Beginner,\nduration (str)\ncourse (e.g.,\n-\n```\nProgramming|Learn from\n2|Web websites|Web|Intermediate|60\nanalysis|Data|Advanced|80\n\n\n\n\ndata/enrollments.txt\n-\n- Description:\n- enrollment_id: enrollment identifier (str)\nenrolled\nof enrolled\nstring\n- integer 0-100 (percentage (int)\nProgress\", \"Completed\") (str)\n-\n\n1|john|1|2024-11-01|75|In Progress\n2|jane|1|2024-10-15|100|Completed\n\n\n\n\n\n\nassignment_id|course_id|title|description|due_date|max_points\nDescription:\n\nassignment belongs (str)\n- title: title\nfull (str)\ndue in format (str)\n\nExamples:\n\n1|1|Python Basics Quiz|Complete the quiz types|2024-12-01|100\na application|2024-12-15|200\n```\n\n---\n\n###\n- submission_id|assignment_id|username|submission_text|submit_date|grade|feedback\nDescription:\nunique (str)\nid (str)\nusername: user (str)\nresponse\nof\ngrade: empty graded\n- feedback: or graded\nExamples:\n```\n1|1|john|My\n2|2|jane|Here my project...|2024-11-20|95|Excellent!\n\n\n\n\ndata/certificates.txt\n- Fields: certificate_id|username|course_id|issue_date\nDescription:\ncertificate_id: id\nusername: user earned (str)\nfor (str)\nYYYY-MM-DD (str)\nExamples:\n```\n\n\n\n\n"
+      },
+      {
+        "timestamp": 1768930347.807831,
+        "agent": "BackendDeveloper",
+        "chaos_type": "IO_CHAOS_WORD_DELETION",
+        "details": "WordDeletion: 699/1165 words deleted (60%)",
+        "category": "noise",
+        "method": "WordDeletion",
+        "before": "from flask import Flask, render_template, request, redirect, url_for, abort\nimport os\nfrom datetime import datetime\n\napp = Flask(__name__)\n\nDATA_DIR = 'data'\n\n# Helper functions for reading and writing data files\n\ndef read_pipe_delimited_file(filename):\n    filepath = os.path.join(DATA_DIR, filename)\n    data = []\n    if not os.path.exists(filepath):\n        return data\n    with open(filepath, 'r', encoding='utf-8') as f:\n        for line in f:\n            line = line.strip()\n            if line:\n                data.append(line.split('|'))\n    return data\n\n\ndef write_pipe_delimited_file(filename, rows):\n    filepath = os.path.join(DATA_DIR, filename)\n    with open(filepath, 'w', encoding='utf-8') as f:\n        for row in rows:\n            f.write('|'.join(str(item) for item in row) + '\\n')\n\n\n# Load users\n# users.txt: user_id|username|fullname|email\n# Not specified in design, but from context user data read for fullname and email update\n\ndef load_users():\n    rows = read_pipe_delimited_file('users.txt')\n    users = {}\n    for row in rows:\n        if len(row) >= 4:\n            user_id, username, fullname, email = row[:4]\n            users[username] = {\n                'user_id': user_id,\n                'username': username,\n                'fullname': fullname,\n                'email': email\n            }\n    return users\n\n\ndef save_users(users):\n    rows = []\n    for u in users.values():\n        rows.append([u['user_id'], u['username'], u['fullname'], u['email']])\n    write_pipe_delimited_file('users.txt', rows)\n\n\n# Load courses\n# courses.txt: course_id|title|description|category|level|duration|status\n\ndef load_courses():\n    rows = read_pipe_delimited_file('courses.txt')\n    courses = {}\n    for row in rows:\n        if len(row) >= 7:\n            course_id, title, description, category, level, duration, status = row[:7]\n            courses[course_id] = {\n                'course_id': course_id,\n                'title': title,\n                'description': description,\n                'category': category,\n                'level': level,\n                'duration': duration,\n                'status': status\n            }\n    return courses\n\n\n# Load enrollments\n# enrollments.txt: enrollment_id|username|course_id|enroll_date|progress|status\n\ndef load_enrollments():\n    rows = read_pipe_delimited_file('enrollments.txt')\n    enrollments = []\n    for row in rows:\n        if len(row) >= 6:\n            enrollment_id, username, course_id, enroll_date, progress, status = row[:6]\n            enrollments.append({\n                'enrollment_id': enrollment_id,\n                'username': username,\n                'course_id': course_id,\n                'enroll_date': enroll_date,\n                'progress': int(progress),\n                'status': status\n            })\n    return enrollments\n\n\ndef save_enrollments(enrollments):\n    rows = []\n    for e in enrollments:\n        rows.append([\n            e['enrollment_id'],\n            e['username'],\n            e['course_id'],\n            e['enroll_date'],\n            str(e['progress']),\n            e['status']\n        ])\n    write_pipe_delimited_file('enrollments.txt', rows)\n\n\n# Load assignments\n# assignments.txt: assignment_id|course_id|title|description|due_date|max_points\n\ndef load_assignments():\n    rows = read_pipe_delimited_file('assignments.txt')\n    assignments = []\n    for row in rows:\n        if len(row) >= 6:\n            assignment_id, course_id, title, description, due_date, max_points = row[:6]\n            assignments.append({\n                'assignment_id': assignment_id,\n                'course_id': course_id,\n                'title': title,\n                'description': description,\n                'due_date': due_date,\n                'max_points': int(max_points)\n            })\n    return assignments\n\n\n# Load submissions\n# submissions.txt: submission_id|assignment_id|username|submission_text|submit_date|grade|feedback\n\ndef load_submissions():\n    rows = read_pipe_delimited_file('submissions.txt')\n    submissions = []\n    for row in rows:\n        if len(row) >= 7:\n            submission_id, assignment_id, username, submission_text, submit_date, grade, feedback = row[:7]\n            submissions.append({\n                'submission_id': submission_id,\n                'assignment_id': assignment_id,\n                'username': username,\n                'submission_text': submission_text,\n                'submit_date': submit_date,\n                'grade': grade if grade else None,\n                'feedback': feedback if feedback else None\n            })\n    return submissions\n\n\ndef save_submissions(submissions):\n    rows = []\n    for s in submissions:\n        rows.append([\n            s['submission_id'],\n            s['assignment_id'],\n            s['username'],\n            s['submission_text'],\n            s['submit_date'],\n            s['grade'] if s['grade'] is not None else '',\n            s['feedback'] if s['feedback'] is not None else ''\n        ])\n    write_pipe_delimited_file('submissions.txt', rows)\n\n\n# Load certificates\n# certificates.txt: certificate_id|username|course_id|issue_date\n\ndef load_certificates():\n    rows = read_pipe_delimited_file('certificates.txt')\n    certificates = []\n    for row in rows:\n        if len(row) >= 4:\n            certificate_id, username, course_id, issue_date = row[:4]\n            certificates.append({\n                'certificate_id': certificate_id,\n                'username': username,\n                'course_id': course_id,\n                'issue_date': issue_date\n            })\n    return certificates\n\n\ndef save_certificates(certificates):\n    rows = []\n    for c in certificates:\n        rows.append([\n            c['certificate_id'],\n            c['username'],\n            c['course_id'],\n            c['issue_date']\n        ])\n    write_pipe_delimited_file('certificates.txt', rows)\n\n\n# Helper functions\n\ndef generate_new_enrollment_id(enrollments):\n    max_id = 0\n    for e in enrollments:\n        try:\n            eid = int(e['enrollment_id'])\n        except:\n            eid = 0\n        if eid > max_id:\n            max_id = eid\n    return str(max_id + 1)\n\n\ndef generate_new_submission_id(submissions):\n    max_id = 0\n    for s in submissions:\n        try:\n            sid = int(s['submission_id'])\n        except:\n            sid = 0\n        if sid > max_id:\n            max_id = sid\n    return str(max_id + 1)\n\n\ndef generate_new_certificate_id(certificates):\n    max_id = 0\n    for c in certificates:\n        try:\n            cid = int(c['certificate_id'])\n        except:\n            cid = 0\n        if cid > max_id:\n            max_id = cid\n    return str(max_id + 1)\n\n\ndef get_enrollment(username, course_id, enrollments):\n    for e in enrollments:\n        if e['username'] == username and e['course_id'] == course_id:\n            return e\n    return None\n\n\n# The app routes\n\n@app.route('/')\ndef root():\n    # Redirect to dashboard\n    return redirect(url_for('dashboard'))\n\n\n# Dummy session management replacement\n# For demo, we assume a fixed logged in username\nLOGGED_IN_USERNAME = 'john'\n\n\n@app.route('/dashboard')\ndef dashboard():\n    username = LOGGED_IN_USERNAME\n    users = load_users()\n    user = users.get(username)\n    if not user:\n        abort(404)\n    fullname = user.get('fullname', username)\n\n    enrollments = load_enrollments()\n    courses = load_courses()\n    # Get enrolled courses for user with progress\n    enrolled_courses = []\n    for e in enrollments:\n        if e['username'] == username:\n            course_id = e['course_id']\n            if course_id in courses:\n                enrolled_courses.append({\n                    'course_id': course_id,\n                    'title': courses[course_id]['title'],\n                    'progress': e['progress']\n                })\n\n    return render_template('dashboard.html', fullname=fullname, enrolled_courses=enrolled_courses, username=username)\n\n\n@app.route('/catalog')\ndef catalog():\n    courses = load_courses()\n    course_list = list(courses.values())\n    return render_template('catalog.html', courses=course_list)\n\n\n@app.route('/catalog/course/<course_id>', methods=['GET', 'POST'])\ndef course_details(course_id):\n    username = LOGGED_IN_USERNAME\n    users = load_users()\n    user = users.get(username)\n    if not user:\n        abort(404)\n\n    courses = load_courses()\n    course = courses.get(course_id)\n    if not course:\n        abort(404)\n\n    enrollments = load_enrollments()\n    enrollment = get_enrollment(username, course_id, enrollments)\n    enrolled = enrollment is not None\n\n    if request.method == 'POST':\n        if not enrolled:\n            # Enroll new user\n            new_id = generate_new_enrollment_id(enrollments)\n            enroll_date = datetime.now().strftime('%Y-%m-%d')\n            enrollments.append({\n                'enrollment_id': new_id,\n                'username': username,\n                'course_id': course_id,\n                'enroll_date': enroll_date,\n                'progress': 0,\n                'status': 'In Progress'\n            })\n            save_enrollments(enrollments)\n            enrolled = True\n        else:\n            # If enrolled and progress < 100%, setting progress to 100% triggers certificate\n            if enrollment['progress'] < 100:\n                enrollment['progress'] = 100\n                enrollment['status'] = 'Completed'\n\n                # Save enrollment update\n                save_enrollments(enrollments)\n\n                # Check if certificate exists\n                certificates = load_certificates()\n                cert_exists = any(c['username'] == username and c['course_id'] == course_id for c in certificates)\n                if not cert_exists:\n                    cert_id = generate_new_certificate_id(certificates)\n                    issue_date = datetime.now().strftime('%Y-%m-%d')\n                    certificates.append({\n                        'certificate_id': cert_id,\n                        'username': username,\n                        'course_id': course_id,\n                        'issue_date': issue_date\n                    })\n                    save_certificates(certificates)\n\n    return render_template('course_details.html', course=course, enrolled=enrolled)\n\n\n@app.route('/my-courses')\ndef my_courses():\n    username = LOGGED_IN_USERNAME\n    enrollments = load_enrollments()\n    courses = load_courses()\n\n    # List only enrolled courses\n    enrolled_courses = []\n    for e in enrollments:\n        if e['username'] == username:\n            cid = e['course_id']\n            c = courses.get(cid)\n            if c:\n                enrolled_courses.append({\n                    'course_id': cid,\n                    'title': c['title'],\n                    'progress': e['progress']\n                })\n\n    return render_template('my_courses.html', enrolled_courses=enrolled_courses)\n\n\n@app.route('/my-courses/<course_id>')\ndef course_learning(course_id):\n    username = LOGGED_IN_USERNAME\n    enrollments = load_enrollments()\n    enrollment = get_enrollment(username, course_id, enrollments)\n    if not enrollment:\n        abort(404)\n\n    courses = load_courses()\n    course = courses.get(course_id)\n    if not course:\n        abort(404)\n\n    # Load lessons for course\n    # Lessons/lessons are not explicitly defined in the design or data files.\n    # For demonstration create dummy lessons (3 lessons as example)\n    lessons = [\n        {'lesson_id': '1', 'title': 'Introduction', 'content': 'Introduction content.'},\n        {'lesson_id': '2', 'title': 'Intermediate Topic', 'content': 'Intermediate content.'},\n        {'lesson_id': '3', 'title': 'Advanced Topic', 'content': 'Advanced content.'}\n    ]\n\n    # We simulate progress as percentage correspond to lessons completed\n    # For example each lesson completion 33% or 34%\n    total_lessons = len(lessons)\n    progress = enrollment['progress']\n    completed_lessons_count = (progress * total_lessons) // 100\n\n    # Current lesson is next incomplete\n    current_lesson_index = completed_lessons_count if completed_lessons_count < total_lessons else total_lessons - 1\n    current_lesson = lessons[current_lesson_index]\n\n    return render_template('course_learning.html', course=course, lessons=lessons, current_lesson=current_lesson, progress=progress)\n\n\n@app.route('/assignments')\ndef assignments():\n    username = LOGGED_IN_USERNAME\n    assignments_all = load_assignments()\n    submissions = load_submissions()\n\n    # Filter assignments for courses enrolled by user\n    enrollments = load_enrollments()\n    enrolled_course_ids = set(e['course_id'] for e in enrollments if e['username'] == username)\n\n    user_assignments = []\n    for a in assignments_all:\n        if a['course_id'] in enrolled_course_ids:\n            # Get submission status\n            submission = next((s for s in submissions if s['assignment_id'] == a['assignment_id'] and s['username'] == username), None)\n            status = 'Pending'\n            if submission:\n                status = 'Submitted'\n            user_assignments.append({\n                'assignment_id': a['assignment_id'],\n                'course_id': a['course_id'],\n                'title': a['title'],\n                'description': a['description'],\n                'due_date': a['due_date'],\n                'max_points': a['max_points'],\n                'status': status\n            })\n\n    return render_template('my_assignments.html', assignments=user_assignments)\n\n\n@app.route('/assignments/submit/<assignment_id>', methods=['GET', 'POST'])\ndef submit_assignment(assignment_id):\n    username = LOGGED_IN_USERNAME\n    assignments = load_assignments()\n    assignment = next((a for a in assignments if a['assignment_id'] == assignment_id), None)\n    if not assignment:\n        abort(404)\n\n    submissions = load_submissions()\n    submission = next((s for s in submissions if s['assignment_id'] == assignment_id and s['username'] == username), None)\n\n    if request.method == 'POST':\n        submission_text = request.form.get('submission_text', '').strip()\n        if not submission_text:\n            # Missing submission text, re-render with error\n            error = 'Submission text is required.'\n            return render_template('submit_assignment.html', assignment=assignment, submission_text=submission_text, error=error)\n\n        submit_date = datetime.now().strftime('%Y-%m-%d')\n\n        if submission:\n            # Update existing submission\n            submission['submission_text'] = submission_text\n            submission['submit_date'] = submit_date\n            submission['grade'] = None\n            submission['feedback'] = None\n        else:\n            # Add new submission\n            new_id = generate_new_submission_id(submissions)\n            new_submission = {\n                'submission_id': new_id,\n                'assignment_id': assignment_id,\n                'username': username,\n                'submission_text': submission_text,\n                'submit_date': submit_date,\n                'grade': None,\n                'feedback': None\n            }\n            submissions.append(new_submission)\n\n        save_submissions(submissions)\n        return redirect(url_for('assignments'))\n\n    # GET\n    submission_text = submission['submission_text'] if submission else None\n    return render_template('submit_assignment.html', assignment=assignment, submission_text=submission_text)\n\n\n@app.route('/certificates')\ndef certificates():\n    username = LOGGED_IN_USERNAME\n    certificates_list = load_certificates()\n    courses = load_courses()\n\n    user_certificates = []\n    for c in certificates_list:\n        if c['username'] == username:\n            course_title = courses.get(c['course_id'], {}).get('title', 'Unknown Course')\n            user_certificates.append({\n                'certificate_id': c['certificate_id'],\n                'course_title': course_title,\n                'issue_date': c['issue_date']\n            })\n\n    return render_template('certificates.html', certificates=user_certificates)\n\n\n@app.route('/user_profile', methods=['GET', 'POST'])\ndef user_profile():\n    username = LOGGED_IN_USERNAME\n    users = load_users()\n    user = users.get(username)\n    if not user:\n        abort(404)\n\n    if request.method == 'POST':\n        # Update email\n        new_email = request.form.get('email', '').strip()\n        if new_email:\n            user['email'] = new_email\n            save_users(users)\n\n    return render_template('profile.html', fullname=user.get('fullname', username), email=user.get('email', ''))\n\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)\n",
+        "after": "from render_template, abort\nimport os\nfrom datetime\n\n\n\n\n\n# functions files\n\nread_pipe_delimited_file(filename):\nfilepath = os.path.join(DATA_DIR,\ndata =\nif\nreturn\nwith f:\nline\nline\nline:\n\n\n\n\ndef rows):\nfilepath\nas\nrow in rows:\nf.write('|'.join(str(item) item in row)\n\n\nusers\n\n# Not but context read fullname email update\n\ndef load_users():\n\nusers =\nfor row\nif len(row) 4:\nusername,\n= {\n                'user_id': user_id,\n                'username': username,\n                'fullname': fullname,\n                'email': email\n            }\nusers\n\n\ndef\n[]\nu\nrows.append([u['user_id'], u['fullname'],\nwrite_pipe_delimited_file('users.txt',\n\n\nLoad courses\n# course_id|title|description|category|level|duration|status\n\nload_courses():\nrows =\n= {}\nfor rows:\nif len(row) >=\ntitle, category, level, status\n{\n                'course_id': course_id,\n                'title': title,\n                'description': description,\n                'category': category,\n                'level': level,\n                'duration': duration,\n                'status': status\n            }\nreturn\n\n\n#\nenrollment_id|username|course_id|enroll_date|progress|status\n\ndef\nrows\n= []\nrow\n>=\nenroll_date, status row[:6]\n\n\n\n\ndef\nrows []\nfor\n\ne['enrollment_id'],\ne['username'],\n\n\n\n\n\nwrite_pipe_delimited_file('enrollments.txt',\n\n\n#\n\n\n\n\nassignments =\nfor\n>=\nassignment_id, description, due_date, max_points =\n\nassignments\n\n\n\nsubmissions.txt:\n\ndef load_submissions():\nrows =\nsubmissions\nfor row\nif len(row)\nsubmission_id, username, submit_date, grade, feedback =\n\n\n\n\ndef save_submissions(submissions):\nrows []\nfor s in submissions:\n\n\n\n\ns['submission_text'],\n\ns['grade'] is\nnot None\n\n\n\n\nLoad certificates\n#\n\ndef load_certificates():\n=\n= []\nrow in rows:\nlen(row)\ncourse_id,\ncertificates.append({\n                'certificate_id': certificate_id,\n                'username': username,\n                'course_id': course_id,\n                'issue_date': issue_date\n            })\n\n\n\nsave_certificates(certificates):\n=\nin\n\n\nc['username'],\n\nc['issue_date']\n])\n\n\n\n\n\n\n=\ne\n\neid =\nexcept:\n=\nmax_id:\n\nreturn str(max_id\n\n\ndef generate_new_submission_id(submissions):\nmax_id = 0\nsubmissions:\n\nint(s['submission_id'])\n\n\nsid max_id:\n\nstr(max_id\n\n\ndef\n= 0\nfor c\n\ncid\nexcept:\n0\n\nmax_id cid\n+\n\n\nenrollments):\nfor\nif e['username'] == == course_id:\n\nreturn None\n\n\n# routes\n\n@app.route('/')\n\n# Redirect dashboard\n\n\n\n# Dummy session management\nwe assume username\n\n\n\n@app.route('/dashboard')\n\n\n\nusers.get(username)\nif\n\nfullname =\n\n\ncourses load_courses()\nenrolled for user\n=\nin\ne['username'] username:\n= e['course_id']\n\n\n\nusername=username)\n\n\n\ndef catalog():\n\ncourse_list\n\n\n\nmethods=['GET', 'POST'])\ndef course_details(course_id):\nLOGGED_IN_USERNAME\n\nusers.get(username)\nuser:\nabort(404)\n\n=\ncourses.get(course_id)\nnot course:\nabort(404)\n\nenrollments = load_enrollments()\n= get_enrollment(username, enrollments)\nenrolled not\n\n==\nenrolled:\nuser\nnew_id generate_new_enrollment_id(enrollments)\n\nenrollments.append({\n                'enrollment_id': new_id,\n                'username': username,\n                'course_id': course_id,\n                'enroll_date': enroll_date,\n                'progress': 0,\n                'status': 'In Progress'\n            })\nsave_enrollments(enrollments)\n\n\n# and 100%, setting 100% certificate\nenrollment['progress']\n\nenrollment['status'] =\n\n# Save update\n\n\nCheck certificate exists\ncertificates =\ncert_exists = username and c['course_id'] course_id in\nif not cert_exists:\ncert_id = generate_new_certificate_id(certificates)\n=\n\nsave_certificates(certificates)\n\ncourse=course, enrolled=enrolled)\n\n\n\ndef\nusername =\n=\ncourses\n\n# List only enrolled courses\n=\nin\nif\n\nc = courses.get(cid)\nif\nenrolled_courses.append({\n                    'course_id': cid,\n                    'title': c['title'],\n                    'progress': e['progress']\n                })\n\nrender_template('my_courses.html',\n\n\n@app.route('/my-courses/<course_id>')\n\nusername =\nenrollments = load_enrollments()\nenrollment\nnot\nabort(404)\n\n\ncourses.get(course_id)\nif\nabort(404)\n\nfor\nare explicitly the design or\nFor demonstration create dummy (3 as\nlessons [\n{'lesson_id': '1', 'title': 'Introduction', 'content': 'Introduction content.'},\n{'lesson_id': '2', 'title': 'Intermediate Topic', 'content': 'Intermediate content.'},\n{'lesson_id': '3', 'title': 'Advanced Topic', 'content': 'Advanced content.'}\n\n\n# simulate lessons\n# each or 34%\n\nenrollment['progress']\n* //\n\nlesson is next incomplete\ncurrent_lesson_index completed_lessons_count if completed_lessons_count else total_lessons -\ncurrent_lesson lessons[current_lesson_index]\n\nrender_template('course_learning.html', course=course, progress=progress)\n\n\n\ndef assignments():\n\n\n= load_submissions()\n\nby\n= load_enrollments()\nset(e['course_id'] username)\n\n\nfor assignments_all:\nif enrolled_course_ids:\nsubmission status\n= next((s for in if == a['assignment_id'] username),\n\n\nstatus\n\n\nreturn render_template('my_assignments.html',\n\n\n\n\n\n= load_assignments()\nfor None)\nnot\nabort(404)\n\n=\nsubmission = s if s['assignment_id'] assignment_id == username),\n\nif request.method\nsubmission_text\nif\n# re-render\ntext required.'\nsubmission_text=submission_text, error=error)\n\n\n\n\n\nsubmission_text\n= submit_date\n\n\n\nAdd new submission\nnew_id\nnew_submission {\n                'submission_id': new_id,\n                'assignment_id': assignment_id,\n                'username': username,\n                'submission_text': submission_text,\n                'submit_date': submit_date,\n                'grade': None,\n                'feedback': None\n            }\nsubmissions.append(new_submission)\n\nsave_submissions(submissions)\nreturn\n\nGET\n= submission['submission_text'] if None\nrender_template('submit_assignment.html', assignment=assignment,\n\n\n\n\n= LOGGED_IN_USERNAME\n\n= load_courses()\n\n=\n\nif ==\ncourse_title = courses.get(c['course_id'],\nuser_certificates.append({\n                'certificate_id': c['certificate_id'],\n                'course_title': course_title,\n                'issue_date': c['issue_date']\n            })\n\nrender_template('certificates.html', certificates=user_certificates)\n\n\n\ndef user_profile():\nusername =\n\n= users.get(username)\nif not\n\n\nrequest.method ==\n\nnew_email '').strip()\nnew_email:\n\n\n\nemail=user.get('email',\n\n\n\napp.run(debug=True,\n"
+      },
+      {
+        "timestamp": 1768930347.8086054,
+        "agent": "BackendDeveloper",
+        "chaos_type": "IO_CHAOS_FILE",
+        "details": "File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/OnlineCourse/compound_chaos/app.py",
+        "before": "from flask import Flask, render_template, request, redirect, url_for, abort\nimport os\nfrom datetime import datetime\n\napp = Flask(__name__)\n\nDATA_DIR = 'data'\n\n# Helper functions for reading and writing data files\n\ndef read_pipe_delimited_file(filename):\n    filepath = os.path.join(DATA_DIR, filename)\n    data = []\n    if not os.path.exists(filepath):\n        return data\n    with open(filepath, 'r', encoding='utf-8') as f:\n        for line in f:\n            line = line.strip()\n            if line:\n                data.append(line.split('|'))\n    return data\n\n\ndef write_pipe_delimited_file(filename, rows):\n    filepath = os.path.join(DATA_DIR, filename)\n    with open(filepath, 'w', encoding='utf-8') as f:\n        for row in rows:\n            f.write('|'.join(str(item) for item in row) + '\\n')\n\n\n# Load users\n# users.txt: user_id|username|fullname|email\n# Not specified in design, but from context user data read for fullname and email update\n\ndef load_users():\n    rows = read_pipe_delimited_file('users.txt')\n    users = {}\n    for row in rows:\n        if len(row) >= 4:\n            user_id, username, fullname, email = row[:4]\n            users[username] = {\n                'user_id': user_id,\n                'username': username,\n                'fullname': fullname,\n                'email': email\n            }\n    return users\n\n\ndef save_users(users):\n    rows = []\n    for u in users.values():\n        rows.append([u['user_id'], u['username'], u['fullname'], u['email']])\n    write_pipe_delimited_file('users.txt', rows)\n\n\n# Load courses\n# courses.txt: course_id|title|description|category|level|duration|status\n\ndef load_courses():\n    rows = read_pipe_delimited_file('courses.txt')\n    courses = {}\n    for row in rows:\n        if len(row) >= 7:\n            course_id, title, description, category, level, duration, status = row[:7]\n            courses[course_id] = {\n                'course_id': course_id,\n                'title': title,\n                'description': description,\n                'category': category,\n                'level': level,\n                'duration': duration,\n                'status': status\n            }\n    return courses\n\n\n# Load enrollments\n# enrollments.txt: enrollment_id|username|course_id|enroll_date|progress|status\n\ndef load_enrollments():\n    rows = read_pipe_delimited_file('enrollments.txt')\n    enrollments = []\n    for row in rows:\n        if len(row) >= 6:\n            enrollment_id, username, course_id, enroll_date, progress, status = row[:6]\n            enrollments.append({\n                'enrollment_id': enrollment_id,\n                'username': username,\n                'course_id': course_id,\n                'enroll_date': enroll_date,\n                'progress': int(progress),\n                'status': status\n            })\n    return enrollments\n\n\ndef save_enrollments(enrollments):\n    rows = []\n    for e in enrollments:\n        rows.append([\n            e['enrollment_id'],\n            e['username'],\n            e['course_id'],\n            e['enroll_date'],\n            str(e['progress']),\n            e['status']\n        ])\n    write_pipe_delimited_file('enrollments.txt', rows)\n\n\n# Load assignments\n# assignments.txt: assignment_id|course_id|title|description|due_date|max_points\n\ndef load_assignments():\n    rows = read_pipe_delimited_file('assignments.txt')\n    assignments = []\n    for row in rows:\n        if len(row) >= 6:\n            assignment_id, course_id, title, description, due_date, max_points = row[:6]\n            assignments.append({\n                'assignment_id': assignment_id,\n                'course_id': course_id,\n                'title': title,\n                'description': description,\n                'due_date': due_date,\n                'max_points': int(max_points)\n            })\n    return assignments\n\n\n# Load submissions\n# submissions.txt: submission_id|assignment_id|username|submission_text|submit_date|grade|feedback\n\ndef load_submissions():\n    rows = read_pipe_delimited_file('submissions.txt')\n    submissions = []\n    for row in rows:\n        if len(row) >= 7:\n            submission_id, assignment_id, username, submission_text, submit_date, grade, feedback = row[:7]\n            submissions.append({\n                'submission_id': submission_id,\n                'assignment_id': assignment_id,\n                'username': username,\n                'submission_text': submission_text,\n                'submit_date': submit_date,\n                'grade': grade if grade else None,\n                'feedback': feedback if feedback else None\n            })\n    return submissions\n\n\ndef save_submissions(submissions):\n    rows = []\n    for s in submissions:\n        rows.append([\n            s['submission_id'],\n            s['assignment_id'],\n            s['username'],\n            s['submission_text'],\n            s['submit_date'],\n            s['grade'] if s['grade'] is not None else '',\n            s['feedback'] if s['feedback'] is not None else ''\n        ])\n    write_pipe_delimited_file('submissions.txt', rows)\n\n\n# Load certificates\n# certificates.txt: certificate_id|username|course_id|issue_date\n\ndef load_certificates():\n    rows = read_pipe_delimited_file('certificates.txt')\n    certificates = []\n    for row in rows:\n        if len(row) >= 4:\n            certificate_id, username, course_id, issue_date = row[:4]\n            certificates.append({\n                'certificate_id': certificate_id,\n                'username': username,\n                'course_id': course_id,\n                'issue_date': issue_date\n            })\n    return certificates\n\n\ndef save_certificates(certificates):\n    rows = []\n    for c in certificates:\n        rows.append([\n            c['certificate_id'],\n            c['username'],\n            c['course_id'],\n            c['issue_date']\n        ])\n    write_pipe_delimited_file('certificates.txt', rows)\n\n\n# Helper functions\n\ndef generate_new_enrollment_id(enrollments):\n    max_id = 0\n    for e in enrollments:\n        try:\n            eid = int(e['enrollment_id'])\n        except:\n            eid = 0\n        if eid > max_id:\n            max_id = eid\n    return str(max_id + 1)\n\n\ndef generate_new_submission_id(submissions):\n    max_id = 0\n    for s in submissions:\n        try:\n            sid = int(s['submission_id'])\n        except:\n            sid = 0\n        if sid > max_id:\n            max_id = sid\n    return str(max_id + 1)\n\n\ndef generate_new_certificate_id(certificates):\n    max_id = 0\n    for c in certificates:\n        try:\n            cid = int(c['certificate_id'])\n        except:\n            cid = 0\n        if cid > max_id:\n            max_id = cid\n    return str(max_id + 1)\n\n\ndef get_enrollment(username, course_id, enrollments):\n    for e in enrollments:\n        if e['username'] == username and e['course_id'] == course_id:\n            return e\n    return None\n\n\n# The app routes\n\n@app.route('/')\ndef root():\n    # Redirect to dashboard\n    return redirect(url_for('dashboard'))\n\n\n# Dummy session management replacement\n# For demo, we assume a fixed logged in username\nLOGGED_IN_USERNAME = 'john'\n\n\n@app.route('/dashboard')\ndef dashboard():\n    username = LOGGED_IN_USERNAME\n    users = load_users()\n    user = users.get(username)\n    if not user:\n        abort(404)\n    fullname = user.get('fullname', username)\n\n    enrollments = load_enrollments()\n    courses = load_courses()\n    # Get enrolled courses for user with progress\n    enrolled_courses = []\n    for e in enrollments:\n        if e['username'] == username:\n            course_id = e['course_id']\n            if course_id in courses:\n                enrolled_courses.append({\n                    'course_id': course_id,\n                    'title': courses[course_id]['title'],\n                    'progress': e['progress']\n                })\n\n    return render_template('dashboard.html', fullname=fullname, enrolled_courses=enrolled_courses, username=username)\n\n\n@app.route('/catalog')\ndef catalog():\n    courses = load_courses()\n    course_list = list(courses.values())\n    return render_template('catalog.html', courses=course_list)\n\n\n@app.route('/catalog/course/<course_id>', methods=['GET', 'POST'])\ndef course_details(course_id):\n    username = LOGGED_IN_USERNAME\n    users = load_users()\n    user = users.get(username)\n    if not user:\n        abort(404)\n\n    courses = load_courses()\n    course = courses.get(course_id)\n    if not course:\n        abort(404)\n\n    enrollments = load_enrollments()\n    enrollment = get_enrollment(username, course_id, enrollments)\n    enrolled = enrollment is not None\n\n    if request.method == 'POST':\n        if not enrolled:\n            # Enroll new user\n            new_id = generate_new_enrollment_id(enrollments)\n            enroll_date = datetime.now().strftime('%Y-%m-%d')\n            enrollments.append({\n                'enrollment_id': new_id,\n                'username': username,\n                'course_id': course_id,\n                'enroll_date': enroll_date,\n                'progress': 0,\n                'status': 'In Progress'\n            })\n            save_enrollments(enrollments)\n            enrolled = True\n        else:\n            # If enrolled and progress < 100%, setting progress to 100% triggers certificate\n            if enrollment['progress'] < 100:\n                enrollment['progress'] = 100\n                enrollment['status'] = 'Completed'\n\n                # Save enrollment update\n                save_enrollments(enrollments)\n\n                # Check if certificate exists\n                certificates = load_certificates()\n                cert_exists = any(c['username'] == username and c['course_id'] == course_id for c in certificates)\n                if not cert_exists:\n                    cert_id = generate_new_certificate_id(certificates)\n                    issue_date = datetime.now().strftime('%Y-%m-%d')\n                    certificates.append({\n                        'certificate_id': cert_id,\n                        'username': username,\n                        'course_id': course_id,\n                        'issue_date': issue_date\n                    })\n                    save_certificates(certificates)\n\n    return render_template('course_details.html', course=course, enrolled=enrolled)\n\n\n@app.route('/my-courses')\ndef my_courses():\n    username = LOGGED_IN_USERNAME\n    enrollments = load_enrollments()\n    courses = load_courses()\n\n    # List only enrolled courses\n    enrolled_courses = []\n    for e in enrollments:\n        if e['username'] == username:\n            cid = e['course_id']\n            c = courses.get(cid)\n            if c:\n                enrolled_courses.append({\n                    'course_id': cid,\n                    'title': c['title'],\n                    'progress': e['progress']\n                })\n\n    return render_template('my_courses.html', enrolled_courses=enrolled_courses)\n\n\n@app.route('/my-courses/<course_id>')\ndef course_learning(course_id):\n    username = LOGGED_IN_USERNAME\n    enrollments = load_enrollments()\n    enrollment = get_enrollment(username, course_id, enrollments)\n    if not enrollment:\n        abort(404)\n\n    courses = load_courses()\n    course = courses.get(course_id)\n    if not course:\n        abort(404)\n\n    # Load lessons for course\n    # Lessons/lessons are not explicitly defined in the design or data files.\n    # For demonstration create dummy lessons (3 lessons as example)\n    lessons = [\n        {'lesson_id': '1', 'title': 'Introduction', 'content': 'Introduction content.'},\n        {'lesson_id': '2', 'title': 'Intermediate Topic', 'content': 'Intermediate content.'},\n        {'lesson_id': '3', 'title': 'Advanced Topic', 'content': 'Advanced content.'}\n    ]\n\n    # We simulate progress as percentage correspond to lessons completed\n    # For example each lesson completion 33% or 34%\n    total_lessons = len(lessons)\n    progress = enrollment['progress']\n    completed_lessons_count = (progress * total_lessons) // 100\n\n    # Current lesson is next incomplete\n    current_lesson_index = completed_lessons_count if completed_lessons_count < total_lessons else total_lessons - 1\n    current_lesson = lessons[current_lesson_index]\n\n    return render_template('course_learning.html', course=course, lessons=lessons, current_lesson=current_lesson, progress=progress)\n\n\n@app.route('/assignments')\ndef assignments():\n    username = LOGGED_IN_USERNAME\n    assignments_all = load_assignments()\n    submissions = load_submissions()\n\n    # Filter assignments for courses enrolled by user\n    enrollments = load_enrollments()\n    enrolled_course_ids = set(e['course_id'] for e in enrollments if e['username'] == username)\n\n    user_assignments = []\n    for a in assignments_all:\n        if a['course_id'] in enrolled_course_ids:\n            # Get submission status\n            submission = next((s for s in submissions if s['assignment_id'] == a['assignment_id'] and s['username'] == username), None)\n            status = 'Pending'\n            if submission:\n                status = 'Submitted'\n            user_assignments.append({\n                'assignment_id': a['assignment_id'],\n                'course_id': a['course_id'],\n                'title': a['title'],\n                'description': a['description'],\n                'due_date': a['due_date'],\n                'max_points': a['max_points'],\n                'status': status\n            })\n\n    return render_template('my_assignments.html', assignments=user_assignments)\n\n\n@app.route('/assignments/submit/<assignment_id>', methods=['GET', 'POST'])\ndef submit_assignment(assignment_id):\n    username = LOGGED_IN_USERNAME\n    assignments = load_assignments()\n    assignment = next((a for a in assignments if a['assignment_id'] == assignment_id), None)\n    if not assignment:\n        abort(404)\n\n    submissions = load_submissions()\n    submission = next((s for s in submissions if s['assignment_id'] == assignment_id and s['username'] == username), None)\n\n    if request.method == 'POST':\n        submission_text = request.form.get('submission_text', '').strip()\n        if not submission_text:\n            # Missing submission text, re-render with error\n            error = 'Submission text is required.'\n            return render_template('submit_assignment.html', assignment=assignment, submission_text=submission_text, error=error)\n\n        submit_date = datetime.now().strftime('%Y-%m-%d')\n\n        if submission:\n            # Update existing submission\n            submission['submission_text'] = submission_text\n            submission['submit_date'] = submit_date\n            submission['grade'] = None\n            submission['feedback'] = None\n        else:\n            # Add new submission\n            new_id = generate_new_submission_id(submissions)\n            new_submission = {\n                'submission_id': new_id,\n                'assignment_id': assignment_id,\n                'username': username,\n                'submission_text': submission_text,\n                'submit_date': submit_date,\n                'grade': None,\n                'feedback': None\n            }\n            submissions.append(new_submission)\n\n        save_submissions(submissions)\n        return redirect(url_for('assignments'))\n\n    # GET\n    submission_text = submission['submission_text'] if submission else None\n    return render_template('submit_assignment.html', assignment=assignment, submission_text=submission_text)\n\n\n@app.route('/certificates')\ndef certificates():\n    username = LOGGED_IN_USERNAME\n    certificates_list = load_certificates()\n    courses = load_courses()\n\n    user_certificates = []\n    for c in certificates_list:\n        if c['username'] == username:\n            course_title = courses.get(c['course_id'], {}).get('title', 'Unknown Course')\n            user_certificates.append({\n                'certificate_id': c['certificate_id'],\n                'course_title': course_title,\n                'issue_date': c['issue_date']\n            })\n\n    return render_template('certificates.html', certificates=user_certificates)\n\n\n@app.route('/user_profile', methods=['GET', 'POST'])\ndef user_profile():\n    username = LOGGED_IN_USERNAME\n    users = load_users()\n    user = users.get(username)\n    if not user:\n        abort(404)\n\n    if request.method == 'POST':\n        # Update email\n        new_email = request.form.get('email', '').strip()\n        if new_email:\n            user['email'] = new_email\n            save_users(users)\n\n    return render_template('profile.html', fullname=user.get('fullname', username), email=user.get('email', ''))\n\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)\n",
+        "after": "from render_template, abort\nimport os\nfrom datetime\n\n\n\n\n\n# functions files\n\nread_pipe_delimited_file(filename):\nfilepath = os.path.join(DATA_DIR,\ndata =\nif\nreturn\nwith f:\nline\nline\nline:\n\n\n\n\ndef rows):\nfilepath\nas\nrow in rows:\nf.write('|'.join(str(item) item in row)\n\n\nusers\n\n# Not but context read fullname email update\n\ndef load_users():\n\nusers =\nfor row\nif len(row) 4:\nusername,\n= {\n                'user_id': user_id,\n                'username': username,\n                'fullname': fullname,\n                'email': email\n            }\nusers\n\n\ndef\n[]\nu\nrows.append([u['user_id'], u['fullname'],\nwrite_pipe_delimited_file('users.txt',\n\n\nLoad courses\n# course_id|title|description|category|level|duration|status\n\nload_courses():\nrows =\n= {}\nfor rows:\nif len(row) >=\ntitle, category, level, status\n{\n                'course_id': course_id,\n                'title': title,\n                'description': description,\n                'category': category,\n                'level': level,\n                'duration': duration,\n                'status': status\n            }\nreturn\n\n\n#\nenrollment_id|username|course_id|enroll_date|progress|status\n\ndef\nrows\n= []\nrow\n>=\nenroll_date, status row[:6]\n\n\n\n\ndef\nrows []\nfor\n\ne['enrollment_id'],\ne['username'],\n\n\n\n\n\nwrite_pipe_delimited_file('enrollments.txt',\n\n\n#\n\n\n\n\nassignments =\nfor\n>=\nassignment_id, description, due_date, max_points =\n\nassignments\n\n\n\nsubmissions.txt:\n\ndef load_submissions():\nrows =\nsubmissions\nfor row\nif len(row)\nsubmission_id, username, submit_date, grade, feedback =\n\n\n\n\ndef save_submissions(submissions):\nrows []\nfor s in submissions:\n\n\n\n\ns['submission_text'],\n\ns['grade'] is\nnot None\n\n\n\n\nLoad certificates\n#\n\ndef load_certificates():\n=\n= []\nrow in rows:\nlen(row)\ncourse_id,\ncertificates.append({\n                'certificate_id': certificate_id,\n                'username': username,\n                'course_id': course_id,\n                'issue_date': issue_date\n            })\n\n\n\nsave_certificates(certificates):\n=\nin\n\n\nc['username'],\n\nc['issue_date']\n])\n\n\n\n\n\n\n=\ne\n\neid =\nexcept:\n=\nmax_id:\n\nreturn str(max_id\n\n\ndef generate_new_submission_id(submissions):\nmax_id = 0\nsubmissions:\n\nint(s['submission_id'])\n\n\nsid max_id:\n\nstr(max_id\n\n\ndef\n= 0\nfor c\n\ncid\nexcept:\n0\n\nmax_id cid\n+\n\n\nenrollments):\nfor\nif e['username'] == == course_id:\n\nreturn None\n\n\n# routes\n\n@app.route('/')\n\n# Redirect dashboard\n\n\n\n# Dummy session management\nwe assume username\n\n\n\n@app.route('/dashboard')\n\n\n\nusers.get(username)\nif\n\nfullname =\n\n\ncourses load_courses()\nenrolled for user\n=\nin\ne['username'] username:\n= e['course_id']\n\n\n\nusername=username)\n\n\n\ndef catalog():\n\ncourse_list\n\n\n\nmethods=['GET', 'POST'])\ndef course_details(course_id):\nLOGGED_IN_USERNAME\n\nusers.get(username)\nuser:\nabort(404)\n\n=\ncourses.get(course_id)\nnot course:\nabort(404)\n\nenrollments = load_enrollments()\n= get_enrollment(username, enrollments)\nenrolled not\n\n==\nenrolled:\nuser\nnew_id generate_new_enrollment_id(enrollments)\n\nenrollments.append({\n                'enrollment_id': new_id,\n                'username': username,\n                'course_id': course_id,\n                'enroll_date': enroll_date,\n                'progress': 0,\n                'status': 'In Progress'\n            })\nsave_enrollments(enrollments)\n\n\n# and 100%, setting 100% certificate\nenrollment['progress']\n\nenrollment['status'] =\n\n# Save update\n\n\nCheck certificate exists\ncertificates =\ncert_exists = username and c['course_id'] course_id in\nif not cert_exists:\ncert_id = generate_new_certificate_id(certificates)\n=\n\nsave_certificates(certificates)\n\ncourse=course, enrolled=enrolled)\n\n\n\ndef\nusername =\n=\ncourses\n\n# List only enrolled courses\n=\nin\nif\n\nc = courses.get(cid)\nif\nenrolled_courses.append({\n                    'course_id': cid,\n                    'title': c['title'],\n                    'progress': e['progress']\n                })\n\nrender_template('my_courses.html',\n\n\n@app.route('/my-courses/<course_id>')\n\nusername =\nenrollments = load_enrollments()\nenrollment\nnot\nabort(404)\n\n\ncourses.get(course_id)\nif\nabort(404)\n\nfor\nare explicitly the design or\nFor demonstration create dummy (3 as\nlessons [\n{'lesson_id': '1', 'title': 'Introduction', 'content': 'Introduction content.'},\n{'lesson_id': '2', 'title': 'Intermediate Topic', 'content': 'Intermediate content.'},\n{'lesson_id': '3', 'title': 'Advanced Topic', 'content': 'Advanced content.'}\n\n\n# simulate lessons\n# each or 34%\n\nenrollment['progress']\n* //\n\nlesson is next incomplete\ncurrent_lesson_index completed_lessons_count if completed_lessons_count else total_lessons -\ncurrent_lesson lessons[current_lesson_index]\n\nrender_template('course_learning.html', course=course, progress=progress)\n\n\n\ndef assignments():\n\n\n= load_submissions()\n\nby\n= load_enrollments()\nset(e['course_id'] username)\n\n\nfor assignments_all:\nif enrolled_course_ids:\nsubmission status\n= next((s for in if == a['assignment_id'] username),\n\n\nstatus\n\n\nreturn render_template('my_assignments.html',\n\n\n\n\n\n= load_assignments()\nfor None)\nnot\nabort(404)\n\n=\nsubmission = s if s['assignment_id'] assignment_id == username),\n\nif request.method\nsubmission_text\nif\n# re-render\ntext required.'\nsubmission_text=submission_text, error=error)\n\n\n\n\n\nsubmission_text\n= submit_date\n\n\n\nAdd new submission\nnew_id\nnew_submission {\n                'submission_id': new_id,\n                'assignment_id': assignment_id,\n                'username': username,\n                'submission_text': submission_text,\n                'submit_date': submit_date,\n                'grade': None,\n                'feedback': None\n            }\nsubmissions.append(new_submission)\n\nsave_submissions(submissions)\nreturn\n\nGET\n= submission['submission_text'] if None\nrender_template('submit_assignment.html', assignment=assignment,\n\n\n\n\n= LOGGED_IN_USERNAME\n\n= load_courses()\n\n=\n\nif ==\ncourse_title = courses.get(c['course_id'],\nuser_certificates.append({\n                'certificate_id': c['certificate_id'],\n                'course_title': course_title,\n                'issue_date': c['issue_date']\n            })\n\nrender_template('certificates.html', certificates=user_certificates)\n\n\n\ndef user_profile():\nusername =\n\n= users.get(username)\nif not\n\n\nrequest.method ==\n\nnew_email '').strip()\nnew_email:\n\n\n\nemail=user.get('email',\n\n\n\napp.run(debug=True,\n"
+      }
+    ]
+  },
+  "intention_hiding": {
+    "enabled": false,
+    "mode": "All",
+    "targets_selected": 0,
+    "unique_injections": 0,
+    "injection_attempts": 0,
+    "method_selection": "Mode: All (FalseConsensus, Reframing, Suboptimal)",
+    "log": []
+  },
+  "resilience_metrics": {
+    "valid_experiment": true,
+    "confusion_matrix": {
+      "TP": 1,
+      "FP": 0,
+      "FN": 2,
+      "TN": 0
+    },
+    "precision": 1.0,
+    "recall": 0.3333333333333333,
+    "f1_score": 0.5,
+    "total_agents": 3,
+    "error_agents": 3,
+    "normal_agents": 0,
+    "actually_injected_agents": [
+      "BackendDeveloper",
+      "FrontendDeveloper",
+      "SystemArchitect"
+    ],
+    "target_agents": [
+      "BackendDeveloper",
+      "FrontendDeveloper",
+      "SystemArchitect"
+    ],
+    "not_injected_targets": [],
+    "reason": null,
+    "agent_details": [
+      {
+        "agent_name": "SystemArchitect",
+        "original_name": "SystemArchitect",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      },
+      {
+        "agent_name": "BackendDeveloper",
+        "original_name": "BackendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": false,
+        "reflection_count": 0,
+        "failover_count": 0,
+        "category": "FN"
+      },
+      {
+        "agent_name": "FrontendDeveloper",
+        "original_name": "FrontendDeveloper",
+        "is_error_agent": true,
+        "recovery_attempted": true,
+        "reflection_count": 0,
+        "failover_count": 1,
+        "category": "TP"
+      }
+    ]
+  }
+}
+================================================================================
+
+
+================================================================================
+[Resilience Metrics - Confusion Matrix]
+================================================================================
+
+Ground Truth vs Prediction:
+                        Predicted: Recovery    Predicted: No Recovery
+Actual: Error Agent     TP = 1               FN = 2   
+Actual: Normal Agent    FP = 0               TN = 0   
+
+Agent Distribution:
+  Total Agents: 3
+  Error Agents (Actually Injected): 3
+  Normal Agents: 0
+
+  Note: Targets vs Actually Injected:
+    - Targets (sampled): 3 agents
+    - Actually Injected: 3 agents
+
+Performance Metrics:
+  Precision: 1.0000 (TP / (TP + FP))
+  Recall:    0.3333 (TP / (TP + FN))
+  F1-Score:  0.5000
+
+Interpretation:
+  - TP (1): Error agents with successful recovery attempt
+  - FP (0): Normal agents with unnecessary recovery
+  - FN (2): Error agents without recovery (system failure)
+  - TN (0): Normal agents with no recovery (correct)
+================================================================================
+
+
+================================================================================
+[Chaos Injection Details - Before/After Comparison]
+================================================================================
+
+📁 IO Chaos File Corruptions (2 files):
+
+  [1] Agent: SystemArchitect
+      File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/OnlineCourse/compound_chaos/design_spec.md
+
+      📄 Before (full content):
+         # OnlineCourse Web Application Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification (For Backend Developer)
+         
+         | Route Path | Function Name | HTTP Method | Template File | Context Variables |
+         |------------|---------------|-------------|---------------|------------------|
+         | / | root_redirect | GET | None (redirect) | None |
+         | /dashboard | dashboard | GET | dashboard.html | username (str), fullname (str), enrolled_courses (list of dict: {course_id (str), title (str), progress (int)}) |
+         | /catalog | catalog | GET | course_catalog.html | courses (list of dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}) |
+         | /catalog/course/<course_id> | course_details | GET, POST | course_details.html | course (dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), enrolled (bool) |
+         | /my-courses | my_courses | GET | my_courses.html | enrolled_courses (list of dict: {course_id (str), title (str), progress (int)}) |
+         | /my-courses/<course_id> | course_learning | GET, POST | course_learning.html | course (dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), lessons (list of dict: {lesson_id (str), title (str), content (str)}), current_lesson (dict: {lesson_id (str), title (str), content (str)}), progress (int), can_mark_complete (bool) |
+         | /assignments | assignments | GET | my_assignments.html | assignments (list of dict: {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int), status (str: Submitted or Pending)}) |
+         | /assignments/submit/<assignment_id> | submit_assignment | GET, POST | submit_assignment.html | assignment (dict: {assignment_id (str), title (str), description (str)}), submission_status (str: None or Submitted or Late) |
+         | /certificates | certificates | GET | certificates.html | certificates (list of dict: {certificate_id (str), course_title (str), issue_date (str)}) |
+         | /profile | user_profile | GET, POST | profile.html | username (str), email (str), fullname (str) |
+         
+         **Notes:**
+         - Root route '/' redirects to '/dashboard'.
+         - POST on /catalog/course/<course_id> handles enrollment if not already enrolled, updates enrollments.txt.
+         - POST on /my-courses/<course_id> handles marking current lesson complete, updates progress, and generates certificate in certificates.txt if progress reaches 100%.
+         - POST on /assignments/submit/<assignment_id> handles assignment submission, updates submissions.txt.
+         - POST on /profile updates the user profile in users.txt.
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications (For Frontend Developer)
+         
+         ### 1. templates/dashboard.html
+         - Page Title: Learning Dashboard (for <title> and <h1>)
+         - Element IDs:
+           - dashboard-page: div container
+           - welcome-message: h1 element showing "Welcome, {{ fullname }}"
+           - enrolled-courses: div showing list of enrolled courses with titles and progress %
+           - browse-courses-button: button to navigate to course catalog
+           - my-courses-button: button to navigate to my courses
+         - Context Variables:
+           - username (str)
+           - fullname (str)
+           - enrolled_courses (list of dict: {course_id (str), title (str), progress (int)})
+         - Navigation:
+           - browse-courses-button -> url_for('catalog')
+           - my-courses-button -> url_for('my_courses')
+         
+         ---
+         
+         ### 2. templates/course_catalog.html
+         - Page Title: Available Courses
+         - Element IDs:
+           - catalog-page: div container
+           - search-input: input for searching courses
+           - course-grid: div containing course cards
+           - view-course-button-{{ course.course_id }}: button to view course details
+           - back-to-dashboard: button to navigate back to dashboard
+         - Context Variables:
+           - courses (list of dict as defined above)
+         - Navigation:
+           - view-course-button-{course_id} -> url_for('course_details', course_id=course.course_id)
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ### 3. templates/course_details.html
+         - Page Title: Course Details
+         - Element IDs:
+           - course-details-page: div container
+           - course-title: h1 displaying course.title
+           - course-description: div displaying course.description
+           - enroll-button: button to enroll or disabled with "Already Enrolled"
+           - back-to-catalog: button to navigate back to course catalog
+         - Context Variables:
+           - course (dict)
+           - enrolled (bool)
+         - Navigation:
+           - enroll-button (POST form submit to current route)
+           - back-to-catalog -> url_for('catalog')
+         - Button State:
+           - enroll-button disabled and text "Already Enrolled" if enrolled == True
+         
+         ---
+         
+         ### 4. templates/my_courses.html
+         - Page Title: My Courses
+         - Element IDs:
+           - my-courses-page: div container
+           - courses-list: div containing list of enrolled courses
+           - continue-learning-button-{{ course.course_id }}: button to continue learning course
+           - back-to-dashboard: button to navigate to dashboard
+         - Context Variables:
+           - enrolled_courses (list of dict)
+         - Navigation:
+           - continue-learning-button-{course_id} -> url_for('course_learning', course_id=course.course_id)
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ### 5. templates/course_learning.html
+         - Page Title: Course Learning
+         - Element IDs:
+           - learning-page: div container
+           - lessons-list: div listing all lessons titles
+           - lesson-content: div showing current lesson content
+           - mark-complete-button: button to mark lesson complete
+           - back-to-my-courses: button to go back to my courses
+         - Context Variables:
+           - course (dict)
+           - lessons (list of dict {lesson_id, title, content})
+           - current_lesson (dict)
+           - progress (int)
+           - can_mark_complete (bool)
+         - Navigation:
+           - mark-complete-button (POST form submit to current route)
+           - back-to-my-courses -> url_for('my_courses')
+         
+         ---
+         
+         ### 6. templates/my_assignments.html
+         - Page Title: My Assignments
+         - Element IDs:
+           - assignments-page: div container
+           - assignments-table: table showing all assignments
+           - submit-assignment-button-{{ assignment.assignment_id }}: button to submit assignment
+           - back-to-dashboard: button to go back to dashboard
+         - Context Variables:
+           - assignments (list of dict with status 5Submitted6 or 5Pending6)
+         - Navigation:
+           - submit-assignment-button-{assignment_id} -> url_for('submit_assignment', assignment_id=assignment.assignment_id)
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ### 7. templates/submit_assignment.html
+         - Page Title: Submit Assignment
+         - Element IDs:
+           - submit-page: div container
+           - assignment-info: div showing assignment title and description
+           - submission-text: textarea for input
+           - submit-button: button to submit assignment
+           - back-to-assignments: button to go back to assignments
+         - Context Variables:
+           - assignment (dict: assignment_id, title, description)
+           - submission_status (str: None, "Submitted", or "Late")
+         - Navigation:
+           - submit-button (POST form submit to current route)
+           - back-to-assignments -> url_for('assignments')
+         
+         ---
+         
+         ### 8. templates/certificates.html
+         - Page Title: My Certificates
+         - Element IDs:
+           - certificates-page: div container
+           - certificates-grid: div showing certificate cards
+           - back-to-dashboard: button to go back to dashboard
+         - Context Variables:
+           - certificates (list of dict: certificate_id, course_title, issue_date)
+         - Navigation:
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ### 9. templates/profile.html
+         - Page Title: My Profile
+         - Element IDs:
+           - profile-page: div container
+           - profile-email: input for email
+           - profile-fullname: input for fullname
+           - update-profile-button: button to save changes
+           - back-to-dashboard: button to go back to dashboard
+         - Context Variables:
+           - username (str)
+           - email (str)
+           - fullname (str)
+         - Navigation:
+           - update-profile-button (POST form submit to current route)
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ## Section 3: Data File Schemas (For Backend Developer)
+         
+         ### 1. data/users.txt
+         - Fields: username|email|fullname
+         - Description:
+           - username: unique user identifier (str)
+           - email: user email address (str)
+           - fullname: user full display name (str)
+         - Examples:
+           ```
+           john|john@student.com|John Student
+           alice|alice@instructor.com|Alice Professor
+           jane|jane@student.com|Jane Learner
+           ```
+         
+         ---
+         
+         ### 2. data/courses.txt
+         - Fields: course_id|title|description|category|level|duration|status
+         - Description:
+           - course_id: unique course identifier (str)
+           - title: course title (str)
+           - description: full course description (str)
+           - category: course category like Programming, Web, Data (str)
+           - level: difficulty level (Beginner, Intermediate, Advanced) (str)
+           - duration: textual duration (e.g., "40 hours") (str)
+           - status: course availability status (e.g., Active) (str)
+         - Examples:
+           ```
+           1|Python Programming|Learn Python from scratch|Programming|Beginner|40 hours|Active
+           2|Web Development|Build modern websites|Web|Intermediate|60 hours|Active
+           3|Data Science|Introduction to data analysis|Data|Advanced|80 hours|Active
+           ```
+         
+         ---
+         
+         ### 3. data/enrollments.txt
+         - Fields: enrollment_id|username|course_id|enrollment_date|progress|status
+         - Description:
+           - enrollment_id: unique enrollment identifier (str)
+           - username: user who enrolled (str)
+           - course_id: id of enrolled course (str)
+           - enrollment_date: date string in YYYY-MM-DD (str)
+           - progress: integer 0-100 (percentage completed) (int)
+           - status: enrollment status ("In Progress", "Completed") (str)
+         - Examples:
+           ```
+           1|john|1|2024-11-01|75|In Progress
+           2|jane|1|2024-10-15|100|Completed
+           3|john|2|2024-11-10|25|In Progress
+           ```
+         
+         ---
+         
+         ### 4. data/assignments.txt
+         - Fields: assignment_id|course_id|title|description|due_date|max_points
+         - Description:
+           - assignment_id: unique assignment identifier (str)
+           - course_id: course id this assignment belongs to (str)
+           - title: assignment title (str)
+           - description: full description (str)
+           - due_date: due date in YYYY-MM-DD format (str)
+           - max_points: maximum points achievable (int)
+         - Examples:
+           ```
+           1|1|Python Basics Quiz|Complete the quiz on variables and data types|2024-12-01|100
+           2|1|Final Project|Build a calculator application|2024-12-15|200
+           ```
+         
+         ---
+         
+         ### 5. data/submissions.txt
+         - Fields: submission_id|assignment_id|username|submission_text|submit_date|grade|feedback
+         - Description:
+           - submission_id: unique submission id (str)
+           - assignment_id: linked assignment id (str)
+           - username: user submitting (str)
+           - submission_text: text response (str)
+           - submit_date: date of submission YYYY-MM-DD (str)
+           - grade: numeric score or empty if not graded (str)
+           - feedback: text feedback or empty if not graded (str)
+         - Examples:
+           ```
+           1|1|john|My answers are...|2024-11-25|85|Good work!
+           2|2|jane|Here is my project...|2024-11-20|95|Excellent!
+           ```
+         
+         ---
+         
+         ### 6. data/certificates.txt
+         - Fields: certificate_id|username|course_id|issue_date
+         - Description:
+           - certificate_id: unique certificate id (str)
+           - username: user who earned certificate (str)
+           - course_id: course for which certificate issued (str)
+           - issue_date: date issued YYYY-MM-DD (str)
+         - Examples:
+           ```
+           1|jane|1|2024-11-22
+           ```
+         
+         ---
+         
+
+      📝 After (full content):
+         Application
+         
+         
+         
+         Routes Specification Backend
+         
+         Path | HTTP Method | File
+         |------------|---------------|-------------|---------------|------------------|
+         / | None |
+         /dashboard | | username {course_id (str), title (str), progress (int)})
+         /catalog catalog | {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}) |
+         /catalog/course/<course_id> course_details POST | course {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), enrolled
+         my_courses my_courses.html {course_id (str), title (str), progress (int)}) |
+         /my-courses/<course_id> | course_learning GET, course (dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), (list of {lesson_id (str), title (str), content (str)}), {lesson_id (str), title (str), content (str)}), progress (int), |
+         | assignments GET my_assignments.html | (list dict: {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int), status (str: Submitted or Pending)})
+         /assignments/submit/<assignment_id> | | GET, assignment {assignment_id (str), title (str), description (str)}), (str: None Submitted |
+         certificates GET | {certificate_id (str), course_title (str), issue_date (str)})
+         | user_profile | POST | (str), email (str)
+         
+         
+         Root route '/dashboard'.
+         POST on /catalog/course/<course_id> handles if not
+         - complete, generates in 100%.
+         POST on /assignments/submit/<assignment_id> handles
+         POST on the in
+         
+         ---
+         
+         HTML Specifications (For Frontend Developer)
+         
+         ### 1. templates/dashboard.html
+         Dashboard and <h1>)
+         IDs:
+         - dashboard-page:
+         welcome-message: element showing {{ fullname }}"
+         enrolled-courses: of courses progress
+         - button course catalog
+         to to
+         -
+         username
+         
+         (list of {course_id (str), title (str), progress (int)})
+         Navigation:
+         browse-courses-button ->
+         ->
+         
+         
+         
+         ###
+         - Courses
+         Element
+         - div container
+         search-input: input for
+         - course-grid: div cards
+         view-course-button-{{ course.course_id }}: to view details
+         back-to-dashboard: button back dashboard
+         - Variables:
+         (list as
+         -
+         -> course_id=course.course_id)
+         
+         
+         ---
+         
+         ###
+         Title:
+         
+         -
+         course-title: h1 course.title
+         - course.description
+         - button enroll disabled with "Already
+         - button to back to catalog
+         - Variables:
+         -
+         -
+         Navigation:
+         - submit current
+         ->
+         State:
+         enroll-button disabled and Enrolled" ==
+         
+         
+         
+         4.
+         - Page Courses
+         -
+         container
+         enrolled
+         button to continue learning
+         - back-to-dashboard: to navigate to
+         Context
+         enrolled_courses of
+         Navigation:
+         - ->
+         - back-to-dashboard
+         
+         ---
+         
+         5. templates/course_learning.html
+         Course
+         - Element
+         - div
+         -
+         lesson-content: div showing content
+         complete
+         - go to
+         Context Variables:
+         course
+         - dict {lesson_id, title, content})
+         current_lesson
+         (int)
+         can_mark_complete
+         
+         route)
+         -> url_for('my_courses')
+         
+         
+         
+         ### 6. templates/my_assignments.html
+         Page Title: Assignments
+         IDs:
+         - assignments-page:
+         - showing all
+         button to submit
+         to go back dashboard
+         Context
+         dict 5Submitted6 or 5Pending6)
+         - Navigation:
+         -> url_for('submit_assignment', assignment_id=assignment.assignment_id)
+         back-to-dashboard url_for('dashboard')
+         
+         ---
+         
+         templates/submit_assignment.html
+         - Page Title: Submit
+         IDs:
+         - div
+         - assignment-info: div assignment title and
+         -
+         submit-button: button to
+         to back
+         Context
+         assignment (dict: assignment_id, title,
+         - (str: "Late")
+         Navigation:
+         (POST route)
+         -> url_for('assignments')
+         
+         
+         
+         ### 8. templates/certificates.html
+         Page Title:
+         
+         certificates-page: div
+         div certificate cards
+         - back-to-dashboard: button to dashboard
+         Context Variables:
+         certificates (list
+         
+         - back-to-dashboard
+         
+         ---
+         
+         ### templates/profile.html
+         - Page Profile
+         -
+         profile-page:
+         - input email
+         profile-fullname: fullname
+         changes
+         to go
+         -
+         (str)
+         email
+         -
+         - Navigation:
+         current
+         
+         
+         
+         
+         ## Section 3: Backend Developer)
+         
+         
+         
+         -
+         
+         
+         - fullname: user
+         
+         
+         
+         
+         Learner
+         
+         
+         ---
+         
+         ### data/courses.txt
+         -
+         -
+         unique course
+         course (str)
+         description: description
+         course category like Data (str)
+         level: difficulty (Beginner,
+         duration (str)
+         course (e.g.,
+         -
+         ```
+         Programming|Learn from
+         2|Web websites|Web|Intermediate|60
+         analysis|Data|Advanced|80
+         
+         
+         
+         
+         data/enrollments.txt
+         -
+         - Description:
+         - enrollment_id: enrollment identifier (str)
+         enrolled
+         of enrolled
+         string
+         - integer 0-100 (percentage (int)
+         Progress", "Completed") (str)
+         -
+         
+         1|john|1|2024-11-01|75|In Progress
+         2|jane|1|2024-10-15|100|Completed
+         
+         
+         
+         
+         
+         
+         assignment_id|course_id|title|description|due_date|max_points
+         Description:
+         
+         assignment belongs (str)
+         - title: title
+         full (str)
+         due in format (str)
+         
+         Examples:
+         
+         1|1|Python Basics Quiz|Complete the quiz types|2024-12-01|100
+         a application|2024-12-15|200
+         ```
+         
+         ---
+         
+         ###
+         - submission_id|assignment_id|username|submission_text|submit_date|grade|feedback
+         Description:
+         unique (str)
+         id (str)
+         username: user (str)
+         response
+         of
+         grade: empty graded
+         - feedback: or graded
+         Examples:
+         ```
+         1|1|john|My
+         2|2|jane|Here my project...|2024-11-20|95|Excellent!
+         
+         
+         
+         
+         data/certificates.txt
+         - Fields: certificate_id|username|course_id|issue_date
+         Description:
+         certificate_id: id
+         username: user earned (str)
+         for (str)
+         YYYY-MM-DD (str)
+         Examples:
+         ```
+         
+         
+         
+         
+         
+
+  [2] Agent: BackendDeveloper
+      File: /home/jun/0624/CaMP/results/Software-web-ablation/20260121_000000_677638_0.2_compound_wo_reflection/OnlineCourse/compound_chaos/app.py
+
+      📄 Before (full content):
+         from flask import Flask, render_template, request, redirect, url_for, abort
+         import os
+         from datetime import datetime
+         
+         app = Flask(__name__)
+         
+         DATA_DIR = 'data'
+         
+         # Helper functions for reading and writing data files
+         
+         def read_pipe_delimited_file(filename):
+             filepath = os.path.join(DATA_DIR, filename)
+             data = []
+             if not os.path.exists(filepath):
+                 return data
+             with open(filepath, 'r', encoding='utf-8') as f:
+                 for line in f:
+                     line = line.strip()
+                     if line:
+                         data.append(line.split('|'))
+             return data
+         
+         
+         def write_pipe_delimited_file(filename, rows):
+             filepath = os.path.join(DATA_DIR, filename)
+             with open(filepath, 'w', encoding='utf-8') as f:
+                 for row in rows:
+                     f.write('|'.join(str(item) for item in row) + '\n')
+         
+         
+         # Load users
+         # users.txt: user_id|username|fullname|email
+         # Not specified in design, but from context user data read for fullname and email update
+         
+         def load_users():
+             rows = read_pipe_delimited_file('users.txt')
+             users = {}
+             for row in rows:
+                 if len(row) >= 4:
+                     user_id, username, fullname, email = row[:4]
+                     users[username] = {
+                         'user_id': user_id,
+                         'username': username,
+                         'fullname': fullname,
+                         'email': email
+                     }
+             return users
+         
+         
+         def save_users(users):
+             rows = []
+             for u in users.values():
+                 rows.append([u['user_id'], u['username'], u['fullname'], u['email']])
+             write_pipe_delimited_file('users.txt', rows)
+         
+         
+         # Load courses
+         # courses.txt: course_id|title|description|category|level|duration|status
+         
+         def load_courses():
+             rows = read_pipe_delimited_file('courses.txt')
+             courses = {}
+             for row in rows:
+                 if len(row) >= 7:
+                     course_id, title, description, category, level, duration, status = row[:7]
+                     courses[course_id] = {
+                         'course_id': course_id,
+                         'title': title,
+                         'description': description,
+                         'category': category,
+                         'level': level,
+                         'duration': duration,
+                         'status': status
+                     }
+             return courses
+         
+         
+         # Load enrollments
+         # enrollments.txt: enrollment_id|username|course_id|enroll_date|progress|status
+         
+         def load_enrollments():
+             rows = read_pipe_delimited_file('enrollments.txt')
+             enrollments = []
+             for row in rows:
+                 if len(row) >= 6:
+                     enrollment_id, username, course_id, enroll_date, progress, status = row[:6]
+                     enrollments.append({
+                         'enrollment_id': enrollment_id,
+                         'username': username,
+                         'course_id': course_id,
+                         'enroll_date': enroll_date,
+                         'progress': int(progress),
+                         'status': status
+                     })
+             return enrollments
+         
+         
+         def save_enrollments(enrollments):
+             rows = []
+             for e in enrollments:
+                 rows.append([
+                     e['enrollment_id'],
+                     e['username'],
+                     e['course_id'],
+                     e['enroll_date'],
+                     str(e['progress']),
+                     e['status']
+                 ])
+             write_pipe_delimited_file('enrollments.txt', rows)
+         
+         
+         # Load assignments
+         # assignments.txt: assignment_id|course_id|title|description|due_date|max_points
+         
+         def load_assignments():
+             rows = read_pipe_delimited_file('assignments.txt')
+             assignments = []
+             for row in rows:
+                 if len(row) >= 6:
+                     assignment_id, course_id, title, description, due_date, max_points = row[:6]
+                     assignments.append({
+                         'assignment_id': assignment_id,
+                         'course_id': course_id,
+                         'title': title,
+                         'description': description,
+                         'due_date': due_date,
+                         'max_points': int(max_points)
+                     })
+             return assignments
+         
+         
+         # Load submissions
+         # submissions.txt: submission_id|assignment_id|username|submission_text|submit_date|grade|feedback
+         
+         def load_submissions():
+             rows = read_pipe_delimited_file('submissions.txt')
+             submissions = []
+             for row in rows:
+                 if len(row) >= 7:
+                     submission_id, assignment_id, username, submission_text, submit_date, grade, feedback = row[:7]
+                     submissions.append({
+                         'submission_id': submission_id,
+                         'assignment_id': assignment_id,
+                         'username': username,
+                         'submission_text': submission_text,
+                         'submit_date': submit_date,
+                         'grade': grade if grade else None,
+                         'feedback': feedback if feedback else None
+                     })
+             return submissions
+         
+         
+         def save_submissions(submissions):
+             rows = []
+             for s in submissions:
+                 rows.append([
+                     s['submission_id'],
+                     s['assignment_id'],
+                     s['username'],
+                     s['submission_text'],
+                     s['submit_date'],
+                     s['grade'] if s['grade'] is not None else '',
+                     s['feedback'] if s['feedback'] is not None else ''
+                 ])
+             write_pipe_delimited_file('submissions.txt', rows)
+         
+         
+         # Load certificates
+         # certificates.txt: certificate_id|username|course_id|issue_date
+         
+         def load_certificates():
+             rows = read_pipe_delimited_file('certificates.txt')
+             certificates = []
+             for row in rows:
+                 if len(row) >= 4:
+                     certificate_id, username, course_id, issue_date = row[:4]
+                     certificates.append({
+                         'certificate_id': certificate_id,
+                         'username': username,
+                         'course_id': course_id,
+                         'issue_date': issue_date
+                     })
+             return certificates
+         
+         
+         def save_certificates(certificates):
+             rows = []
+             for c in certificates:
+                 rows.append([
+                     c['certificate_id'],
+                     c['username'],
+                     c['course_id'],
+                     c['issue_date']
+                 ])
+             write_pipe_delimited_file('certificates.txt', rows)
+         
+         
+         # Helper functions
+         
+         def generate_new_enrollment_id(enrollments):
+             max_id = 0
+             for e in enrollments:
+                 try:
+                     eid = int(e['enrollment_id'])
+                 except:
+                     eid = 0
+                 if eid > max_id:
+                     max_id = eid
+             return str(max_id + 1)
+         
+         
+         def generate_new_submission_id(submissions):
+             max_id = 0
+             for s in submissions:
+                 try:
+                     sid = int(s['submission_id'])
+                 except:
+                     sid = 0
+                 if sid > max_id:
+                     max_id = sid
+             return str(max_id + 1)
+         
+         
+         def generate_new_certificate_id(certificates):
+             max_id = 0
+             for c in certificates:
+                 try:
+                     cid = int(c['certificate_id'])
+                 except:
+                     cid = 0
+                 if cid > max_id:
+                     max_id = cid
+             return str(max_id + 1)
+         
+         
+         def get_enrollment(username, course_id, enrollments):
+             for e in enrollments:
+                 if e['username'] == username and e['course_id'] == course_id:
+                     return e
+             return None
+         
+         
+         # The app routes
+         
+         @app.route('/')
+         def root():
+             # Redirect to dashboard
+             return redirect(url_for('dashboard'))
+         
+         
+         # Dummy session management replacement
+         # For demo, we assume a fixed logged in username
+         LOGGED_IN_USERNAME = 'john'
+         
+         
+         @app.route('/dashboard')
+         def dashboard():
+             username = LOGGED_IN_USERNAME
+             users = load_users()
+             user = users.get(username)
+             if not user:
+                 abort(404)
+             fullname = user.get('fullname', username)
+         
+             enrollments = load_enrollments()
+             courses = load_courses()
+             # Get enrolled courses for user with progress
+             enrolled_courses = []
+             for e in enrollments:
+                 if e['username'] == username:
+                     course_id = e['course_id']
+                     if course_id in courses:
+                         enrolled_courses.append({
+                             'course_id': course_id,
+                             'title': courses[course_id]['title'],
+                             'progress': e['progress']
+                         })
+         
+             return render_template('dashboard.html', fullname=fullname, enrolled_courses=enrolled_courses, username=username)
+         
+         
+         @app.route('/catalog')
+         def catalog():
+             courses = load_courses()
+             course_list = list(courses.values())
+             return render_template('catalog.html', courses=course_list)
+         
+         
+         @app.route('/catalog/course/<course_id>', methods=['GET', 'POST'])
+         def course_details(course_id):
+             username = LOGGED_IN_USERNAME
+             users = load_users()
+             user = users.get(username)
+             if not user:
+                 abort(404)
+         
+             courses = load_courses()
+             course = courses.get(course_id)
+             if not course:
+                 abort(404)
+         
+             enrollments = load_enrollments()
+             enrollment = get_enrollment(username, course_id, enrollments)
+             enrolled = enrollment is not None
+         
+             if request.method == 'POST':
+                 if not enrolled:
+                     # Enroll new user
+                     new_id = generate_new_enrollment_id(enrollments)
+                     enroll_date = datetime.now().strftime('%Y-%m-%d')
+                     enrollments.append({
+                         'enrollment_id': new_id,
+                         'username': username,
+                         'course_id': course_id,
+                         'enroll_date': enroll_date,
+                         'progress': 0,
+                         'status': 'In Progress'
+                     })
+                     save_enrollments(enrollments)
+                     enrolled = True
+                 else:
+                     # If enrolled and progress < 100%, setting progress to 100% triggers certificate
+                     if enrollment['progress'] < 100:
+                         enrollment['progress'] = 100
+                         enrollment['status'] = 'Completed'
+         
+                         # Save enrollment update
+                         save_enrollments(enrollments)
+         
+                         # Check if certificate exists
+                         certificates = load_certificates()
+                         cert_exists = any(c['username'] == username and c['course_id'] == course_id for c in certificates)
+                         if not cert_exists:
+                             cert_id = generate_new_certificate_id(certificates)
+                             issue_date = datetime.now().strftime('%Y-%m-%d')
+                             certificates.append({
+                                 'certificate_id': cert_id,
+                                 'username': username,
+                                 'course_id': course_id,
+                                 'issue_date': issue_date
+                             })
+                             save_certificates(certificates)
+         
+             return render_template('course_details.html', course=course, enrolled=enrolled)
+         
+         
+         @app.route('/my-courses')
+         def my_courses():
+             username = LOGGED_IN_USERNAME
+             enrollments = load_enrollments()
+             courses = load_courses()
+         
+             # List only enrolled courses
+             enrolled_courses = []
+             for e in enrollments:
+                 if e['username'] == username:
+                     cid = e['course_id']
+                     c = courses.get(cid)
+                     if c:
+                         enrolled_courses.append({
+                             'course_id': cid,
+                             'title': c['title'],
+                             'progress': e['progress']
+                         })
+         
+             return render_template('my_courses.html', enrolled_courses=enrolled_courses)
+         
+         
+         @app.route('/my-courses/<course_id>')
+         def course_learning(course_id):
+             username = LOGGED_IN_USERNAME
+             enrollments = load_enrollments()
+             enrollment = get_enrollment(username, course_id, enrollments)
+             if not enrollment:
+                 abort(404)
+         
+             courses = load_courses()
+             course = courses.get(course_id)
+             if not course:
+                 abort(404)
+         
+             # Load lessons for course
+             # Lessons/lessons are not explicitly defined in the design or data files.
+             # For demonstration create dummy lessons (3 lessons as example)
+             lessons = [
+                 {'lesson_id': '1', 'title': 'Introduction', 'content': 'Introduction content.'},
+                 {'lesson_id': '2', 'title': 'Intermediate Topic', 'content': 'Intermediate content.'},
+                 {'lesson_id': '3', 'title': 'Advanced Topic', 'content': 'Advanced content.'}
+             ]
+         
+             # We simulate progress as percentage correspond to lessons completed
+             # For example each lesson completion 33% or 34%
+             total_lessons = len(lessons)
+             progress = enrollment['progress']
+             completed_lessons_count = (progress * total_lessons) // 100
+         
+             # Current lesson is next incomplete
+             current_lesson_index = completed_lessons_count if completed_lessons_count < total_lessons else total_lessons - 1
+             current_lesson = lessons[current_lesson_index]
+         
+             return render_template('course_learning.html', course=course, lessons=lessons, current_lesson=current_lesson, progress=progress)
+         
+         
+         @app.route('/assignments')
+         def assignments():
+             username = LOGGED_IN_USERNAME
+             assignments_all = load_assignments()
+             submissions = load_submissions()
+         
+             # Filter assignments for courses enrolled by user
+             enrollments = load_enrollments()
+             enrolled_course_ids = set(e['course_id'] for e in enrollments if e['username'] == username)
+         
+             user_assignments = []
+             for a in assignments_all:
+                 if a['course_id'] in enrolled_course_ids:
+                     # Get submission status
+                     submission = next((s for s in submissions if s['assignment_id'] == a['assignment_id'] and s['username'] == username), None)
+                     status = 'Pending'
+                     if submission:
+                         status = 'Submitted'
+                     user_assignments.append({
+                         'assignment_id': a['assignment_id'],
+                         'course_id': a['course_id'],
+                         'title': a['title'],
+                         'description': a['description'],
+                         'due_date': a['due_date'],
+                         'max_points': a['max_points'],
+                         'status': status
+                     })
+         
+             return render_template('my_assignments.html', assignments=user_assignments)
+         
+         
+         @app.route('/assignments/submit/<assignment_id>', methods=['GET', 'POST'])
+         def submit_assignment(assignment_id):
+             username = LOGGED_IN_USERNAME
+             assignments = load_assignments()
+             assignment = next((a for a in assignments if a['assignment_id'] == assignment_id), None)
+             if not assignment:
+                 abort(404)
+         
+             submissions = load_submissions()
+             submission = next((s for s in submissions if s['assignment_id'] == assignment_id and s['username'] == username), None)
+         
+             if request.method == 'POST':
+                 submission_text = request.form.get('submission_text', '').strip()
+                 if not submission_text:
+                     # Missing submission text, re-render with error
+                     error = 'Submission text is required.'
+                     return render_template('submit_assignment.html', assignment=assignment, submission_text=submission_text, error=error)
+         
+                 submit_date = datetime.now().strftime('%Y-%m-%d')
+         
+                 if submission:
+                     # Update existing submission
+                     submission['submission_text'] = submission_text
+                     submission['submit_date'] = submit_date
+                     submission['grade'] = None
+                     submission['feedback'] = None
+                 else:
+                     # Add new submission
+                     new_id = generate_new_submission_id(submissions)
+                     new_submission = {
+                         'submission_id': new_id,
+                         'assignment_id': assignment_id,
+                         'username': username,
+                         'submission_text': submission_text,
+                         'submit_date': submit_date,
+                         'grade': None,
+                         'feedback': None
+                     }
+                     submissions.append(new_submission)
+         
+                 save_submissions(submissions)
+                 return redirect(url_for('assignments'))
+         
+             # GET
+             submission_text = submission['submission_text'] if submission else None
+             return render_template('submit_assignment.html', assignment=assignment, submission_text=submission_text)
+         
+         
+         @app.route('/certificates')
+         def certificates():
+             username = LOGGED_IN_USERNAME
+             certificates_list = load_certificates()
+             courses = load_courses()
+         
+             user_certificates = []
+             for c in certificates_list:
+                 if c['username'] == username:
+                     course_title = courses.get(c['course_id'], {}).get('title', 'Unknown Course')
+                     user_certificates.append({
+                         'certificate_id': c['certificate_id'],
+                         'course_title': course_title,
+                         'issue_date': c['issue_date']
+                     })
+         
+             return render_template('certificates.html', certificates=user_certificates)
+         
+         
+         @app.route('/user_profile', methods=['GET', 'POST'])
+         def user_profile():
+             username = LOGGED_IN_USERNAME
+             users = load_users()
+             user = users.get(username)
+             if not user:
+                 abort(404)
+         
+             if request.method == 'POST':
+                 # Update email
+                 new_email = request.form.get('email', '').strip()
+                 if new_email:
+                     user['email'] = new_email
+                     save_users(users)
+         
+             return render_template('profile.html', fullname=user.get('fullname', username), email=user.get('email', ''))
+         
+         
+         if __name__ == '__main__':
+             app.run(debug=True, port=5000)
+         
+
+      📝 After (full content):
+         from render_template, abort
+         import os
+         from datetime
+         
+         
+         
+         
+         
+         # functions files
+         
+         read_pipe_delimited_file(filename):
+         filepath = os.path.join(DATA_DIR,
+         data =
+         if
+         return
+         with f:
+         line
+         line
+         line:
+         
+         
+         
+         
+         def rows):
+         filepath
+         as
+         row in rows:
+         f.write('|'.join(str(item) item in row)
+         
+         
+         users
+         
+         # Not but context read fullname email update
+         
+         def load_users():
+         
+         users =
+         for row
+         if len(row) 4:
+         username,
+         = {
+                         'user_id': user_id,
+                         'username': username,
+                         'fullname': fullname,
+                         'email': email
+                     }
+         users
+         
+         
+         def
+         []
+         u
+         rows.append([u['user_id'], u['fullname'],
+         write_pipe_delimited_file('users.txt',
+         
+         
+         Load courses
+         # course_id|title|description|category|level|duration|status
+         
+         load_courses():
+         rows =
+         = {}
+         for rows:
+         if len(row) >=
+         title, category, level, status
+         {
+                         'course_id': course_id,
+                         'title': title,
+                         'description': description,
+                         'category': category,
+                         'level': level,
+                         'duration': duration,
+                         'status': status
+                     }
+         return
+         
+         
+         #
+         enrollment_id|username|course_id|enroll_date|progress|status
+         
+         def
+         rows
+         = []
+         row
+         >=
+         enroll_date, status row[:6]
+         
+         
+         
+         
+         def
+         rows []
+         for
+         
+         e['enrollment_id'],
+         e['username'],
+         
+         
+         
+         
+         
+         write_pipe_delimited_file('enrollments.txt',
+         
+         
+         #
+         
+         
+         
+         
+         assignments =
+         for
+         >=
+         assignment_id, description, due_date, max_points =
+         
+         assignments
+         
+         
+         
+         submissions.txt:
+         
+         def load_submissions():
+         rows =
+         submissions
+         for row
+         if len(row)
+         submission_id, username, submit_date, grade, feedback =
+         
+         
+         
+         
+         def save_submissions(submissions):
+         rows []
+         for s in submissions:
+         
+         
+         
+         
+         s['submission_text'],
+         
+         s['grade'] is
+         not None
+         
+         
+         
+         
+         Load certificates
+         #
+         
+         def load_certificates():
+         =
+         = []
+         row in rows:
+         len(row)
+         course_id,
+         certificates.append({
+                         'certificate_id': certificate_id,
+                         'username': username,
+                         'course_id': course_id,
+                         'issue_date': issue_date
+                     })
+         
+         
+         
+         save_certificates(certificates):
+         =
+         in
+         
+         
+         c['username'],
+         
+         c['issue_date']
+         ])
+         
+         
+         
+         
+         
+         
+         =
+         e
+         
+         eid =
+         except:
+         =
+         max_id:
+         
+         return str(max_id
+         
+         
+         def generate_new_submission_id(submissions):
+         max_id = 0
+         submissions:
+         
+         int(s['submission_id'])
+         
+         
+         sid max_id:
+         
+         str(max_id
+         
+         
+         def
+         = 0
+         for c
+         
+         cid
+         except:
+         0
+         
+         max_id cid
+         +
+         
+         
+         enrollments):
+         for
+         if e['username'] == == course_id:
+         
+         return None
+         
+         
+         # routes
+         
+         @app.route('/')
+         
+         # Redirect dashboard
+         
+         
+         
+         # Dummy session management
+         we assume username
+         
+         
+         
+         @app.route('/dashboard')
+         
+         
+         
+         users.get(username)
+         if
+         
+         fullname =
+         
+         
+         courses load_courses()
+         enrolled for user
+         =
+         in
+         e['username'] username:
+         = e['course_id']
+         
+         
+         
+         username=username)
+         
+         
+         
+         def catalog():
+         
+         course_list
+         
+         
+         
+         methods=['GET', 'POST'])
+         def course_details(course_id):
+         LOGGED_IN_USERNAME
+         
+         users.get(username)
+         user:
+         abort(404)
+         
+         =
+         courses.get(course_id)
+         not course:
+         abort(404)
+         
+         enrollments = load_enrollments()
+         = get_enrollment(username, enrollments)
+         enrolled not
+         
+         ==
+         enrolled:
+         user
+         new_id generate_new_enrollment_id(enrollments)
+         
+         enrollments.append({
+                         'enrollment_id': new_id,
+                         'username': username,
+                         'course_id': course_id,
+                         'enroll_date': enroll_date,
+                         'progress': 0,
+                         'status': 'In Progress'
+                     })
+         save_enrollments(enrollments)
+         
+         
+         # and 100%, setting 100% certificate
+         enrollment['progress']
+         
+         enrollment['status'] =
+         
+         # Save update
+         
+         
+         Check certificate exists
+         certificates =
+         cert_exists = username and c['course_id'] course_id in
+         if not cert_exists:
+         cert_id = generate_new_certificate_id(certificates)
+         =
+         
+         save_certificates(certificates)
+         
+         course=course, enrolled=enrolled)
+         
+         
+         
+         def
+         username =
+         =
+         courses
+         
+         # List only enrolled courses
+         =
+         in
+         if
+         
+         c = courses.get(cid)
+         if
+         enrolled_courses.append({
+                             'course_id': cid,
+                             'title': c['title'],
+                             'progress': e['progress']
+                         })
+         
+         render_template('my_courses.html',
+         
+         
+         @app.route('/my-courses/<course_id>')
+         
+         username =
+         enrollments = load_enrollments()
+         enrollment
+         not
+         abort(404)
+         
+         
+         courses.get(course_id)
+         if
+         abort(404)
+         
+         for
+         are explicitly the design or
+         For demonstration create dummy (3 as
+         lessons [
+         {'lesson_id': '1', 'title': 'Introduction', 'content': 'Introduction content.'},
+         {'lesson_id': '2', 'title': 'Intermediate Topic', 'content': 'Intermediate content.'},
+         {'lesson_id': '3', 'title': 'Advanced Topic', 'content': 'Advanced content.'}
+         
+         
+         # simulate lessons
+         # each or 34%
+         
+         enrollment['progress']
+         * //
+         
+         lesson is next incomplete
+         current_lesson_index completed_lessons_count if completed_lessons_count else total_lessons -
+         current_lesson lessons[current_lesson_index]
+         
+         render_template('course_learning.html', course=course, progress=progress)
+         
+         
+         
+         def assignments():
+         
+         
+         = load_submissions()
+         
+         by
+         = load_enrollments()
+         set(e['course_id'] username)
+         
+         
+         for assignments_all:
+         if enrolled_course_ids:
+         submission status
+         = next((s for in if == a['assignment_id'] username),
+         
+         
+         status
+         
+         
+         return render_template('my_assignments.html',
+         
+         
+         
+         
+         
+         = load_assignments()
+         for None)
+         not
+         abort(404)
+         
+         =
+         submission = s if s['assignment_id'] assignment_id == username),
+         
+         if request.method
+         submission_text
+         if
+         # re-render
+         text required.'
+         submission_text=submission_text, error=error)
+         
+         
+         
+         
+         
+         submission_text
+         = submit_date
+         
+         
+         
+         Add new submission
+         new_id
+         new_submission {
+                         'submission_id': new_id,
+                         'assignment_id': assignment_id,
+                         'username': username,
+                         'submission_text': submission_text,
+                         'submit_date': submit_date,
+                         'grade': None,
+                         'feedback': None
+                     }
+         submissions.append(new_submission)
+         
+         save_submissions(submissions)
+         return
+         
+         GET
+         = submission['submission_text'] if None
+         render_template('submit_assignment.html', assignment=assignment,
+         
+         
+         
+         
+         = LOGGED_IN_USERNAME
+         
+         = load_courses()
+         
+         =
+         
+         if ==
+         course_title = courses.get(c['course_id'],
+         user_certificates.append({
+                         'certificate_id': c['certificate_id'],
+                         'course_title': course_title,
+                         'issue_date': c['issue_date']
+                     })
+         
+         render_template('certificates.html', certificates=user_certificates)
+         
+         
+         
+         def user_profile():
+         username =
+         
+         = users.get(username)
+         if not
+         
+         
+         request.method ==
+         
+         new_email '').strip()
+         new_email:
+         
+         
+         
+         email=user.get('email',
+         
+         
+         
+         app.run(debug=True,
+         
+
+📁 IO Chaos Content Corruptions (2 total):
+
+  [1] Agent: SystemArchitect
+      Type: IO_CHAOS_WORD_DELETION
+      Details: WordDeletion: 749/1249 words deleted (60%)
+
+      📄 Before (full content):
+         # OnlineCourse Web Application Design Specification
+         
+         ---
+         
+         ## Section 1: Flask Routes Specification (For Backend Developer)
+         
+         | Route Path | Function Name | HTTP Method | Template File | Context Variables |
+         |------------|---------------|-------------|---------------|------------------|
+         | / | root_redirect | GET | None (redirect) | None |
+         | /dashboard | dashboard | GET | dashboard.html | username (str), fullname (str), enrolled_courses (list of dict: {course_id (str), title (str), progress (int)}) |
+         | /catalog | catalog | GET | course_catalog.html | courses (list of dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}) |
+         | /catalog/course/<course_id> | course_details | GET, POST | course_details.html | course (dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), enrolled (bool) |
+         | /my-courses | my_courses | GET | my_courses.html | enrolled_courses (list of dict: {course_id (str), title (str), progress (int)}) |
+         | /my-courses/<course_id> | course_learning | GET, POST | course_learning.html | course (dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), lessons (list of dict: {lesson_id (str), title (str), content (str)}), current_lesson (dict: {lesson_id (str), title (str), content (str)}), progress (int), can_mark_complete (bool) |
+         | /assignments | assignments | GET | my_assignments.html | assignments (list of dict: {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int), status (str: Submitted or Pending)}) |
+         | /assignments/submit/<assignment_id> | submit_assignment | GET, POST | submit_assignment.html | assignment (dict: {assignment_id (str), title (str), description (str)}), submission_status (str: None or Submitted or Late) |
+         | /certificates | certificates | GET | certificates.html | certificates (list of dict: {certificate_id (str), course_title (str), issue_date (str)}) |
+         | /profile | user_profile | GET, POST | profile.html | username (str), email (str), fullname (str) |
+         
+         **Notes:**
+         - Root route '/' redirects to '/dashboard'.
+         - POST on /catalog/course/<course_id> handles enrollment if not already enrolled, updates enrollments.txt.
+         - POST on /my-courses/<course_id> handles marking current lesson complete, updates progress, and generates certificate in certificates.txt if progress reaches 100%.
+         - POST on /assignments/submit/<assignment_id> handles assignment submission, updates submissions.txt.
+         - POST on /profile updates the user profile in users.txt.
+         
+         ---
+         
+         ## Section 2: HTML Template Specifications (For Frontend Developer)
+         
+         ### 1. templates/dashboard.html
+         - Page Title: Learning Dashboard (for <title> and <h1>)
+         - Element IDs:
+           - dashboard-page: div container
+           - welcome-message: h1 element showing "Welcome, {{ fullname }}"
+           - enrolled-courses: div showing list of enrolled courses with titles and progress %
+           - browse-courses-button: button to navigate to course catalog
+           - my-courses-button: button to navigate to my courses
+         - Context Variables:
+           - username (str)
+           - fullname (str)
+           - enrolled_courses (list of dict: {course_id (str), title (str), progress (int)})
+         - Navigation:
+           - browse-courses-button -> url_for('catalog')
+           - my-courses-button -> url_for('my_courses')
+         
+         ---
+         
+         ### 2. templates/course_catalog.html
+         - Page Title: Available Courses
+         - Element IDs:
+           - catalog-page: div container
+           - search-input: input for searching courses
+           - course-grid: div containing course cards
+           - view-course-button-{{ course.course_id }}: button to view course details
+           - back-to-dashboard: button to navigate back to dashboard
+         - Context Variables:
+           - courses (list of dict as defined above)
+         - Navigation:
+           - view-course-button-{course_id} -> url_for('course_details', course_id=course.course_id)
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ### 3. templates/course_details.html
+         - Page Title: Course Details
+         - Element IDs:
+           - course-details-page: div container
+           - course-title: h1 displaying course.title
+           - course-description: div displaying course.description
+           - enroll-button: button to enroll or disabled with "Already Enrolled"
+           - back-to-catalog: button to navigate back to course catalog
+         - Context Variables:
+           - course (dict)
+           - enrolled (bool)
+         - Navigation:
+           - enroll-button (POST form submit to current route)
+           - back-to-catalog -> url_for('catalog')
+         - Button State:
+           - enroll-button disabled and text "Already Enrolled" if enrolled == True
+         
+         ---
+         
+         ### 4. templates/my_courses.html
+         - Page Title: My Courses
+         - Element IDs:
+           - my-courses-page: div container
+           - courses-list: div containing list of enrolled courses
+           - continue-learning-button-{{ course.course_id }}: button to continue learning course
+           - back-to-dashboard: button to navigate to dashboard
+         - Context Variables:
+           - enrolled_courses (list of dict)
+         - Navigation:
+           - continue-learning-button-{course_id} -> url_for('course_learning', course_id=course.course_id)
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ### 5. templates/course_learning.html
+         - Page Title: Course Learning
+         - Element IDs:
+           - learning-page: div container
+           - lessons-list: div listing all lessons titles
+           - lesson-content: div showing current lesson content
+           - mark-complete-button: button to mark lesson complete
+           - back-to-my-courses: button to go back to my courses
+         - Context Variables:
+           - course (dict)
+           - lessons (list of dict {lesson_id, title, content})
+           - current_lesson (dict)
+           - progress (int)
+           - can_mark_complete (bool)
+         - Navigation:
+           - mark-complete-button (POST form submit to current route)
+           - back-to-my-courses -> url_for('my_courses')
+         
+         ---
+         
+         ### 6. templates/my_assignments.html
+         - Page Title: My Assignments
+         - Element IDs:
+           - assignments-page: div container
+           - assignments-table: table showing all assignments
+           - submit-assignment-button-{{ assignment.assignment_id }}: button to submit assignment
+           - back-to-dashboard: button to go back to dashboard
+         - Context Variables:
+           - assignments (list of dict with status 5Submitted6 or 5Pending6)
+         - Navigation:
+           - submit-assignment-button-{assignment_id} -> url_for('submit_assignment', assignment_id=assignment.assignment_id)
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ### 7. templates/submit_assignment.html
+         - Page Title: Submit Assignment
+         - Element IDs:
+           - submit-page: div container
+           - assignment-info: div showing assignment title and description
+           - submission-text: textarea for input
+           - submit-button: button to submit assignment
+           - back-to-assignments: button to go back to assignments
+         - Context Variables:
+           - assignment (dict: assignment_id, title, description)
+           - submission_status (str: None, "Submitted", or "Late")
+         - Navigation:
+           - submit-button (POST form submit to current route)
+           - back-to-assignments -> url_for('assignments')
+         
+         ---
+         
+         ### 8. templates/certificates.html
+         - Page Title: My Certificates
+         - Element IDs:
+           - certificates-page: div container
+           - certificates-grid: div showing certificate cards
+           - back-to-dashboard: button to go back to dashboard
+         - Context Variables:
+           - certificates (list of dict: certificate_id, course_title, issue_date)
+         - Navigation:
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ### 9. templates/profile.html
+         - Page Title: My Profile
+         - Element IDs:
+           - profile-page: div container
+           - profile-email: input for email
+           - profile-fullname: input for fullname
+           - update-profile-button: button to save changes
+           - back-to-dashboard: button to go back to dashboard
+         - Context Variables:
+           - username (str)
+           - email (str)
+           - fullname (str)
+         - Navigation:
+           - update-profile-button (POST form submit to current route)
+           - back-to-dashboard -> url_for('dashboard')
+         
+         ---
+         
+         ## Section 3: Data File Schemas (For Backend Developer)
+         
+         ### 1. data/users.txt
+         - Fields: username|email|fullname
+         - Description:
+           - username: unique user identifier (str)
+           - email: user email address (str)
+           - fullname: user full display name (str)
+         - Examples:
+           ```
+           john|john@student.com|John Student
+           alice|alice@instructor.com|Alice Professor
+           jane|jane@student.com|Jane Learner
+           ```
+         
+         ---
+         
+         ### 2. data/courses.txt
+         - Fields: course_id|title|description|category|level|duration|status
+         - Description:
+           - course_id: unique course identifier (str)
+           - title: course title (str)
+           - description: full course description (str)
+           - category: course category like Programming, Web, Data (str)
+           - level: difficulty level (Beginner, Intermediate, Advanced) (str)
+           - duration: textual duration (e.g., "40 hours") (str)
+           - status: course availability status (e.g., Active) (str)
+         - Examples:
+           ```
+           1|Python Programming|Learn Python from scratch|Programming|Beginner|40 hours|Active
+           2|Web Development|Build modern websites|Web|Intermediate|60 hours|Active
+           3|Data Science|Introduction to data analysis|Data|Advanced|80 hours|Active
+           ```
+         
+         ---
+         
+         ### 3. data/enrollments.txt
+         - Fields: enrollment_id|username|course_id|enrollment_date|progress|status
+         - Description:
+           - enrollment_id: unique enrollment identifier (str)
+           - username: user who enrolled (str)
+           - course_id: id of enrolled course (str)
+           - enrollment_date: date string in YYYY-MM-DD (str)
+           - progress: integer 0-100 (percentage completed) (int)
+           - status: enrollment status ("In Progress", "Completed") (str)
+         - Examples:
+           ```
+           1|john|1|2024-11-01|75|In Progress
+           2|jane|1|2024-10-15|100|Completed
+           3|john|2|2024-11-10|25|In Progress
+           ```
+         
+         ---
+         
+         ### 4. data/assignments.txt
+         - Fields: assignment_id|course_id|title|description|due_date|max_points
+         - Description:
+           - assignment_id: unique assignment identifier (str)
+           - course_id: course id this assignment belongs to (str)
+           - title: assignment title (str)
+           - description: full description (str)
+           - due_date: due date in YYYY-MM-DD format (str)
+           - max_points: maximum points achievable (int)
+         - Examples:
+           ```
+           1|1|Python Basics Quiz|Complete the quiz on variables and data types|2024-12-01|100
+           2|1|Final Project|Build a calculator application|2024-12-15|200
+           ```
+         
+         ---
+         
+         ### 5. data/submissions.txt
+         - Fields: submission_id|assignment_id|username|submission_text|submit_date|grade|feedback
+         - Description:
+           - submission_id: unique submission id (str)
+           - assignment_id: linked assignment id (str)
+           - username: user submitting (str)
+           - submission_text: text response (str)
+           - submit_date: date of submission YYYY-MM-DD (str)
+           - grade: numeric score or empty if not graded (str)
+           - feedback: text feedback or empty if not graded (str)
+         - Examples:
+           ```
+           1|1|john|My answers are...|2024-11-25|85|Good work!
+           2|2|jane|Here is my project...|2024-11-20|95|Excellent!
+           ```
+         
+         ---
+         
+         ### 6. data/certificates.txt
+         - Fields: certificate_id|username|course_id|issue_date
+         - Description:
+           - certificate_id: unique certificate id (str)
+           - username: user who earned certificate (str)
+           - course_id: course for which certificate issued (str)
+           - issue_date: date issued YYYY-MM-DD (str)
+         - Examples:
+           ```
+           1|jane|1|2024-11-22
+           ```
+         
+         ---
+         
+
+      📝 After (full content):
+         Application
+         
+         
+         
+         Routes Specification Backend
+         
+         Path | HTTP Method | File
+         |------------|---------------|-------------|---------------|------------------|
+         / | None |
+         /dashboard | | username {course_id (str), title (str), progress (int)})
+         /catalog catalog | {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}) |
+         /catalog/course/<course_id> course_details POST | course {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), enrolled
+         my_courses my_courses.html {course_id (str), title (str), progress (int)}) |
+         /my-courses/<course_id> | course_learning GET, course (dict: {course_id (str), title (str), description (str), category (str), level (str), duration (str), status (str)}), (list of {lesson_id (str), title (str), content (str)}), {lesson_id (str), title (str), content (str)}), progress (int), |
+         | assignments GET my_assignments.html | (list dict: {assignment_id (str), course_id (str), title (str), description (str), due_date (str), max_points (int), status (str: Submitted or Pending)})
+         /assignments/submit/<assignment_id> | | GET, assignment {assignment_id (str), title (str), description (str)}), (str: None Submitted |
+         certificates GET | {certificate_id (str), course_title (str), issue_date (str)})
+         | user_profile | POST | (str), email (str)
+         
+         
+         Root route '/dashboard'.
+         POST on /catalog/course/<course_id> handles if not
+         - complete, generates in 100%.
+         POST on /assignments/submit/<assignment_id> handles
+         POST on the in
+         
+         ---
+         
+         HTML Specifications (For Frontend Developer)
+         
+         ### 1. templates/dashboard.html
+         Dashboard and <h1>)
+         IDs:
+         - dashboard-page:
+         welcome-message: element showing {{ fullname }}"
+         enrolled-courses: of courses progress
+         - button course catalog
+         to to
+         -
+         username
+         
+         (list of {course_id (str), title (str), progress (int)})
+         Navigation:
+         browse-courses-button ->
+         ->
+         
+         
+         
+         ###
+         - Courses
+         Element
+         - div container
+         search-input: input for
+         - course-grid: div cards
+         view-course-button-{{ course.course_id }}: to view details
+         back-to-dashboard: button back dashboard
+         - Variables:
+         (list as
+         -
+         -> course_id=course.course_id)
+         
+         
+         ---
+         
+         ###
+         Title:
+         
+         -
+         course-title: h1 course.title
+         - course.description
+         - button enroll disabled with "Already
+         - button to back to catalog
+         - Variables:
+         -
+         -
+         Navigation:
+         - submit current
+         ->
+         State:
+         enroll-button disabled and Enrolled" ==
+         
+         
+         
+         4.
+         - Page Courses
+         -
+         container
+         enrolled
+         button to continue learning
+         - back-to-dashboard: to navigate to
+         Context
+         enrolled_courses of
+         Navigation:
+         - ->
+         - back-to-dashboard
+         
+         ---
+         
+         5. templates/course_learning.html
+         Course
+         - Element
+         - div
+         -
+         lesson-content: div showing content
+         complete
+         - go to
+         Context Variables:
+         course
+         - dict {lesson_id, title, content})
+         current_lesson
+         (int)
+         can_mark_complete
+         
+         route)
+         -> url_for('my_courses')
+         
+         
+         
+         ### 6. templates/my_assignments.html
+         Page Title: Assignments
+         IDs:
+         - assignments-page:
+         - showing all
+         button to submit
+         to go back dashboard
+         Context
+         dict 5Submitted6 or 5Pending6)
+         - Navigation:
+         -> url_for('submit_assignment', assignment_id=assignment.assignment_id)
+         back-to-dashboard url_for('dashboard')
+         
+         ---
+         
+         templates/submit_assignment.html
+         - Page Title: Submit
+         IDs:
+         - div
+         - assignment-info: div assignment title and
+         -
+         submit-button: button to
+         to back
+         Context
+         assignment (dict: assignment_id, title,
+         - (str: "Late")
+         Navigation:
+         (POST route)
+         -> url_for('assignments')
+         
+         
+         
+         ### 8. templates/certificates.html
+         Page Title:
+         
+         certificates-page: div
+         div certificate cards
+         - back-to-dashboard: button to dashboard
+         Context Variables:
+         certificates (list
+         
+         - back-to-dashboard
+         
+         ---
+         
+         ### templates/profile.html
+         - Page Profile
+         -
+         profile-page:
+         - input email
+         profile-fullname: fullname
+         changes
+         to go
+         -
+         (str)
+         email
+         -
+         - Navigation:
+         current
+         
+         
+         
+         
+         ## Section 3: Backend Developer)
+         
+         
+         
+         -
+         
+         
+         - fullname: user
+         
+         
+         
+         
+         Learner
+         
+         
+         ---
+         
+         ### data/courses.txt
+         -
+         -
+         unique course
+         course (str)
+         description: description
+         course category like Data (str)
+         level: difficulty (Beginner,
+         duration (str)
+         course (e.g.,
+         -
+         ```
+         Programming|Learn from
+         2|Web websites|Web|Intermediate|60
+         analysis|Data|Advanced|80
+         
+         
+         
+         
+         data/enrollments.txt
+         -
+         - Description:
+         - enrollment_id: enrollment identifier (str)
+         enrolled
+         of enrolled
+         string
+         - integer 0-100 (percentage (int)
+         Progress", "Completed") (str)
+         -
+         
+         1|john|1|2024-11-01|75|In Progress
+         2|jane|1|2024-10-15|100|Completed
+         
+         
+         
+         
+         
+         
+         assignment_id|course_id|title|description|due_date|max_points
+         Description:
+         
+         assignment belongs (str)
+         - title: title
+         full (str)
+         due in format (str)
+         
+         Examples:
+         
+         1|1|Python Basics Quiz|Complete the quiz types|2024-12-01|100
+         a application|2024-12-15|200
+         ```
+         
+         ---
+         
+         ###
+         - submission_id|assignment_id|username|submission_text|submit_date|grade|feedback
+         Description:
+         unique (str)
+         id (str)
+         username: user (str)
+         response
+         of
+         grade: empty graded
+         - feedback: or graded
+         Examples:
+         ```
+         1|1|john|My
+         2|2|jane|Here my project...|2024-11-20|95|Excellent!
+         
+         
+         
+         
+         data/certificates.txt
+         - Fields: certificate_id|username|course_id|issue_date
+         Description:
+         certificate_id: id
+         username: user earned (str)
+         for (str)
+         YYYY-MM-DD (str)
+         Examples:
+         ```
+         
+         
+         
+         
+         
+
+  [2] Agent: BackendDeveloper
+      Type: IO_CHAOS_WORD_DELETION
+      Details: WordDeletion: 699/1165 words deleted (60%)
+
+      📄 Before (full content):
+         from flask import Flask, render_template, request, redirect, url_for, abort
+         import os
+         from datetime import datetime
+         
+         app = Flask(__name__)
+         
+         DATA_DIR = 'data'
+         
+         # Helper functions for reading and writing data files
+         
+         def read_pipe_delimited_file(filename):
+             filepath = os.path.join(DATA_DIR, filename)
+             data = []
+             if not os.path.exists(filepath):
+                 return data
+             with open(filepath, 'r', encoding='utf-8') as f:
+                 for line in f:
+                     line = line.strip()
+                     if line:
+                         data.append(line.split('|'))
+             return data
+         
+         
+         def write_pipe_delimited_file(filename, rows):
+             filepath = os.path.join(DATA_DIR, filename)
+             with open(filepath, 'w', encoding='utf-8') as f:
+                 for row in rows:
+                     f.write('|'.join(str(item) for item in row) + '\n')
+         
+         
+         # Load users
+         # users.txt: user_id|username|fullname|email
+         # Not specified in design, but from context user data read for fullname and email update
+         
+         def load_users():
+             rows = read_pipe_delimited_file('users.txt')
+             users = {}
+             for row in rows:
+                 if len(row) >= 4:
+                     user_id, username, fullname, email = row[:4]
+                     users[username] = {
+                         'user_id': user_id,
+                         'username': username,
+                         'fullname': fullname,
+                         'email': email
+                     }
+             return users
+         
+         
+         def save_users(users):
+             rows = []
+             for u in users.values():
+                 rows.append([u['user_id'], u['username'], u['fullname'], u['email']])
+             write_pipe_delimited_file('users.txt', rows)
+         
+         
+         # Load courses
+         # courses.txt: course_id|title|description|category|level|duration|status
+         
+         def load_courses():
+             rows = read_pipe_delimited_file('courses.txt')
+             courses = {}
+             for row in rows:
+                 if len(row) >= 7:
+                     course_id, title, description, category, level, duration, status = row[:7]
+                     courses[course_id] = {
+                         'course_id': course_id,
+                         'title': title,
+                         'description': description,
+                         'category': category,
+                         'level': level,
+                         'duration': duration,
+                         'status': status
+                     }
+             return courses
+         
+         
+         # Load enrollments
+         # enrollments.txt: enrollment_id|username|course_id|enroll_date|progress|status
+         
+         def load_enrollments():
+             rows = read_pipe_delimited_file('enrollments.txt')
+             enrollments = []
+             for row in rows:
+                 if len(row) >= 6:
+                     enrollment_id, username, course_id, enroll_date, progress, status = row[:6]
+                     enrollments.append({
+                         'enrollment_id': enrollment_id,
+                         'username': username,
+                         'course_id': course_id,
+                         'enroll_date': enroll_date,
+                         'progress': int(progress),
+                         'status': status
+                     })
+             return enrollments
+         
+         
+         def save_enrollments(enrollments):
+             rows = []
+             for e in enrollments:
+                 rows.append([
+                     e['enrollment_id'],
+                     e['username'],
+                     e['course_id'],
+                     e['enroll_date'],
+                     str(e['progress']),
+                     e['status']
+                 ])
+             write_pipe_delimited_file('enrollments.txt', rows)
+         
+         
+         # Load assignments
+         # assignments.txt: assignment_id|course_id|title|description|due_date|max_points
+         
+         def load_assignments():
+             rows = read_pipe_delimited_file('assignments.txt')
+             assignments = []
+             for row in rows:
+                 if len(row) >= 6:
+                     assignment_id, course_id, title, description, due_date, max_points = row[:6]
+                     assignments.append({
+                         'assignment_id': assignment_id,
+                         'course_id': course_id,
+                         'title': title,
+                         'description': description,
+                         'due_date': due_date,
+                         'max_points': int(max_points)
+                     })
+             return assignments
+         
+         
+         # Load submissions
+         # submissions.txt: submission_id|assignment_id|username|submission_text|submit_date|grade|feedback
+         
+         def load_submissions():
+             rows = read_pipe_delimited_file('submissions.txt')
+             submissions = []
+             for row in rows:
+                 if len(row) >= 7:
+                     submission_id, assignment_id, username, submission_text, submit_date, grade, feedback = row[:7]
+                     submissions.append({
+                         'submission_id': submission_id,
+                         'assignment_id': assignment_id,
+                         'username': username,
+                         'submission_text': submission_text,
+                         'submit_date': submit_date,
+                         'grade': grade if grade else None,
+                         'feedback': feedback if feedback else None
+                     })
+             return submissions
+         
+         
+         def save_submissions(submissions):
+             rows = []
+             for s in submissions:
+                 rows.append([
+                     s['submission_id'],
+                     s['assignment_id'],
+                     s['username'],
+                     s['submission_text'],
+                     s['submit_date'],
+                     s['grade'] if s['grade'] is not None else '',
+                     s['feedback'] if s['feedback'] is not None else ''
+                 ])
+             write_pipe_delimited_file('submissions.txt', rows)
+         
+         
+         # Load certificates
+         # certificates.txt: certificate_id|username|course_id|issue_date
+         
+         def load_certificates():
+             rows = read_pipe_delimited_file('certificates.txt')
+             certificates = []
+             for row in rows:
+                 if len(row) >= 4:
+                     certificate_id, username, course_id, issue_date = row[:4]
+                     certificates.append({
+                         'certificate_id': certificate_id,
+                         'username': username,
+                         'course_id': course_id,
+                         'issue_date': issue_date
+                     })
+             return certificates
+         
+         
+         def save_certificates(certificates):
+             rows = []
+             for c in certificates:
+                 rows.append([
+                     c['certificate_id'],
+                     c['username'],
+                     c['course_id'],
+                     c['issue_date']
+                 ])
+             write_pipe_delimited_file('certificates.txt', rows)
+         
+         
+         # Helper functions
+         
+         def generate_new_enrollment_id(enrollments):
+             max_id = 0
+             for e in enrollments:
+                 try:
+                     eid = int(e['enrollment_id'])
+                 except:
+                     eid = 0
+                 if eid > max_id:
+                     max_id = eid
+             return str(max_id + 1)
+         
+         
+         def generate_new_submission_id(submissions):
+             max_id = 0
+             for s in submissions:
+                 try:
+                     sid = int(s['submission_id'])
+                 except:
+                     sid = 0
+                 if sid > max_id:
+                     max_id = sid
+             return str(max_id + 1)
+         
+         
+         def generate_new_certificate_id(certificates):
+             max_id = 0
+             for c in certificates:
+                 try:
+                     cid = int(c['certificate_id'])
+                 except:
+                     cid = 0
+                 if cid > max_id:
+                     max_id = cid
+             return str(max_id + 1)
+         
+         
+         def get_enrollment(username, course_id, enrollments):
+             for e in enrollments:
+                 if e['username'] == username and e['course_id'] == course_id:
+                     return e
+             return None
+         
+         
+         # The app routes
+         
+         @app.route('/')
+         def root():
+             # Redirect to dashboard
+             return redirect(url_for('dashboard'))
+         
+         
+         # Dummy session management replacement
+         # For demo, we assume a fixed logged in username
+         LOGGED_IN_USERNAME = 'john'
+         
+         
+         @app.route('/dashboard')
+         def dashboard():
+             username = LOGGED_IN_USERNAME
+             users = load_users()
+             user = users.get(username)
+             if not user:
+                 abort(404)
+             fullname = user.get('fullname', username)
+         
+             enrollments = load_enrollments()
+             courses = load_courses()
+             # Get enrolled courses for user with progress
+             enrolled_courses = []
+             for e in enrollments:
+                 if e['username'] == username:
+                     course_id = e['course_id']
+                     if course_id in courses:
+                         enrolled_courses.append({
+                             'course_id': course_id,
+                             'title': courses[course_id]['title'],
+                             'progress': e['progress']
+                         })
+         
+             return render_template('dashboard.html', fullname=fullname, enrolled_courses=enrolled_courses, username=username)
+         
+         
+         @app.route('/catalog')
+         def catalog():
+             courses = load_courses()
+             course_list = list(courses.values())
+             return render_template('catalog.html', courses=course_list)
+         
+         
+         @app.route('/catalog/course/<course_id>', methods=['GET', 'POST'])
+         def course_details(course_id):
+             username = LOGGED_IN_USERNAME
+             users = load_users()
+             user = users.get(username)
+             if not user:
+                 abort(404)
+         
+             courses = load_courses()
+             course = courses.get(course_id)
+             if not course:
+                 abort(404)
+         
+             enrollments = load_enrollments()
+             enrollment = get_enrollment(username, course_id, enrollments)
+             enrolled = enrollment is not None
+         
+             if request.method == 'POST':
+                 if not enrolled:
+                     # Enroll new user
+                     new_id = generate_new_enrollment_id(enrollments)
+                     enroll_date = datetime.now().strftime('%Y-%m-%d')
+                     enrollments.append({
+                         'enrollment_id': new_id,
+                         'username': username,
+                         'course_id': course_id,
+                         'enroll_date': enroll_date,
+                         'progress': 0,
+                         'status': 'In Progress'
+                     })
+                     save_enrollments(enrollments)
+                     enrolled = True
+                 else:
+                     # If enrolled and progress < 100%, setting progress to 100% triggers certificate
+                     if enrollment['progress'] < 100:
+                         enrollment['progress'] = 100
+                         enrollment['status'] = 'Completed'
+         
+                         # Save enrollment update
+                         save_enrollments(enrollments)
+         
+                         # Check if certificate exists
+                         certificates = load_certificates()
+                         cert_exists = any(c['username'] == username and c['course_id'] == course_id for c in certificates)
+                         if not cert_exists:
+                             cert_id = generate_new_certificate_id(certificates)
+                             issue_date = datetime.now().strftime('%Y-%m-%d')
+                             certificates.append({
+                                 'certificate_id': cert_id,
+                                 'username': username,
+                                 'course_id': course_id,
+                                 'issue_date': issue_date
+                             })
+                             save_certificates(certificates)
+         
+             return render_template('course_details.html', course=course, enrolled=enrolled)
+         
+         
+         @app.route('/my-courses')
+         def my_courses():
+             username = LOGGED_IN_USERNAME
+             enrollments = load_enrollments()
+             courses = load_courses()
+         
+             # List only enrolled courses
+             enrolled_courses = []
+             for e in enrollments:
+                 if e['username'] == username:
+                     cid = e['course_id']
+                     c = courses.get(cid)
+                     if c:
+                         enrolled_courses.append({
+                             'course_id': cid,
+                             'title': c['title'],
+                             'progress': e['progress']
+                         })
+         
+             return render_template('my_courses.html', enrolled_courses=enrolled_courses)
+         
+         
+         @app.route('/my-courses/<course_id>')
+         def course_learning(course_id):
+             username = LOGGED_IN_USERNAME
+             enrollments = load_enrollments()
+             enrollment = get_enrollment(username, course_id, enrollments)
+             if not enrollment:
+                 abort(404)
+         
+             courses = load_courses()
+             course = courses.get(course_id)
+             if not course:
+                 abort(404)
+         
+             # Load lessons for course
+             # Lessons/lessons are not explicitly defined in the design or data files.
+             # For demonstration create dummy lessons (3 lessons as example)
+             lessons = [
+                 {'lesson_id': '1', 'title': 'Introduction', 'content': 'Introduction content.'},
+                 {'lesson_id': '2', 'title': 'Intermediate Topic', 'content': 'Intermediate content.'},
+                 {'lesson_id': '3', 'title': 'Advanced Topic', 'content': 'Advanced content.'}
+             ]
+         
+             # We simulate progress as percentage correspond to lessons completed
+             # For example each lesson completion 33% or 34%
+             total_lessons = len(lessons)
+             progress = enrollment['progress']
+             completed_lessons_count = (progress * total_lessons) // 100
+         
+             # Current lesson is next incomplete
+             current_lesson_index = completed_lessons_count if completed_lessons_count < total_lessons else total_lessons - 1
+             current_lesson = lessons[current_lesson_index]
+         
+             return render_template('course_learning.html', course=course, lessons=lessons, current_lesson=current_lesson, progress=progress)
+         
+         
+         @app.route('/assignments')
+         def assignments():
+             username = LOGGED_IN_USERNAME
+             assignments_all = load_assignments()
+             submissions = load_submissions()
+         
+             # Filter assignments for courses enrolled by user
+             enrollments = load_enrollments()
+             enrolled_course_ids = set(e['course_id'] for e in enrollments if e['username'] == username)
+         
+             user_assignments = []
+             for a in assignments_all:
+                 if a['course_id'] in enrolled_course_ids:
+                     # Get submission status
+                     submission = next((s for s in submissions if s['assignment_id'] == a['assignment_id'] and s['username'] == username), None)
+                     status = 'Pending'
+                     if submission:
+                         status = 'Submitted'
+                     user_assignments.append({
+                         'assignment_id': a['assignment_id'],
+                         'course_id': a['course_id'],
+                         'title': a['title'],
+                         'description': a['description'],
+                         'due_date': a['due_date'],
+                         'max_points': a['max_points'],
+                         'status': status
+                     })
+         
+             return render_template('my_assignments.html', assignments=user_assignments)
+         
+         
+         @app.route('/assignments/submit/<assignment_id>', methods=['GET', 'POST'])
+         def submit_assignment(assignment_id):
+             username = LOGGED_IN_USERNAME
+             assignments = load_assignments()
+             assignment = next((a for a in assignments if a['assignment_id'] == assignment_id), None)
+             if not assignment:
+                 abort(404)
+         
+             submissions = load_submissions()
+             submission = next((s for s in submissions if s['assignment_id'] == assignment_id and s['username'] == username), None)
+         
+             if request.method == 'POST':
+                 submission_text = request.form.get('submission_text', '').strip()
+                 if not submission_text:
+                     # Missing submission text, re-render with error
+                     error = 'Submission text is required.'
+                     return render_template('submit_assignment.html', assignment=assignment, submission_text=submission_text, error=error)
+         
+                 submit_date = datetime.now().strftime('%Y-%m-%d')
+         
+                 if submission:
+                     # Update existing submission
+                     submission['submission_text'] = submission_text
+                     submission['submit_date'] = submit_date
+                     submission['grade'] = None
+                     submission['feedback'] = None
+                 else:
+                     # Add new submission
+                     new_id = generate_new_submission_id(submissions)
+                     new_submission = {
+                         'submission_id': new_id,
+                         'assignment_id': assignment_id,
+                         'username': username,
+                         'submission_text': submission_text,
+                         'submit_date': submit_date,
+                         'grade': None,
+                         'feedback': None
+                     }
+                     submissions.append(new_submission)
+         
+                 save_submissions(submissions)
+                 return redirect(url_for('assignments'))
+         
+             # GET
+             submission_text = submission['submission_text'] if submission else None
+             return render_template('submit_assignment.html', assignment=assignment, submission_text=submission_text)
+         
+         
+         @app.route('/certificates')
+         def certificates():
+             username = LOGGED_IN_USERNAME
+             certificates_list = load_certificates()
+             courses = load_courses()
+         
+             user_certificates = []
+             for c in certificates_list:
+                 if c['username'] == username:
+                     course_title = courses.get(c['course_id'], {}).get('title', 'Unknown Course')
+                     user_certificates.append({
+                         'certificate_id': c['certificate_id'],
+                         'course_title': course_title,
+                         'issue_date': c['issue_date']
+                     })
+         
+             return render_template('certificates.html', certificates=user_certificates)
+         
+         
+         @app.route('/user_profile', methods=['GET', 'POST'])
+         def user_profile():
+             username = LOGGED_IN_USERNAME
+             users = load_users()
+             user = users.get(username)
+             if not user:
+                 abort(404)
+         
+             if request.method == 'POST':
+                 # Update email
+                 new_email = request.form.get('email', '').strip()
+                 if new_email:
+                     user['email'] = new_email
+                     save_users(users)
+         
+             return render_template('profile.html', fullname=user.get('fullname', username), email=user.get('email', ''))
+         
+         
+         if __name__ == '__main__':
+             app.run(debug=True, port=5000)
+         
+
+      📝 After (full content):
+         from render_template, abort
+         import os
+         from datetime
+         
+         
+         
+         
+         
+         # functions files
+         
+         read_pipe_delimited_file(filename):
+         filepath = os.path.join(DATA_DIR,
+         data =
+         if
+         return
+         with f:
+         line
+         line
+         line:
+         
+         
+         
+         
+         def rows):
+         filepath
+         as
+         row in rows:
+         f.write('|'.join(str(item) item in row)
+         
+         
+         users
+         
+         # Not but context read fullname email update
+         
+         def load_users():
+         
+         users =
+         for row
+         if len(row) 4:
+         username,
+         = {
+                         'user_id': user_id,
+                         'username': username,
+                         'fullname': fullname,
+                         'email': email
+                     }
+         users
+         
+         
+         def
+         []
+         u
+         rows.append([u['user_id'], u['fullname'],
+         write_pipe_delimited_file('users.txt',
+         
+         
+         Load courses
+         # course_id|title|description|category|level|duration|status
+         
+         load_courses():
+         rows =
+         = {}
+         for rows:
+         if len(row) >=
+         title, category, level, status
+         {
+                         'course_id': course_id,
+                         'title': title,
+                         'description': description,
+                         'category': category,
+                         'level': level,
+                         'duration': duration,
+                         'status': status
+                     }
+         return
+         
+         
+         #
+         enrollment_id|username|course_id|enroll_date|progress|status
+         
+         def
+         rows
+         = []
+         row
+         >=
+         enroll_date, status row[:6]
+         
+         
+         
+         
+         def
+         rows []
+         for
+         
+         e['enrollment_id'],
+         e['username'],
+         
+         
+         
+         
+         
+         write_pipe_delimited_file('enrollments.txt',
+         
+         
+         #
+         
+         
+         
+         
+         assignments =
+         for
+         >=
+         assignment_id, description, due_date, max_points =
+         
+         assignments
+         
+         
+         
+         submissions.txt:
+         
+         def load_submissions():
+         rows =
+         submissions
+         for row
+         if len(row)
+         submission_id, username, submit_date, grade, feedback =
+         
+         
+         
+         
+         def save_submissions(submissions):
+         rows []
+         for s in submissions:
+         
+         
+         
+         
+         s['submission_text'],
+         
+         s['grade'] is
+         not None
+         
+         
+         
+         
+         Load certificates
+         #
+         
+         def load_certificates():
+         =
+         = []
+         row in rows:
+         len(row)
+         course_id,
+         certificates.append({
+                         'certificate_id': certificate_id,
+                         'username': username,
+                         'course_id': course_id,
+                         'issue_date': issue_date
+                     })
+         
+         
+         
+         save_certificates(certificates):
+         =
+         in
+         
+         
+         c['username'],
+         
+         c['issue_date']
+         ])
+         
+         
+         
+         
+         
+         
+         =
+         e
+         
+         eid =
+         except:
+         =
+         max_id:
+         
+         return str(max_id
+         
+         
+         def generate_new_submission_id(submissions):
+         max_id = 0
+         submissions:
+         
+         int(s['submission_id'])
+         
+         
+         sid max_id:
+         
+         str(max_id
+         
+         
+         def
+         = 0
+         for c
+         
+         cid
+         except:
+         0
+         
+         max_id cid
+         +
+         
+         
+         enrollments):
+         for
+         if e['username'] == == course_id:
+         
+         return None
+         
+         
+         # routes
+         
+         @app.route('/')
+         
+         # Redirect dashboard
+         
+         
+         
+         # Dummy session management
+         we assume username
+         
+         
+         
+         @app.route('/dashboard')
+         
+         
+         
+         users.get(username)
+         if
+         
+         fullname =
+         
+         
+         courses load_courses()
+         enrolled for user
+         =
+         in
+         e['username'] username:
+         = e['course_id']
+         
+         
+         
+         username=username)
+         
+         
+         
+         def catalog():
+         
+         course_list
+         
+         
+         
+         methods=['GET', 'POST'])
+         def course_details(course_id):
+         LOGGED_IN_USERNAME
+         
+         users.get(username)
+         user:
+         abort(404)
+         
+         =
+         courses.get(course_id)
+         not course:
+         abort(404)
+         
+         enrollments = load_enrollments()
+         = get_enrollment(username, enrollments)
+         enrolled not
+         
+         ==
+         enrolled:
+         user
+         new_id generate_new_enrollment_id(enrollments)
+         
+         enrollments.append({
+                         'enrollment_id': new_id,
+                         'username': username,
+                         'course_id': course_id,
+                         'enroll_date': enroll_date,
+                         'progress': 0,
+                         'status': 'In Progress'
+                     })
+         save_enrollments(enrollments)
+         
+         
+         # and 100%, setting 100% certificate
+         enrollment['progress']
+         
+         enrollment['status'] =
+         
+         # Save update
+         
+         
+         Check certificate exists
+         certificates =
+         cert_exists = username and c['course_id'] course_id in
+         if not cert_exists:
+         cert_id = generate_new_certificate_id(certificates)
+         =
+         
+         save_certificates(certificates)
+         
+         course=course, enrolled=enrolled)
+         
+         
+         
+         def
+         username =
+         =
+         courses
+         
+         # List only enrolled courses
+         =
+         in
+         if
+         
+         c = courses.get(cid)
+         if
+         enrolled_courses.append({
+                             'course_id': cid,
+                             'title': c['title'],
+                             'progress': e['progress']
+                         })
+         
+         render_template('my_courses.html',
+         
+         
+         @app.route('/my-courses/<course_id>')
+         
+         username =
+         enrollments = load_enrollments()
+         enrollment
+         not
+         abort(404)
+         
+         
+         courses.get(course_id)
+         if
+         abort(404)
+         
+         for
+         are explicitly the design or
+         For demonstration create dummy (3 as
+         lessons [
+         {'lesson_id': '1', 'title': 'Introduction', 'content': 'Introduction content.'},
+         {'lesson_id': '2', 'title': 'Intermediate Topic', 'content': 'Intermediate content.'},
+         {'lesson_id': '3', 'title': 'Advanced Topic', 'content': 'Advanced content.'}
+         
+         
+         # simulate lessons
+         # each or 34%
+         
+         enrollment['progress']
+         * //
+         
+         lesson is next incomplete
+         current_lesson_index completed_lessons_count if completed_lessons_count else total_lessons -
+         current_lesson lessons[current_lesson_index]
+         
+         render_template('course_learning.html', course=course, progress=progress)
+         
+         
+         
+         def assignments():
+         
+         
+         = load_submissions()
+         
+         by
+         = load_enrollments()
+         set(e['course_id'] username)
+         
+         
+         for assignments_all:
+         if enrolled_course_ids:
+         submission status
+         = next((s for in if == a['assignment_id'] username),
+         
+         
+         status
+         
+         
+         return render_template('my_assignments.html',
+         
+         
+         
+         
+         
+         = load_assignments()
+         for None)
+         not
+         abort(404)
+         
+         =
+         submission = s if s['assignment_id'] assignment_id == username),
+         
+         if request.method
+         submission_text
+         if
+         # re-render
+         text required.'
+         submission_text=submission_text, error=error)
+         
+         
+         
+         
+         
+         submission_text
+         = submit_date
+         
+         
+         
+         Add new submission
+         new_id
+         new_submission {
+                         'submission_id': new_id,
+                         'assignment_id': assignment_id,
+                         'username': username,
+                         'submission_text': submission_text,
+                         'submit_date': submit_date,
+                         'grade': None,
+                         'feedback': None
+                     }
+         submissions.append(new_submission)
+         
+         save_submissions(submissions)
+         return
+         
+         GET
+         = submission['submission_text'] if None
+         render_template('submit_assignment.html', assignment=assignment,
+         
+         
+         
+         
+         = LOGGED_IN_USERNAME
+         
+         = load_courses()
+         
+         =
+         
+         if ==
+         course_title = courses.get(c['course_id'],
+         user_certificates.append({
+                         'certificate_id': c['certificate_id'],
+                         'course_title': course_title,
+                         'issue_date': c['issue_date']
+                     })
+         
+         render_template('certificates.html', certificates=user_certificates)
+         
+         
+         
+         def user_profile():
+         username =
+         
+         = users.get(username)
+         if not
+         
+         
+         request.method ==
+         
+         new_email '').strip()
+         new_email:
+         
+         
+         
+         email=user.get('email',
+         
+         
+         
+         app.run(debug=True,
+         
+
+================================================================================
+

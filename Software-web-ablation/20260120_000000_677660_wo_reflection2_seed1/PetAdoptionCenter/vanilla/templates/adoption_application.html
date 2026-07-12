@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Adoption Application</title>
+</head>
+<body>
+    <div id="application-page">
+        <h1>Adoption Application</h1>
+        <form method="post" action="">
+            <label for="applicant-name">Name:</label><br>
+            <input id="applicant-name" name="applicant_name" type="text" required value="{{ request.form.applicant_name if request.method == 'POST' else '' }}">
+            {% if application_errors and application_errors.get('applicant_name') %}
+            <div class="error">{{ application_errors['applicant_name'] }}</div>
+            {% endif %}
+            <br>
+            <label for="applicant-phone">Phone:</label><br>
+            <input id="applicant-phone" name="phone" type="text" required value="{{ request.form.phone if request.method == 'POST' else '' }}">
+            {% if application_errors and application_errors.get('phone') %}
+            <div class="error">{{ application_errors['phone'] }}</div>
+            {% endif %}
+            <br>
+            <label for="housing-type">Housing Type:</label><br>
+            <select id="housing-type" name="housing_type" required>
+                <option value="">Select Housing Type</option>
+                <option value="House" {% if request.form.get('housing_type') == 'House' %}selected{% endif %}>House</option>
+                <option value="Apartment" {% if request.form.get('housing_type') == 'Apartment' %}selected{% endif %}>Apartment</option>
+                <option value="Condo" {% if request.form.get('housing_type') == 'Condo' %}selected{% endif %}>Condo</option>
+                <option value="Other" {% if request.form.get('housing_type') == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+            {% if application_errors and application_errors.get('housing_type') %}
+            <div class="error">{{ application_errors['housing_type'] }}</div>
+            {% endif %}
+            <br>
+            <label for="reason">Reason for Adoption:</label><br>
+            <textarea id="reason" name="reason" required>{{ request.form.reason if request.method == 'POST' else '' }}</textarea>
+            {% if application_errors and application_errors.get('reason') %}
+            <div class="error">{{ application_errors['reason'] }}</div>
+            {% endif %}
+            <br>
+            <button id="submit-application-button" type="submit">Submit Application</button>
+        </form>
+        <button id="back-to-pet" onclick="location.href='{{ url_for('pet_details', pet_id=pet.pet_id) }}'">Back to Pet</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audio Guides</title>
+</head>
+<body>
+    <div id="audio-guides-page">
+        <h1 id="audio-guides-page">Audio Guides</h1>
+        <form method="post" action="{{ url_for('audio_guides_view') }}">
+            <select id="filter-language" name="filter_language">
+                <option value="">-- Select Language --</option>
+                <option value="English" {% if filter_language == 'English' %}selected{% endif %}>English</option>
+                <option value="Spanish" {% if filter_language == 'Spanish' %}selected{% endif %}>Spanish</option>
+                <option value="French" {% if filter_language == 'French' %}selected{% endif %}>French</option>
+            </select>
+            <button id="apply-language-filter" type="submit">Apply Filter</button>
+        </form>
+        <table id="audio-guide-list" border="1">
+            <thead>
+                <tr>
+                    <th>exhibit number</th>
+                    <th>title</th>
+                    <th>language</th>
+                    <th>duration</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set display_guides = filtered_guides if filtered_guides is defined and filtered_guides is not none else audioguides %}
+                {% for guide in display_guides %}
+                <tr>
+                    <td>{{ guide.exhibit_number }}</td>
+                    <td>{{ guide.title }}</td>
+                    <td>{{ guide.language }}</td>
+                    <td>{{ guide.duration }}</td>
+                    <td><button id="play-guide-button-{{ guide.guide_id }}">Play</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_view') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

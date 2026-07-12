@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Genre Exploration</title>
+</head>
+<body>
+  <div id="genres-page">
+    <h1>Genre Exploration</h1>
+    <div id="genres-list">
+      <ul>
+        {% for genre in genres %}
+        <li>{{ genre.genre_name }} - {{ genre.description }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <select id="select-genre" name="select_genre" onchange="location.href='?selected_genre_id=' + this.value;">
+      <option value="" {% if not selected_genre_id %}selected{% endif %}>Select Genre</option>
+      {% for genre in genres %}
+      <option value="{{ genre.genre_id }}" {% if selected_genre_id == genre.genre_id %}selected{% endif %}>{{ genre.genre_name }}</option>
+      {% endfor %}
+    </select>
+    <div id="genre-songs">
+      {% if genre_songs %}
+      <ul>
+        {% for song in genre_songs %}
+        <li>{{ song.title }} by {{ song.artist_name }} ({{ song.duration }} sec)</li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No songs available for this genre.</p>
+      {% endif %}
+    </div>
+    <div id="genre-artists">
+      {% if genre_artists %}
+      <ul>
+        {% for artist in genre_artists %}
+        <li>{{ artist.name }}</li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No artists available for this genre.</p>
+      {% endif %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+  </div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+Functional Testing Feedback for Content Publishing Hub
+
+- /dashboard page correctly contains div with id "dashboard-page" and h1 with id "dashboard-title".
+- Recent articles section is present with id "recent-articles".
+
+- /article/create page renders form with id "create-article-form" but form's action URL in template is incorrectly set to "/article/new" instead of "/article/create" required by backend route. This mismatch will cause form POSTs to fail.
+
+- Creating article via POST without title or content responds with an error message as expected.
+
+- Creating article via POST with valid title and content redirects to article view page correctly showing the new article.
+
+- Edit article page (/article/<article_id>/edit) loads correctly with "edit-article-title" and "edit-article-form".
+- However, the edit article form lacks a required input named "summary". Since backend POST handler requires both "content" and "summary", this causes any edit submissions to fail validation.
+
+- Versions page (/article/<article_id>/versions) renders with container "versions-page" and shows version entries.
+- The restore version forms post to a route "/article/<article_id>/versions/restore" which is not defined in backend, so restoring versions fails.
+
+- Version approval POST route exists (
+/article/<article_id>/versions/<version_id>/approve) but no corresponding approval UI form or buttons are found in the versions template to invoke it, making approval not possible from the UI.
+
+- Analytics page template uses variable "analytics_data" but backend passes "analytics", causing analytics data not to render.
+
+- Articles pages have filtering UI elements, but no backend implementation supports filtering or sorting, making these UI controls non-functional.
+
+- Calendar page renders with id "calendar" as expected.
+
+Summary:
+Core content management functionalities including create, edit, version restore, version approval, and analytics have critical issues mainly due to frontend/backend mismatches and missing backend features.
+
+Suggestions:
+1. Correct create article form action URL to "/article/create".
+2. Add "summary" input to edit article form.
+3. Implement backend route for version restore and fix form action accordingly.
+4. Add UI approval controls and ensure they post to the approval route correctly.
+5. Make variable names consistent between analytics template and backend.
+6. Add backend filtering and sorting logic for articles listing.
+
+Status: NEED_MODIFY

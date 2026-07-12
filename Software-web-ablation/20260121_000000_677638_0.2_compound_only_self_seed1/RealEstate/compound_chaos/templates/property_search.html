@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Search</title>
+</head>
+<body>
+    <div id="search-page">
+        <h1>Property Search</h1>
+        <label for="location-input">Location/City:</label>
+        <input type="text" id="location-input" name="location">
+
+        <label for="price-range-min">Min Price:</label>
+        <input type="number" id="price-range-min" name="price_min" min="0">
+
+        <label for="price-range-max">Max Price:</label>
+        <input type="number" id="price-range-max" name="price_max" min="0">
+
+        <label for="property-type-filter">Property Type:</label>
+        <select id="property-type-filter" name="property_type">
+            <option value="">--All Types--</option>
+            <option value="House">House</option>
+            <option value="Apartment">Apartment</option>
+            <option value="Condo">Condo</option>
+            <option value="Land">Land</option>
+        </select>
+
+        <div id="properties-grid">
+            {% for property in properties %}
+            <div class="property-card">
+                <img src="{{ property.image_url }}" alt="Image of {{ property.address }}">
+                <h3>{{ property.address }}</h3>
+                <p>Location: {{ property.location }}</p>
+                <p>Price: ${{ "{:,}"|format(property.price) }}</p>
+                <p>Type: {{ property.property_type }}</p>
+                <p>Bedrooms: {{ property.bedrooms }}</p>
+                <p>Bathrooms: {{ property.bathrooms }}</p>
+                <p>Square Feet: {{ property.square_feet }}</p>
+                <button id="view-property-button-{{ property.property_id }}" onclick="window.location.href='{{ url_for('property_details', property_id=property.property_id) }}'">View Details</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

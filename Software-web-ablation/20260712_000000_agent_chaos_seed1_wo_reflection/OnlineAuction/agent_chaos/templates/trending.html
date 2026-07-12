@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Auctions</title>
+</head>
+<body>
+    <div id="trending-page">
+        <h1>Trending Auctions</h1>
+        <form method="POST" action="{{ url_for('trending_filter') }}">
+            <label for="time-range-filter">Select Time Range:</label>
+            <select id="time-range-filter" name="selected_time_range">
+                <option value="This Week" {% if selected_time_range == 'This Week' %}selected{% endif %}>This Week</option>
+                <option value="This Month" {% if selected_time_range == 'This Month' %}selected{% endif %}>This Month</option>
+                <option value="This Year" {% if selected_time_range == 'This Year' %}selected{% endif %}>This Year</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="trending-list">
+            {% for auction in trending_auctions %}
+            <div class="trending-auction-item">
+                <div>Rank: {{ auction.trending_rank }}</div>
+                <h2>{{ auction.item_name }}</h2>
+                <div>Bids: {{ auction.bid_count }}</div>
+                <div>Current Bid: ${{ '%.2f'|format(auction.current_bid) }}</div>
+                <div>Time Period: {{ auction.time_period }}</div>
+                <a href="{{ url_for('auction_details', auction_id=auction.auction_id) }}">
+                    <button id="view-auction-button-{{ auction.auction_id }}">View Details</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard_page') }}"><button id="back-to-dashboard">Back to Dashboard</button></a>
+    </div>
+</body>
+</html>

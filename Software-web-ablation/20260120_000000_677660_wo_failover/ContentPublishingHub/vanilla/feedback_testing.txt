@@ -1,0 +1,31 @@
+Functional Testing Report for ContentPublishingHub
+
+Summary:
+All attempts to access key application routes starting from /dashboard with a valid logged-in session resulted in 404 Not Found responses. This prevents functional testing of workflows such as article creation, editing, version history, approval, publishing, scheduling, and analytics.
+
+Details:
+1. /dashboard page - returns 404, so presence of navigation elements and user greeting could not be validated.
+2. Article creation (/article/create) - GET and POST return 404, unable to test form validation or submission workflow.
+3. Article editing (/article/<article_id>/edit), version history, and analytics pages - all return 404.
+4. Content calendar (/calendar) GET and POST return 404.
+5. /articles/mine and /articles/published listing pages return 404.
+6. /logout also returns 404.
+
+Template Observations (source code analysis):
+- Templates are well-structured with appropriate IDs hinting at planned comprehensive UI features.
+- However, some template/backend mismatches exist:
+  * content_calendar.html uses input name="schedule_date" while backend expects "publication_date".
+  * content_calendar.html uses article.id in template, but backend articles dict keys are article_id.
+  * article_analytics.html expects analytics.demographics and analytics.traffic_sources fields, which are not provided by backend analytics.
+  * article_analytics.html references analytics.avg_time_on_page ID but backend provides average_time_seconds key.
+
+Recommendations:
+- Investigate and correct why app routes return 404 in testing environment (possibly missing app context or route registration).
+- Align input field names and article property keys between templates and backend.
+- Extend backend analytics data or template logic to handle optional demographics and traffic sources.
+- Ensure all navigation links dynamically use valid article IDs.
+
+Status: NEED_MODIFY
+
+Tester: Software Test Engineer
+Date: 2024-06

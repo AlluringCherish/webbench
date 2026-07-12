@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Seats</title>
+</head>
+<body>
+    <div id="seat-selection-page">
+        <h1>Select Seats</h1>
+
+        <div id="seat-map">
+            <form id="seat-selection-form" method="POST" action="{{ url_for('confirm_booking', showtime_id=showtime.showtime_id) }}">
+                {% for seat in seats %}
+                <button type="button"
+                        id="seat-{{ seat.row }}{{ seat.column }}"
+                        class="seat-button {% if seat.status != 'Available' %}unavailable{% endif %}"
+                        {% if seat.status == 'Booked' %} disabled {% endif %}
+                        data-seat="{{ seat.row }}{{ seat.column }}"
+                        onclick="toggleSeatSelection(this)">
+                    {{ seat.row }}{{ seat.column }}
+                </button>
+                {% endfor %}
+
+                <div id="selected-seats-display">Selected Seats: <span id="selected-seats-list">None</span></div>
+
+                <input type="hidden" id="selected-seats" name="selected_seats" value="">
+
+                <button type="submit" id="proceed-booking-button">Proceed to Booking</button>
+            </form>
+        </div>
+
+        <script>
+            const selectedSeatsInput = document.getElementById('selected-seats');
+            const selectedSeatsList = document.getElementById('selected-seats-list');
+            const seatButtons = document.querySelectorAll('.seat-button');
+            let selectedSeats = [];
+
+            function toggleSeatSelection(button) {
+                if (button.disabled) return;
+                const seat = button.getAttribute('data-seat');
+                const index = selectedSeats.indexOf(seat);
+                if (index === -1) {
+                    selectedSeats.push(seat);
+                    button.style.backgroundColor = '#8fbc8f';
+                } else {
+                    selectedSeats.splice(index, 1);
+                    button.style.backgroundColor = '';
+                }
+                selectedSeatsInput.value = selectedSeats.join(',');
+                selectedSeatsList.textContent = selectedSeats.length ? selectedSeats.join(', ') : 'None';
+            }
+        </script>
+    </div>
+</body>
+</html>

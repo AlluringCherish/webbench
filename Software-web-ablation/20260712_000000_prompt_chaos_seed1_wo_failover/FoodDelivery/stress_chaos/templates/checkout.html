@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Checkout</title>
+</head>
+<body>
+    <div id="checkout-page">
+        <h1>Checkout</h1>
+
+        {% if errors %}
+            <div id="checkout-errors" aria-live="polite" style="color: red;">
+                <ul>
+                    {% for field, message in errors.items() %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('place_order') }}">
+            <label for="customer-name">Customer Name:</label>
+            <input type="text" id="customer-name" name="customer_name" value="{{ previous_input.customer_name if previous_input else '' }}" required />
+
+            <label for="delivery-address">Delivery Address:</label>
+            <textarea id="delivery-address" name="delivery_address" required>{{ previous_input.delivery_address if previous_input else '' }}</textarea>
+
+            <label for="phone-number">Phone Number:</label>
+            <input id="phone-number" name="phone_number" type="tel" value="{{ previous_input.phone_number if previous_input else '' }}" required />
+
+            <label for="payment-method">Payment Method:</label>
+            <select id="payment-method" name="payment_method" required>
+                <option value="credit_card" {% if previous_input.payment_method == 'credit_card' %}selected{% endif %}>Credit Card</option>
+                <option value="paypal" {% if previous_input.payment_method == 'paypal' %}selected{% endif %}>PayPal</option>
+                <option value="cash" {% if previous_input.payment_method == 'cash' %}selected{% endif %}>Cash</option>
+            </select>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}" />
+
+            <button id="place-order-button" type="submit">Place Order</button>
+        </form>
+    </div>
+</body>
+</html>

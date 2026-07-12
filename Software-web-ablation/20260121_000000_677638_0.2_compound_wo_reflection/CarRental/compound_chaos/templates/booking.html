@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Your Rental</title>
+</head>
+<body>
+    <div id="booking-page">
+        <h1>Book Your Rental</h1>
+        <form method="post" action="{{ url_for('booking_page', vehicle_id=vehicle.vehicle_id) }}">
+            <label for="pickup-location">Pickup Location:</label>
+            <select id="pickup-location" name="pickup_location" required>
+                {% for loc in locations %}
+                <option value="{{ loc }}" {% if rental_data.pickup_location == loc %}selected{% endif %}>{{ loc }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="dropoff-location">Dropoff Location:</label>
+            <select id="dropoff-location" name="dropoff_location" required>
+                {% for loc in locations %}
+                <option value="{{ loc }}" {% if rental_data.dropoff_location == loc %}selected{% endif %}>{{ loc }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="pickup-date">Pickup Date:</label>
+            <input type="date" id="pickup-date" name="pickup_date" value="{{ rental_data.pickup_date }}" required>
+
+            <label for="dropoff-date">Dropoff Date:</label>
+            <input type="date" id="dropoff-date" name="dropoff_date" value="{{ rental_data.dropoff_date }}" required>
+
+            <button type="submit" id="calculate-price-button">Calculate Price</button>
+        </form>
+
+        {% if total_price is not none %}
+        <div id="total-price">
+            <h2>Total Price: ${{ "%.2f"|format(total_price) }}</h2>
+            <form method="post" action="{{ url_for('insurance_options', reservation_id=rental_data.reservation_id if rental_data.reservation_id is defined else 0) }}">
+                <button type="submit" id="proceed-to-insurance-button">Proceed to Insurance Options</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

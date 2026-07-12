@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Resumes</title>
+</head>
+<body>
+    <div id="resume-page">
+        <h1>My Resumes</h1>
+        <form id="upload-resume-form" method="post" action="{{ url_for('upload_resume') }}" enctype="multipart/form-data">
+            <input id="resume-file-input" name="resume_file" type="file" style="display:none;" onchange="document.getElementById('upload-resume-form').submit();">
+            <button id="upload-resume-button" type="button" onclick="document.getElementById('resume-file-input').click();">Upload Resume</button>
+        </form>
+        <div id="resumes-list">
+            {% for resume in resumes %}
+            <div class="resume-entry">
+                <div><strong>{{ resume.applicant_name }}</strong> ({{ resume.applicant_email }})</div>
+                <div>Filename: {{ resume.filename }}</div>
+                <div>Uploaded: {{ resume.upload_date }}</div>
+                <div>Summary: {{ resume.summary }}</div>
+                <form method="post" action="{{ url_for('delete_resume', resume_id=resume.resume_id) }}" style="display:inline;">
+                    <button id="delete-resume-button-{{ resume.resume_id }}" type="submit">Delete Resume</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        <a href="{{ url_for('dashboard_page') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

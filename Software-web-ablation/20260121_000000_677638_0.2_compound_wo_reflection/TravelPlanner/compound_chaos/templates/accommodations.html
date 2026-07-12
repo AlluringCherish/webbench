@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Accommodations</title>
+</head>
+<body>
+    <div id="accommodations-page">
+        <h1>Search Accommodations</h1>
+
+        <form method="POST">
+            <label for="destination-input">Destination City:</label>
+            <input id="destination-input" name="search_destination" type="text" value="{{ search_destination }}"/>
+
+            <label for="check-in-date">Check-in Date:</label>
+            <input id="check-in-date" name="check_in_date" type="date" value="{{ check_in_date }}"/>
+
+            <label for="check-out-date">Check-out Date:</label>
+            <input id="check-out-date" name="check_out_date" type="date" value="{{ check_out_date }}"/>
+
+            <label for="price-filter">Price Range:</label>
+            <select id="price-filter" name="selected_price_filter">
+                <option value="Budget" {% if selected_price_filter == 'Budget' %}selected{% endif %}>Budget</option>
+                <option value="Mid-range" {% if selected_price_filter == 'Mid-range' %}selected{% endif %}>Mid-range</option>
+                <option value="Luxury" {% if selected_price_filter == 'Luxury' %}selected{% endif %}>Luxury</option>
+            </select>
+
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="hotels-list">
+            {% for hotel in hotels %}
+            <div class="hotel-item">
+                <h3>{{ hotel.name }} ({{ hotel.category }})</h3>
+                <p>City: {{ hotel.city }}</p>
+                <p>Rating: {{ hotel.rating }}</p>
+                <p>Price per night: ${{ "%.2f"|format(hotel.price_per_night) }}</p>
+                <p>Amenities: {{ hotel.amenities }}</p>
+            </div>
+            {% else %}
+            <p>No hotels found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visitor Tickets</title>
+</head>
+<body>
+    <div id="visitor-tickets-page">
+        <h1>Visitor Tickets</h1>
+        {% if purchase_success %}
+            <p>Purchase successful!</p>
+        {% endif %}
+        {% if purchase_errors %}
+            <ul>
+            {% for error in purchase_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        <form method="POST" action="">
+            <label for="ticket-type">Ticket Type:</label>
+            <select id="ticket-type" name="ticket_type" required>
+                <option value="Standard">Standard</option>
+                <option value="Student">Student</option>
+                <option value="Senior">Senior</option>
+                <option value="Family">Family</option>
+                <option value="VIP">VIP</option>
+            </select>
+            <label for="number-of-tickets">Number of Tickets:</label>
+            <input id="number-of-tickets" name="number_of_tickets" type="number" min="1" required>
+            <button id="purchase-ticket-button" type="submit">Purchase</button>
+        </form>
+        <table id="my-tickets-table" border="1">
+            <thead>
+                <tr>
+                    <th>Ticket ID</th>
+                    <th>Type</th>
+                    <th>Visit Date</th>
+                    <th>Number of Tickets</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                <tr>
+                    <td>{{ ticket.ticket_id }}</td>
+                    <td>{{ ticket.ticket_type }}</td>
+                    <td>{{ ticket.visit_date }}</td>
+                    <td>{{ ticket.number_of_tickets }}</td>
+                    <td>{{ "%.2f"|format(ticket.price) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

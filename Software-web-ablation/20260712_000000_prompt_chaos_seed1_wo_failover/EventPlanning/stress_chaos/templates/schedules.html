@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<div id="main-container-id">
+    <h1>{{ page_title }}</h1>
+    <nav id="schedules-nav">
+        <button id="back-to-dashboard-button" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </nav>
+    <div id="schedule-filter">
+        <form method="GET" action="{{ url_for('schedules') }}">
+            <label for="schedule-filter-event">Event:</label>
+            <select id="schedule-filter-event" name="event_id">
+                <option value="">All Events</option>
+                {% for event in events %}
+                <option value="{{ event.event_id }}" {% if event.event_id|string == request.args.get('event_id') %}selected{% endif %}>{{ event.event_name }}</option>
+                {% endfor %}
+            </select>
+            <label for="schedule-filter-date">Date:</label>
+            <input type="date" id="schedule-filter-date" name="date" value="{{ request.args.get('date', '') }}">
+            <button type="submit" id="filter-schedules-button">Filter</button>
+        </form>
+    </div>
+    <table id="schedules-table">
+        <thead>
+            <tr>
+                <th>Schedule ID</th>
+                <th>Event</th>
+                <th>Session Title</th>
+                <th>Session Time</th>
+                <th>Duration (min)</th>
+                <th>Speaker</th>
+                <th>Venue</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for schedule in schedules %}
+            <tr id="schedule-row-{{ schedule.schedule_id }}">
+                <td>{{ schedule.schedule_id }}</td>
+                <td>{{ schedule.event_name }}</td>
+                <td>{{ schedule.session_title }}</td>
+                <td>{{ schedule.session_time }}</td>
+                <td>{{ schedule.duration_minutes }}</td>
+                <td>{{ schedule.speaker }}</td>
+                <td><button id="view-venue-details-{{ schedule.venue_id }}" onclick="location.href='{{ url_for('venue_details', venue_id=schedule.venue_id) }}'">View Venue</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

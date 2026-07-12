@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Resumes</title>
+    <script>
+        function triggerUpload() {
+            document.getElementById('resume-file-input').click();
+        }
+        function submitDelete(formId) {
+            document.getElementById(formId).submit();
+        }
+    </script>
+</head>
+<body>
+    <div id="resume-page">
+        <h1>My Resumes</h1>
+
+        <button id="upload-resume-button" type="button" onclick="triggerUpload()">Upload New Resume</button>
+
+        <form id="upload-resume-form" method="POST" action="{{ url_for('upload_resume') }}" enctype="multipart/form-data" style="display:none;">
+            <input type="file" id="resume-file-input" name="resume_file" accept=".pdf,.doc,.docx" onchange="this.form.submit()" />
+        </form>
+
+        <div id="resumes-list">
+            {% for resume in resumes %}
+            <div class="resume-entry">
+                <div><strong>{{ resume.applicant_name }}</strong> ({{ resume.applicant_email }})</div>
+                <div>File: {{ resume.filename }}</div>
+                <div>Uploaded: {{ resume.upload_date }}</div>
+                <div>Summary: {{ resume.summary }}</div>
+                <form id="delete-resume-form-{{ resume.resume_id }}" method="POST" action="/resume/{{ resume.resume_id }}/delete" style="display:inline;">
+                    <button type="button" id="delete-resume-button-{{ resume.resume_id }}" onclick="submitDelete('delete-resume-form-{{ resume.resume_id }}')">Delete</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('dashboard_page') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

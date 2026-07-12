@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+</head>
+<body>
+  <div id="admin-panel-page">
+    <h1>Admin Panel</h1>
+    <div id="pending-applications">
+      <h2>Pending Applications</h2>
+      {% if pending_applications %}
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Application ID</th>
+            <th>Applicant Name</th>
+            <th>Pet Name</th>
+            <th>Date Submitted</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in pending_applications %}
+          <tr>
+            <td>{{ app.application_id }}</td>
+            <td>{{ app.applicant_name }}</td>
+            <td>{{ app.pet_name }}</td>
+            <td>{{ app.date_submitted }}</td>
+            <td>
+              <form method="post" action="{{ url_for('approve_application', application_id=app.application_id) }}" style="display:inline;">
+                <button type="submit">Approve</button>
+              </form>
+              <form method="post" action="{{ url_for('reject_application', application_id=app.application_id) }}" style="display:inline;">
+                <button type="submit">Reject</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No pending applications.</p>
+      {% endif %}
+    </div>
+    <div id="all-pets-list">
+      <h2>All Pets</h2>
+      {% if all_pets %}
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Pet ID</th>
+            <th>Name</th>
+            <th>Species</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pet in all_pets %}
+          <tr>
+            <td>{{ pet.pet_id }}</td>
+            <td>{{ pet.name }}</td>
+            <td>{{ pet.species }}</td>
+            <td>{{ pet.status }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No pets found.</p>
+      {% endif %}
+    </div>
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+  </div>
+</body>
+</html>

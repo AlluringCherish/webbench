@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seat Selection</title>
+</head>
+<body>
+    <h1 id="seat-selection-title">Select Your Seats</h1>
+    <div id="seats-container">
+        {% for seat in seats %}
+        <div id="seat-{{ seat.seat_id }}" class="seat {{ seat.status }}">
+            <input type="checkbox" id="seat-checkbox-{{ seat.seat_id }}" name="selected_seats" value="{{ seat.seat_id }}" {% if seat.status != 'available' %}disabled{% endif %}>
+            <label for="seat-checkbox-{{ seat.seat_id }}">Row {{ seat.row }} Seat {{ seat.column }}</label>
+        </div>
+        {% endfor %}
+    </div>
+    <button id="proceed-booking-button" onclick="document.getElementById('booking-form').submit();">Proceed Booking</button>
+    <form id="booking-form" method="POST" action="{{ url_for('confirm_booking', showtime_id=showtime_id) }}">
+        <input type="hidden" id="selected_seats" name="selected_seats" value="">
+    </form>
+    <button id="back-to-showtime-selection" onclick="location.href='{{ url_for('showtime_selection', release_date=release_date) }}'">Back to Showtime Selection</button>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="schedules-overview">
+        <h1>{{ page_title }}</h1>
+        <form method="GET" action="{{ url_for('schedules') }}">
+            <input type="date" id="schedule-date-filter" name="schedule_date" value="{{ request.args.get('schedule_date', '') }}" />
+            <select id="schedule-event-filter" name="schedule_event_filter">
+                <option value="">All Events</option>
+                {% for event in events %}
+                    <option value="{{ event.event_id }}" {% if request.args.get('schedule_event_filter') == event.event_id|string %}selected{% endif %}>{{ event.event_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" id="refresh-schedules-button">Refresh</button>
+        </form>
+        {% if schedules %}
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Session Name</th>
+                        <th>Start</th>
+                        <th>Duration (min)</th>
+                        <th>Speaker</th>
+                        <th>Room</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for schedule in schedules %}
+                    <tr>
+                        <td>{{ schedule.session_name }}</td>
+                        <td>{{ schedule.start_datetime }}</td>
+                        <td>{{ schedule.duration_minutes }}</td>
+                        <td>{{ schedule.speaker_name }}</td>
+                        <td>{{ schedule.session_room }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No schedules found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

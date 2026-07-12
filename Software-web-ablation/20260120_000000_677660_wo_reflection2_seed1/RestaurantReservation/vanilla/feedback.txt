@@ -1,0 +1,97 @@
+NEED_MODIFY
+Integration Testing Report for RestaurantReservation Application
+
+Summary:
+The RestaurantReservation web app provides comprehensive functionality across user dashboard, menu browsing, dish details, reservation management, waitlist, reviews, and user profile management. The integration between backend data storage and frontend rendering is largely functional; however, several issues and enhancements have been identified that prevent full approval.
+
+Detailed Findings:
+
+1. Dashboard Page (/dashboard)
+- Page successfully renders welcome message with the current username.
+- Featured dishes section correctly displays the top 3 dishes sorted by average rating, with properly formatted price and description.
+- Upcoming reservations for the current user appear with accurate details (date, time, party size, status).
+- All navigation buttons are identifiable by expected IDs and route correctly.
+- No functional or UI issues detected.
+
+2. Menu Page (/menu)
+- Displays all dishes with complete information fields including name, category, price, description, ingredients, dietary notes, and average rating.
+- Each dish card includes a "View Details" button with an ID properly suffixed by dish ID.
+- The back to dashboard button exists and functions properly.
+- No issues found.
+
+3. Dish Detail Page (/dish/<dish_id>)
+- Correctly presents all dish details including formatted price and average rating.
+- A back to menu button is present with correct ID and routing.
+- Navigating with an invalid dish_id redirects to the menu page as expected.
+- No problems detected.
+
+4. Make Reservation Page (/make_reservation)
+- Form GET request correctly displays fields: guest name, party size dropdown (1 to 10), reservation date (type=date).
+- POST request validates guest name (required), party size (integer 1-10), and reservation date format (YYYY-MM-DD).
+- Displays validation errors properly if inputs are invalid.
+- On successful submission, creates a new reservation with a default time of '19:00', sets status to 'Upcoming', and populates user phone and email from profile.
+- Redirects to dashboard upon success.
+- Includes a back button to the dashboard.
+- Issues:
+  - No validation to prevent selecting a reservation date in the past.
+  - Guest name is accepted without input sanitization; this may pose injection risks.
+  
+5. My Reservations Page (/my_reservations)
+- Lists all reservations belonging to the current user with expected fields.
+- "Cancel" button appears only for reservations with status "Upcoming"; inactive or cancelled reservations disable this action.
+- Form submission cancels reservation by updating status to "Cancelled" and provides JSON success or error accordingly.
+- Redirect or error handling messages for unauthorized cancellation attempts are apparent.
+- Back to dashboard button available.
+- UX Issue:
+  - Cancel button remains enabled after submission; ideally should be disabled or replaced by status update for better user feedback.
+
+6. Waitlist Page (/waitlist)
+- Presents form for joining waitlist with party size (1 to 10).
+- Displays user's current waitlist position if actively waiting.
+- Prevents duplicate active waitlist entries with a message.
+- Adds new active waitlist entry on valid submission with current timestamp.
+- Shows error messages on invalid input.
+- Back button to dashboard provided.
+- Missing:
+  - No option available for user to leave or remove themselves from waitlist.
+
+7. My Reviews Page (/my_reviews)
+- Lists user reviews with dish name, rating, and review text.
+- Proper message shown if there are no reviews.
+- Buttons for writing new review and back to dashboard exist.
+- No functionality for editing or deleting reviews.
+
+8. Write Review Page (/write_review)
+- GET request shows dropdown for dish selection, rating (1-5), and text area for review text.
+- Validates dish selection (integer, required), rating within 1 to 5, and that review text is non-empty.
+- Displays errors if validation fails.
+- Saves new review with current date and redirects back to My Reviews on success.
+- Back button to review listing present.
+
+9. Profile Page (/profile)
+- Displays current username and editable email field.
+- Validates that email is non-empty on submission.
+- Updates user's email in users.txt and reloads profile.
+- Displays confirmation message on success.
+- Back button to dashboard present.
+- Issues:
+  - No validation to ensure email format correctness.
+  - Fields like phone and full name cannot be edited.
+
+General Observations:
+- All backend file read/write operations are silent on exceptions; potential for unnoticed failures.
+- Some endpoint behaviors use redirects while others return JSON; consider consistent standards.
+- UI elements are largely consistent with assigned IDs allowing programmatic access.
+- Input fields often lack detailed sanitization and format validation beyond presence and range.
+- No AJAX or client-side validation provided; all validations are server side.
+
+Recommendations to Achieve Full Approval:
+- Add validation in Make Reservation to reject past reservation dates.
+- Implement email format validation on profile update page.
+- Enhance UX on cancel reservation: disable button post-click or update UI inline.
+- Add feature to allow users to leave the waitlist.
+- Sanitize form inputs for text fields to prevent injection or XSS.
+- Add logging or error feedback mechanisms on file read/write failures.
+- Consider unifying response types (JSON vs redirect) for consistency.
+
+Please address these issues and resubmit for final approval.

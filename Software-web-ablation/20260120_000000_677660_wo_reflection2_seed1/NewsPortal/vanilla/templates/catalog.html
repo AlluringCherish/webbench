@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article Catalog</title>
+</head>
+<body>
+    <div id="catalog-page">
+        <h1>Article Catalog</h1>
+
+        <input type="text" id="search-input" name="search_query" value="{{ search_query if search_query else '' }}" placeholder="Search articles..." />
+
+        <select id="category-filter" name="category_filter">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+            <option value="{{ category.category_name }}" {% if selected_category == category.category_name %}selected{% endif %}>{{ category.category_name }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="articles-grid">
+            {% for article in articles %}
+            <div class="article-card">
+                <h2>{{ article.title }}</h2>
+                <div>Author: {{ article.author }}</div>
+                <div>Category: {{ article.category }}</div>
+                <div>Date: {{ article.date }}</div>
+                <p>{{ article.excerpt }}</p>
+                <button id="view-article-button-{{ article.article_id }}" onclick="location.href='{{ url_for('article_details', article_id=article.article_id) }}'">View Article</button>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</body>
+</html>

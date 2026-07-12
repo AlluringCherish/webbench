@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="events-overview">
+        <h1>{{ page_title }}</h1>
+        <form method="GET" action="{{ url_for('events') }}">
+            <input type="text" id="search-location" name="search_location" placeholder="Search by location or date" value="{{ request.args.get('search_location', '') }}" />
+            <select id="category-filter" name="category_filter">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if request.args.get('category_filter') == category.id|string %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <div id="events-grid">
+            {% if events %}
+                <ul>
+                {% for event in events %}
+                    <li>
+                        <strong>{{ event.event_name }}</strong> - {{ event.location }}<br/>
+                        <button id="view-event-button-{{ event.event_id }}" onclick="window.location.href='{{ url_for('event_details', event_id=event.event_id) }}'">View Details</button>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No events found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

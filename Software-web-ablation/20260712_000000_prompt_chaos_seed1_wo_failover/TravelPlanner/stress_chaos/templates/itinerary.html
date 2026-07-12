@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Itinerary</title>
+</head>
+<body>
+    <h1 id="itinerary-title">Itinerary: {{ itinerary.itinerary_name }}</h1>
+    <div id="itinerary-container">
+        <p>Start Date: {{ itinerary.start_date }}</p>
+        <p>End Date: {{ itinerary.end_date }}</p>
+        <p>Duration: {{ itinerary.duration_days }} days</p>
+        <p>Status: {{ itinerary.status }}</p>
+
+        <h2>Flights</h2>
+        <table id="flights-table" border="1">
+            <thead>
+                <tr>
+                    <th>Airline</th>
+                    <th>Departure City</th>
+                    <th>Arrival City</th>
+                    <th>Departure Time</th>
+                    <th>Arrival Time</th>
+                    <th>Class</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for flight in flights %}
+                <tr>
+                    <td>{{ flight.airline }}</td>
+                    <td>{{ flight.departure_city }}</td>
+                    <td>{{ flight.arrival_city }}</td>
+                    <td>{{ flight.departure_time }}</td>
+                    <td>{{ flight.arrival_time }}</td>
+                    <td>{{ flight.class_type }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Hotels</h2>
+        <table id="hotels-table" border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Check-in Date</th>
+                    <th>Check-out Date</th>
+                    <th>Price per Night</th>
+                    <th>Amenities</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hotel in hotels %}
+                <tr>
+                    <td>{{ hotel.name }}</td>
+                    <td>{{ hotel.start_date }}</td>
+                    <td>{{ hotel.end_date }}</td>
+                    <td>{{ hotel.price_per_night }}</td>
+                    <td>{{ hotel.amenities }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Activities</h2>
+        <ul id="activities-list">
+            {% for activity in activities %}
+            <li>{{ activity.name }} - {{ activity.description }} ({{ activity.duration }})</li>
+            {% endfor %}
+        </ul>
+
+        <form method="POST" action="{{ url_for('add_itinerary_activity', itinerary_id=itinerary.itinerary_id) }}">
+            <label for="activity-name-input">Add Activity:</label>
+            <input type="text" name="activity_name" id="activity-name-input" required>
+            <label for="activity-description-input">Description:</label>
+            <input type="text" name="activity_description" id="activity-description-input" required>
+            <label for="activity-duration-input">Duration (hours):</label>
+            <input type="number" name="activity_duration" id="activity-duration-input" min="0" step="0.1" required>
+            <button type="submit">Add Activity</button>
+        </form>
+    </div>
+</body>
+</html>

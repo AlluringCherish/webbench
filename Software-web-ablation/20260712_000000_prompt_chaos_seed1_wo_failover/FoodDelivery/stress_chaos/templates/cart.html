@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Shopping Cart</title>
+</head>
+<body>
+    <div id="cart-page">
+        <h1>Shopping Cart</h1>
+
+        <table id="cart-items-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('update_cart') }}">
+                            <input type="number" id="update-quantity-{{ item.item_id }}" name="quantity_{{ item.cart_id }}" value="{{ item.quantity }}" min="1" required />
+                            <button id="update-quantity-button-{{ item.item_id }}" type="submit" aria-label="Update quantity for {{ item.name }}">Update</button>
+                        </form>
+                    </td>
+                    <td>${{ '%.2f' | format(item.price) }}</td>
+                    <td>${{ '%.2f' | format(item.total_price) }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('remove_cart_item', item_id=item.item_id) }}">
+                            <button id="remove-item-button-{{ item.item_id }}" type="submit" aria-label="Remove {{ item.name }} from cart">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5">Your cart is empty.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div id="total-amount">Total: ${{ '%.2f' | format(total_amount) }}</div>
+
+        <button id="proceed-checkout-button" onclick="location.href='{{ url_for('checkout') }}'" aria-label="Proceed to Checkout">Proceed to Checkout</button>
+    </div>
+</body>
+</html>

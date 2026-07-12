@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <div id="welcome-message">Welcome, {{ user.full_name if user and user.full_name else user.username if user else 'Guest' }}!</div>
+    <button onclick="window.location.href='{{ url_for('make_reservation') }}'">Make Reservation</button>
+    <button onclick="window.location.href='{{ url_for('my_reservations') }}'">My Reservations</button>
+    <button onclick="window.location.href='{{ url_for('waitlist') }}'">Waitlist</button>
+    <button onclick="window.location.href='{{ url_for('profile') }}'">Profile</button>
+
+    <h2>Upcoming Reservations</h2>
+    {% if reservations %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Guest Name</th>
+                <th>Party Size</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in reservations %}
+            <tr>
+                <td>{{ r.reservation_id }}</td>
+                <td>{{ r.guest_name }}</td>
+                <td>{{ r.party_size }}</td>
+                <td>{{ r.date }}</td>
+                <td>{{ r.time }}</td>
+                <td>{{ r.status }}</td>
+                <td>
+                {% if r.status != 'Cancelled' %}
+                <form action="{{ url_for('cancel_reservation', reservation_id=r.reservation_id) }}" method="post">
+                <button type="submit">Cancel</button>
+                </form>
+                {% else %}
+                Cancelled
+                {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No upcoming reservations.</p>
+    {% endif %}
+</body>
+</html>

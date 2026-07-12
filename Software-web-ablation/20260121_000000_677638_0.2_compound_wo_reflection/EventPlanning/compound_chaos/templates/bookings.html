@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <h1>{{ page_title }}</h1>
+    <input type="text" id="booking-search-input" name="booking_search" placeholder="Search bookings" value="{{ request.args.get('booking_search', '') }}" />
+    {% if bookings %}
+    <table id="bookings-table" border="1">
+        <thead>
+            <tr>
+                <th>Participant Name</th>
+                <th>Booking Date</th>
+                <th>Ticket Quantity</th>
+                <th>Ticket Type</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.participant_name }}</td>
+                <td>{{ booking.booking_date }}</td>
+                <td>{{ booking.ticket_quantity }}</td>
+                <td>{{ booking.ticket_type }}</td>
+                <td>${{ booking.total_price }}</td>
+                <td>{{ booking.status }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('bookings') }}" style="display:inline;">
+                        <input type="hidden" name="booking_id" value="{{ booking.booking_id }}" />
+                        <button type="submit" id="cancel-booking-button-{{ booking.booking_id }}">Cancel</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No bookings available.</p>
+    {% endif %}
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</body>
+</html>

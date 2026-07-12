@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Seats for Showtime {{ showtime_id }}</title>
+</head>
+<body>
+    <h1>Select Seats for {{ movie.title }}</h1>
+    <form method="POST" action="{{ url_for('confirm_booking', showtime_id=showtime.showtime_id) }}">
+        <div id="seat-map">
+            {% for seat in seats %}
+                <button type="button" 
+                        class="seat {% if seat.status != 'Available' %}unavailable{% endif %}"
+                        id="seat-{{ seat.row }}{{ seat.column }}"
+                        {% if seat.status != 'Available' %}disabled{% endif %}
+                        data-seat-type="{{ seat.seat_type }}">
+                    {{ seat.row }}{{ seat.column }}
+                </button>
+            {% endfor %}
+        </div>
+
+        <input type="hidden" name="selected_seats" id="selected_seats" value="">
+
+        <button type="submit" id="confirm-booking-button">Confirm Booking</button>
+    </form>
+
+    <button id="back-to-movie-details" onclick="location.href='{{ url_for('movie_details', movie_id=movie.movie_id) }}'">Back to Movie Details</button>
+</body>
+</html>

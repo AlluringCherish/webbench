@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Content Calendar - Content Publishing Hub</title>
+</head>
+<body>
+  <div id="content-calendar-page">
+    <h1>Content Calendar</h1>
+
+    <form method="POST" action="{{ url_for('content_calendar') }}" id="schedule-form">
+      <label for="schedule-article">Article:</label><br>
+      <select name="article_id" id="schedule-article">
+        {% for article in unscheduled_articles %}
+        <option value="{{ article.id }}">{{ article.title }}</option>
+        {% endfor %}
+      </select><br>
+
+      <label for="schedule-date">Schedule Date:</label><br>
+      <input type="date" id="schedule-date" name="scheduled_date"><br>
+
+      {% if validation_errors.schedule_date %}
+      <span id="error-schedule-date" style="color: red;">{{ validation_errors.schedule_date }}</span><br>
+      {% endif %}
+
+      {% if validation_errors.article_id %}
+      <span id="error-article-id" style="color: red;">{{ validation_errors.article_id }}</span><br>
+      {% endif %}
+
+      <button type="submit" id="submit-schedule">Schedule</button>
+      <button type="button" id="cancel-schedule" onclick="window.location.href='{{ url_for('dashboard') }}'">Cancel</button>
+    </form>
+
+    <h2>Scheduled Items</h2>
+    {% if scheduled_items %}
+    <table id="scheduled-items-table" border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Article Title</th>
+          <th>Scheduled Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in scheduled_items %}
+        <tr>
+          <td>{{ item.article_title }}</td>
+          <td>{{ item.schedule_date }}</td>
+          <td>
+            <!-- Delete functionality not implemented in backend -->
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No scheduled items.</p>
+    {% endif %}
+
+    <button type="button" id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+  </div>
+</body>
+</html>

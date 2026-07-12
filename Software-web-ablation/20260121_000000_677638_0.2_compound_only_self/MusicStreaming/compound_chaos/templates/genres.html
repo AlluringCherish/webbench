@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Genre Exploration</title>
+</head>
+<body>
+    <div id="genres-page">
+        <h1>Genre Exploration</h1>
+        <div id="genres-list">
+            <ul>
+                {% for genre in genres %}
+                <li>{{ genre.genre_name }}: {{ genre.description }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <select id="select-genre" name="select-genre" onchange="selectGenre()">
+            <option value="">-- Select Genre --</option>
+            {% for genre in genres %}
+            <option value="{{ genre.genre_name }}" {% if selected_genre == genre.genre_name %}selected{% endif %}>{{ genre.genre_name }}</option>
+            {% endfor %}
+        </select>
+        <div id="genre-songs">
+            <h2>Songs in {{ selected_genre if selected_genre else 'Selected Genre' }}</h2>
+            <ul>
+                {% for song in genre_songs %}
+                <li>{{ song.title }} by {{ song.artist_name }} ({{ (song.duration // 60) }}:{{ '%02d' % (song.duration % 60) }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="genre-artists">
+            <h2>Artists in {{ selected_genre if selected_genre else 'Selected Genre' }}</h2>
+            <ul>
+                {% for artist in genre_artists %}
+                <li>{{ artist.name }} ({{ artist.genre }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+
+    <script>
+        function selectGenre() {
+            var select = document.getElementById('select-genre');
+            var genre = select.options[select.selectedIndex].value;
+            window.location.href = '?genre=' + encodeURIComponent(genre);
+        }
+    </script>
+</body>
+</html>
