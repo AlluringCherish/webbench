@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="checkout-page">
+        <h1 id="page-title">Checkout</h1>
+
+        <table id="checkout-cart-items-table" border="1">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cartitem in cart_items %}
+                <tr id="checkout-cart-item-{{ cartitem.item_id }}">
+                    <td id="checkout-item-name-{{ cartitem.item_id }}">{{ cartitem.name }}</td>
+                    <td id="checkout-item-quantity-{{ cartitem.item_id }}">{{ cartitem.quantity }}</td>
+                    <td id="checkout-item-price-{{ cartitem.item_id }}">{{ cartitem.price }}</td>
+                    <td>{{ '%.2f' | format(cartitem.price * cartitem.quantity) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div id="total-amount">Total: {{ total_amount }}</div>
+
+        {% if form_submit_status is defined and form_submit_status %}
+        <div id="submission-success">Order submitted successfully!</div>
+        {% endif %}
+
+        {% if errors is defined and errors %}
+        <div id="form-errors">
+            <ul>
+                {% for field, error_msg in errors.items() %}
+                <li id="error-{{ field }}">{{ error_msg }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <form id="checkout-form" method="POST" action="{{ url_for('checkout_html') }}">
+            <label for="customer-name">Customer Name:</label>
+            <input type="text" id="customer-name" name="customer_name" value="{{ request.form.customer_name if request.method == 'POST' else '' }}">
+
+            <label for="delivery-address">Delivery Address:</label>
+            <textarea id="delivery-address" name="address">{{ request.form.address if request.method == 'POST' else '' }}</textarea>
+
+            <label for="phone-number">Phone Number:</label>
+            <input type="text" id="phone-number" name="phone" value="{{ request.form.phone if request.method == 'POST' else '' }}">
+
+            <label for="payment-method">Payment Method:</label>
+            <select id="payment-method" name="payment_method">
+                <option value="Credit Card" {% if request.form.payment_method == 'Credit Card' %}selected{% endif %}>Credit Card</option>
+                <option value="Cash" {% if request.form.payment_method == 'Cash' %}selected{% endif %}>Cash</option>
+                <option value="PayPal" {% if request.form.payment_method == 'PayPal' %}selected{% endif %}>PayPal</option>
+            </select>
+
+            <button type="submit" id="place-order-button">Place Order</button>
+        </form>
+
+        <button id="back-to-cart-button" onclick="window.location.href='{{ url_for('shopping_cart') }}'">Back to Cart</button>
+    </div>
+</body>
+</html>

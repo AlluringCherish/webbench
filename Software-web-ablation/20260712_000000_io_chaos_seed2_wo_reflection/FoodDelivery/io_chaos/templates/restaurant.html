@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="restaurants-page">
+        <h1 id="page-title">Restaurants</h1>
+        
+        <form id="search-form" method="POST" action="{{ url_for('browse_restaurants') }}">
+            <input type="text" id="search-input" name="search_query" value="{{ search_query }}" placeholder="Search Restaurants">
+
+            <select id="cuisine-filter" name="cuisine_filter">
+                <option value="">All Cuisines</option>
+                {% for cuisine in ['Italian', 'Chinese', 'Mexican', 'Indian', 'French', 'Japanese', 'American'] %}
+                <option value="{{ cuisine }}" {% if cuisine == cuisine_filter %}selected{% endif %}>{{ cuisine }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" id="search-button">Search</button>
+        </form>
+        
+        <div id="restaurants-grid">
+            {% for restaurant in restaurants %}
+            <div id="restaurant-{{ restaurant.restaurant_id }}">
+                <span id="restaurant-name-{{ restaurant.restaurant_id }}">{{ restaurant.name }}</span>
+                <p>Rating: {{ restaurant.rating }}</p>
+                <p>Delivery Time: {{ restaurant.delivery_time }}</p>
+                <button id="view-restaurant-button-{{ restaurant.restaurant_id }}" onclick="window.location.href='{{ url_for('restaurant_menu', restaurant_id=restaurant.restaurant_id) }}'">View Menu</button>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <button id="back-to-dashboard-button" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="active-orders-page">
+        <h1 id="page-title">Active Orders</h1>
+
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status_filter" onchange="location = this.value;">
+            <option value="{{ url_for('active_order') }}" {% if status_filter == '' %}selected{% endif %}>All</option>
+            <option value="{{ url_for('active_order', status_filter='Preparing') }}" {% if status_filter == 'Preparing' %}selected{% endif %}>Preparing</option>
+            <option value="{{ url_for('active_order', status_filter='On the Way') }}" {% if status_filter == 'On the Way' %}selected{% endif %}>On the Way</option>
+            <option value="{{ url_for('active_order', status_filter='Delivered') }}" {% if status_filter == 'Delivered' %}selected{% endif %}>Delivered</option>
+        </select>
+
+        <div id="orders-list">
+            <ul>
+            {% for order in active_orders %}
+                <li id="order-{{ order.order_id }}">
+                    <span id="order-id-{{ order.order_id }}">Order #{{ order.order_id }}</span>
+                    <span id="order-restaurant-{{ order.order_id }}">Restaurant ID: {{ order.restaurant_id }}</span>
+                    <span id="order-status-{{ order.order_id }}">Status: {{ order.status }}</span>
+                    <a href="{{ url_for('track_orders', order_id=order.order_id) }}">
+                        <button id="track-order-button-{{ order.order_id }}">Track Order</button>
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

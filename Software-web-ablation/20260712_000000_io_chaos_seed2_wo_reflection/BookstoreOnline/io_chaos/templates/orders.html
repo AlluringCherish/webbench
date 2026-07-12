@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order History</title>
+</head>
+<body>
+    <div id="orders_page">
+        <h1>Order History</h1>
+        <form method="POST" action="">
+            <label for="order_status_filter">Filter by Status:</label>
+            <select id="order_status_filter" name="state">
+                <option value="All">All</option>
+                <option value="Pending">Pending</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Delivered">Delivered</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <table id="orders_tbl">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Order Date</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order_id, order in orders.items() %}
+                <tr>
+                    <td>{{ order_id }}</td>
+                    <td>{{ order.customer_name }}</td>
+                    <td>{{ order.order_date }}</td>
+                    <td>${{ order.total_amount }}</td>
+                    <td>{{ order.status }}</td>
+                    <td><button id="view_order_button-{{ order_id }}" onclick="location.href='{{ url_for('order_detail', order_id=order_id) }}'">View Details</button></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6">No orders found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back_to_dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

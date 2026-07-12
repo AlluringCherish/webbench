@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bid History</title>
+</head>
+<body>
+    <div id="bid-history-page">
+        <h1>Bid History</h1>
+        <select id="filter-by-auction">
+            <option value="">All Auctions</option>
+            {% for auction in auctions %}
+                <option value="{{ auction.auction_id }}">{{ auction.item_name }}</option>
+            {% endfor %}
+        </select>
+        <button id="sort-by-amount">Sort by Amount</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        <table id="bids-table" border="1">
+            <thead>
+                <tr>
+                    <th>Bidder Name</th>
+                    <th>Auction</th>
+                    <th>Bid Amount</th>
+                    <th>Bid Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bid in bids %}
+                    <tr>
+                        <td>{{ bid.bidder_name }}</td>
+                        <td>{{ auctions | selectattr('auction_id', 'equalto', bid.auction_id) | map(attribute='item_name') | list | first }}</td>
+                        <td>${{ "%.2f"|format(bid.bid_amount) }}</td>
+                        <td>{{ bid.bid_timestamp }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="4">No bids available.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

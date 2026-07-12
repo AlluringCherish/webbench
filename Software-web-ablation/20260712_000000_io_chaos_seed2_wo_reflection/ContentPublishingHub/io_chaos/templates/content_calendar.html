@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Calendar - ContentPublishingHub</title>
+</head>
+<body>
+<div id="content-calendar-page">
+    <h1>Content Calendar</h1>
+
+    <form id="calendar-view-form" method="get" action="{{ url_for('content_calendar') }}">
+        <label for="view-option">View Option:</label>
+        <select id="view-option" name="view_option">
+            <option value="monthly" {% if view_option == 'monthly' %}selected{% endif %}>Monthly</option>
+            <option value="weekly" {% if view_option == 'weekly' %}selected{% endif %}>Weekly</option>
+            <option value="daily" {% if view_option == 'daily' %}selected{% endif %}>Daily</option>
+        </select>
+
+        <button type="submit" id="btn-change-view">Change View</button>
+    </form>
+
+    <div id="calendar-container">
+        {% if calendar_data %}
+        <table border="1">
+            <thead>
+                <tr>
+                    {% for header in calendar_data.headers %}
+                    <th>{{ header }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in calendar_data.rows %}
+                <tr>
+                    {% for cell in row %}
+                    <td>{{ cell }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No calendar data available.</p>
+        {% endif %}
+    </div>
+
+    <nav id="content-calendar-navigation">
+        <button id="btn-back-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resumes My</title>
+</head>
+<body>
+    <div id="resume">
+        <h1>Resumes My</h1>
+
+        <div id="resumes-list">
+            {% for resume in resumes %}
+            <div class="resume-entry">
+                <div>Name: {{ resume.applicant_name }}</div>
+                <div>Email: {{ resume.applicant_email }}</div>
+                <div>File: {{ resume.filename }}</div>
+                <div>Uploaded: {{ resume.upload_date }}</div>
+                <div>Summary: {{ resume.summary }}</div>
+                <form method="POST" action="/delete_resume/{{ resume.resume_id }}" style="display:inline;">
+                    <button type="submit" id="delete-resume-btn-{{ resume.resume_id }}">Delete Resume</button>
+                </form>
+            </div>
+            {% else %}
+            <div>No resumes uploaded.</div>
+            {% endfor %}
+        </div>
+
+        <form method="POST" action="{{ url_for('resume_management_page') }}" enctype="multipart/form-data">
+            <input type="file" id="resume-file-input" name="resume_file" style="display:none;" required>
+            <input type="text" name="applicant_name" placeholder="Applicant Name" required>
+            <input type="email" name="applicant_email" placeholder="Applicant Email" required>
+            <button type="submit" id="upload-resume-btn">Upload Resume</button>
+        </form>
+
+        <a href="{{ url_for('dashboard') }}">
+            <button id="back-to-dashboard">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

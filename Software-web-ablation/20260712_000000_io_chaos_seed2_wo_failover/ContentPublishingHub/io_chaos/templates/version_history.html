@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version History - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="version-history-page">
+        <h1>Version History for "{{ article.title }}"</h1>
+
+        <table id="version-history-table" border="1">
+            <thead>
+                <tr>
+                    <th>Version Number</th>
+                    <th>Author</th>
+                    <th>Timestamp</th>
+                    <th>Change Summary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for version in versions %}
+                <tr>
+                    <td>{{ version.version_number }}</td>
+                    <td>{{ version.author }}</td>
+                    <td>{{ version.timestamp }}</td>
+                    <td>{{ version.change_summary }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('restore_version', article_id=article.article_id, version_id=version.version_id) }}">
+                            <button type="submit" id="restore-version-{{ version.version_id }}">Restore</button>
+                        </form>
+                        <a href="{{ url_for('comment_version', article_id=article.article_id, version_id=version.version_id) }}" id="comment-version-{{ version.version_id }}">Comments</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <br>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

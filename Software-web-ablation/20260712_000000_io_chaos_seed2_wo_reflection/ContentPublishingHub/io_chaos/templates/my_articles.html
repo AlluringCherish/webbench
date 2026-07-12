@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Articles - ContentPublishingHub</title>
+</head>
+<body>
+<div id="my-articles-page">
+    <h1>My Articles</h1>
+
+    <form id="filter-form" method="get" action="{{ url_for('my_articles') }}">
+        <label for="filter-status">Filter by Status:</label>
+        <select id="filter-status" name="status">
+            <option value="">All</option>
+            {% for status in status_options %}
+            <option value="{{ status }}" {% if filter_status == status %}selected{% endif %}>{{ status.title() }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="filter-category">Filter by Category:</label>
+        <select id="filter-category" name="category">
+            <option value="">All</option>
+            {% for category in category_options %}
+            <option value="{{ category }}" {% if filter_category == category %}selected{% endif %}>{{ category.title() }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" id="btn-filter">Apply Filters</button>
+        <button type="button" id="btn-clear-filters" onclick="location.href='{{ url_for('my_articles') }}'">Clear Filters</button>
+    </form>
+
+    <table id="my-articles-list" border="1">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Category</th>
+                <th>Last Modified</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr id="article-{{ article.id }}">
+                <td>{{ article.title }}</td>
+                <td>{{ article.status }}</td>
+                <td>{{ article.category }}</td>
+                <td>{{ article.last_modified }}</td>
+                <td>
+                    <button onclick="location.href='{{ url_for('edit_article', article_id=article.id) }}'">Edit</button>
+                    <button onclick="location.href='{{ url_for('article_version_history', article_id=article.id) }}'">Versions</button>
+                    <button onclick="location.href='{{ url_for('article_analytics', article_id=article.id) }}'">Analytics</button>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No articles found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <nav id="my-articles-navigation">
+        <button id="btn-back-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        <button id="btn-create-article" onclick="location.href='{{ url_for('create_article') }}'">Create New Article</button>
+    </nav>
+</div>
+</body>
+</html>

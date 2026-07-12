@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version History - ContentPublishingHub</title>
+</head>
+<body>
+<div id="version-history-page">
+    <h1>Version History for Article: {{ article.title }}</h1>
+
+    <nav id="version-history-navigation">
+        <button id="btn-back-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        <button id="btn-back-edit" onclick="location.href='{{ url_for('edit_article', article_id=article.article_id) }}'">Back to Edit Article</button>
+    </nav>
+
+    <table id="version-list" border="1">
+        <thead>
+            <tr>
+                <th>Version Number</th>
+                <th>Author</th>
+                <th>Timestamp</th>
+                <th>Change Summary</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in versions %}
+            <tr id="version-{{ v.version.version_id }}">
+                <td>{{ v.version.version_number }}</td>
+                <td>{{ v.version.author }}</td>
+                <td>{{ v.version.timestamp }}</td>
+                <td>{{ v.version.change_summary }}</td>
+                <td>
+                    <button class="btn-view-version" data-version-id="{{ v.version.version_id }}">View</button>
+                    {% if not loop.first %}
+                    <button class="btn-compare-version" data-version-id="{{ v.version.version_id }}">Compare</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No versions found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if comparison %}
+    <div id="version-comparison">
+        <h2>Comparison between Version {{ comparison.old_version.version_number }} and Version {{ comparison.new_version.version_number }}</h2>
+        <pre>{{ comparison.diff }}</pre>
+    </div>
+    {% endif %}
+
+</div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="cart-page">
+        <h1 id="page-title">Shopping Cart</h1>
+
+        <table id="cart-items-table" border="1">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cartitem in cartitems %}
+                <tr id="cart-item-{{ cartitem.item_id }}">
+                    <td id="cart-item-name-{{ cartitem.item_id }}">{{ cartitem.name }}</td>
+                    <td>
+                        <form id="update-cart-form-{{ cartitem.item_id }}" method="POST" action="{{ url_for('update_cart_quantity') }}">
+                            <input type="hidden" name="item_id" value="{{ cartitem.item_id }}">
+                            <input type="number" id="update-quantity-{{ cartitem.item_id }}" name="quantity" min="1" value="{{ cartitem.quantity }}">
+                            <button type="submit">Update Quantity</button>
+                        </form>
+                    </td>
+                    <td id="cart-item-price-{{ cartitem.item_id }}">{{ cartitem.price }}</td>
+                    <td id="cart-item-subtotal-{{ cartitem.item_id }}">{{ '%.2f' | format(cartitem.price * cartitem.quantity) }}</td>
+                    <td>
+                        <form id="remove-cartitem-form-{{ cartitem.item_id }}" method="POST" action="{{ url_for('remove_cartitem', item_id=cartitem.item_id) }}">
+                            <button type="submit" id="remove-item-button-{{ cartitem.item_id }}">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div id="total-amount">Total: {{ total_amount }}</div>
+
+        <button id="proceed-checkout-button" onclick="window.location.href='{{ url_for('checkout_html') }}'">Proceed to Checkout</button>
+
+        <button id="browse-restaurants-button" onclick="window.location.href='{{ url_for('browse_restaurants') }}'">Back to Restaurants</button>
+    </div>
+</body>
+</html>

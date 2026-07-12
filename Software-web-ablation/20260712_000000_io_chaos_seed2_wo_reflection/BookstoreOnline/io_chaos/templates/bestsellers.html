@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bestsellers</title>
+</head>
+<body>
+    <div id="bestsellers_page">
+        <h1>Bestsellers</h1>
+        <form method="POST" action="">
+            <label for="time_period_filter">Filter by Time Period:</label>
+            <select id="time_period_filter" name="period">
+                <option value="1" {% if selected_period == 1 %}selected{% endif %}>This Week</option>
+                <option value="2" {% if selected_period == 2 %}selected{% endif %}>This Month</option>
+                <option value="3" {% if selected_period == 3 %}selected{% endif %}>All Time</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <div id="bestsellers_list">
+            <ul>
+                {% for book_id, book in bestsellers.items() %}
+                <li>
+                    <strong>{{ book.name }}</strong> by {{ book.author }} - Sold: {{ book.sales_count }}
+                    <button id="view_book_button_{{ book_id }}" onclick="location.href='{{ url_for('book_detail', book_id=book_id) }}'">View Book</button>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <button id="back_to_dashboard_button" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

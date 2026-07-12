@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <div id="write-review-page">
+        <h1 id="page-title">Write Review</h1>
+
+        {% if submission_status == 1 %}
+        <div id="success-message">Review submitted successfully!</div>
+        {% elif submission_status == 0 %}
+        <div id="error-message">Failed to submit review. Please try again.</div>
+        {% endif %}
+
+        {% if errors %}
+        <div id="form-errors">
+            <ul>
+                {% for field, message in errors.items() %}
+                <li id="error-{{ field }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <form id="write-review-form" method="POST" action="{{ url_for('writ_review') }}">
+            <label for="reviewer-name-input">Name:</label>
+            <input type="text" id="reviewer-name-input" name="reviewer_name" value="{{ request.form.reviewer_name if request.method == 'POST' else '' }}">
+
+            <label for="rating-select">Rating:</label>
+            <select id="rating-select" name="rating">
+                <option value="1" {% if request.form.rating == '1' %}selected{% endif %}>1</option>
+                <option value="2" {% if request.form.rating == '2' %}selected{% endif %}>2</option>
+                <option value="3" {% if request.form.rating == '3' %}selected{% endif %}>3</option>
+                <option value="4" {% if request.form.rating == '4' %}selected{% endif %}>4</option>
+                <option value="5" {% if request.form.rating == '5' %}selected{% endif %}>5</option>
+            </select>
+
+            <label for="comment-textarea">Comment:</label>
+            <textarea id="comment-textarea" name="comment">{{ request.form.comment if request.method == 'POST' else '' }}</textarea>
+
+            <button type="submit" id="submit-review-button">Submit Review</button>
+        </form>
+
+        <button id="back-to-reviews-button" onclick="window.location.href='{{ url_for('reviews') }}'">Back to Reviews</button>
+    </div>
+</body>
+</html>

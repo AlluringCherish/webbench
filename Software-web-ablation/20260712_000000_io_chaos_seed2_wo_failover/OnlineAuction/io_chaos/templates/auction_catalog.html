@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Catalog</title>
+</head>
+<body>
+    <div id="catalog-page">
+        <h1>Auction Catalog</h1>
+
+        <input type="text" id="search-input" placeholder="Search auctions...">
+
+        <select id="category-filter">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+            <option value="{{ category }}">{{ category }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="auctions-grid">
+            {% for auction in auctions %}
+            <div class="auction-card">
+                <img src="{{ auction.image_url }}" alt="{{ auction.item_name }}">
+                <div>{{ auction.item_name }}</div>
+                <div>{{ auction.description }}</div>
+                <div>Category: {{ auction.category }}</div>
+                <div>Current Bid: ${{ '%.2f'|format(auction.current_bid) }}</div>
+                <div>Ends: {{ auction.end_time }}</div>
+                <a href="{{ url_for('auction_details', auction_id=auction.auction_id) }}">
+                    <button id="view-auction-button-{{ auction.auction_id }}">View Details</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

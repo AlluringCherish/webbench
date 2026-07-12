@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+</head>
+<body>
+    <div id="profile-page">
+        <div id="profile-username"><strong>Username:</strong> {{ username }}</div>
+        <form method="POST" action="{{ url_for('update_profile') }}">
+            <label for="profile-email">Email:</label>
+            <input type="email" id="profile-email" name="email" value="{{ email }}" required />
+            <button type="submit" id="update-profile-button">Update Profile</button>
+        </form>
+        <div id="borrow-history">
+            <h2>Borrow History</h2>
+            {% if borrow_history %}
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Book Title</th>
+                        <th>Borrow Date</th>
+                        <th>Return Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for borrow in borrow_history %}
+                    <tr>
+                        <td>{{ borrow.book_title }}</td>
+                        <td>{{ borrow.borrow_date }}</td>
+                        <td>{% if borrow.return_date %}{{ borrow.return_date }}{% else %}Not Returned{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No borrow history available.</p>
+            {% endif %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>
