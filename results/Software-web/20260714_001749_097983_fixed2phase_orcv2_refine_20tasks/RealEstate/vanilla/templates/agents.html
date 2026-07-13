@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real Estate Agents</title>
+    <script>
+        function searchAgents() {
+            const query = document.getElementById('agent-search').value;
+            const params = new URLSearchParams();
+            if(query) params.append('search', query);
+            window.location = '/agents?' + params.toString();
+        }
+    </script>
+</head>
+<body>
+    <div id="agents-page">
+        <h1>Real Estate Agents</h1>
+
+        <input id="agent-search" type="text" placeholder="Search agents by name" value="{{ search_query }}" oninput="searchAgents()">
+
+        <div id="agents-list">
+            {% if agents %}
+                <ul>
+                {% for agent in agents %}
+                    <li>
+                        <strong>{{ agent.agent_name }}</strong><br>
+                        Specialization: {{ agent.specialization }}<br>
+                        Email: <a href="mailto:{{ agent.email }}">{{ agent.email }}</a><br>
+                        Phone: {{ agent.phone }}<br>
+                        Properties Sold: {{ agent.properties_sold }}<br>
+                        <button id="contact-agent-button-{{ agent.agent_id }}" onclick="window.location.href='mailto:{{ agent.email }}'">Contact Agent</button>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No agents found.</p>
+            {% endif %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

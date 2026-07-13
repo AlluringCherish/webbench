@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Vehicles</title>
+</head>
+<body>
+    <div id="search-page">
+        <h1>Search Vehicles</h1>
+        <form method="get" action="">
+            <label for="location-filter">Location:</label>
+            <select id="location-filter" name="location_filter">
+                <option value="">--All--</option>
+                {% for loc in locations %}
+                    <option value="{{ loc.city }}" {% if loc.city == selected_location %}selected{% endif %}>{{ loc.city }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="vehicle-type-filter">Vehicle Type:</label>
+            <select id="vehicle-type-filter" name="vehicle_type_filter">
+                <option value="">--All--</option>
+                {% for vt in ['Economy','Compact','Sedan','SUV','Luxury'] %}
+                    <option value="{{ vt }}" {% if vt == selected_vehicle_type %}selected{% endif %}>{{ vt }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="date-range-input">Date Range:</label>
+            <input type="text" id="date-range-input" name="date_range_input" value="{{ date_range_input }}" placeholder="YYYY-MM-DD to YYYY-MM-DD">
+
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="vehicles-grid">
+            {% for vehicle in vehicles %}
+                <div>
+                    <h2>{{ vehicle.make }} {{ vehicle.model }}</h2>
+                    <p>Type: {{ vehicle.vehicle_type }}</p>
+                    <p>Daily Rate: ${{ vehicle.daily_rate }}</p>
+                    <button id="view-details-button-{{ vehicle.vehicle_id }}" onclick="location.href='{{ url_for('vehicle_details', vehicle_id=vehicle.vehicle_id) }}'">View Details</button>
+                </div>
+            {% else %}
+                <p>No available vehicles match the criteria.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

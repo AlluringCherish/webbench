@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Insurance Coverage</title>
+    <script>
+    function updateInsuranceDetails() {
+        const plans = {{ insurance_plans | tojson }};
+        const selectedId = document.querySelector('input[name="insurance_plan"]:checked').value;
+        const plan = plans.find(p => p.insurance_id === selectedId);
+        if(plan) {
+            document.getElementById('insurance-description').innerText = plan.description;
+            document.getElementById('insurance-price').innerText = '$' + plan.daily_cost + ' per day';
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="insurance-page">
+        <h1>Select Insurance Coverage</h1>
+        <form method="post">
+            <div id="insurance-options">
+                {% for plan in insurance_plans %}
+                <div>
+                    <input type="radio" id="select-insurance-{{ plan.insurance_id }}" name="insurance_plan" value="{{ plan.insurance_id }}" onchange="updateInsuranceDetails()" {% if loop.first %}checked{% endif %}>
+                    <label for="select-insurance-{{ plan.insurance_id }}">{{ plan.plan_name }}</label>
+                </div>
+                {% endfor %}
+            </div>
+            <div id="insurance-description">{{ insurance_plans[0].description if insurance_plans else '' }}</div>
+            <div id="insurance-price">${{ insurance_plans[0].daily_cost if insurance_plans else '' }} per day</div>
+            <button id="confirm-booking-button" type="submit">Confirm Booking</button>
+        </form>
+    </div>
+    <script>
+    if(document.querySelector('input[name="insurance_plan"]:checked')){
+        updateInsuranceDetails();
+    }
+    </script>
+</body>
+</html>

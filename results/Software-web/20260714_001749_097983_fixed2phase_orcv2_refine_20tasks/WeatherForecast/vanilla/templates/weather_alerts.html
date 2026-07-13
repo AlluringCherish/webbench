@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Alerts</title>
+</head>
+<body>
+    <div id="alerts-page">
+        <form method="post">
+            <label for="severity-filter">Severity:</label>
+            <select id="severity-filter" name="severity_filter" onchange="this.form.submit()">
+                <option value="">All</option>
+                {% set severities = ['Low', 'Moderate', 'High', 'Severe'] %}
+                {% for sev in severities %}
+                <option value="{{ sev }}" {% if selected_severity == sev %}selected{% endif %}>{{ sev }}</option>
+                {% endfor %}
+            </select>
+            <label for="location-filter-alerts">Location:</label>
+            <select id="location-filter-alerts" name="location_filter_alerts" onchange="this.form.submit()">
+                <option value="">All</option>
+                {% for loc_id, loc in locations.items() %}
+                <option value="{{ loc_id }}" {% if selected_location == loc_id %}selected{% endif %}>{{ loc.location_name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <div id="alerts-list">
+            {% for alert in alerts %}
+            <div class="alert-item">
+                <strong>{{ alert.alert_type }} ({{ alert.severity }})</strong><br>
+                <em>{{ alert.location_name }}</em><br>
+                <p>{{ alert.description }}</p>
+                {% if not alert.is_acknowledged %}
+                    <button id="acknowledge-alert-button-{{ alert.alert_id }}" onclick="location.href='{{ url_for('acknowledge_alert', alert_id=alert.alert_id) }}'">Acknowledge</button>
+                {% else %}
+                    <em>Acknowledged</em>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

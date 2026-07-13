@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audio Guides</title>
+    <script>
+        let selectedGuideId = null;
+
+        function selectGuide(id) {
+            selectedGuideId = id;
+            document.querySelectorAll('#audio-guides-list .guide-item').forEach(function(item) {
+                if (item.getAttribute('data-id') === id) {
+                    item.style.backgroundColor = '#ddd';
+                } else {
+                    item.style.backgroundColor = '';
+                }
+            });
+        }
+
+        function playGuide() {
+            if (!selectedGuideId) return;
+            let guides = {{ audioguides|tojson }};
+            let guide = guides.find(g => g.id === selectedGuideId);
+            if (!guide) return;
+            let audioPlayer = document.getElementById('audio-player');
+            audioPlayer.src = '/' + guide.audio_file_path;
+            audioPlayer.play();
+        }
+    </script>
+</head>
+<body>
+    <div id="audio-guides-container">
+        <h1 id="audio-guides-title">Audio Guides</h1>
+        <div id="audio-guides-list">
+            {% for guide in audioguides %}
+            <div class="guide-item" data-id="{{ guide.id }}" onclick="selectGuide('{{ guide.id }}')">
+                <strong>Guide for Artifact: {{ artifacts[guide.artifact_id].name if guide.artifact_id in artifacts else 'Unknown' }}</strong>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="btn-play-audio-guide" onclick="playGuide()">Play Audio Guide</button>
+        <audio id="audio-player" controls style="display:none;"></audio>
+        <br>
+        <button id="btn-back-dashboard" onclick="location.href='/'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

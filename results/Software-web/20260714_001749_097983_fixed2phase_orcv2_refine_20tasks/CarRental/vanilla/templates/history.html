@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rental History</title>
+</head>
+<body>
+    <div id="history-page">
+        <h1>Rental History</h1>
+
+        <form method="get" action="">
+            <label for="status-filter">Filter by Status:</label>
+            <select id="status-filter" name="status_filter" onchange="this.form.submit()">
+                {% for status in ['All', 'Active', 'Completed', 'Cancelled'] %}
+                <option value="{{ status }}" {% if status == status_filter %}selected{% endif %}>{{ status }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <table id="rentals-table" border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Vehicle</th>
+                    <th>Dates</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in rentals %}
+                <tr>
+                    <td>{{ item.rental.rental_id }}</td>
+                    <td>{{ item.vehicle.make }} {{ item.vehicle.model }}</td>
+                    <td>{{ item.rental.pickup_date }} to {{ item.rental.dropoff_date }}</td>
+                    <td>{{ item.rental.pickup_location }} to {{ item.rental.dropoff_location }}</td>
+                    <td>{{ item.rental.status }}</td>
+                    <td><button id="view-rental-details-{{ item.rental.rental_id }}" disabled>View Details</button></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6">No rentals found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

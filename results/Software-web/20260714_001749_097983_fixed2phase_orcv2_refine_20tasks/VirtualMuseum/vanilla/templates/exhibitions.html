@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exhibitions</title>
+    <script>
+        let selectedExhibitionId = null;
+
+        function selectExhibition(id) {
+            selectedExhibitionId = id;
+            document.querySelectorAll('#exhibitions-list .exhibition-item').forEach(function(item) {
+                if (item.getAttribute('data-id') === id) {
+                    item.style.backgroundColor = '#ddd';
+                } else {
+                    item.style.backgroundColor = '';
+                }
+            });
+            updateDetailsButton();
+        }
+
+        function updateDetailsButton() {
+            let btn = document.getElementById('btn-exhibition-exhibition-details');
+            if (selectedExhibitionId) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
+        }
+
+        function goToExhibitionDetails() {
+            if (!selectedExhibitionId) return;
+            location.href = '/exhibition-details/' + selectedExhibitionId;
+        }
+
+        window.onload = function() {
+            updateDetailsButton();
+        }
+    </script>
+</head>
+<body>
+    <div id="exhibitions-container">
+        <h1 id="exhibitions-title">Exhibitions</h1>
+        <div id="exhibitions-list">
+            {% for exhibition in exhibitions.values() %}
+            <div class="exhibition-item" data-id="{{ exhibition.id }}" onclick="selectExhibition('{{ exhibition.id }}')">
+                <strong>{{ exhibition.name }}</strong><br />
+                <span>{{ exhibition.description }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="btn-back-dashboard" onclick="location.href='/'">Back to Dashboard</button>
+        <button id="btn-exhibition-exhibition-details" onclick="goToExhibitionDetails()" disabled>Exhibition Details</button>
+    </div>
+</body>
+</html>

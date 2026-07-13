@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Schedules</title>
+</head>
+<body>
+    <div id="schedules-page">
+        <h1>Event Schedules</h1>
+        <form method="get" action="/schedules">
+            <label for="schedule-filter-date">Filter by Date:</label>
+            <input type="date" id="schedule-filter-date" name="date" value="{{ filter_date }}">
+            <label for="schedule-filter-event">Filter by Event:</label>
+            <select id="schedule-filter-event" name="event">
+                <option value="All">All</option>
+                {% for event in events %}
+                <option value="{{ event.event_id }}" {% if filter_event == event.event_id %}selected{% endif %}>{{ event.event_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="schedules-timeline">
+            {% for schedule in schedules %}
+            <div class="schedule-entry">
+                <h3>{{ schedule.session_title }}</h3>
+                <p>{{ schedule.session_time }} - Duration: {{ schedule.duration_minutes }} minutes</p>
+                <p>Speaker: {{ schedule.speaker }}</p>
+                <p>Venue: {% for venue in events|map(attribute='venue_id')|list %}{% if venue == schedule.venue_id %}{{ venue }}{% endif %}{% endfor %}</p>
+            </div>
+            {% else %}
+            <p>No schedules found.</p>
+            {% endfor %}
+        </div>
+
+        <form method="post" action="/schedules/export">
+            <button type="submit" id="export-schedule-button">Export Schedule</button>
+        </form>
+        <button onclick="window.location.href='/'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

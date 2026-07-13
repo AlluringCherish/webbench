@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Artifact Catalog</title>
+    <script>
+        function filterArtifacts() {
+            let input = document.getElementById('artifact-search').value.toLowerCase();
+            let items = document.querySelectorAll('#artifact-list .artifact-item');
+            items.forEach(function(item) {
+                let name = item.getAttribute('data-name').toLowerCase();
+                if (name.includes(input)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            updateExhibitionButton();
+        }
+        
+        let selectedArtifactId = null;
+
+        function selectArtifact(id) {
+            selectedArtifactId = id;
+            // Highlight selection
+            document.querySelectorAll('#artifact-list .artifact-item').forEach(function(item) {
+                if (item.getAttribute('data-id') === id) {
+                    item.style.backgroundColor = '#ddd';
+                } else {
+                    item.style.backgroundColor = '';
+                }
+            });
+            updateExhibitionButton();
+        }
+
+        function updateExhibitionButton() {
+            let btn = document.getElementById('btn-artifact-exhibition-details');
+            if (!selectedArtifactId) {
+                btn.style.display = 'none';
+                btn.disabled = true;
+                return;
+            }
+
+            let exhibitions = {{ exhibitions|tojson }};
+            let artifacts = {{ artifacts|tojson }};
+
+            let artifact = artifacts.find(a => a.id === selectedArtifactId);
+            if (!artifact) {
+                btn.style.display = 'none';
+                btn.disabled = true;
+                return;
+            }
+
+            if (artifact.exhibition_id && exhibitions[artifact.exhibition_id]) {
+                btn.style.display = 'inline-block';
+                btn.disabled = false;
+            } else {
+                btn.style.display = 'none';
+                btn.disabled = true;
+            }
+        }
+
+        function goToExhibitionDetails() {
+            if (!selectedArtifactId) return;
+            let artifacts = {{ artifacts|tojson }};
+            let artifact = artifacts.find(a => a.id === selectedArtifactId);
+            if (!artifact || !artifact.exhibition_id) return;
+            location.href = '/exhibition-details/' + artifact.exhibition_id;
+        }
+
+        window.onload = function() {
+            updateExhibitionButton();
+        }
+    </script>
+</head>
+<body>
+    <div id="artifact-catalog-container">
+        <h1 id="artifact-catalog-title">Artifact Catalog</h1>
+        <input type="text" id="artifact-search" oninput="filterArtifacts()" placeholder="Search artifacts..." />
+        <div id="artifact-list">
+            {% for artifact in artifacts %}
+            <div class="artifact-item" data-id="{{ artifact.id }}" data-name="{{ artifact.name }}" onclick="selectArtifact('{{ artifact.id }}')">
+                <strong>{{ artifact.name }}</strong><br />
+                <span>{{ artifact.description }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="btn-back-dashboard" onclick="location.href='/'">Back to Dashboard</button>
+        <button id="btn-artifact-exhibition-details" onclick="goToExhibitionDetails()" style="display:none;" disabled>Exhibition Details</button>
+    </div>
+</body>
+</html>

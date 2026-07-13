@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Job Listings</title>
+</head>
+<body>
+  <div id="listings-page">
+    <h1>Job Listings</h1>
+
+    <input id="search-input" type="text" placeholder="Search jobs" value="{{ search_query }}" onkeydown="if(event.key ==='Enter'){ location.href='?search=' + this.value + '&category=' + document.getElementById('category-filter').value + '&location=' + document.getElementById('location-filter').value; }" />
+
+    <select id="category-filter" onchange="location.href='?search=' + document.getElementById('search-input').value + '&category=' + this.value + '&location=' + document.getElementById('location-filter').value;">
+      <option value="">All Categories</option>
+      {% for cat in categories %}
+        <option value="{{ cat.category_name }}" {% if category_filter == cat.category_name %}selected{% endif %}>{{ cat.category_name }}</option>
+      {% endfor %}
+    </select>
+
+    <select id="location-filter" onchange="location.href='?search=' + document.getElementById('search-input').value + '&category=' + document.getElementById('category-filter').value + '&location=' + this.value;">
+      <option value="">All Locations</option>
+      {% for loc in locations %}
+        <option value="{{ loc }}" {% if location_filter == loc %}selected{% endif %}>{{ loc }}</option>
+      {% endfor %}
+    </select>
+
+    <div id="jobs-grid">
+      {% for job in jobs %}
+      <div class="job-card">
+        <h3>{{ job.title }}</h3>
+        <p>Location: {{ job.location }}</p>
+        <button id="view-job-button-{{ job.job_id }}" onclick="location.href='{{ url_for('job_details', job_id=job.job_id) }}'">View Details</button>
+      </div>
+      {% else %}
+      <p>No jobs found matching criteria.</p>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

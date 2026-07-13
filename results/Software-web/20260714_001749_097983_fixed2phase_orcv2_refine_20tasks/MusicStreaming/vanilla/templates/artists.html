@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Artist Profiles</title>
+</head>
+<body>
+<div id="artists-page">
+    <h1>Artist Profiles</h1>
+    <form method="get" action="{{ url_for('artists') }}">
+        <input type="text" id="search-artists" name="search" placeholder="Search artists" value="{{ search_query }}" />
+        <select id="artists-sort" name="sort">
+            <option value="Name" {% if sort_key == 'Name' %}selected{% endif %}>Name</option>
+            <option value="Genre" {% if sort_key == 'Genre' %}selected{% endif %}>Genre</option>
+        </select>
+        <button type="submit">Search/Sort</button>
+    </form>
+    <div id="artists-grid">
+        {% for artist in artists %}
+        <div class="artist-card">
+            <p><strong>{{ artist.name }}</strong></p>
+            <p>Genre: {{ artist.genre }}</p>
+            <button id="view-artist-button-{{ artist.artist_id }}" onclick="window.location.href='{{ url_for('artists') }}?search={{ artist.name }}'">View Details</button>
+        </div>
+        {% else %}
+        <p>No artists found.</p>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>

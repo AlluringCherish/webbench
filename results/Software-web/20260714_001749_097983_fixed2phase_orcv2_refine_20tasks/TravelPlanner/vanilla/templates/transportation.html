@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Flights</title>
+</head>
+<body>
+<div id="transportation-page">
+    <h1>Book Flights</h1>
+
+    <form method="post">
+        <input id="departure-city" name="departure_city" type="text" placeholder="Departure city" value="{{ departure_city }}">
+        <input id="arrival-city" name="arrival_city" type="text" placeholder="Arrival city" value="{{ arrival_city }}">
+        <input id="departure-date" name="departure_date" type="date" value="{{ departure_date }}">
+        <select id="flight-class-filter" name="flight_class_filter">
+            <option value="">-- Flight Class --</option>
+            <option value="Economy" {% if flight_class_filter == 'Economy' %}selected{% endif %}>Economy</option>
+            <option value="Business" {% if flight_class_filter == 'Business' %}selected{% endif %}>Business</option>
+            <option value="First Class" {% if flight_class_filter == 'First Class' %}selected{% endif %}>First Class</option>
+        </select>
+        <button type="submit">Search Flights</button>
+    </form>
+
+    <div id="available-flights">
+        {% for flight in flights %}
+            <div class="flight-card">
+                <h3>{{ flight[1] }}</h3>
+                <p>From: {{ flight[2] }} To: {{ flight[3] }}</p>
+                <p>Departure: {{ flight[4] }} Arrival: {{ flight[5] }}</p>
+                <p>Price: ${{ flight[6] }} Class: {{ flight[7] }}</p>
+            </div>
+        {% else %}
+            <p>No flights found.</p>
+        {% endfor %}
+    </div>
+
+    <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

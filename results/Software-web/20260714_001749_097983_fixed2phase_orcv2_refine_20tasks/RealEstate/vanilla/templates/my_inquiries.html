@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Inquiries</title>
+</head>
+<body>
+    <div id="inquiries-page">
+        <h1>My Inquiries</h1>
+        <label for="inquiry-status-filter">Filter by Status:</label>
+        <select id="inquiry-status-filter" onchange="applyFilter()">
+            <option value="All" {% if status_filter == 'All' %}selected{% endif %}>All</option>
+            <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
+            <option value="Contacted" {% if status_filter == 'Contacted' %}selected{% endif %}>Contacted</option>
+            <option value="Resolved" {% if status_filter == 'Resolved' %}selected{% endif %}>Resolved</option>
+        </select>
+        <br><br>
+        <table id="inquiries-table" border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Property</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inquiry in inquiries %}
+                <tr>
+                    <td>{{ inquiry.inquiry_id }}</td>
+                    <td>{{ inquiry.property_address }}</td>
+                    <td>{{ inquiry.customer_name }}</td>
+                    <td>{{ inquiry.customer_email }}</td>
+                    <td>{{ inquiry.customer_phone }}</td>
+                    <td>{{ inquiry.message }}</td>
+                    <td>{{ inquiry.inquiry_date }}</td>
+                    <td>{{ inquiry.status }}</td>
+                    <td>
+                        <form action="{{ url_for('delete_inquiry', inquiry_id=inquiry.inquiry_id) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this inquiry?');">
+                            <button type="submit" id="delete-inquiry-button-{{ inquiry.inquiry_id }}">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+    <script>
+        function applyFilter() {
+            const status = document.getElementById('inquiry-status-filter').value;
+            const params = new URLSearchParams();
+            if (status) {
+                params.append('status', status);
+            }
+            window.location = '/my_inquiries?' + params.toString();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Resumes</title>
+</head>
+<body>
+  <div id="resume-page">
+    <h1>My Resumes</h1>
+
+    <div id="resumes-list">
+      <ul>
+        {% for resume in resumes %}
+        <li>
+          {{ resume.filename }} (Uploaded: {{ resume.upload_date }})
+          <form method="POST" action="{{ url_for('delete_resume', resume_id=resume.resume_id) }}" style="display:inline;">
+            <button id="delete-resume-button-{{ resume.resume_id }}" type="submit">Delete</button>
+          </form>
+        </li>
+        {% else %}
+        <li>No resumes uploaded.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <form id="upload-form" method="POST" enctype="multipart/form-data">
+      <input id="resume-file-input" name="resume-file-input" type="file" style="display:none;" accept=".pdf,.doc,.docx" />
+      <button id="upload-resume-button" type="button" onclick="document.getElementById('resume-file-input').click();">Upload Resume</button>
+    </form>
+
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+
+    <script>
+      document.getElementById('resume-file-input').addEventListener('change', function() {
+        document.getElementById('upload-form').submit();
+      });
+    </script>
+  </div>
+</body>
+</html>

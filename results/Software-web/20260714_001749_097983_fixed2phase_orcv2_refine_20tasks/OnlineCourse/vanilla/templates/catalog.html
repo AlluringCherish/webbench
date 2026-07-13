@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Courses</title>
+</head>
+<body>
+    <div id="catalog-page">
+        <input type="text" id="search-input" placeholder="Search courses..." onkeyup="filterCourses()">
+        <div id="course-grid">
+            {% for course in courses %}
+            <div class="course-card">
+                <h3>{{ course.title }}</h3>
+                <p>{{ course.description }}</p>
+                <button id="view-course-button-{{ course.course_id }}" onclick="window.location.href='{{ url_for('course_details', course_id=course.course_id) }}'">View Details</button>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+
+    <script>
+    function filterCourses() {
+        var input, filter, grid, cards, h3, i, txtValue;
+        input = document.getElementById('search-input');
+        filter = input.value.toLowerCase();
+        grid = document.getElementById('course-grid');
+        cards = grid.getElementsByClassName('course-card');
+        for (i = 0; i < cards.length; i++) {
+            h3 = cards[i].getElementsByTagName('h3')[0];
+            txtValue = h3.textContent || h3.innerText;
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                cards[i].style.display = '';
+            } else {
+                cards[i].style.display = 'none';
+            }
+        }
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ book.title }}</title>
+</head>
+<body>
+<div id="book-detail-page">
+    <h1 id="book-title">{{ book.title }}</h1>
+    <p id="book-author">Author: {{ book.author }}</p>
+    <p id="book-price">Price: ${{ '%.2f'|format(book.price) }}</p>
+    <p id="book-stock">Available Stock: {{ book.stock }}</p>
+    <form id="add-to-cart-form" action="{{ url_for('add_to_cart', book_id=book.id) }}" method="post">
+        <label for="quantity">Quantity:</label>
+        <input id="quantity" name="quantity" type="number" min="1" max="{{ book.stock }}" value="1">
+        <button type="submit" id="add-to-cart">Add to Cart</button>
+    </form>
+    <div id="book-reviews">
+        <h2>Reviews</h2>
+        <ul>
+        {% for review in reviews %}
+            <li><strong>{{ review.username }}</strong> rated {{ review.rating }}/5: {{ review.comment }}</li>
+        {% else %}
+            <li>No reviews yet.</li>
+        {% endfor %}
+        </ul>
+    </div>
+    <form id="add-review-form" action="{{ url_for('add_review', book_id=book.id) }}" method="post">
+        <h3>Add your review</h3>
+        <label for="username">Name:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="rating">Rating:</label>
+        <select id="rating" name="rating" required>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <label for="comment">Comment:</label>
+        <textarea id="comment" name="comment" required></textarea>
+        <button type="submit">Submit Review</button>
+    </form>
+</div>
+</body>
+</html>

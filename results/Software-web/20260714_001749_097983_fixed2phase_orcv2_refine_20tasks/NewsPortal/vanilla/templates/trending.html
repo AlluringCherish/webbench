@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Articles</title>
+</head>
+<body>
+<div id="trending-page">
+    <h1>Trending Articles</h1>
+    <label for="time-period-filter">Filter by Time Period:</label>
+    <select id="time-period-filter" onchange="location.href='{{ url_for('trending') }}?period=' + this.value">
+        <option value="">All</option>
+        {% for period in periods %}
+            <option value="{{ period }}" {% if period == selected_period %}selected{% endif %}>{{ period }}</option>
+        {% endfor %}
+    </select>
+    <div id="trending-list">
+        {% for t in trending %}
+            <div>
+                <h3>{{ t.article_title }}</h3>
+                <p>Category: {{ t.category }}, Views: {{ t.view_count }}, Period: {{ t.period }}</p>
+                <button id="view-article-button-{{ t.article_id }}" onclick="location.href='{{ url_for('article_details', article_id=t.article_id) }}'">View Article</button>
+            </div>
+        {% else %}
+            <p>No trending articles found.</p>
+        {% endfor %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

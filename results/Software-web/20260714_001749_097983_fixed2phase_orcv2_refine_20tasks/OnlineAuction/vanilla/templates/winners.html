@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Winning Items</title>
+</head>
+<body>
+<div id="winners-page">
+    <h1>Winning Items</h1>
+
+    <input id="filter-by-winner" type="text" placeholder="Filter by winner name" oninput="filterWinners()" value="{{ filter_winner }}" />
+
+    <div id="winners-list">
+        {% for winner in winners %}
+        <div id="winner-card-{{ winner.auction_id }}" class="winner-card">
+            <h3>{{ winner.item_name }}</h3>
+            <p>Winner: {{ winner.winner_name }}</p>
+            <p>Winning Bid: ${{ "%.2f"|format(winner.winning_bid) }}</p>
+            <p>Winning Date: {{ winner.win_date }}</p>
+        </div>
+        {% else %}
+        <p>No winners found.</p>
+        {% endfor %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+
+<script>
+function filterWinners() {
+    var input = document.getElementById('filter-by-winner');
+    var filter = input.value.toLowerCase();
+    window.location.href = '?filter=' + encodeURIComponent(filter);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Confirmation</title>
+</head>
+<body>
+<div id="confirmation-page">
+    <h1>Booking Confirmation</h1>
+
+    {% if view_only and booking %}
+        <div id="booking-summary">
+            <p>Booking ID: {{ booking.booking_id }}</p>
+            <p>Movie: {{ movie.title if movie else 'Unknown' }}</p>
+            <p>Showtime: {{ showtime.showtime_date }} {{ showtime.showtime_time }}</p>
+            <p>Seats: {{ booking.seats_booked | join(', ') }}</p>
+            <p>Total Price: ${{ booking.total_price }}</p>
+            <p>Status: {{ booking.status }}</p>
+        </div>
+        <button onclick="location.href='{{ url_for('booking_history') }}'">Back to Booking History</button>
+    {% else %}
+        <div id="booking-summary">
+            <p>Movie: {{ movie.title }}</p>
+            <p>Showtime: {{ showtime.showtime_date }} {{ showtime.showtime_time }}</p>
+            <p>Total Price: ${{ showtime.price }} (per seat)</p>
+        </div>
+
+        <form method="POST">
+            <input type="hidden" name="seats_selected" id="seats_selected" value="{{ request.args.get('seats', '') }}" />
+
+            <label for="customer-name">Name:</label>
+            <input type="text" id="customer-name" name="customer_name" required />
+            <br />
+            <label for="customer-email">Email:</label>
+            <input type="email" id="customer-email" name="customer_email" required />
+            <br />
+            <div id="error-message" style="color: red;">{{ error if error else '' }}</div>
+            <button id="confirm-booking-button" type="submit">Confirm Booking</button>
+        </form>
+    {% endif %}
+</div>
+</body>
+</html>

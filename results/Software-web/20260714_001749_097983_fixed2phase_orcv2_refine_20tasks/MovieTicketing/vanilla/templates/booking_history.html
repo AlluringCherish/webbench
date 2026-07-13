@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking History</title>
+</head>
+<body>
+<div id="bookings-page">
+    <h1>Booking History</h1>
+
+    <label for="status-filter">Filter by Status:</label>
+    <select id="status-filter" onchange="filterStatus()">
+        <option value="All" {% if status_filter == 'All' %}selected{% endif %}>All</option>
+        <option value="Confirmed" {% if status_filter == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+        <option value="Cancelled" {% if status_filter == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+        <option value="Completed" {% if status_filter == 'Completed' %}selected{% endif %}>Completed</option>
+    </select>
+
+    <table id="bookings-table" border="1">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Movie</th>
+                <th>Date</th>
+                <th>Seats</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.booking_id }}</td>
+                <td>{{ movies[showtimes[booking.showtime_id].movie_id].title if showtimes.get(booking.showtime_id) else 'Unknown' }}</td>
+                <td>{{ showtimes[booking.showtime_id].showtime_date if showtimes.get(booking.showtime_id) else 'Unknown' }}</td>
+                <td>{{ booking.seats_booked | join(', ') }}</td>
+                <td>{{ booking.status }}</td>
+                <td><button id="view-booking-button-{{ booking.booking_id }}" onclick="location.href='{{ url_for('view_booking', booking_id=booking.booking_id) }}'">View</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+
+<script>
+function filterStatus() {
+    const status = document.getElementById('status-filter').value;
+    const params = new URLSearchParams();
+    if (status && status !== 'All') params.append('status', status);
+    window.location.href = '/booking_history?' + params.toString();
+}
+</script>
+
+</body>
+</html>

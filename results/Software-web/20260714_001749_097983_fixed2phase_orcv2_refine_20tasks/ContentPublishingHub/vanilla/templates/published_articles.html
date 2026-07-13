@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Published Articles - ContentPublishingHub</title>
+</head>
+<body>
+<div id="published-articles-page">
+    <h1>Published Articles</h1>
+
+    <label for="filter-published-category">Filter by Category:</label>
+    <select id="filter-published-category" onchange="filterCategory()">
+        <option value="" {% if not filter_category %}selected{% endif %}>All</option>
+        <option value="news" {% if filter_category == 'news' %}selected{% endif %}>News</option>
+        <option value="blog" {% if filter_category == 'blog' %}selected{% endif %}>Blog</option>
+        <option value="tutorial" {% if filter_category == 'tutorial' %}selected{% endif %}>Tutorial</option>
+        <option value="announcement" {% if filter_category == 'announcement' %}selected{% endif %}>Announcement</option>
+        <option value="press_release" {% if filter_category == 'press_release' %}selected{% endif %}>Press Release</option>
+    </select>
+
+    <label for="sort-published">Sort by:</label>
+    <select id="sort-published" onchange="sortArticles()">
+        <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Date</option>
+        <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title</option>
+    </select>
+
+    <div id="published-articles-grid">
+        {% for article in articles %}
+        <div class="article-card">
+            <h3>{{ article.title }}</h3>
+            <p>Category: {{ article.category }}</p>
+            <p>Publish Date: {{ article.publish_date }}</p>
+            <p>Status: {{ article.status }}</p>
+            <p>{{ article.meta_description }}</p>
+        </div>
+        {% else %}
+        <p>No published articles found.</p>
+        {% endfor %}
+    </div>
+
+    <button id="back-to-dashboard-published" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+<script>
+function filterCategory() {
+    var selected = document.getElementById('filter-published-category').value;
+    var url = new URL(window.location.href);
+    if(selected) {
+        url.searchParams.set('filter-category', selected);
+    } else {
+        url.searchParams.delete('filter-category');
+    }
+    window.location.href = url.toString();
+}
+function sortArticles() {
+    var selected = document.getElementById('sort-published').value;
+    var url = new URL(window.location.href);
+    if(selected) {
+        url.searchParams.set('sort-by', selected);
+    } else {
+        url.searchParams.delete('sort-by');
+    }
+    window.location.href = url.toString();
+}
+</script>
+</body>
+</html>

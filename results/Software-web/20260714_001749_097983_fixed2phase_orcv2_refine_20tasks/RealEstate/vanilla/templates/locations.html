@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Featured Locations</title>
+    <script>
+        function sortLocations() {
+            const sortOption = document.getElementById('location-sort').value;
+            const params = new URLSearchParams();
+            if(sortOption) params.append('sort', sortOption);
+            window.location = '/locations?' + params.toString();
+        }
+    </script>
+</head>
+<body>
+    <div id="locations-page">
+        <h1>Featured Locations</h1>
+        <label for="location-sort">Sort by:</label>
+        <select id="location-sort" onchange="sortLocations()">
+            <option value="Name" {% if sort_option == 'Name' %}selected{% endif %}>Name</option>
+            <option value="Property Count" {% if sort_option == 'Property Count' %}selected{% endif %}>Property Count</option>
+            <option value="Average Price" {% if sort_option == 'Average Price' %}selected{% endif %}>Average Price</option>
+        </select>
+
+        <div id="locations-list">
+            {% if locations %}
+                <ul>
+                {% for location in locations %}
+                    <li>
+                        <strong>{{ location.location_name }}</strong> ({{ location.region }})<br>
+                        Avg Price: ${{ location.average_price }}<br>
+                        Property Count: {{ location.property_count }}<br>
+                        <button id="view-location-button-{{ location.location_id }}" onclick="location.href='{{ url_for('location_properties', location_name=location.location_name) }}'">View Properties</button>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No locations found.</p>
+            {% endif %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

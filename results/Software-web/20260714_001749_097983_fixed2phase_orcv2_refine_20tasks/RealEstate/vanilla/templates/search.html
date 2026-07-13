@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Search</title>
+    <script>
+        function filterProperties() {
+            const location = document.getElementById('location-input').value;
+            const priceMin = document.getElementById('price-range-min').value;
+            const priceMax = document.getElementById('price-range-max').value;
+            const propertyType = document.getElementById('property-type-filter').value;
+            const params = new URLSearchParams();
+            if(location) params.append('location', location);
+            if(priceMin) params.append('price_min', priceMin);
+            if(priceMax) params.append('price_max', priceMax);
+            if(propertyType) params.append('property_type', propertyType);
+            window.location = '/search?' + params.toString();
+        }
+    </script>
+</head>
+<body>
+    <div id="search-page">
+        <h1>Property Search</h1>
+        <label for="location-input">Location:</label>
+        <input type="text" id="location-input" value="{{ filter_params.location|default('') }}" oninput="filterProperties()">
+        <br>
+        <label for="price-range-min">Min Price:</label>
+        <input type="number" id="price-range-min" value="{{ filter_params.price_min|default(0) }}" oninput="filterProperties()">
+        <br>
+        <label for="price-range-max">Max Price:</label>
+        <input type="number" id="price-range-max" value="{{ filter_params.price_max|default(999999999) }}" oninput="filterProperties()">
+        <br>
+        <label for="property-type-filter">Property Type:</label>
+        <select id="property-type-filter" onchange="filterProperties()">
+            <option value="" {% if not filter_params.property_type %}selected{% endif %}>All</option>
+            <option value="House" {% if filter_params.property_type == 'House' %}selected{% endif %}>House</option>
+            <option value="Apartment" {% if filter_params.property_type == 'Apartment' %}selected{% endif %}>Apartment</option>
+            <option value="Condo" {% if filter_params.property_type == 'Condo' %}selected{% endif %}>Condo</option>
+            <option value="Land" {% if filter_params.property_type == 'Land' %}selected{% endif %}>Land</option>
+        </select>
+
+        <div id="properties-grid">
+            {% if properties %}
+                <ul>
+                {% for property in properties %}
+                    <li>
+                        <strong>{{ property.address }}</strong> - ${{ property.price }} - {{ property.property_type }}<br>
+                        <button id="view-property-button-{{ property.property_id }}" onclick="location.href='{{ url_for('property_details', property_id=property.property_id) }}'">View Details</button>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No properties found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

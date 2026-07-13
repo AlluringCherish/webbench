@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Song Catalog</title>
+</head>
+<body>
+<div id="catalog-page">
+    <h1>Song Catalog</h1>
+
+    <form method="get" action="{{ url_for('song_catalog') }}">
+        <input type="text" id="search-input" name="search" placeholder="Search songs" value="{{ search_query }}" />
+        <select id="genre-filter" name="genre">
+            <option value="All" {% if selected_genre == 'All' or selected_genre == '' %}selected{% endif %}>All Genres</option>
+            {% for genre in genres %}
+                <option value="{{ genre.genre_name }}" {% if genre.genre_name == selected_genre %}selected{% endif %}>{{ genre.genre_name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    <div id="songs-grid">
+        {% for song in songs %}
+        <div class="song-card">
+            <p><strong>{{ song.title }}</strong></p>
+            <p>Artist: {{ (artists|selectattr('artist_id', 'equalto', song.artist_id)|list)[0].name if (artists|selectattr('artist_id', 'equalto', song.artist_id)|list) else 'Unknown' }}</p>
+            <p>Album: {{ (albums|selectattr('album_id', 'equalto', song.album_id)|list)[0].title if (albums|selectattr('album_id', 'equalto', song.album_id)|list) else 'Unknown' }}</p>
+            <p>Duration: {{ song.duration }} sec</p>
+            <form method="post" action="{{ url_for('add_song_to_playlist', song_id=song.song_id) }}">
+                <label for="playlist_id_{{ song.song_id }}">Add to Playlist:</label>
+                <select name="playlist_id" id="playlist_id_{{ song.song_id }}">
+                    {% for playlist in (load_playlists() if 'load_playlists' in globals() else []) %}
+                    <option value="{{ playlist.playlist_id }}">{{ playlist.title }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" id="add-to-playlist-button-{{ song.song_id }}">Add</button>
+            </form>
+        </div>
+        {% else %}
+        <p>No songs found.</p>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>

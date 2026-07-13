@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Genre Exploration</title>
+</head>
+<body>
+<div id="genres-page">
+    <h1>Genre Exploration</h1>
+    <div id="genres-list">
+        <ul>
+            {% for genre in genres %}
+            <li>{{ genre.genre_name }}: {{ genre.description }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <form method="post" action="{{ url_for('genres') }}">
+        <label for="select-genre">Select Genre:</label>
+        <select id="select-genre" name="selected_genre">
+            {% for genre in genres %}
+            <option value="{{ genre.genre_name }}" {% if genre.genre_name == selected_genre %}selected{% endif %}>{{ genre.genre_name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">View</button>
+    </form>
+
+    <div id="genre-songs">
+        <h3>Songs</h3>
+        <ul>
+            {% for song in genre_songs %}
+            <li>{{ song.title }} by {{ song.genre }}</li>
+            {% else %}
+            <li>No songs available for this genre.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div id="genre-artists">
+        <h3>Artists</h3>
+        <ul>
+            {% for artist in genre_artists %}
+            <li>{{ artist.name }} ({{ artist.genre }})</li>
+            {% else %}
+            <li>No artists available for this genre.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

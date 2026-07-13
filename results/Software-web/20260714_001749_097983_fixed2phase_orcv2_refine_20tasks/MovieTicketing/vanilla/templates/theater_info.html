@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Theater Information</title>
+</head>
+<body>
+<div id="theater-page">
+    <h1>Theater Information</h1>
+
+    <label for="theater-location-filter">Filter by Location:</label>
+    <select id="theater-location-filter" onchange="filterLocation()">
+        <option value="">All Locations</option>
+        {% for city in cities %}
+        <option value="{{ city }}" {% if location_filter == city %}selected{% endif %}>{{ city }}</option>
+        {% endfor %}
+    </select>
+
+    <div id="theaters-list">
+        {% for theater in theaters %}
+        <div class="theater-item">
+            <h3>{{ theater.theater_name }}</h3>
+            <div>Location: {{ theater.location }}, {{ theater.city }}</div>
+            <div>Screens: {{ theater.screens }}</div>
+            <div id="facilities-display">Facilities: {{ theater.facilities | join(', ') }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+
+<script>
+function filterLocation() {
+    const location = document.getElementById('theater-location-filter').value;
+    const params = new URLSearchParams();
+    if (location) params.append('location', location);
+    window.location.href = '/theaters?' + params.toString();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Search Results</title>
+  <style>
+    #job-results, #company-results {
+      display: none;
+    }
+    #job-results.active, #company-results.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="search-results-page">
+    <h1>Search Results</h1>
+    <div id="search-query-display">Query: {{ query }}</div>
+
+    <div id="results-tabs">
+      <button id="tab-jobs" onclick="showTab('job-results')">Job Results</button>
+      <button id="tab-companies" onclick="showTab('company-results')">Company Results</button>
+    </div>
+
+    <div id="job-results" class="active">
+      <ul>
+        {% for job in job_results %}
+        <li>{{ job.title }} at {{ job.company_id }} - {{ job.location }}</li>
+        {% else %}
+        <li>No job results found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div id="company-results">
+      <ul>
+        {% for comp in company_results %}
+        <li>{{ comp.company_name }} ({{ comp.industry }})</li>
+        {% else %}
+        <li>No company results found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div id="no-results-message" style="display:none;">No results found.</div>
+
+    <script>
+      function showTab(tabId) {
+        document.getElementById('job-results').classList.remove('active');
+        document.getElementById('company-results').classList.remove('active');
+        document.getElementById(tabId).classList.add('active');
+      }
+
+      // Show no results if both are empty
+      if ({{ job_results|length }} === 0 && {{ company_results|length }} === 0) {
+        document.getElementById('no-results-message').style.display = 'block';
+      }
+    </script>
+  </div>
+</body>
+</html>

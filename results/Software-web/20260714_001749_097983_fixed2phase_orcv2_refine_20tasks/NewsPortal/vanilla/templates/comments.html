@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article Comments</title>
+</head>
+<body>
+<div id="comments-page">
+    <h1>Article Comments</h1>
+    <div>
+        <label for="filter-by-article">Filter by Article:</label>
+        <select id="filter-by-article" onchange="location.href='{{ url_for('comments') }}?article_id=' + this.value">
+            <option value="">All Articles</option>
+            {% for article in articles %}
+                <option value="{{ article.article_id }}" {% if article.article_id == selected_article %}selected{% endif %}>{{ article.title }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div id="comments-list">
+        {% for comment in comments %}
+            <div>
+                <h4>{{ comment.commenter_name }} on {{ comment.comment_date }}</h4>
+                <p><strong>{{ comment.article_title }}</strong></p>
+                <p>{{ comment.comment_text }}</p>
+            </div>
+        {% else %}
+            <p>No comments found.</p>
+        {% endfor %}
+    </div>
+    <button id="write-comment-button" onclick="location.href='{{ url_for('write_comment') }}'">Write Comment</button>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

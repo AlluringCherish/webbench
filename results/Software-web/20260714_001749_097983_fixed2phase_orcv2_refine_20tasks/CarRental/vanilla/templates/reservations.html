@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+</head>
+<body>
+    <div id="reservations-page">
+        <h1>My Reservations</h1>
+
+        <button id="sort-by-date-button" onclick="location.href='?sort=date'">Sort by Date</button>
+
+        <div id="reservations-list">
+            {% for item in reservations %}
+            <div>
+                <p>Reservation ID: {{ item.reservation.reservation_id }}</p>
+                <p>Vehicle: {{ item.vehicle.make }} {{ item.vehicle.model }}</p>
+                <p>Status: {{ item.reservation.status }}</p>
+                <button id="modify-reservation-button-{{ item.reservation.reservation_id }}" onclick="modifyReservation('{{ item.reservation.reservation_id }}')">Modify</button>
+                <button id="cancel-reservation-button-{{ item.reservation.reservation_id }}" onclick="cancelReservation('{{ item.reservation.reservation_id }}')">Cancel</button>
+            </div>
+            {% else %}
+            <p>No reservations found.</p>
+            {% endfor %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+
+        <form id="modify-form" method="post" style="display:none;">
+            <input type="hidden" name="action" value="modify">
+            <input type="hidden" name="reservation_id" id="modify-reservation-id">
+        </form>
+
+        <form id="cancel-form" method="post" style="display:none;">
+            <input type="hidden" name="action" value="cancel">
+            <input type="hidden" name="reservation_id" id="cancel-reservation-id">
+        </form>
+
+        <script>
+        function modifyReservation(id) {
+            document.getElementById('modify-reservation-id').value = id;
+            document.getElementById('modify-form').submit();
+        }
+        function cancelReservation(id) {
+            if(confirm('Are you sure you want to cancel this reservation?')) {
+                document.getElementById('cancel-reservation-id').value = id;
+                document.getElementById('cancel-form').submit();
+            }
+        }
+        </script>
+    </div>
+</body>
+</html>

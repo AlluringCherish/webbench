@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Bookings</title>
+</head>
+<body>
+    <div id="bookings-page">
+        <h1>My Bookings</h1>
+
+        <form method="get" action="/bookings">
+            <input type="text" id="booking-search-input" name="search" placeholder="Search bookings..." value="{{ search_query }}">
+            <button type="submit">Search</button>
+        </form>
+
+        <form method="post">
+            <table id="bookings-table" border="1">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Date</th>
+                        <th>Ticket Count</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ (events | selectattr('event_id', 'equalto', booking.event_id) | list)[0].event_name if events else 'N/A' }}</td>
+                        <td>{{ (events | selectattr('event_id', 'equalto', booking.event_id) | list)[0].date if events else 'N/A' }}</td>
+                        <td>{{ booking.ticket_count }}</td>
+                        <td>{{ booking.status }}</td>
+                        <td>
+                            {% if booking.status != 'Canceled' %}
+                            <button id="cancel-booking-button-{{ booking.booking_id }}" name="cancel_booking_id" value="{{ booking.booking_id }}" type="submit">Cancel Booking</button>
+                            {% else %}
+                            Canceled
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5">No bookings found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+
+        <button id="back-to-dashboard" onclick="window.location.href='/'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

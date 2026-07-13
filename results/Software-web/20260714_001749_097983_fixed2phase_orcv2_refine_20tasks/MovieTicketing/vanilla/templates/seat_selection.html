@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Seats</title>
+</head>
+<body>
+<div id="seat-selection-page">
+    <h1>Select Seats for Showtime {{ showtime.showtime_id }}</h1>
+
+    <div id="seat-map">
+        {% for row, seats in seats_by_row.items() %}
+        <div class="seat-row">
+            <span>{{ row }}: </span>
+            {% for seat in seats %}
+            <button id="seat-{{ seat.row }}{{ seat.column }}" 
+                    class="seat-button {% if seat.status == 'Booked' %}booked{% else %}available{% endif %}" 
+                    {% if seat.status == 'Booked' %}disabled{% endif %}
+                    onclick="toggleSeat('{{ seat.row }}{{ seat.column }}', this)">{{ seat.row }}{{ seat.column }}</button>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div id="selected-seats-display">Selected Seats: None</div>
+
+    <button id="proceed-booking-button" onclick="proceedBooking()">Proceed to Booking Confirmation</button>
+</div>
+
+<script>
+let selectedSeats = [];
+
+function toggleSeat(seatId, button) {
+    const index = selectedSeats.indexOf(seatId);
+    if(index > -1) {
+        selectedSeats.splice(index, 1);
+        button.style.backgroundColor = '';
+    } else {
+        selectedSeats.push(seatId);
+        button.style.backgroundColor = 'lightgreen';
+    }
+    updateSelectedSeatsDisplay();
+}
+
+function updateSelectedSeatsDisplay() {
+    const disp = document.getElementById('selected-seats-display');
+    if(selectedSeats.length > 0) {
+        disp.textContent = 'Selected Seats: ' + selectedSeats.join(', ');
+    } else {
+        disp.textContent = 'Selected Seats: None';
+    }
+}
+
+function proceedBooking() {
+    if(selectedSeats.length === 0) {
+        alert('Please select at least one seat to proceed.');
+        return;
+    }
+    // Redirect to booking confirmation with selected seats info
+    const params = new URLSearchParams();
+    params.append('seats', selectedSeats.join(','));
+    window.location.href = '/booking_confirmation/' + {{ showtime.showtime_id }} + '?' + params.toString();
+}
+</script>
+
+<style>
+.seat-button.booked {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+.seat-button.available {
+    cursor: pointer;
+}
+</style>
+
+</body>
+</html>

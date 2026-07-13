@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Active Orders</title>
+</head>
+<body>
+<div id="active-orders-page">
+    <h1>Active Orders</h1>
+    <form method="get">
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status">
+            {% set statuses = ['All', 'Preparing', 'On the Way', 'Delivered'] %}
+            {% for status in statuses %}
+            <option value="{{ status }}" {% if selected_status == status %}selected{% endif %}>{{ status }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+    <div id="orders-list">
+        {% for order in orders %}
+        <div class="order-card">
+            <p>Order ID: {{ order.order_id }}</p>
+            <p>Restaurant: {{ order.restaurant_name }}</p>
+            <p>Status: {{ order.status }}</p>
+            <p>ETA: {{ order.eta }}</p>
+            <button id="track-order-button-{{ order.order_id }}" onclick="window.location.href='{{ url_for('track_order', order_id=order.order_id) }}'">Track Order</button>
+        </div>
+        {% else %}
+        <p>No orders found.</p>
+        {% endfor %}
+    </div>
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

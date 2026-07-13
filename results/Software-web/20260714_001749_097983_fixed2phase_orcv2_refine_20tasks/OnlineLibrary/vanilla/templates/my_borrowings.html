@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Borrowings</title>
+</head>
+<body>
+<div id="my-borrows-page">
+    <form method="get" action="{{ url_for('my_borrowings') }}">
+        <label for="filter-status">Filter by status:</label>
+        <select name="filter-status" id="filter-status" onchange="this.form.submit()">
+            <option value="All" {% if filter_status == 'All' %}selected{% endif %}>All</option>
+            <option value="Active" {% if filter_status == 'Active' %}selected{% endif %}>Active</option>
+            <option value="Returned" {% if filter_status == 'Returned' %}selected{% endif %}>Returned</option>
+            <option value="Overdue" {% if filter_status == 'Overdue' %}selected{% endif %}>Overdue</option>
+        </select>
+    </form>
+    <form method="post">
+        <table id="borrows-table" border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Borrow Date</th>
+                    <th>Due Date</th>
+                    <th>Return Date</th>
+                    <th>Status</th>
+                    <th>Fine</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for borrow in borrowings %}
+                    <tr>
+                        <td>{{ books[borrow.book_id].title }}</td>
+                        <td>{{ borrow.borrow_date }}</td>
+                        <td>{{ borrow.due_date }}</td>
+                        <td>{{ borrow.return_date or '' }}</td>
+                        <td>{{ borrow.status }}</td>
+                        <td>{{ '%.2f'|format(borrow.fine_amount) }}</td>
+                        <td>
+                            {% if borrow.status == 'Active' %}
+                            <button id="return-book-button-{{ borrow.borrow_id }}" name="return_borrow_id" value="{{ borrow.borrow_id }}" type="submit">Return</button>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

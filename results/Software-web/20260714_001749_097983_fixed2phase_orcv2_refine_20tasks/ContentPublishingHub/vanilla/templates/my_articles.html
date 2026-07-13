@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Articles - ContentPublishingHub</title>
+</head>
+<body>
+<div id="my-articles-page">
+    <h1>My Articles</h1>
+
+    <label for="filter-article-status">Filter by Status:</label>
+    <select id="filter-article-status" onchange="filterStatus()">
+        <option value="" {% if not filter_status %}selected{% endif %}>All</option>
+        <option value="draft" {% if filter_status == 'draft' %}selected{% endif %}>Draft</option>
+        <option value="pending_review" {% if filter_status == 'pending_review' %}selected{% endif %}>Pending Review</option>
+        <option value="under_review" {% if filter_status == 'under_review' %}selected{% endif %}>Under Review</option>
+        <option value="approved" {% if filter_status == 'approved' %}selected{% endif %}>Approved</option>
+        <option value="published" {% if filter_status == 'published' %}selected{% endif %}>Published</option>
+        <option value="rejected" {% if filter_status == 'rejected' %}selected{% endif %}>Rejected</option>
+        <option value="archived" {% if filter_status == 'archived' %}selected{% endif %}>Archived</option>
+    </select>
+
+    <table id="articles-table" border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Created Date</th>
+                <th>Publish Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr>
+                <td>{{ article.article_id }}</td>
+                <td><a href="{{ url_for('edit_article', article_id=article.article_id) }}">{{ article.title }}</a></td>
+                <td>{{ article.category }}</td>
+                <td>{{ article.status }}</td>
+                <td>{{ article.created_date }}</td>
+                <td>{{ article.publish_date }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6">No articles found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button id="create-new-article" onclick="window.location.href='{{ url_for('create_article') }}'">Create New Article</button>
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+<script>
+function filterStatus() {
+    var selected = document.getElementById('filter-article-status').value;
+    var url = new URL(window.location.href);
+    if(selected) {
+        url.searchParams.set('filter-status', selected);
+    } else {
+        url.searchParams.delete('filter-status');
+    }
+    window.location.href = url.toString();
+}
+</script>
+</body>
+</html>
