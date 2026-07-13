@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Insurance Coverage</title>
+    <script>
+        function updateInsuranceDetails() {
+            let radios = document.getElementsByName('selected-insurance');
+            let descDiv = document.getElementById('insurance-description');
+            let priceDiv = document.getElementById('insurance-price');
+            let description = '';
+            let price = '';
+
+            for (let i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    description = radios[i].dataset.desc;
+                    price = radios[i].dataset.price;
+                    break;
+                }
+            }
+
+            descDiv.innerText = description;
+            priceDiv.innerText = price;
+        }
+    </script>
+</head>
+<body>
+<div id="insurance-page">
+    <h1>Select Insurance Coverage</h1>
+    <form method="post">
+        <div id="insurance-options">
+            {% for plan in insurance_plans %}
+            <label>
+                <input type="radio" id="select-insurance-{{ plan.insurance_id }}" name="selected-insurance" value="{{ plan.insurance_id }}"
+                       data-desc="{{ plan.description }}" data-price="Total Price: ${{ '%.2f' | format(plan.daily_cost * ((reservation.dropoff_date|int) - (reservation.pickup_date|int) + 1)) }}"
+                       {% if selected_plan and selected_plan.insurance_id == plan.insurance_id %}checked{% endif %}
+                       onchange="updateInsuranceDetails()">
+                {{ plan.plan_name }} (\${{ "%.2f" | format(plan.daily_cost) }}/day)
+            </label><br>
+            {% endfor %}
+        </div>
+        <div id="insurance-description">{{ selected_plan.description if selected_plan else 'Select an insurance plan' }}</div>
+        <div id="insurance-price">{{ 'Total Insurance Price: $%.2f' | format(insurance_price) if selected_plan else '' }}</div>
+        <button type="submit" id="confirm-booking-button">Confirm Booking</button>
+    </form>
+
+<script>
+    // Initialize insurance details on page load
+    updateInsuranceDetails();
+</script>
+</div>
+</body>
+</html>

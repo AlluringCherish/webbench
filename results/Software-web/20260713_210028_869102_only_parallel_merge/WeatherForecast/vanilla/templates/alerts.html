@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Alerts</title>
+</head>
+<body>
+<div id="alerts-page">
+    <h1>Weather Alerts</h1>
+    <form method="get" action="{{ url_for('alerts') }}">
+        <label for="severity-filter">Filter by Severity:</label>
+        <select id="severity-filter" name="severity" onchange="this.form.submit()">
+            {% for option in severity_options %}
+                <option value="{{ option }}" {% if severity_filter == option %}selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="location-filter-alerts">Filter by Location:</label>
+        <select id="location-filter-alerts" name="location_id" onchange="this.form.submit()">
+            <option value="">All Locations</option>
+            {% for loc in locations.values() %}
+                <option value="{{ loc.location_id }}" {% if location_filter == loc.location_id %}selected{% endif %}>{{ loc.location_name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <div id="alerts-list">
+        {% if alerts %}
+            <ul>
+            {% for alert in alerts %}
+                <li>
+                    <strong>{{ alert.alert_type }}</strong> ({{ alert.severity }}) at {{ alert.location_name }}<br/>
+                    {{ alert.description }}<br/>
+                    From: {{ alert.start_time }} To: {{ alert.end_time }}<br/>
+                    {% if not alert.is_acknowledged %}
+                    <form method="post" action="{{ url_for('acknowledge_alert', alert_id=alert.alert_id) }}">
+                        <button id="acknowledge-alert-button-{{ alert.alert_id }}" type="submit">Acknowledge</button>
+                    </form>
+                    {% else %}
+                    <em>Acknowledged</em>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No alerts available.</p>
+        {% endif %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

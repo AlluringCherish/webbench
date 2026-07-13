@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Booking History</title>
+</head>
+<body>
+    <div id="bookings-page">
+        <h1>Booking History</h1>
+        <form method="get" action="">
+            <label for="status-filter">Filter by Status:</label>
+            <select id="status-filter" name="status_filter">
+                <option value="all" {% if status_filter=='all' %}selected{% endif %}>All</option>
+                <option value="Confirmed" {% if status_filter=='confirmed' %}selected{% endif %}>Confirmed</option>
+                <option value="Cancelled" {% if status_filter=='cancelled' %}selected{% endif %}>Cancelled</option>
+                <option value="Completed" {% if status_filter=='completed' %}selected{% endif %}>Completed</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <table id="bookings-table" border="1">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Movie</th>
+                    <th>Date</th>
+                    <th>Seats</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.booking_id }}</td>
+                    <td>
+                        {% set st = showtime_dict.get(booking.showtime_id) %}
+                        {% if st %}
+                            {% set movie = movie_dict.get(st.movie_id) %}
+                            {{ movie.title if movie else 'Unknown' }}
+                        {% else %}
+                            Unknown
+                        {% endif %}
+                    </td>
+                    <td>{{ booking.booking_date }}</td>
+                    <td>{{ booking.seats_booked | join(', ') }}</td>
+                    <td>{{ booking.status }}</td>
+                    <td><button id="view-booking-button-{{ booking.booking_id }}">View Details</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

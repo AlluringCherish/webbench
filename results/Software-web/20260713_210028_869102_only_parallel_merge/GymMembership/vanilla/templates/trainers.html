@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trainer Profiles</title>
+    <script>
+        function filterTrainers() {
+            var search = document.getElementById('trainer-search').value;
+            var filter = document.getElementById('specialty-filter').value;
+            var params = new URLSearchParams();
+            if(search) params.append('search', search);
+            if(filter && filter !== 'All') params.append('filter', filter);
+            window.location.href = '/trainers?' + params.toString();
+        }
+    </script>
+</head>
+<body>
+    <div id="trainers-page">
+        <input id="trainer-search" type="text" value="{{ search_term }}" placeholder="Search by name or specialty..." oninput="filterTrainers()" />
+        <select id="specialty-filter" onchange="filterTrainers()">
+            <option value="All" {% if selected_filter == 'All' %}selected{% endif %}>All</option>
+            {% for specialty in specialty_options %}
+            <option value="{{ specialty }}" {% if selected_filter == specialty %}selected{% endif %}>{{ specialty }}</option>
+            {% endfor %}
+        </select>
+        <div id="trainers-grid">
+            {% for trainer in trainers %}
+            <div class="trainer-card">
+                <h3>{{ trainer.name }}</h3>
+                <p>Specialty: {{ trainer.specialty }}</p>
+                <p>Experience: {{ trainer.experience_years }} years</p>
+                <button id="view-trainer-button-{{ trainer.trainer_id }}" onclick="window.location.href='/trainers/{{ trainer.trainer_id }}'">View Profile</button>
+            </div>
+            {% else %}
+            <p>No trainers found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

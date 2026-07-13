@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+</head>
+<body>
+<div id="reservations-page">
+    <h1>My Reservations</h1>
+    <form method="post">
+        <div id="reservations-list">
+            {% for res in reservations %}
+            <div class="reservation-item">
+                <p>Vehicle: {% if res.vehicle_id in vehicles %}{{ vehicles[res.vehicle_id].make }} {{ vehicles[res.vehicle_id].model }}{% else %}Unknown{% endif %}</p>
+                <p>Pickup Date: {{ rentals[res.rental_id].pickup_date if res.rental_id in rentals else 'Unknown' }}</p>
+                <p>Status: {{ res.status }}</p>
+                <button type="submit" name="action" value="modify" id="modify-reservation-button-{{ res.reservation_id }}" formaction="{{ url_for('reservations') }}" formmethod="post">Modify</button>
+                <button type="submit" name="action" value="cancel" id="cancel-reservation-button-{{ res.reservation_id }}" formaction="{{ url_for('reservations') }}" formmethod="post">Cancel</button>
+                <input type="hidden" name="reservation_id" value="{{ res.reservation_id }}" />
+            </div>
+            <hr />
+            {% else %}
+            <p>No reservations found.</p>
+            {% endfor %}
+        </div>
+        <button type="submit" name="action" value="sort_date" id="sort-by-date-button">Sort by Date</button>
+    </form>
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Virtual Events</title>
+</head>
+<body>
+    <div id="virtual-events-page">
+        <h1>Virtual Events</h1>
+        <form method="post">
+            <label for="filter-event-type">Filter by Event Type:</label>
+            <select id="filter-event-type" name="filter-event-type">
+                <option value="">All Types</option>
+                <option value="Webinar" {% if filter_event_type == 'Webinar' %}selected{% endif %}>Webinar</option>
+                <option value="Artist Talk" {% if filter_event_type == 'Artist Talk' %}selected{% endif %}>Artist Talk</option>
+                <option value="Virtual Tour" {% if filter_event_type == 'Virtual Tour' %}selected{% endif %}>Virtual Tour</option>
+            </select>
+            <button id="apply-event-filter" type="submit">Apply Filter</button>
+        </form>
+        <table id="event-list" border="1">
+            <thead>
+                <tr>
+                    <th>Event ID</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Type</th>
+                    <th>Speaker</th>
+                    <th>Capacity</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>{{ event.event_id }}</td>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.time }}</td>
+                    <td>{{ event.event_type }}</td>
+                    <td>{{ event.speaker }}</td>
+                    <td>{{ event.capacity }}</td>
+                    <td>{{ event.description }}</td>
+                    <td>
+                        {% if user_registrations.get(event.event_id) is none %}
+                        <form method="post" style="display:inline;">
+                            <input type="hidden" name="register-event-id" value="{{ event.event_id }}">
+                            <button id="register-event-button-{{ event.event_id }}" type="submit">Register</button>
+                        </form>
+                        {% else %}
+                        <form method="post" style="display:inline;">
+                            <input type="hidden" name="cancel-registration-id" value="{{ user_registrations.get(event.event_id).registration_id }}">
+                            <button id="cancel-registration-button-{{ user_registrations.get(event.event_id).registration_id }}" type="submit">Cancel Registration</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='/'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

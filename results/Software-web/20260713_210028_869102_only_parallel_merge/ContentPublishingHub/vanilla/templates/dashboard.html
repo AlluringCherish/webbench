@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - ContentPublishingHub</title>
+</head>
+<body>
+<div id="dashboard-page">
+    <h1 id="welcome-message">Welcome, {{ username }}!</h1>
+
+    <section id="quick-stats">
+        <h2>Quick Stats</h2>
+        <ul>
+            <li>Drafts: {{ status_counts['draft'] if 'draft' in status_counts else 0 }}</li>
+            <li>Published: {{ status_counts['published'] if 'published' in status_counts else 0 }}</li>
+            <li>Pending Review: {{ status_counts['pending_review'] if 'pending_review' in status_counts else 0 }}</li>
+            <li>Approved: {{ status_counts['approved'] if 'approved' in status_counts else 0 }}</li>
+            <li>Rejected: {{ status_counts['rejected'] if 'rejected' in status_counts else 0 }}</li>
+            <li>Archived: {{ status_counts['archived'] if 'archived' in status_counts else 0 }}</li>
+        </ul>
+    </section>
+
+    <button id="create-article-button" onclick="window.location.href='/article/create'">Create Article</button>
+
+    <section id="recent-activity">
+        <h2>Recent Activity</h2>
+        <ul>
+            {% for activity in recent_activities %}
+                <li>{{ activity }}</li>
+            {% else %}
+                <li>No recent activity.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
+</body>
+</html>

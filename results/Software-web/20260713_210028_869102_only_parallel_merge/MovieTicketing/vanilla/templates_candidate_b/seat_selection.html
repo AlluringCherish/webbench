@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Seats</title>
+    <style>
+        #seat-map {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .seat-row {
+            display: flex;
+            gap: 5px;
+        }
+        .seat-Available {
+            background-color: #90ee90;
+            cursor: pointer;
+        }
+        .seat-Booked {
+            background-color: #ff6961;
+            cursor: not-allowed;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const seatStatusMap = JSON.parse('{{ seat_status_map | tojson | safe }}');
+            const selectedSeats = new Set();
+            function updateSelectedDisplay() {
+                const display = document.getElementById('selected-seats-display');
+                display.textContent = 'Selected Seats: ' + Array.from(selectedSeats).join(', ');
+            }
+            // Create seat buttons dynamically
+            const seatMapDiv = document.getElementById('seat-map');
+
+            // Clear manually inserted seats (if any)
+            seatMapDiv.innerHTML = '';
+
+            const rows = {{ rows|length }};
+
+            {% for row, seats_in_row in rows %}
+                let rowDiv = document.createElement('div');
+                rowDiv.className = 'seat-row';
+                let seatsInRow = {{ seats_in_row|length }};
+
+                {% for seat in seats_in_row %}
+                    let seatBtn = document.createElement('button');
+                    let seatCode = '{{ seat.row }}{{ seat.column }}';
+                    seatBtn.id = 'seat-' + seatCode;
+                    seatBtn.textContent = seatCode;
+                    seatBtn.className = 'seat-' + (seatStatusMap[seatCode] || 'Available');
+                    if ((seatStatusMap[seatCode] || 'Available') === 'Booked') {
+                        seatBtn.disabled = true;
+                    }
+                    seatBtn.addEventListener('click', function() {
+                        if (seatBtn.classList.contains('seat-Available')) {
+                            if (selectedSeats.has(seatCode)) {
+                                selectedSeats.delete(seatCode);
+                                seatBtn.style.border = '';
+                            } else {
+                                selectedSeats.add(seatCode);
+                                seatBtn.style.border = '2px solid blue';
+                            }
+                            updateSelectedDisplay();
+                        }
+                    });
+                    rowDiv.appendChild(seatBtn);
+                {% endfor %}
+
+                seatMapDiv.appendChild(rowDiv);
+            {% endfor %}
+
+            updateSelectedDisplay();
+
+            document.getElementById('proceed-booking-button').addEventListener('click', function() {
+                if (selectedSeats.size === 0) {
+                    alert('Please select at least one seat.');
+                    return;
+                }
+                // Redirect to confirmation page with query parameters
+                const showtimeId = '{{ showtime.showtime_id }}';
+                const seatsParam = Array.from(selectedSeats).join(',');
+                window.location.href = `{{ url_for('confirm_booking') }}?showtime_id=${showtimeId}&selected_seats=${encodeURIComponent(seatsParam)}`;
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="seat-selection-page">
+        <h1>Select Seats for {{ movie.title }}</h1>
+        <div id="seat-map">
+            <!-- Seat buttons dynamically created -->
+        </div>
+        <div id="selected-seats-display">Selected Seats: None</div>
+        <button id="proceed-booking-button">Proceed to Booking</button>
+        <button onclick="location.href='{{ url_for('showtimes', movie_id=movie.movie_id) }}'">Back to Showtimes</button>
+    </div>
+</body>
+</html>

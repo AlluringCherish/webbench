@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Calendar - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="calendar-page">
+        <h1>Content Calendar</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+              <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <form method="GET">
+            <label for="calendar-view">View:</label>
+            <select id="calendar-view" name="view" onchange="this.form.submit()">
+                <option value="day" {% if calendar_view == 'day' %}selected{% endif %}>Day</option>
+                <option value="week" {% if calendar_view == 'week' %}selected{% endif %}>Week</option>
+                <option value="month" {% if calendar_view == 'month' %}selected{% endif %}>Month</option>
+            </select>
+        </form>
+
+        <table id="calendar-grid" border="1">
+            <thead>
+                <tr><th>Publish Date</th><th>Article Title</th></tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                   {% if article.publish_date %}
+                   <tr>
+                     <td>{{ article.publish_date }}</td>
+                     <td>{{ article.title }}</td>
+                   </tr>
+                   {% endif %}
+                {% else %}
+                   <tr><td colspan="2">No scheduled articles.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Schedule New Publication</h2>
+        <form method="POST">
+            <label for="article_id">Article ID:</label><br>
+            <input type="number" id="article_id" name="article_id" min="1" required><br><br>
+
+            <label for="publish_date">Publish Date (YYYY-MM-DD HH:MM:SS):</label><br>
+            <input type="text" id="publish_date" name="publish_date" placeholder="2024-01-30 10:00:00" required><br><br>
+
+            <button id="schedule-button" type="submit">Schedule</button>
+        </form>
+
+        <button id="back-to-dashboard-calendar" type="button" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

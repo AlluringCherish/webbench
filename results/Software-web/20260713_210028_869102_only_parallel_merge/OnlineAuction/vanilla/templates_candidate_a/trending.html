@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<div id="trending-page">
+    <h1>{{ page_title }}</h1>
+
+    <form method="get" action="{{ url_for('trending') }}">
+        <label for="time-range-filter">Time Range:</label>
+        <select id="time-range-filter" name="time_range" onchange="this.form.submit()">
+            <option value="Last 24 Hours" {% if time_range == 'Last 24 Hours' %}selected{% endif %}>Last 24 Hours</option>
+            <option value="This Week" {% if time_range == 'This Week' %}selected{% endif %}>This Week</option>
+            <option value="All Time" {% if time_range == 'All Time' %}selected{% endif %}>All Time</option>
+        </select>
+    </form>
+
+    <div id="trending-list">
+        {% if trending %}
+            <ol>
+            {% for item in trending %}
+                <li>
+                    <strong>#{{ item.trending_rank }} - {{ item.item_name }}</strong>
+                    <p>Current Bid: ${{ '%.2f'|format(item.current_bid) }}, Bid Count: {{ item.bid_count }}</p>
+                    <button id="view-auction-button-{{ item.auction_id }}" onclick="window.location.href='{{ url_for('auction_details', auction_id=item.auction_id) }}'">View Details</button>
+                </li>
+            {% endfor %}
+            </ol>
+        {% else %}
+            <p>No trending auctions available.</p>
+        {% endif %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

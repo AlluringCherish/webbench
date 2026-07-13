@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Messages</title>
+    <style>
+        #conversation-list {
+            float: left;
+            width: 25%;
+            border-right: 1px solid #ccc;
+            height: 400px;
+            overflow-y: auto;
+        }
+        #message-area {
+            margin-left: 26%;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        #messages-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .message.sent {
+            background-color: #dff0d8;
+            text-align: right;
+        }
+        .message.received {
+            background-color: #f5f5f5;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div id="messages-page">
+        <h1>Messages</h1>
+        <div id="conversation-list">
+            <h3>Conversations</h3>
+            <ul>
+                {% for conv in conversations %}
+                <li>
+                    <a href="{{ url_for('messages', conversation=conv.other_user) }}">
+                    {{ conv.other_user }}
+                    </a>
+                    <br/>
+                    <small>Last: {{ conv.last_msg.subject }} at {{ conv.last_msg.timestamp }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div id="message-area">
+            {% if conv_with %}
+            <h3>Conversation with {{ conv_with }}</h3>
+            <div id="messages-container">
+                {% for msg in conv_messages %}
+                <div class="message {% if msg.sender_username == current_user %}sent{% else %}received{% endif %}">
+                    <b>{{ msg.subject }}</b> - <small>{{ msg.timestamp }}</small><br/>
+                    {{ msg.content }}
+                </div>
+                {% endfor %}
+            </div>
+            <form method="post" action="{{ url_for('messages') }}?conversation={{ conv_with }}">
+                <input type="hidden" name="recipient" value="{{ conv_with }}" />
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required />
+                <br />
+                <textarea id="message-input" name="message-input" rows="4" cols="50" required></textarea>
+                <br />
+                <button id="send-message-button" type="submit">Send Message</button>
+            </form>
+            {% else %}
+            <p>Select a conversation to view messages.</p>
+            {% endif %}
+            <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </div>
+    </div>
+</body>
+</html>

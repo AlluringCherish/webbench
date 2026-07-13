@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Select Seats</title>
+    <style>
+    .seat-button {
+        margin: 2px;
+        width: 30px;
+        height: 30px;
+    }
+    .seat-available {
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+    }
+    .seat-booked {
+        background-color: #f44336;
+        color: white;
+        cursor: not-allowed;
+    }
+    .selected-seat {
+        background-color: #ff9800 !important;
+    }
+    </style>
+    <script>
+    function toggleSeat(button) {
+        if (button.classList.contains('seat-booked')) return;
+        button.classList.toggle('selected-seat');
+        const seatCode = button.getAttribute('data-seat-code');
+        let selectedSeats = document.getElementById('selected-seats-display').innerText.split(', ').filter(s=>s);
+        if (button.classList.contains('selected-seat')) {
+            selectedSeats.push(seatCode);
+        } else {
+            selectedSeats = selectedSeats.filter(s=>s!==seatCode);
+        }
+        document.getElementById('selected-seats-display').innerText = selectedSeats.join(', ');
+        document.getElementById('selected_seats_input').value = selectedSeats.join(',');
+    }
+    function submitSeats() {
+        const seatsVal = document.getElementById('selected_seats_input').value;
+        if (!seatsVal) {
+            alert('Please select at least one seat.');
+            return false;
+        }
+        return true;
+    }
+    </script>
+</head>
+<body>
+    <div id="seat-selection-page">
+        <h1>Select Seats</h1>
+        <div id="seat-map">
+            <form method="post" onsubmit="return submitSeats()">
+                {% for row in rows %}
+                <div>
+                    <span>{{ row }}</span>
+                    {% for seat in seat_map[row] %}
+                    <button type="button" id="seat-{{ seat.row }}{{ seat.column }}" class="seat-button {% if seat.status.lower()=='available' %}seat-available{% else %}seat-booked{% endif %}" data-seat-code="{{ seat.row }}{{ seat.column }}" onclick="toggleSeat(this)" {% if seat.status.lower()!='available' %}disabled{% endif %}>{{ seat.row }}{{ seat.column }}</button>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                <div>Selected Seats: <span id="selected-seats-display"></span></div>
+                <input type="hidden" name="selected_seats" id="selected_seats_input" value="" />
+                <button id="proceed-booking-button" type="submit">Proceed to Booking</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

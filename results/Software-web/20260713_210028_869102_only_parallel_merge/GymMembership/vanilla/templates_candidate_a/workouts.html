@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Workout Records</title>
+    <script>
+      function applyFilter() {
+        const filter = document.getElementById('filter-by-type').value;
+        let url = '{{ url_for("workout_records") }}';
+        if(filter) {
+          url += '?filter=' + encodeURIComponent(filter);
+        }
+        window.location.href = url;
+      }
+    </script>
+</head>
+<body>
+    <div id="workouts-page">
+        <h1>My Workout Records</h1>
+        <label for="filter-by-type">Filter by Type:</label>
+        <select id="filter-by-type" onchange="applyFilter()">
+            <option value="">All</option>
+            <option value="Class" {% if filter_type == 'class' %}selected{% endif %}>Class</option>
+            <option value="PT Session" {% if filter_type == 'pt session' %}selected{% endif %}>PT Session</option>
+            <option value="Personal" {% if filter_type == 'personal' %}selected{% endif %}>Personal</option>
+        </select>
+
+        <table id="workouts-table" border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Duration (min)</th>
+                    <th>Calories Burned</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for workout in workouts %}
+                <tr>
+                    <td>{{ workout.workout_date }}</td>
+                    <td>{{ workout.workout_type }}</td>
+                    <td>{{ workout.duration_minutes }}</td>
+                    <td>{{ workout.calories_burned }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button id="log-workout-button" onclick="location.href='{{ url_for('log_workout') }}'">Log Workout</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

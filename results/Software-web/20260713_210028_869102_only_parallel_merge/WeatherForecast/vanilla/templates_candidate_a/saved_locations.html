@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Saved Locations</title>
+</head>
+<body>
+<div id="saved-locations-page">
+    {% if saved_locations %}
+    <table id="locations-table" border="1">
+        <thead>
+            <tr>
+                <th>Location Name</th>
+                <th>Current Temperature</th>
+                <th>Weather Condition</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for loc in saved_locations %}
+            <tr>
+                <td>{{ loc.location_name }}</td>
+                <td>{{ loc.temperature }}&deg;</td>
+                <td>{{ loc.condition }}</td>
+                <td>
+                    <form action="{{ url_for('view_saved_location_weather', location_id=loc.location_id) }}" method="get" style="display:inline;">
+                        <button id="view-location-weather-{{ loc.location_id }}" type="submit">View Weather</button>
+                    </form>
+                    <form action="{{ url_for('remove_saved_location', location_id=loc.location_id) }}" method="post" style="display:inline; margin-left:5px;">
+                        <button id="remove-location-button-{{ loc.location_id }}" type="submit">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No saved locations.</p>
+    {% endif %}
+    <button id="add-new-location-button" onclick="window.location.href='{{ url_for('search') }}'">Add New Location</button>
+</div>
+</body>
+</html>

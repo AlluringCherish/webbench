@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Flights</title>
+</head>
+<body>
+    <div id="transportation-page">
+        <h1>Book Flights</h1>
+        <form method="get" action="{{ url_for('transportation') }}">
+            <input id="departure-city" type="text" name="departure_city" placeholder="Departure City" value="{{ departure_city }}" />
+            <input id="arrival-city" type="text" name="arrival_city" placeholder="Arrival City" value="{{ arrival_city }}" />
+            <input id="departure-date" type="date" name="departure_date" />
+            <select id="flight-class-filter" name="flight_class_filter">
+                <option value="">--Flight Class--</option>
+                <option value="Economy" {% if flight_class_filter == 'Economy' %}selected{% endif %}>Economy</option>
+                <option value="Business" {% if flight_class_filter == 'Business' %}selected{% endif %}>Business</option>
+                <option value="First Class" {% if flight_class_filter == 'First Class' %}selected{% endif %}>First Class</option>
+            </select>
+            <button type="submit">Search Flights</button>
+        </form>
+        <div id="available-flights">
+            {% if flights %}
+            <ul>
+                {% for flight in flights %}
+                <li>
+                    Airline: {{ flight.airline }}<br />
+                    From: {{ flight.departure_city }} To: {{ flight.arrival_city }}<br />
+                    Departure: {{ flight.departure_time }} Arrival: {{ flight.arrival_time }}<br />
+                    Duration: {{ flight.duration }} Price: ${{ flight.price }}<br />
+                    Class: {{ flight.class_type }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No flights found matching your criteria.</p>
+            {% endif %}
+        </div>
+        <button onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

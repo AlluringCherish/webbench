@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Schedules</title>
+</head>
+<body>
+    <div id="schedules-page">
+        <h1>Event Schedules</h1>
+        <form method="get" action="/schedules">
+            <label for="schedule-filter-date">Filter by Date:</label>
+            <input type="date" id="schedule-filter-date" name="date" value="{{ filter_date }}" />
+            <label for="schedule-filter-event">Filter by Event:</label>
+            <select id="schedule-filter-event" name="event">
+                <option value="">All Events</option>
+                {% for event in events %}
+                    <option value="{{ event.event_id }}" {% if filter_event == event.event_id|string %}selected{% endif %}>{{ event.event_name }}</option>
+                {% endfor %}
+            </select>
+            <button id="export-schedule-button" type="button" onclick="alert('Export functionality is not implemented')">Export Schedule</button>
+            <button type="submit">Apply Filters</button>
+        </form>
+
+        <div id="schedules-timeline">
+            {% if schedules %}
+                <ul>
+                {% for sched in schedules %}
+                    <li>
+                        <strong>{{ sched.session_title }}</strong> ({{ sched.session_time }} - Duration: {{ sched.duration_minutes }} mins)<br/>
+                        Speaker: {{ sched.speaker }}<br/>
+                        Event: {{ sched.event_name }}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No schedules found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

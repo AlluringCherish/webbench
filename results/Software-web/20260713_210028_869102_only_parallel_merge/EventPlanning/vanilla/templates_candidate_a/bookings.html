@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Bookings</title>
+</head>
+<body>
+    <div id="bookings-page">
+        <h1>My Bookings</h1>
+        <form method="get" action="/bookings">
+            <input type="text" id="booking-search-input" name="search" placeholder="Search bookings" value="{{ search_query }}" />
+            <button type="submit">Search</button>
+            <button id="back-to-dashboard" type="button" onclick="window.location.href='/'">Back to Dashboard</button>
+        </form>
+
+        <table id="bookings-table" border="1" cellspacing="0" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Tickets</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if bookings %}
+                    {% for b in bookings %}
+                        <tr>
+                            <td>{{ b.event_name }}</td>
+                            <td>{{ b.booking_date }}</td>
+                            <td>{{ b.ticket_count }}</td>
+                            <td>{{ b.ticket_type }}</td>
+                            <td>{{ b.status }}</td>
+                            <td>
+                                {% if b.status != 'Cancelled' and b.status != 'Cancelled' %}
+                                    <form method="post" action="/cancel_booking/{{ b.booking_id }}" style="display:inline;">
+                                        <button id="cancel-booking-button-{{ b.booking_id }}" type="submit">Cancel</button>
+                                    </form>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="6">No bookings found.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Packages</title>
+</head>
+<body>
+<div id="packages-page">
+    <h1>Travel Packages</h1>
+    {% if message %}<p><strong>{{ message }}</strong></p>{% endif %}
+
+    <form method="get">
+        <label for="duration-filter">Filter by Duration:</label>
+        <select id="duration-filter" name="duration_filter">
+            <option value="">All</option>
+            <option value="3-5 days" {% if duration_filter == '3-5 days' %}selected{% endif %}>3-5 days</option>
+            <option value="7-10 days" {% if duration_filter == '7-10 days' %}selected{% endif %}>7-10 days</option>
+            <option value="14+ days" {% if duration_filter == '14+ days' %}selected{% endif %}>14+ days</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    <div id="packages-grid">
+        {% if packages %}
+            {% for pkg in packages %}
+            <div class="package-card">
+                <h3>{{ pkg.package_name }}</h3>
+                <p>Destination: {{ pkg.destination }}</p>
+                <p>Duration: {{ pkg.duration_days }} days</p>
+                <p>Price: ${{ '%.2f'|format(pkg.price) }}</p>
+                <button id="view-package-details-button-{{ pkg.package_id }}" onclick="alert('Package details for {{ pkg.package_name }}')">View Details</button>
+                <form method="post" style="display:inline;">
+                    <input type="hidden" name="package_id" value="{{ pkg.package_id }}" />
+                    <button type="submit" id="book-package-button-{{ pkg.package_id }}">Book Package</button>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No packages found.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

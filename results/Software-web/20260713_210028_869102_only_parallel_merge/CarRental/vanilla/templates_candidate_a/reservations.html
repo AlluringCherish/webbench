@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+</head>
+<body>
+<div id="reservations-page">
+    <h1>My Reservations</h1>
+    <div id="reservations-list">
+        {% if reservations %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Reservation ID</th>
+                    <th>Vehicle</th>
+                    <th>Pickup Date</th>
+                    <th>Dropoff Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in reservations %}
+                <tr>
+                    <td>{{ r.reservation_id }}</td>
+                    <td>{{ r.vehicle_info }}</td>
+                    <td>{{ r.pickup_date }}</td>
+                    <td>{{ r.dropoff_date }}</td>
+                    <td>{{ r.status }}</td>
+                    <td>
+                        <form method="post" style="display:inline;">
+                            <input type="hidden" name="reservation_id" value="{{ r.reservation_id }}">
+                            <button type="submit" name="action" value="modify" id="modify-reservation-button-{{ r.reservation_id }}">Modify</button>
+                            <button type="submit" name="action" value="cancel" id="cancel-reservation-button-{{ r.reservation_id }}">Cancel</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No reservations found.</p>
+        {% endif %}
+    </div>
+    <button id="sort-by-date-button" formmethod="post" name="action" value="sort_by_date">Sort by Date</button>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

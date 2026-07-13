@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Artifact Catalog</title>
+</head>
+<body>
+<div id="artifact-catalog-page">
+    <h1>Artifact Catalog</h1>
+    <form method="post">
+        <input id="search-artifact" name="search-artifact" type="text" placeholder="Search by name or ID" value="{{ search_term }}" />
+        <label for="filter-period">Period:</label>
+        <select id="filter-period" name="filter-period">
+            <option value="">All</option>
+            {% for period in periods %}
+                <option value="{{ period }}" {% if period == filter_period %}selected{% endif %}>{{ period }}</option>
+            {% endfor %}
+        </select>
+        <label for="filter-origin">Origin:</label>
+        <select id="filter-origin" name="filter-origin">
+            <option value="">All</option>
+            {% for origin in origins %}
+                <option value="{{ origin }}" {% if origin == filter_origin %}selected{% endif %}>{{ origin }}</option>
+            {% endfor %}
+        </select>
+        <button id="apply-artifact-filter" type="submit">Apply Filters</button>
+    </form>
+    <table id="artifact-table" border="1">
+        <thead>
+        <tr>
+            <th>Artifact ID</th>
+            <th>Name</th>
+            <th>Period</th>
+            <th>Origin</th>
+            <th>Exhibition Title</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for artifact in artifacts %}
+            <tr>
+                <td>{{ artifact.artifact_id }}</td>
+                <td>{{ artifact.artifact_name }}</td>
+                <td>{{ artifact.period }}</td>
+                <td>{{ artifact.origin }}</td>
+                <td>{{ exhibition_dict.get(artifact.exhibition_id, 'N/A') }}</td>
+                <td>
+                    <button id="view-artifact-button-{{ artifact.artifact_id }}">View</button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

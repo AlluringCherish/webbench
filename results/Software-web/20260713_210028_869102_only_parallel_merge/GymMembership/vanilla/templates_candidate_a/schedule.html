@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class Schedule</title>
+    <script>
+      function applyFilter() {
+        let search = document.getElementById('schedule-search').value;
+        let filter = document.getElementById('schedule-filter').value;
+        let url = '{{ url_for("class_schedule") }}?search=' + encodeURIComponent(search) + '&filter=' + encodeURIComponent(filter);
+        window.location.href = url;
+      }
+      function enrollClass(classId) {
+        alert('You have enrolled in the class with ID: ' + classId);
+      }
+    </script>
+</head>
+<body>
+    <div id="schedule-page">
+        <h1>Class Schedule</h1>
+
+        <input type="text" id="schedule-search" placeholder="Search by class or trainer" value="{{ search_term }}" oninput="applyFilter()">
+        <select id="schedule-filter" onchange="applyFilter()">
+            <option value="">All</option>
+            <option value="Yoga" {% if selected_filter == 'yoga' %}selected{% endif %}>Yoga</option>
+            <option value="CrossFit" {% if selected_filter == 'crossfit' %}selected{% endif %}>CrossFit</option>
+            <option value="Pilates" {% if selected_filter == 'pilates' %}selected{% endif %}>Pilates</option>
+            <option value="Boxing" {% if selected_filter == 'boxing' %}selected{% endif %}>Boxing</option>
+        </select>
+
+        <div id="classes-grid">
+            {% for cls in classes %}
+            <div class="class-card">
+                <h2>{{ cls.class_name }}</h2>
+                <p>Trainer: {{ cls.trainer_id }}</p>
+                <p>Type: {{ cls.class_type }}</p>
+                <p>Schedule: {{ cls.schedule_day }}, {{ cls.schedule_time }} ({{ cls.duration }} mins)</p>
+                <p>Capacity: {{ cls.capacity }}</p>
+                <button id="enroll-class-button-{{ cls.class_id }}" onclick="enrollClass({{ cls.class_id }})">Enroll</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

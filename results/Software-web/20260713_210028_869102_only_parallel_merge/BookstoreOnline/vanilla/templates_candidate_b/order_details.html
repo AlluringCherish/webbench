@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<div id="order-details-page">
+    <h1>Order Details</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <p><strong>Order ID:</strong> {{ order.order_id }}</p>
+    <p><strong>Date:</strong> {{ order.order_date }}</p>
+    <p><strong>Total Amount:</strong> ${{ '%.2f'|format(order.total_amount) }}</p>
+    <p><strong>Status:</strong> {{ order.status }}</p>
+    <p><strong>Shipping Address:</strong> {{ order.shipping_address }}</p>
+
+    <h2>Order Items</h2>
+    <table border="1" cellpadding="5">
+        <thead>
+            <tr><th>Title</th><th>Quantity</th><th>Price</th></tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ item.title }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ '%.2f'|format(item.price) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button id="back-to-orders-button" onclick="location.href='{{ url_for('order_history') }}'">Back to Orders</button>
+</div>
+</body>
+</html>

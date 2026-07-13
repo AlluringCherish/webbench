@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<div id="admin-panel-page">
+    <h1>{{ page_title }}</h1>
+    <h2>Pending Applications</h2>
+    <div id="pending-applications">
+        {% if pending_applications %}
+            <ul>
+            {% for app in pending_applications %}
+                <li>
+                    <strong>{{ app.applicant_name }}</strong> applied for pet ID {{ app.pet_id }} on {{ app.date_submitted }} - Status: {{ app.status }}
+                    <form method="post" style="display:inline;">
+                        <input type="hidden" name="application_id" value="{{ app.application_id }}" />
+                        <button name="action" value="approve">Approve</button>
+                        <button name="action" value="reject">Reject</button>
+                    </form>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No pending applications.</p>
+        {% endif %}
+    </div>
+    <h2>All Pets</h2>
+    <div id="all-pets-list">
+        {% if pets %}
+            <ul>
+            {% for pet in pets %}
+                <li>
+                    <strong>{{ pet.name }}</strong> ({{ pet.species }}) - Status: {{ pet.status }}
+                    <form method="post" style="display:inline;">
+                        <input type="hidden" name="delete_pet_id" value="{{ pet.pet_id }}" />
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No pets found.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    <button id="add-pet-button" onclick="window.location.href='{{ url_for('add_pet') }}'">Add New Pet</button>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</div>
+</body>
+</html>

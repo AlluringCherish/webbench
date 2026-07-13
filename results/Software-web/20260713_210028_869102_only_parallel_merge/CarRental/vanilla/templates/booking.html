@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Your Rental</title>
+</head>
+<body>
+<div id="booking-page">
+    <h1>Book Your Rental</h1>
+    <form method="post">
+        <label for="pickup-location">Pickup Location:</label>
+        <select id="pickup-location" name="pickup-location">
+            {% for loc in locations %}
+            <option value="{{ loc.city }}" {% if pickup_location==loc.city %}selected{% endif %}>{{ loc.city }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="dropoff-location">Dropoff Location:</label>
+        <select id="dropoff-location" name="dropoff-location">
+            {% for loc in locations %}
+            <option value="{{ loc.city }}" {% if dropoff_location==loc.city %}selected{% endif %}>{{ loc.city }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="pickup-date">Pickup Date:</label>
+        <input type="date" id="pickup-date" name="pickup-date" value="{{ pickup_date if pickup_date else '' }}">
+        <br>
+        <label for="dropoff-date">Dropoff Date:</label>
+        <input type="date" id="dropoff-date" name="dropoff-date" value="{{ dropoff_date if dropoff_date else '' }}">
+        <br>
+        <button type="submit" name="action" value="calculate_price" id="calculate-price-button">Calculate Price</button>
+    </form>
+
+    {% if total_price is not none %}
+        <div id="total-price">
+            <p>Total Price: ${{ "%.2f" | format(total_price) }}</p>
+        </div>
+        <form method="post">
+            <input type="hidden" name="pickup-location" value="{{ pickup_location }}">
+            <input type="hidden" name="dropoff-location" value="{{ dropoff_location }}">
+            <input type="hidden" name="pickup-date" value="{{ pickup_date }}">
+            <input type="hidden" name="dropoff-date" value="{{ dropoff_date }}">
+            <button type="submit" name="action" value="proceed_to_insurance" id="proceed-to-insurance-button">Proceed to Insurance</button>
+        </form>
+    {% endif %}
+
+</div>
+</body>
+</html>

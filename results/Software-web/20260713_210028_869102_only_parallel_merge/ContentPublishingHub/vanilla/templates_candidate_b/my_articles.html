@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Articles - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="my-articles-page">
+        <h1>My Articles</h1>
+
+        <form method="GET">
+            <label for="filter-article-status">Filter by Status:</label>
+            <select id="filter-article-status" name="status">
+                <option value="">-- All --</option>
+                {% for status in statuses %}
+                <option value="{{ status }}" {% if status == filter_status %}selected{% endif %}>{{ status }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <table id="articles-table" border="1">
+            <thead>
+                <tr><th>Title</th><th>Status</th><th>Category</th><th>Publish Date</th><th>Edit</th></tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr>
+                    <td>{{ article.title }}</td>
+                    <td>{{ article.status }}</td>
+                    <td>{{ article.category }}</td>
+                    <td>{{ article.publish_date }}</td>
+                    <td><a href="{{ url_for('edit_article', article_id=article.article_id) }}">Edit</a></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5">No articles found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button id="create-new-article" onclick="window.location.href='{{ url_for('create_article') }}'">Create New Article</button>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

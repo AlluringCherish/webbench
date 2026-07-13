@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Published Articles - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="published-articles-page">
+        <h1>Published Articles</h1>
+
+        <form method="GET">
+            <label for="filter-published-category">Filter by Category:</label>
+            <select id="filter-published-category" name="category">
+                <option value="">-- All --</option>
+                {% for category in categories %}
+                <option value="{{ category }}" {% if category == filter_category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="sort-published">Sort by:</label>
+            <select id="sort-published" name="sort">
+                <option value="date_desc" {% if sort == 'date_desc' %}selected{% endif %}>Date Descending</option>
+                <option value="date_asc" {% if sort == 'date_asc' %}selected{% endif %}>Date Ascending</option>
+                <option value="popularity" {% if sort == 'popularity' %}selected{% endif %}>Popularity</option>
+                <option value="title_az" {% if sort == 'title_az' %}selected{% endif %}>Title A-Z</option>
+                <option value="title_za" {% if sort == 'title_za' %}selected{% endif %}>Title Z-A</option>
+            </select>
+
+            <button type="submit">Apply</button>
+        </form>
+
+        <div id="published-articles-grid">
+            {% for article in articles %}
+            <div class="article-card" style="border: 1px solid #000; margin: 10px; padding: 10px;">
+                <h3>{{ article.title }}</h3>
+                {% if article.featured_image %}
+                <img src="{{ article.featured_image }}" alt="{{ article.title }} image" style="max-width:200px;"><br>
+                {% endif %}
+                <p>{{ article.meta_description }}</p>
+            </div>
+            {% else %}
+            <p>No published articles found.</p>
+            {% endfor %}
+        </div>
+
+        <button id="back-to-dashboard-published" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

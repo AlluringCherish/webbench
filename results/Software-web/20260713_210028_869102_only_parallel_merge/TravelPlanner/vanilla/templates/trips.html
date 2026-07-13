@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Trips</title>
+</head>
+<body>
+    <div id="trips-page">
+        <h1>My Trips</h1>
+        {% if trips %}
+        <table id="trips-table" border="1" cellspacing="0" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>Trip Name</th>
+                    <th>Destination</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trip in trips %}
+                <tr>
+                    <td>{{ trip.trip_name }}</td>
+                    <td>{{ trip.destination }}</td>
+                    <td>{{ trip.start_date }}</td>
+                    <td>{{ trip.end_date }}</td>
+                    <td>{{ trip.status }}</td>
+                    <td>
+                        <button id="view-trip-details-button-{{ trip.trip_id }}" onclick="alert('Details for {{ trip.trip_name }}')">View</button>
+                        <form method="post" action="{{ url_for('trips') }}" style="display:inline-block;">
+                            <input type="hidden" name="trip_id" value="{{ trip.trip_id }}" />
+                            <button id="edit-trip-button-{{ trip.trip_id }}" type="submit" name="action" value="edit">Edit</button>
+                            <button id="delete-trip-button-{{ trip.trip_id }}" type="submit" name="action" value="delete" onclick="return confirm('Are you sure you want to delete this trip?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No trips found.</p>
+        {% endif %}
+        <button onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

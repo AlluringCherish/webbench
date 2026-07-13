@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<div id="checkout-page">
+    <h1>Checkout</h1>
+    <div>Total Amount: ${{ '%.2f'|format(total_amount) }}</div>
+    <form method="post" action="{{ url_for('checkout') }}">
+        <label for="customer-name">Customer Name:</label><br>
+        <input type="text" id="customer-name" name="customer-name"><br><br>
+
+        <label for="shipping-address">Shipping Address:</label><br>
+        <textarea id="shipping-address" name="shipping-address" rows="4" cols="50"></textarea><br><br>
+
+        <label for="payment-method">Payment Method:</label><br>
+        <select id="payment-method" name="payment-method">
+            <option value="">Select</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+        </select><br><br>
+
+        <button type="submit" id="place-order-button">Place Order</button>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li style="color: {% if category == 'error' %}red{% else %}green{% endif %};">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</div>
+</body>
+</html>

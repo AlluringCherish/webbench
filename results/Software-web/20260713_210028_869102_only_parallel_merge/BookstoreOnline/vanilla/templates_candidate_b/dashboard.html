@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>Bookstore Dashboard</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <div id="featured-books" style="display:flex; flex-wrap:wrap; gap: 10px;">
+        {% for book in featured_books %}
+            <div style="border: 1px solid #ccc; padding: 10px; width: 150px;">
+                <a href="{{ url_for('book_details', book_id=book.book_id) }}">
+                    <img src="/static/book_covers/{{ book.book_id }}.jpg" alt="{{ book.title }}" style="width: 100%;">
+                    <div>{{ book.title }}</div>
+                    <div>{{ book.author }}</div>
+                </a>
+            </div>
+        {% else %}
+            <p>No featured books available.</p>
+        {% endfor %}
+    </div>
+
+    <button id="browse-catalog-button" onclick="location.href='{{ url_for('book_catalog') }}'">Browse Catalog</button>
+    <button id="view-cart-button" onclick="location.href='{{ url_for('shopping_cart') }}'">View Cart</button>
+    <button id="bestsellers-button" onclick="location.href='{{ url_for('bestsellers_page') }}'">Bestsellers</button>
+
+</div>
+</body>
+</html>

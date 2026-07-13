@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<div id="application-page">
+    <h1>{{ page_title }}</h1>
+    <form method="post">
+        <label for="applicant-name">Applicant Name:</label>
+        <input id="applicant-name" name="applicant_name" type="text" value="{{ (form.applicant_name if form) or '' }}" required />
+        <br />
+        <label for="applicant-phone">Phone:</label>
+        <input id="applicant-phone" name="applicant_phone" type="text" value="{{ (form.applicant_phone if form) or '' }}" required />
+        <br />
+        <label for="housing-type">Housing Type:</label>
+        <select id="housing-type" name="housing_type">
+            <option value="House" {% if form and form.housing_type == 'House' %}selected{% endif %}>House</option>
+            <option value="Apartment" {% if form and form.housing_type == 'Apartment' %}selected{% endif %}>Apartment</option>
+            <option value="Condo" {% if form and form.housing_type == 'Condo' %}selected{% endif %}>Condo</option>
+            <option value="Other" {% if form and form.housing_type == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+        <br />
+        <label for="reason">Reason for Adoption:</label><br />
+        <textarea id="reason" name="reason" required>{{ (form.reason if form) or '' }}</textarea>
+        <br />
+        <button id="submit-application-button" type="submit">Submit Application</button>
+        <button id="back-to-pet" type="button" onclick="window.location.href='{{ url_for('pet_details', pet_id=pet.pet_id) }}'">Back to Pet</button>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</div>
+</body>
+</html>

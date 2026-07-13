@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Active Orders</title>
+</head>
+<body>
+<div id="active-orders-page">
+    <h1>Active Orders</h1>
+    <form method="get" action="{{ url_for('active_orders') }}">
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status" onchange="this.form.submit()">
+            {% for status in statuses %}
+                <option value="{{ status }}" {% if status_filter == status %}selected{% endif %}>{{ status }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <div id="orders-list">
+        {% for order in orders %}
+            <div class="order-card">
+                <p>Order ID: {{ order.order_id }}</p>
+                <p>Restaurant: {{ order.restaurant_name }}</p>
+                <p>Status: {{ order.status }}</p>
+                <p>ETA: {% if order.status != 'Delivered' %}Not available{% else %}Delivered{% endif %}</p>
+                <button id="track-order-button-{{ order.order_id }}" onclick="window.location='{{ url_for('order_tracking', id=order.order_id) }}'">Track Order</button>
+            </div>
+        {% endfor %}
+    </div>
+    <button id="back-to-dashboard" onclick="window.location='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

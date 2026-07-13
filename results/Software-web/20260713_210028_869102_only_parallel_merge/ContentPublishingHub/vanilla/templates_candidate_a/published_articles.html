@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Published Articles - ContentPublishingHub</title>
+    <style>
+        #published-articles-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .article-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 250px;
+            box-shadow: 1px 1px 4px #aaa;
+        }
+        .article-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+<div id="published-articles-page">
+    <h1>Published Articles</h1>
+
+    <form method="get">
+        <label for="filter-published-category">Filter by Category:</label>
+        <select id="filter-published-category" name="category" onchange="this.form.submit()">
+            <option value="">-- All --</option>
+            {% for category in categories %}
+                <option value="{{ category }}" {% if current_category == category %}selected{% endif %}>{{ category.title() }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="sort-published">Sort by:</label>
+        <select id="sort-published" name="sort" onchange="this.form.submit()">
+            <option value="date_desc" {% if current_sort == 'date_desc' %}selected{% endif %}>Date Descending</option>
+            <option value="date_asc" {% if current_sort == 'date_asc' %}selected{% endif %}>Date Ascending</option>
+            <option value="popularity" {% if current_sort == 'popularity' %}selected{% endif %}>Popularity</option>
+            <option value="title_asc" {% if current_sort == 'title_asc' %}selected{% endif %}>Title A-Z</option>
+            <option value="title_desc" {% if current_sort == 'title_desc' %}selected{% endif %}>Title Z-A</option>
+        </select>
+    </form>
+
+    <div id="published-articles-grid">
+        {% for article in articles %}
+        <div class="article-card">
+            <h3>{{ article.title }}</h3>
+            {% if article.featured_image %}
+                <img src="{{ article.featured_image }}" alt="{{ article.title }}" class="article-image">
+            {% endif %}
+            <p>{{ article.meta_description }}</p>
+        </div>
+        {% else %}
+        <p>No published articles found.</p>
+        {% endfor %}
+    </div>
+
+    <button id="back-to-dashboard-published" onclick="window.location.href='/dashboard'">Back to Dashboard</button>
+</div>
+</body>
+</html>

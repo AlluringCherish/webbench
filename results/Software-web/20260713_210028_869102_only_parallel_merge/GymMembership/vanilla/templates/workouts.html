@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Workout Records</title>
+    <script>
+        function filterWorkouts() {
+            var selected = document.getElementById('filter-by-type').value;
+            window.location.href = '/workouts' + (selected ? ('?filter=' + encodeURIComponent(selected)) : '');
+        }
+    </script>
+</head>
+<body>
+    <div id="workouts-page">
+        <select id="filter-by-type" onchange="filterWorkouts()">
+            <option value="">All</option>
+            {% for wtype in workout_types %}
+            <option value="{{ wtype }}" {% if selected_filter == wtype %}selected{% endif %}>{{ wtype }}</option>
+            {% endfor %}
+        </select>
+        <table id="workouts-table" border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Duration (min)</th>
+                    <th>Calories Burned</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for workout in workouts %}
+                <tr>
+                    <td>{{ workout.workout_date }}</td>
+                    <td>{{ workout.workout_type }}</td>
+                    <td>{{ workout.duration_minutes }}</td>
+                    <td>{{ workout.calories_burned }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">No workout records found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="log-workout-button" onclick="window.location.href='/log-workout'">Log New Workout</button>
+        <button id="back-to-dashboard" onclick="window.location.href='/dashboard'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

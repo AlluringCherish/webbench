@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<div id="reviews-page">
+    <h1>Customer Reviews</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form method="get" action="{{ url_for('reviews_page') }}">
+        <label for="filter-by-rating">Filter by Rating:</label>
+        <select id="filter-by-rating" name="rating" onchange="this.form.submit()">
+            <option value="All" {% if rating_filter == 'All' %}selected{% endif %}>All</option>
+            <option value="5 stars" {% if rating_filter == '5 stars' %}selected{% endif %}>5 stars</option>
+            <option value="4 stars" {% if rating_filter == '4 stars' %}selected{% endif %}>4 stars</option>
+            <option value="3 stars" {% if rating_filter == '3 stars' %}selected{% endif %}>3 stars</option>
+            <option value="2 stars" {% if rating_filter == '2 stars' %}selected{% endif %}>2 stars</option>
+            <option value="1 star" {% if rating_filter == '1 star' %}selected{% endif %}>1 star</option>
+        </select>
+    </form>
+
+    <div id="reviews-list">
+        {% for review in reviews %}
+            <div style="border: 1px solid #ccc; margin: 5px; padding: 5px;">
+                <strong>{{ review.book_title }}</strong><br>
+                Rating: {{ review.rating }} stars<br>
+                <p>{{ review.review_text }}</p>
+            </div>
+        {% else %}
+            <p>No reviews found.</p>
+        {% endfor %}
+    </div>
+
+    <button id="write-review-button" onclick="location.href='{{ url_for('write_review') }}'">Write a Review</button>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

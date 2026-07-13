@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version History - ContentPublishingHub</title>
+</head>
+<body>
+    <div id="version-history-page">
+        <h1>Version History for Article ID {{ article.article_id }}</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+              <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <table id="versions-list" border="1">
+                <thead>
+                    <tr><th>Version</th><th>Date</th><th>Author</th><th>Change Summary</th><th>Restore</th><th>Select for Compare</th></tr>
+                </thead>
+                <tbody>
+                    {% for v in versions %}
+                    <tr>
+                        <td>{{ v.version_number }}</td>
+                        <td>{{ v.created_date }}</td>
+                        <td>{{ v.author }}</td>
+                        <td>{{ v.change_summary }}</td>
+                        <td><button id="restore-version-{{ v.version_number }}" name="restore_version" value="{{ v.version_number }}" type="submit">Restore</button></td>
+                        <td>
+                            <input type="radio" name="version1" value="{{ v.version_number }}" {% if selected_v1_id == v.version_number %}checked{% endif %}>
+                            <input type="radio" name="version2" value="{{ v.version_number }}" {% if selected_v2_id == v.version_number %}checked{% endif %}>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <button type="submit">Compare Selected Versions</button>
+        </form>
+
+        {% if compare_result %}
+        <div id="version-comparison">
+            <h2>Version Comparison</h2>
+            <table border="1" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Version {{ compare_result.v1.version_number }}</th>
+                        <th>Version {{ compare_result.v2.version_number }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="white-space: pre-wrap;">{{ compare_result.diff_html_v1 | safe }}</td>
+                        <td style="white-space: pre-wrap;">{{ compare_result.diff_html_v2 | safe }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <button id="back-to-edit-history" onclick="window.location.href='{{ url_for('edit_article', article_id=article.article_id) }}'">Back to Edit</button>
+    </div>
+</body>
+</html>

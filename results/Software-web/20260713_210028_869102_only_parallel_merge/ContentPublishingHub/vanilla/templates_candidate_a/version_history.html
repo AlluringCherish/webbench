@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version History - ContentPublishingHub</title>
+    <style>
+        table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; }
+        #version-comparison { border: 1px solid #ccc; padding: 10px; margin-top: 20px; white-space: pre-wrap; background: #f9f9f9; }
+        .restore-button { margin: 2px; }
+    </style>
+</head>
+<body>
+<div id="version-history-page">
+    <h1>Version History for Article ID {{ article.article_id }}</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <table id="versions-list">
+        <thead><tr><th>Version Number</th><th>Date</th><th>Author</th><th>Change Summary</th><th>Restore</th></tr></thead>
+        <tbody>
+            {% for v in versions %}
+            <tr>
+                <td>{{ v.version_number }}</td>
+                <td>{{ v.created_date }}</td>
+                <td>{{ v.author }}</td>
+                <td>{{ v.change_summary }}</td>
+                <td>
+                    <form method="post" style="display:inline;">
+                        <button type="submit" name="restore-version-{{ v.version_number }}" id="restore-version-{{ v.version_number }}" class="restore-button">Restore</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Version Comparison</h2>
+    <div id="version-comparison">
+        <h3>Version {{ selected_v1 }}</h3>
+        <pre>{{ content_v1 }}</pre>
+        <h3>Version {{ selected_v2 }}</h3>
+        <pre>{{ content_v2 }}</pre>
+    </div>
+
+    <button id="back-to-edit-history" onclick="window.location.href='/article/' + {{ article.article_id }} + '/edit'">Back to Edit</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<div id="my-applications-page">
+    <h1>{{ page_title }}</h1>
+    <form method="get" action="{{ url_for('my_applications') }}">
+        <label for="filter-status">Filter by Status:</label>
+        <select id="filter-status" name="status">
+            <option value="All" {% if filter_status == 'All' %}selected{% endif %}>All</option>
+            <option value="Pending" {% if filter_status == 'Pending' %}selected{% endif %}>Pending</option>
+            <option value="Approved" {% if filter_status == 'Approved' %}selected{% endif %}>Approved</option>
+            <option value="Rejected" {% if filter_status == 'Rejected' %}selected{% endif %}>Rejected</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    <table id="applications-table" border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Pet Name</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+                <tr>
+                    <td>{{ app.pet_name }}</td>
+                    <td>{{ app.date_submitted }}</td>
+                    <td>{{ app.status }}</td>
+                    <td>
+                        {% if app.status == 'Pending' %}
+                            Pending
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4">No applications found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

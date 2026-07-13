@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Movie Catalog</title>
+</head>
+<body>
+    <div id="catalog-page">
+        <h1>Movie Catalog</h1>
+        <form method="get" action="">
+            <input id="search-input" name="search" type="text" placeholder="Search by title or genre" value="{{ search_query if search_query is defined else search }}" />
+            <select id="genre-filter" name="genre">
+                <option value="All" {% if selected_genre is defined and (selected_genre.lower() == 'all' or selected_genre == '') %}selected{% elif genre_filter is defined and not genre_filter %}selected{% endif %}>All</option>
+                {% for genre in genres %}
+                <option value="{{ genre.genre_name }}" {% if (selected_genre if selected_genre is defined else genre_filter) and (selected_genre if selected_genre is defined else genre_filter).lower() == genre.genre_name.lower() %}selected{% endif %}>{{ genre.genre_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <div id="movies-grid">
+            {% if movies %}
+            {% for movie in movies %}
+            <div class="movie-card">
+                <h3>{{ movie.title }}</h3>
+                <div>Rating: {{ movie.rating }}</div>
+                <div>Duration: {{ movie.duration }} mins</div>
+                <button id="view-movie-button-{{ movie.movie_id }}" onclick="window.location.href='{{ url_for('movie_details', movie_id=movie.movie_id) }}'">View Details</button>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No movies found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

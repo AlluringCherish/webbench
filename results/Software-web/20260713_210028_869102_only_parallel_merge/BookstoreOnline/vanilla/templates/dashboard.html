@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>Bookstore Dashboard</h1>
+    <div id="featured-books">
+        {% for book in featured_books %}
+        <div style="display:inline-block; margin:10px; border:1px solid #ccc; padding:10px;">
+            <a href="{{ url_for('book_details', book_id=book.book_id) }}">
+                <img src="https://via.placeholder.com/100x150?text=Cover+{{ book.book_id }}" alt="{{ book.title }} Cover" style="display:block;">
+                <div>{{ book.title }}</div>
+                <div>{{ book.author }}</div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    <button id="browse-catalog-button" onclick="location.href='{{ url_for('book_catalog') }}'">Browse Catalog</button>
+    <button id="view-cart-button" onclick="location.href='{{ url_for('shopping_cart') }}'">View Cart</button>
+    <button id="bestsellers-button" onclick="location.href='{{ url_for('bestsellers_page') }}'">Bestsellers</button>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li style="color: {% if category == 'error' %}red{% else %}green{% endif %};">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</div>
+</body>
+</html>

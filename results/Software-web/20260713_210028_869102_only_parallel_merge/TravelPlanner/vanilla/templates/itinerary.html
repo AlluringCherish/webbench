@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan Your Itinerary</title>
+</head>
+<body>
+    <div id="itinerary-page">
+        <h1>Plan Your Itinerary</h1>
+        <form method="post" action="{{ url_for('itinerary') }}">
+            <input id="itinerary-name-input" type="text" name="itinerary_name" placeholder="Itinerary Name" required />
+            <input id="start-date-input" type="date" name="start_date" required />
+            <input id="end-date-input" type="date" name="end_date" required />
+            <input type="text" name="destination" placeholder="Destination" required />
+            <input type="text" name="activities" placeholder="Activities" />
+            <select name="status">
+                <option value="Planned">Planned</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+            <button id="add-activity-button" type="submit" name="action" value="add">Add Activity</button>
+        </form>
+        <div id="itinerary-list">
+            {% if itineraries %}
+            <ul>
+                {% for item in itineraries %}
+                <li>
+                    <strong>{{ item.itinerary_name }}</strong> ({{ item.destination }} from {{ item.start_date }} to {{ item.end_date }}) - Status: {{ item.status }}
+                    <form method="post" action="{{ url_for('itinerary') }}" style="display:inline-block;">
+                        <input type="hidden" name="itinerary_id" value="{{ item.itinerary_id }}">
+                        <button id="btn-edit-itinerary-{{ item.itinerary_id }}" type="submit" name="action" value="edit">Edit</button>
+                        <button id="btn-delete-itinerary-{{ item.itinerary_id }}" type="submit" name="action" value="delete" onclick="return confirm('Are you sure you want to delete this itinerary?');">Delete</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No itineraries found.</p>
+            {% endif %}
+        </div>
+        <button onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

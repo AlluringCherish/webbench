@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Saved Locations</title>
+</head>
+<body>
+<div id="saved-locations-page">
+    <h1>Saved Locations</h1>
+    {% if saved_locations %}
+    <table id="locations-table" border="1">
+        <thead>
+            <tr>
+                <th>Location</th>
+                <th>Current Temperature</th>
+                <th>Condition</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loc in saved_locations %}
+            <tr>
+                <td>{{ loc.location_name }}</td>
+                <td>{{ loc.current_temp }}</td>
+                <td>{{ loc.current_condition }}</td>
+                <td>
+                    <button id="view-location-weather-{{ loc.location_id }}" onclick="window.location.href='{{ url_for('current_weather', location_id=loc.location_id) }}'">View Weather</button>
+                    <form method="post" action="{{ url_for('remove_saved_location', location_id=loc.location_id) }}" style="display:inline;">
+                        <button id="remove-location-button-{{ loc.location_id }}" type="submit">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button id="add-new-location-button" onclick="window.location.href='{{ url_for('search_locations') }}'">Add New Location</button>
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

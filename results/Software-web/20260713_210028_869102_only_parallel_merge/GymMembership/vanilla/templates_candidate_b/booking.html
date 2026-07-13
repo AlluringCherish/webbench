@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Personal Training</title>
+</head>
+<body>
+    <div id="booking-page">
+        {% if error %}<div style="color:red;">{{ error }}</div>{% endif %}
+        {% if success %}<div style="color:green;">Booking confirmed successfully!</div>{% endif %}
+        <form method="post">
+            <label for="select-trainer">Select Trainer:</label>
+            <select id="select-trainer" name="select-trainer">
+                <option value="">-- Select Trainer --</option>
+                {% for trainer in trainers %}
+                <option value="{{ trainer.trainer_id }}" {% if trainer.trainer_id == preselect_trainer_id %}selected{% endif %}>{{ trainer.name }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label for="session-date">Session Date:</label>
+            <input id="session-date" name="session-date" type="date" value="{{ request.form.get('session-date', '') }}"><br><br>
+
+            <label for="session-time">Session Time:</label>
+            <select id="session-time" name="session-time">
+                {% for time in time_slots %}
+                <option value="{{ time }}" {% if request.form.get('session-time') == time %}selected{% endif %}>{{ time }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label for="session-duration">Session Duration (minutes):</label>
+            <select id="session-duration" name="session-duration">
+                {% for d in durations %}
+                <option value="{{ d }}" {% if request.form.get('session-duration', type=int) == d %}selected{% endif %}>{{ d }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <button id="confirm-booking-button" type="submit">Confirm Booking</button>
+        </form>
+    </div>
+</body>
+</html>

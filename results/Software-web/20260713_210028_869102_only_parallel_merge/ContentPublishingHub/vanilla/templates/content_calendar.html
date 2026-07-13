@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Calendar - ContentPublishingHub</title>
+    <style>
+        #calendar-grid {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        #calendar-grid th, #calendar-grid td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+            height: 100px;
+        }
+        .scheduled-event {
+            background-color: #d3f4d3;
+            margin: 2px 0;
+            padding: 2px 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="calendar-page">
+    <h1>Content Calendar</h1>
+
+    <form method="post">
+        <label for="calendar-view">Calendar View:</label>
+        <select id="calendar-view" name="calendar-view">
+            <option value="day" {% if calendar_view == 'day' %}selected{% endif %}>Day</option>
+            <option value="week" {% if calendar_view == 'week' %}selected{% endif %}>Week</option>
+            <option value="month" {% if calendar_view == 'month' %}selected{% endif %}>Month</option>
+        </select>
+        <button type="submit">Switch View</button>
+    </form>
+
+    <table id="calendar-grid">
+        <thead>
+            <tr>
+                <th>Publish Date</th>
+                <th>Articles</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in scheduled_articles %}
+            <tr>
+                <td>{{ article.publish_date }}</td>
+                <td>
+                    <div class="scheduled-event" title="Click to edit article ID {{ article.article_id }}" onclick="window.location.href='/article/' + {{ article.article_id }} + '/edit'">
+                        {{ article.title }}
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="2">No scheduled articles.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Schedule a Publication</h2>
+    <form method="post">
+        <input type="hidden" name="scheduled-article-id" id="scheduled-article-id" value="">
+        <label for="scheduled-publish-date">Publish Date (YYYY-MM-DD HH:MM:SS):</label><br>
+        <input type="text" name="scheduled-publish-date" id="scheduled-publish-date" required><br><br>
+        <button type="submit" id="schedule-button">Schedule</button>
+    </form>
+
+    <button id="back-to-dashboard-calendar" onclick="window.location.href='/dashboard'">Back to Dashboard</button>
+
+    <script>
+        document.querySelectorAll('.scheduled-event').forEach(function(elem) {
+            elem.addEventListener('click', function() {
+                document.getElementById('scheduled-article-id').value = elem.title.match(/article ID (\\d+)/)[1];
+            });
+        });
+    </script>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
+</body>
+</html>

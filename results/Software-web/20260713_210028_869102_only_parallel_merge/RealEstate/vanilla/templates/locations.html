@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Featured Locations</title>
+</head>
+<body>
+<div id="locations-page">
+    <h1>Featured Locations</h1>
+    <label for="location-sort">Sort by:</label>
+    <select id="location-sort" name="sort_option" onchange="location.href='{{ url_for('locations_page') }}?sort_option=' + this.value">
+        <option value="By Name"{% if sort_option == 'By Name' %} selected{% endif %}>By Name</option>
+        <option value="By Properties Count"{% if sort_option == 'By Properties Count' %} selected{% endif %}>By Properties Count</option>
+        <option value="By Average Price"{% if sort_option == 'By Average Price' %} selected{% endif %}>By Average Price</option>
+    </select>
+    <div id="locations-list">
+        {% if locations %}
+            {% for loc in locations %}
+            <div class="location-item">
+                <p><strong>{{ loc.location_name }}</strong></p>
+                <p>Region: {{ loc.region }}</p>
+                <p>Average Price: ${{ loc.average_price }}</p>
+                <p>Properties Count: {{ loc.property_count }}</p>
+                <p>{{ loc.description }}</p>
+                <button id="view-location-button-{{ loc.location_id }}" onclick="location.href='{{ url_for('view_location_properties', location_id=loc.location_id) }}'">View Properties</button>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No locations available.</p>
+        {% endif %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

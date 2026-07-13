@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Select Showtime</title>
+</head>
+<body>
+    <div id="showtime-page">
+        <h1>Select Showtime for {{ movie.title }}</h1>
+        <form method="get" action="">
+            <label for="theater-filter">Filter by Theater:</label>
+            <select id="theater-filter" name="theater">
+                <option value="All" {% if theater_filter.lower() == 'all' or theater_filter == '' %}selected{% endif %}>All</option>
+                {% for theater in theaters %}
+                    <option value="{{ theater.theater_id }}" {% if theater_filter == theater.theater_id|string %}selected{% endif %}>{{ theater.theater_name }}</option>
+                {% endfor %}
+            </select>
+            <label for="date-filter">Filter by Date:</label>
+            <input id="date-filter" name="date" type="date" value="{{ date_filter }}" />
+            <button type="submit">Filter</button>
+        </form>
+        <div id="showtimes-list">
+            {% if showtimes %}
+            <ul>
+                {% for st in showtimes %}
+                <li>
+                    Date: {{ st.showtime_date }}, Time: {{ st.showtime_time }},
+                    Theater: {{ theater_dict[st.theater_id].theater_name if st.theater_id in theater_dict else 'Unknown' }},
+                    Price: ${{ '%.2f'|format(st.price) }}
+                    <button id="select-showtime-button-{{ st.showtime_id }}" onclick="window.location.href='{{ url_for('seats', showtime_id=st.showtime_id) }}'">Select</button>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No showtimes found.</p>
+            {% endif %}
+        </div>
+        <button onclick="location.href='{{ url_for('movie_details', movie_id=movie.movie_id) }}'">Back to Movie Details</button>
+        <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Favorite Properties</title>
+</head>
+<body>
+    <div id="favorites-page">
+        <h1>My Favorite Properties</h1>
+
+        <div id="favorites-list">
+            {% if favorites %}
+                <ul>
+                {% for fav in favorites %}
+                    <li>
+                        <strong>{{ fav.address }}</strong> - ${{ '{:,}'.format(fav.price) }}<br>
+                        Added on: {{ fav.added_date }}<br>
+                        <button id="view-property-button-{{ fav.property_id }}" onclick="window.location.href='{{ url_for('property_details', property_id=fav.property_id) }}'">View Details</button>
+                        <form method="post" action="{{ url_for('remove_favorite', property_id=fav.property_id) }}" style="display:inline;">
+                            <button id="remove-from-favorites-button-{{ fav.property_id }}" type="submit">Remove</button>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No favorite properties added.</p>
+            {% endif %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

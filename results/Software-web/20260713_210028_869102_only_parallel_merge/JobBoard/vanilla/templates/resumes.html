@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>My Resumes</title>
+</head>
+<body>
+<div id="resume-page">
+    <h1>My Resumes</h1>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <button id="upload-resume-button" onclick="document.getElementById('resume-file-input').click();">Upload Resume</button>
+    <form method="post" enctype="multipart/form-data" style="display:none;" id="upload-form">
+        <input type="file" id="resume-file-input" name="resume-file-input" accept=".pdf,.doc,.docx,.txt" style="display:none;" onchange="document.getElementById('upload-form').submit();" />
+        <label for="applicant-name">Name:</label>
+        <input type="text" id="applicant-name" name="applicant-name" required />
+        <br />
+        <label for="applicant-email">Email:</label>
+        <input type="email" id="applicant-email" name="applicant-email" required />
+        <br />
+        <button type="submit">Submit</button>
+    </form>
+    <div id="resumes-list">
+        {% for resume in resumes %}
+        <div class="resume-card">
+            <p>Filename: {{ resume.filename }}</p>
+            <p>Uploaded on: {{ resume.upload_date }}</p>
+            <form method="post" action="{{ url_for('delete_resume', resume_id=resume.resume_id) }}">
+                <button id="delete-resume-button-{{ resume.resume_id }}" type="submit">Delete</button>
+            </form>
+        </div>
+        {% else %}
+        <p>No resumes uploaded.</p>
+        {% endfor %}
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+<script>
+    const uploadButton = document.getElementById('upload-resume-button');
+    const uploadForm = document.getElementById('upload-form');
+    const fileInput = document.getElementById('resume-file-input');
+    uploadButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (uploadForm.style.display === 'none' || uploadForm.style.display === '') {
+            uploadForm.style.display = 'block';
+        } else {
+            uploadForm.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Forecast</title>
+</head>
+<body>
+<div id="forecast-page">
+    <select id="location-filter" name="location" onchange="location = '?location=' + this.value;">
+        <option value="" {% if not selected_location %}selected{% endif %}>All Locations</option>
+        {% for loc in locations %}
+            <option value="{{ loc.location_id }}" {% if selected_location == loc.location_id %}selected{% endif %}>{{ loc.location_name }}</option>
+        {% endfor %}
+    </select>
+
+    <table id="forecast-table" border="1">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>High Temp</th>
+            <th>Low Temp</th>
+            <th>Condition</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for f in forecasts %}
+            <tr>
+                <td>{{ f.date }}</td>
+                <td>{{ f.high_temp }}&deg;</td>
+                <td>{{ f.low_temp }}&deg;</td>
+                <td>{{ f.condition }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="forecast-list">
+        {% for f in forecasts %}
+            <div class="forecast-card">
+                <p><strong>{{ f.date }}</strong></p>
+                <p>High: {{ f.high_temp }}&deg;</p>
+                <p>Low: {{ f.low_temp }}&deg;</p>
+                <p>{{ f.condition }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

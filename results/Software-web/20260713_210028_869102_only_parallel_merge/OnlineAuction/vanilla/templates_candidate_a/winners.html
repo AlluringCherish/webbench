@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<div id="winners-page">
+    <h1>{{ page_title }}</h1>
+
+    <label for="filter-by-winner">Filter by Winner Name:</label>
+    <input id="filter-by-winner" type="text" name="filter_name" value="{{ filter_name }}" oninput="filterWinners()" />
+
+    <div id="winners-list">
+        {% if winners %}
+            {% for winner in winners %}
+                <div id="winner-card-{{ winner.auction_id }}">
+                    <p><strong>{{ winner.item_name }}</strong> won by {{ winner.winner_name }} for ${{ '%.2f'|format(winner.winning_bid) }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No winners found.</p>
+        {% endif %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+
+<script>
+function filterWinners() {
+    const filter = document.getElementById('filter-by-winner').value.toLowerCase();
+    const winnersList = document.getElementById('winners-list');
+    const cards = winnersList.querySelectorAll('div[id^="winner-card-"]');
+    cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        if(text.includes(filter)) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+</script>
+
+</body>
+</html>

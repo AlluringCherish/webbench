@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class Schedule</title>
+</head>
+<body>
+    <div id="schedule-page">
+        <input id="schedule-search" type="text" placeholder="Search classes or trainers" value="{{ search_term|default('') }}" oninput="debouncedFilter()">
+        <select id="schedule-filter" onchange="applyFilter()">
+            <option value="All">All</option>
+            {% for ctype in class_types %}
+            <option value="{{ ctype }}" {% if selected_filter == ctype %}selected{% endif %}>{{ ctype }}</option>
+            {% endfor %}
+        </select>
+        <div id="classes-grid">
+            {% for cls in classes %}
+            <div class="class-card">
+                <h3>{{ cls.class_name }}</h3>
+                <p>Trainer: {{ trainers[cls.trainer_id].name if cls.trainer_id in trainers else 'Unknown' }}</p>
+                <p>Type: {{ cls.class_type }}</p>
+                <p>Schedule: {{ cls.schedule_day }} at {{ cls.schedule_time }}</p>
+                <p>Duration: {{ cls.duration }} minutes</p>
+                <p>Capacity: {{ cls.capacity }}</p>
+                <button id="enroll-class-button-{{ cls.class_id }}" onclick="alert('Enrolled in class: {{ cls.class_name }}')">Enroll</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+<script>
+let debounceTimer;
+function debouncedFilter() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(applyFilter, 300);
+}
+function applyFilter() {
+    const searchInput = document.getElementById('schedule-search').value.trim();
+    const filterSelect = document.getElementById('schedule-filter').value;
+    const url = new URL(window.location.href);
+    if (searchInput) {
+        url.searchParams.set('search', searchInput);
+    } else {
+        url.searchParams.delete('search');
+    }
+    if (filterSelect && filterSelect !== 'All') {
+        url.searchParams.set('filter', filterSelect);
+    } else {
+        url.searchParams.delete('filter');
+    }
+    window.location.href = url.toString();
+}
+</script>
+</body>
+</html>

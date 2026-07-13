@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Workout Records</title>
+</head>
+<body>
+    <div id="workouts-page">
+        <select id="filter-by-type" onchange="applyFilter()">
+            <option value="">All</option>
+            {% for wtype in workout_types %}
+            <option value="{{ wtype }}" {% if selected_filter == wtype %}selected{% endif %}>{{ wtype }}</option>
+            {% endfor %}
+        </select>
+        <table id="workouts-table" border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Duration (min)</th>
+                    <th>Calories Burned</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for workout in workouts %}
+                <tr>
+                    <td>{{ workout.workout_date }}</td>
+                    <td>{{ workout.workout_type }}</td>
+                    <td>{{ workout.duration_minutes }}</td>
+                    <td>{{ workout.calories_burned }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="log-workout-button" onclick="window.location.href='{{ url_for('log_workout') }}'">Log Workout</button>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+<script>
+function applyFilter() {
+    const select = document.getElementById('filter-by-type');
+    const value = select.value;
+    const url = new URL(window.location.href);
+    if (value) {
+        url.searchParams.set('filter', value);
+    } else {
+        url.searchParams.delete('filter');
+    }
+    window.location.href = url.toString();
+}
+</script>
+</body>
+</html>

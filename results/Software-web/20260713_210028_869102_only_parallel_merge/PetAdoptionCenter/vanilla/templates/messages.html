@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ page_title }}</title>
+    <style>
+        #conversation-list {
+            float: left;
+            width: 30%;
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+        }
+        #message-area {
+            float: left;
+            width: 65%;
+            margin-left: 10px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #ccc;
+        }
+        #message-input {
+            flex-grow: 1;
+            resize: none;
+        }
+        .conversation-item {
+            padding: 5px;
+            cursor: pointer;
+        }
+        .conversation-item.selected {
+            background-color: #ddd;
+        }
+        .message {
+            border-bottom: 1px solid #eee;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="messages-page">
+    <h1>{{ page_title }}</h1>
+    <div id="conversation-list">
+        <ul>
+            {% for interlocutor in conversations.keys() %}
+                <li class="conversation-item {% if interlocutor == selected_conversation %}selected{% endif %}">
+                    <a href="{{ url_for('messages', conversation=interlocutor) }}">{{ interlocutor }}</a>
+                </li>
+            {% else %}
+                <li>No conversations.</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div id="message-area">
+        {% if selected_conversation %}
+            <div style="flex-grow: 1; overflow-y:auto; border-bottom:1px solid #ccc; padding:5px;">
+                {% for msg in selected_conv %}
+                    <div class="message">
+                        <strong>{{ msg.sender_username }}</strong>: {{ msg.content }} <br />
+                        <small>{{ msg.timestamp }}</small>
+                    </div>
+                {% endfor %}
+            </div>
+            <form method="post">
+                <input type="hidden" name="recipient_username" value="{{ selected_conversation }}" />
+                <label for="subject">Subject:</label><br />
+                <input type="text" id="subject" name="subject" /><br />
+                <textarea id="message-input" name="message_input" rows="4"></textarea><br />
+                <button id="send-message-button" type="submit">Send Message</button>
+                <button id="back-to-dashboard" type="button" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+            </form>
+        {% else %}
+            <p>Select a conversation to view messages.</p>
+            <button id="back-to-dashboard" type="button" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        {% endif %}
+    </div>
+    <div style="clear:both"></div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</div>
+</body>
+</html>

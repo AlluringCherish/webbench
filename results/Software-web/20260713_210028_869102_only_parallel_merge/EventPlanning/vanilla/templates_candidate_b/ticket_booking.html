@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Your Tickets</title>
+</head>
+<body>
+    <div id="ticket-booking-page">
+        <h1>Book Your Tickets</h1>
+        <form method="post" action="{{ url_for('book_tickets') }}">
+            <label for="select-event-dropdown">Select Event:</label>
+            <select id="select-event-dropdown" name="select-event-dropdown">
+                <option value="">-- Select Event --</option>
+                {% for event in events %}
+                    <option value="{{ event.event_id }}" {% if selected_event_id == event.event_id %}selected{% endif %}>{{ event.event_name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="ticket-quantity-input">Number of Tickets:</label>
+            <input id="ticket-quantity-input" name="ticket-quantity-input" type="number" min="1" value="1" />
+
+            <label for="ticket-type-select">Ticket Type:</label>
+            <select id="ticket-type-select" name="ticket-type-select">
+                {% for type in ticket_types %}
+                    <option value="{{ type }}">{{ type }}</option>
+                {% endfor %}
+            </select>
+
+            <button id="book-now-button" type="submit">Book Now</button>
+        </form>
+        <div id="booking-confirmation">
+            {% if booking_confirmation %}
+                {% if booking_confirmation.error %}
+                    <p style="color:red;">{{ booking_confirmation.error }}</p>
+                {% else %}
+                    <p style="color:green;">Booking Confirmed! Booking ID: {{ booking_confirmation.booking_id }}<br />
+                    Tickets: {{ booking_confirmation.ticket_quantity }} ({{ booking_confirmation.ticket_type }})<br />
+                    Total Amount: ${{ booking_confirmation.total_amount }}</p>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Packages</title>
+</head>
+<body>
+    <div id="packages-page">
+        <h1>Travel Packages</h1>
+        <form method="get" action="{{ url_for('packages') }}">
+            <select id="duration-filter" name="duration_filter">
+                <option value="">--Select Duration--</option>
+                <option value="3-5 days" {% if duration_filter == '3-5 days' %}selected{% endif %}>3-5 days</option>
+                <option value="7-10 days" {% if duration_filter == '7-10 days' %}selected{% endif %}>7-10 days</option>
+                <option value="14+ days" {% if duration_filter == '14+ days' %}selected{% endif %}>14+ days</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <div id="packages-grid">
+            {% if packages %}
+            <ul>
+                {% for pkg in packages %}
+                <li>
+                    <strong>{{ pkg.package_name }}</strong><br />
+                    Destination: {{ pkg.destination }}<br />
+                    Duration: {{ pkg.duration_days }} days<br />
+                    Price: ${{ pkg.price }}<br />
+                    <button id="view-package-details-button-{{ pkg.package_id }}" onclick="alert('Details for {{ pkg.package_name }}')">View Details</button>
+                    <form method="post" action="{{ url_for('packages') }}" style="display:inline-block;">
+                        <input type="hidden" name="package_id" value="{{ pkg.package_id }}" />
+                        <button id="book-package-button-{{ pkg.package_id }}" type="submit">Book Package</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No packages available.</p>
+            {% endif %}
+        </div>
+        <button onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

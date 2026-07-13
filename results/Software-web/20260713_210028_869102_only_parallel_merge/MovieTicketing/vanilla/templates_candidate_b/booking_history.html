@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking History</title>
+</head>
+<body>
+    <div id="bookings-page">
+        <h1>Booking History</h1>
+        <form method="get" action="{{ url_for('booking_history') }}">
+            <select id="status-filter" name="status">
+                <option value="All" {% if status_filter == '' or status_filter == 'all' %}selected{% endif %}>All</option>
+                <option value="Confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                <option value="Cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                <option value="Completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <table id="bookings-table" border="1">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Movie</th>
+                    <th>Date</th>
+                    <th>Seats</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.booking_id }}</td>
+                        <td>{{ movie_map.get(booking.showtime_id and booking.showtime_id > 0 and (booking.showtime_id in movie_map) and booking.showtime_id or None) or "" }}</td>
+                        <td>{{ booking.booking_date }}</td>
+                        <td>{{ booking.seats_booked | join(", ") }}</td>
+                        <td>{{ booking.status }}</td>
+                        <td><button id="view-booking-button-{{ booking.booking_id }}" onclick="alert('Booking Details:\nMovie: {{ movie_map.get(booking.showtime_id, '') }}\nDate: {{ booking.booking_date }}\nSeats: {{ booking.seats_booked | join(', ') }}\nStatus: {{ booking.status }}')">View</button></td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="6">No bookings found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

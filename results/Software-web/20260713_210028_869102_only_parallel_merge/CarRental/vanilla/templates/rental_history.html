@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rental History</title>
+</head>
+<body>
+<div id="history-page">
+    <h1>Rental History</h1>
+    <form method="get" action="{{ url_for('rental_history') }}">
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status-filter">
+            {% set statuses = ['All', 'Active', 'Completed', 'Cancelled'] %}
+            {% for status in statuses %}
+            <option value="{{ status }}" {% if status_filter == status %}selected{% endif %}>{{ status }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Apply</button>
+    </form>
+    <table id="rentals-table" border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Vehicle</th>
+            <th>Pickup Date</th>
+            <th>Dropoff Date</th>
+            <th>Pickup Location</th>
+            <th>Dropoff Location</th>
+            <th>Status</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for rental in rentals %}
+        <tr>
+            <td>{{ rental.rental_id }}</td>
+            <td>{{ rental.vehicle_info }}</td>
+            <td>{{ rental.pickup_date }}</td>
+            <td>{{ rental.dropoff_date }}</td>
+            <td>{{ rental.pickup_location }}</td>
+            <td>{{ rental.dropoff_location }}</td>
+            <td>{{ rental.status }}</td>
+            <td><button id="view-rental-details-{{ rental.rental_id }}" onclick="alert('Rental Details:\nVehicle: {{ rental.vehicle_info }}\nPickup: {{ rental.pickup_date }}\nDropoff: {{ rental.dropoff_date }}\nStatus: {{ rental.status }}')">View Details</button></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8">No rentals found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

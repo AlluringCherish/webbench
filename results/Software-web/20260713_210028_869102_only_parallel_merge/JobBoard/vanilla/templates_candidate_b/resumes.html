@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Resumes</title>
+</head>
+<body>
+<div id="resume-page">
+    <h1>My Resumes</h1>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <div id="resumes-list">
+        {% for resume in resumes %}
+        <div class="resume-card">
+            <div>Filename: {{ resume.filename }}</div>
+            <div>Uploaded on: {{ resume.upload_date }}</div>
+            <form method="post" action="{{ url_for('delete_resume', resume_id=resume.resume_id) }}" style="display:inline;">
+                <button type="submit" id="delete-resume-button-{{ resume.resume_id }}">Delete</button>
+            </form>
+        </div>
+        {% else %}
+        <p>No resumes uploaded.</p>
+        {% endfor %}
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        <label for="applicant-name">Name:</label>
+        <input type="text" id="applicant-name" name="applicant-name" required />
+        <br />
+        <label for="applicant-email">Email:</label>
+        <input type="email" id="applicant-email" name="applicant-email" required />
+        <br />
+        <button type="button" id="upload-resume-button" onclick="document.getElementById('resume-file-input').click();">Upload Resume</button>
+        <input type="file" id="resume-file-input" name="resume-file-input" style="display:none;" accept=".pdf,.doc,.docx" onchange="this.form.submit();" />
+    </form>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class Schedule</title>
+    <script>
+        function filterSchedule() {
+            var search = document.getElementById('schedule-search').value;
+            var filter = document.getElementById('schedule-filter').value;
+            var params = new URLSearchParams();
+            if(search) params.append('search', search);
+            if(filter && filter !== 'All') params.append('filter', filter);
+            window.location.href = '/schedule?' + params.toString();
+        }
+    </script>
+</head>
+<body>
+    <div id="schedule-page">
+        <input id="schedule-search" type="text" value="{{ search_term }}" placeholder="Search classes or trainers..." oninput="filterSchedule()" />
+        <select id="schedule-filter" onchange="filterSchedule()">
+            <option value="All" {% if selected_filter == 'All' %}selected{% endif %}>All</option>
+            {% for ctype in class_types %}
+            <option value="{{ ctype }}" {% if selected_filter == ctype %}selected{% endif %}>{{ ctype }}</option>
+            {% endfor %}
+        </select>
+        <div id="classes-grid">
+            {% for cls in classes %}
+            <div class="class-card">
+                <h3>{{ cls.class_name }}</h3>
+                <p>Type: {{ cls.class_type }}</p>
+                <p>Schedule: {{ cls.schedule_day }} at {{ cls.schedule_time }}</p>
+                <p>Trainer: {{ trainers[cls.trainer_id].name if cls.trainer_id in trainers else 'Unknown' }}</p>
+                <p>Duration: {{ cls.duration }} minutes</p>
+                <button id="enroll-class-button-{{ cls.class_id }}" onclick="alert('Enrolled in {{ cls.class_name }}')">Enroll</button>
+            </div>
+            {% else %}
+            <p>No classes available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

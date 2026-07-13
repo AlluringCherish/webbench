@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<div id="bestsellers-page">
+    <h1>Bestsellers</h1>
+    <form method="get" action="{{ url_for('bestsellers_page') }}">
+        <label for="time-period-filter">Time Period:</label>
+        <select id="time-period-filter" name="period">
+            <option value="This Week" {% if selected_period == 'This Week' %}selected{% endif %}>This Week</option>
+            <option value="This Month" {% if selected_period == 'This Month' %}selected{% endif %}>This Month</option>
+            <option value="All Time" {% if selected_period == 'All Time' %}selected{% endif %}>All Time</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    <div id="bestsellers-list">
+        {% for book in bestsellers %}
+        <div style="margin-bottom:10px;">
+            <span>{{ book.rank }}. </span>
+            <span>{{ book.title }} by {{ book.author }} - Sales: {{ book.sales_count }}</span>
+            <button id="view-book-button-{{ book.book_id }}" onclick="location.href='{{ url_for('book_details', book_id=book.book_id) }}'">View Details</button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li style="color: {% if category == 'error' %}red{% else %}green{% endif %};">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Insurance Coverage</title>
+    <script>
+        function updateInsuranceDetails() {
+            var radios = document.getElementsByName('insurance_option');
+            var descriptionDiv = document.getElementById('insurance-description');
+            var priceDiv = document.getElementById('insurance-price');
+
+            var selectedPlan = null;
+            for(var i=0;i<radios.length;i++) {
+                if(radios[i].checked) {
+                    selectedPlan = radios[i];
+                    break;
+                }
+            }
+            if(selectedPlan) {
+                var desc = selectedPlan.getAttribute('data-desc');
+                var price = selectedPlan.getAttribute('data-price');
+                descriptionDiv.textContent = desc;
+                priceDiv.textContent = 'Total Price: $' + price;
+            }
+        }
+        window.onload = function() {
+            updateInsuranceDetails();
+            var radios = document.getElementsByName('insurance_option');
+            for(var i=0;i<radios.length;i++) {
+                radios[i].addEventListener('change', updateInsuranceDetails);
+            }
+        }
+    </script>
+</head>
+<body>
+<div id="insurance-page">
+    <h1>Select Insurance Coverage</h1>
+    <form method="post">
+        <div id="insurance-options">
+            {% for plan in insurance_plans %}
+            <div class="insurance-plan">
+                <input type="radio" id="select-insurance-{{ plan.insurance_id }}" name="insurance_option" value="{{ plan.insurance_id }}" data-desc="{{ plan.description }}" data-price="{{ '%.2f' % (plan.daily_cost * rental_days) }}" {% if plan.insurance_id == reservation.insurance_id %}checked{% endif %} />
+                <label for="select-insurance-{{ plan.insurance_id }}">{{ plan.plan_name }} - ${{ '%.2f' % plan.daily_cost }} per day</label>
+            </div>
+            {% endfor %}
+        </div>
+        <div id="insurance-description"></div>
+        <div id="insurance-price"></div>
+        <button type="submit" id="confirm-booking-button">Confirm Booking</button>
+    </form>
+</div>
+</body>
+</html>

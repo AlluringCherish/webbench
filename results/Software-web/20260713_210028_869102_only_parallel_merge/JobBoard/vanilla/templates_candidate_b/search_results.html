@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <style>
+        #job-results, #company-results { display:none; }
+        #job-results.active, #company-results.active { display:block; }
+        #results-tabs button { margin-right:10px; }
+    </style>
+    <script>
+        function showTab(tab) {
+            document.getElementById('job-results').classList.remove('active');
+            document.getElementById('company-results').classList.remove('active');
+            document.getElementById(tab).classList.add('active');
+        }
+        window.onload = function() {
+            // Show job results by default
+            showTab('job-results');
+        }
+    </script>
+</head>
+<body>
+<div id="search-results-page">
+    <h1>Search Results</h1>
+    <div id="search-query-display">Search Query: {{ query }}</div>
+    <div id="results-tabs">
+        <button onclick="showTab('job-results')">Job Results</button>
+        <button onclick="showTab('company-results')">Company Results</button>
+    </div>
+    {% if not job_results and not company_results %}
+      <div id="no-results-message">No results found.</div>
+    {% else %}
+    <div id="job-results" class="active">
+        {% for job in job_results %}
+        <div class="job-card">
+            <h3>{{ job.title }}</h3>
+            <div>{{ job.location }}</div>
+            <button onclick="location.href='{{ url_for('job_details', job_id=job.job_id) }}'">View Details</button>
+        </div>
+        {% else %}
+        <p>No job results found.</p>
+        {% endfor %}
+    </div>
+    <div id="company-results">
+        {% for company in company_results %}
+        <div class="company-card">
+            <h3>{{ company.company_name }}</h3>
+            <div>Industry: {{ company.industry }}</div>
+            <button onclick="location.href='{{ url_for('company_profile', company_id=company.company_id) }}'">View Profile</button>
+        </div>
+        {% else %}
+        <p>No company results found.</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>

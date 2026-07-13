@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<div id="status-page">
+    <h1>{{ page_title }}</h1>
+
+    <form method="get" action="{{ url_for('auction_status') }}">
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status">
+            <option value="All" {% if status_filter == 'All' %}selected{% endif %}>All</option>
+            <option value="Active" {% if status_filter == 'Active' %}selected{% endif %}>Active</option>
+            <option value="Closed" {% if status_filter == 'Closed' %}selected{% endif %}>Closed</option>
+            <option value="Upcoming" {% if status_filter == 'Upcoming' %}selected{% endif %}>Upcoming</option>
+        </select>
+        <button id="refresh-status-button" type="submit">Refresh</button>
+        <button id="back-to-dashboard" type="button" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </form>
+
+    <table id="status-table" border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Time Remaining</th>
+                <th>Current Bid</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if auctions %}
+                {% for auction in auctions %}
+                    <tr>
+                        <td>{{ auction.item_name }}</td>
+                        <td>{{ auction.status }}</td>
+                        <td>{{ auction.time_remaining }}</td>
+                        <td>${{ '%.2f'|format(auction.current_bid) }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="4">No auctions found.</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

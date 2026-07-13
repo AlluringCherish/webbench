@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Catalog</title>
+    <script>
+        function filterBooks() {
+            var input = document.getElementById('search-input').value.toLowerCase();
+            var cards = document.getElementById('book-grid').children;
+            for (var i = 0; i < cards.length; i++) {
+                var title = cards[i].getAttribute('data-title').toLowerCase();
+                var author = cards[i].getAttribute('data-author').toLowerCase();
+                if(title.includes(input) || author.includes(input)) {
+                    cards[i].style.display = '';
+                } else {
+                    cards[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="catalog-page">
+        <input id="search-input" type="text" placeholder="Search by title or author" value="{{ search_query }}" onkeyup="filterBooks()">
+        <div id="book-grid">
+            {% for book in books %}
+                <div class="book-card" data-title="{{ book.title }}" data-author="{{ book.author }}">
+                    <div><strong>{{ book.title }}</strong></div>
+                    <div>Author: {{ book.author }}</div>
+                    <div>Status: {{ book.status }}</div>
+                    <button id="view-book-button-{{ book.book_id }}" onclick="window.location.href='{{ url_for('book_details', book_id=book.book_id) }}'">View Details</button>
+                </div>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

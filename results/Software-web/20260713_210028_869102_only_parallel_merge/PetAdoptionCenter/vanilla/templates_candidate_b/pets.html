@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Available Pets</title>
+</head>
+<body>
+    <div id="pet-listings-page">
+        <h1>Available Pets</h1>
+        <form method="get" action="{{ url_for('pets') }}">
+            <input id="search-input" name="search" type="text" placeholder="Search by name" value="{{ search_query }}" />
+            <select id="filter-species" name="species">
+                {% for sp in species_options %}
+                <option value="{{ sp }}" {% if sp == species_filter %}selected{% endif %}>{{ sp }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <div id="pet-grid">
+            {% if pets %}
+                {% for pet in pets %}
+                <div class="pet-card">
+                    <a href="{{ url_for('pet_details', pet_id=pet.pet_id) }}">
+                        <div><strong>{{ pet.name }}</strong></div>
+                        <div>Species: {{ pet.species }}</div>
+                        <div>Age: {{ pet.age }}</div>
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No pets found.</p>
+            {% endif %}
+        </div>
+        <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

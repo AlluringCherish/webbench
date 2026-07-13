@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Albums</title>
+</head>
+<body>
+<div id="albums-page">
+    <h1>Albums</h1>
+
+    <input id="search-albums" type="text" placeholder="Search albums by title or artist" value="{{ search_query }}" onkeypress="if(event.key === 'Enter') { window.location.href='{{ url_for('albums') }}?search='+this.value+'&sort={{ sort_option }}'; }">
+    
+    <select id="sort-albums" onchange="window.location.href='{{ url_for('albums') }}?search={{ search_query }}&sort='+this.value;">
+        <option value="">Sort By</option>
+        <option value="Title" {% if sort_option == 'Title' %}selected{% endif %}>By Title</option>
+        <option value="Artist" {% if sort_option == 'Artist' %}selected{% endif %}>By Artist</option>
+        <option value="Year" {% if sort_option == 'Year' %}selected{% endif %}>By Year</option>
+    </select>
+
+    <div id="albums-grid">
+        {% for entry in albums %}
+        <div class="album-card">
+            <div class="album-title">{{ entry.album.title }}</div>
+            <div class="album-artist">{{ entry.artist.name if entry.artist else 'Unknown Artist' }}</div>
+            <div class="album-year">{{ entry.album.release_year }}</div>
+            <button id="view-album-button-{{ entry.album.album_id }}" onclick="window.location.href='{{ url_for('album_details', album_id=entry.album.album_id) }}'">View</button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>

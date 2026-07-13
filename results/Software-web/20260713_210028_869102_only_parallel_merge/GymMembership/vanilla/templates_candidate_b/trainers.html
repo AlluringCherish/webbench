@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trainer Profiles</title>
+</head>
+<body>
+    <div id="trainers-page">
+        <input id="trainer-search" type="text" placeholder="Search trainers by name or specialty" value="{{ search_term|default('') }}" oninput="debouncedFilter()">
+        <select id="specialty-filter" onchange="applyFilter()">
+            <option value="All">All</option>
+            {% for spec in specialty_options %}
+            <option value="{{ spec }}" {% if selected_filter == spec %}selected{% endif %}>{{ spec }}</option>
+            {% endfor %}
+        </select>
+        <div id="trainers-grid">
+            {% for trainer in trainers %}
+            <div class="trainer-card">
+                <h3>{{ trainer.name }}</h3>
+                <p>Specialty: {{ trainer.specialty }}</p>
+                <button id="view-trainer-button-{{ trainer.trainer_id }}" onclick="window.location.href='{{ url_for('trainer_detail', trainer_id=trainer.trainer_id) }}'">View Profile</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+<script>
+let debounceTimer;
+function debouncedFilter() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(applyFilter, 300);
+}
+function applyFilter() {
+    const searchInput = document.getElementById('trainer-search').value.trim();
+    const filterSelect = document.getElementById('specialty-filter').value;
+    const url = new URL(window.location.href);
+    if (searchInput) {
+        url.searchParams.set('search', searchInput);
+    } else {
+        url.searchParams.delete('search');
+    }
+    if (filterSelect && filterSelect !== 'All') {
+        url.searchParams.set('filter', filterSelect);
+    } else {
+        url.searchParams.delete('filter');
+    }
+    window.location.href = url.toString();
+}
+</script>
+</body>
+</html>

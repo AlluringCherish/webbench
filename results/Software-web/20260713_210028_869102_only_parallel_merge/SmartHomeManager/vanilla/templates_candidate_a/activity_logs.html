@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Activity Logs</title>
+</head>
+<body>
+  <div id="activity-page">
+    <h1>Activity Logs</h1>
+    <form method="POST">
+      <input type="text" id="search-activity" name="search-activity" placeholder="Search Activity Logs" value="{{ search_term if search_term }}">
+      <button type="submit" id="apply-search-button">Search</button>
+    </form>
+
+    <table id="activity-table" border="1">
+      <thead>
+        <tr><th>Timestamp</th><th>Device</th><th>Action</th><th>Details</th></tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+        <tr>
+          <td>{{ log.timestamp }}</td>
+          <td>{{ devices[log.device_id].device_name if log.device_id in devices else 'Unknown' }}</td>
+          <td>{{ log.action }}</td>
+          <td>{{ log.details }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4">No activity logs found</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+  </div>
+</body>
+</html>

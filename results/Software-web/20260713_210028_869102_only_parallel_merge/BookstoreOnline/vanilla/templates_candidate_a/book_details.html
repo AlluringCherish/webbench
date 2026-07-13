@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<div id="book-details-page">
+    <h1 id="book-title">{{ book.title }}</h1>
+    <div id="book-author">Author: {{ book.author }}</div>
+    <div id="book-price">Price: ${{ '%.2f'|format(book.price) }}</div>
+
+    <form method="post" action="{{ url_for('book_details', book_id=book.book_id) }}">
+        <button type="submit" id="add-to-cart-button">Add to Cart</button>
+    </form>
+
+    <div id="book-reviews">
+        <h3>Customer Reviews</h3>
+        {% if book_reviews %}
+            {% for review in book_reviews %}
+                <div>
+                    <strong>Rating:</strong> {{ review.rating }} / 5<br>
+                    <p>{{ review.review_text }}</p>
+                </div>
+                <hr>
+            {% endfor %}
+        {% else %}
+            <p>No reviews yet.</p>
+        {% endif %}
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li style="color: {% if category == 'error' %}red{% else %}green{% endif %};">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+</div>
+</body>
+</html>

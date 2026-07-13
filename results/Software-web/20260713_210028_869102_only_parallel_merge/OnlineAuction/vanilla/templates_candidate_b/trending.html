@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Trending Auctions</title>
+</head>
+<body>
+    <div id="trending-page">
+        <h1>Trending Auctions</h1>
+        <label for="time-range-filter">Time Range:</label>
+        <select id="time-range-filter" onchange="window.location.href='{{ url_for('trending') }}?time_range='+this.value">
+            {% for option in ['Last 24 Hours', 'This Week', 'All Time'] %}
+            <option value="{{ option }}" {% if time_range == option %}selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+        </select>
+        <div id="trending-list">
+            {% if trending %}
+                {% for item in trending %}
+                <div class="trending-item">
+                    <span>{{ item.trending_rank }}. </span>
+                    <strong>{{ item.item_name }}</strong>
+                    <span> - Current Bid: ${{ '%.2f'|format(item.current_bid) }}</span>
+                    <span> ({{ item.bid_count }} bids)</span>
+                    <button id="view-auction-button-{{ item.auction_id }}" onclick="location.href='{{ url_for('auction_details', auction_id=item.auction_id) }}'">View Details</button>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No trending auctions found.</p>
+            {% endif %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

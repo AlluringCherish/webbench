@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Trips</title>
+</head>
+<body>
+<div id="trips-page">
+    <h1>My Trips</h1>
+    {% if message %}<p><b>{{ message }}</b></p>{% endif %}
+    <table id="trips-table" border="1">
+        <thead>
+            <tr>
+                <th>Trip Name</th>
+                <th>Destination</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Total Budget</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trip in trips %}
+            <tr>
+                <td>{{ trip.trip_name }}</td>
+                <td>{{ trip.destination }}</td>
+                <td>{{ trip.start_date }}</td>
+                <td>{{ trip.end_date }}</td>
+                <td>${{ '%.2f'|format(trip.total_budget) }}</td>
+                <td>{{ trip.status }}</td>
+                <td>
+                    <button id="view-trip-details-button-{{ trip.trip_id }}" onclick="alert('Viewing trip: {{ trip.trip_name }}')">View</button>
+                    <button id="edit-trip-button-{{ trip.trip_id }}" onclick="document.getElementById('edit-form-{{ trip.trip_id }}').style.display='block'">Edit</button>
+                    <form method="post" style="display:inline;">
+                        <input type="hidden" name="form_type" value="delete_trip" />
+                        <input type="hidden" name="trip_id" value="{{ trip.trip_id }}" />
+                        <button type="submit" id="delete-trip-button-{{ trip.trip_id }}">Delete</button>
+                    </form>
+                    <div id="edit-form-{{ trip.trip_id }}" style="display:none;">
+                        <form method="post">
+                            <input type="hidden" name="form_type" value="edit_trip" />
+                            <input type="hidden" name="trip_id" value="{{ trip.trip_id }}" />
+                            <label for="edit-trip-name-{{ trip.trip_id }}">Trip Name:</label>
+                            <input id="edit-trip-name-{{ trip.trip_id }}" name="trip_name" type="text" value="{{ trip.trip_name }}" required />
+                            <label for="edit-destination-{{ trip.trip_id }}">Destination:</label>
+                            <input id="edit-destination-{{ trip.trip_id }}" name="destination" type="text" value="{{ trip.destination }}" required />
+                            <label for="edit-start-date-{{ trip.trip_id }}">Start Date:</label>
+                            <input id="edit-start-date-{{ trip.trip_id }}" name="start_date" type="date" value="{{ trip.start_date }}" required />
+                            <label for="edit-end-date-{{ trip.trip_id }}">End Date:</label>
+                            <input id="edit-end-date-{{ trip.trip_id }}" name="end_date" type="date" value="{{ trip.end_date }}" required />
+                            <label for="edit-total-budget-{{ trip.trip_id }}">Total Budget:</label>
+                            <input id="edit-total-budget-{{ trip.trip_id }}" name="total_budget" type="number" step="0.01" value="{{ trip.total_budget }}" required />
+                            <label for="edit-status-{{ trip.trip_id }}">Status:</label>
+                            <input id="edit-status-{{ trip.trip_id }}" name="status" type="text" value="{{ trip.status }}" required />
+                            <button type="submit">Save</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7">No trips found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

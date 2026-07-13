@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Board Dashboard</title>
+</head>
+<body>
+<div id="dashboard-page">
+    <h1>Job Board Dashboard</h1>
+    <div id="featured-jobs">
+        <h2>Featured Jobs</h2>
+        <ul>
+        {% for job in featured_jobs %}
+            <li>
+                <strong>{{ job.title }}</strong> at 
+                {% set company = None %}
+                {% for comp in featured_jobs %}
+                  {% if comp.job_id == job.job_id %}
+                    {% set company = comp.company_name if comp.company_name else '' %}
+                  {% endif %}
+                {% endfor %}
+                {{ company or (get_company_by_id(job.company_id).company_name if get_company_by_id(job.company_id) else '') }}
+                ({{ job.location }})
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <button id="browse-jobs-button" onclick="window.location.href='{{ url_for('jobs') }}'">Browse Jobs</button>
+    <button id="my-applications-button" onclick="window.location.href='{{ url_for('applications') }}'">My Applications</button>
+    <button id="companies-button" onclick="window.location.href='{{ url_for('companies') }}'">Companies</button>
+</div>
+</body>
+</html>

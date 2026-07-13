@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<div id="reviews-page">
+    <h1>Customer Reviews</h1>
+    <form method="get" action="{{ url_for('reviews_page') }}">
+        <label for="filter-by-rating">Filter by Rating:</label>
+        <select id="filter-by-rating" name="rating">
+            <option value="All" {% if selected_rating == 'All' %}selected{% endif %}>All</option>
+            <option value="5 stars" {% if selected_rating == '5 stars' %}selected{% endif %}>5 stars</option>
+            <option value="4 stars" {% if selected_rating == '4 stars' %}selected{% endif %}>4 stars</option>
+            <option value="3 stars" {% if selected_rating == '3 stars' %}selected{% endif %}>3 stars</option>
+            <option value="2 stars" {% if selected_rating == '2 stars' %}selected{% endif %}>2 stars</option>
+            <option value="1 star" {% if selected_rating == '1 star' %}selected{% endif %}>1 star</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+    <div id="reviews-list">
+        {% if reviews %}
+            {% for review in reviews %}
+                <div>
+                    <h3>{{ review.book_title }}</h3>
+                    <p>Rating: {{ review.rating }} / 5</p>
+                    <p>{{ review.review_text }}</p>
+                    <hr>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No reviews found.</p>
+        {% endif %}
+    </div>
+    <button id="write-review-button" onclick="location.href='{{ url_for('write_review') }}'">Write a Review</button>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li style="color: {% if category == 'error' %}red{% else %}green{% endif %};">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</div>
+</body>
+</html>

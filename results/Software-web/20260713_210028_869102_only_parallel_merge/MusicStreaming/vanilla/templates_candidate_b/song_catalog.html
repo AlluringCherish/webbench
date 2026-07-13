@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Song Catalog</title>
+</head>
+<body>
+<div id="catalog-page">
+    <h1>Song Catalog</h1>
+
+    <input id="search-input" type="text" placeholder="Search songs by title, artist, or album" value="{{ search_query }}" onkeypress="if(event.key === 'Enter') { window.location.href='{{ url_for('song_catalog') }}?search='+this.value+'&genre={{ selected_genre }}'; }">
+
+    <select id="genre-filter" onchange="window.location.href='{{ url_for('song_catalog') }}?search={{ search_query }}&genre='+this.value;">
+        <option value="">All Genres</option>
+        {% for genre in genres %}
+        <option value="{{ genre.genre_name }}" {% if genre.genre_name == selected_genre %}selected{% endif %}>{{ genre.genre_name }}</option>
+        {% endfor %}
+    </select>
+
+    <div id="songs-grid">
+        {% for entry in songs %}
+        <div class="song-card">
+            <div class="cover-art">
+                <!-- No cover art specified, could be an image from album if available -->
+                <img src="/static/cover_placeholder.png" alt="Cover Art" width="100" height="100">
+            </div>
+            <div class="song-info">
+                <a href="{{ url_for('song_details', song_id=entry.song.song_id) }}">{{ entry.song.title }}</a><br>
+                <a href="{{ url_for('artists') }}">{{ entry.artist.name if entry.artist else 'Unknown Artist' }}</a><br>
+                Duration: {{ (entry.song.duration // 60)|string }}:{{ '%02d' % (entry.song.duration % 60) }}
+            </div>
+            <button id="add-to-playlist-button-{{ entry.song.song_id }}">Add to Playlist</button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trainer Profiles</title>
+    <script>
+      function applyFilter() {
+        let search = document.getElementById('trainer-search').value;
+        let filter = document.getElementById('specialty-filter').value;
+        let url = '{{ url_for("trainer_profiles") }}?search=' + encodeURIComponent(search) + '&filter=' + encodeURIComponent(filter);
+        window.location.href = url;
+      }
+    </script>
+</head>
+<body>
+    <div id="trainers-page">
+        <h1>Trainer Profiles</h1>
+
+        <input type="text" id="trainer-search" placeholder="Search by name or specialty" value="{{ search_term }}" oninput="applyFilter()">
+        <select id="specialty-filter" onchange="applyFilter()">
+            <option value="">All</option>
+            <option value="Strength" {% if selected_filter == 'strength' %}selected{% endif %}>Strength</option>
+            <option value="Cardio" {% if selected_filter == 'cardio' %}selected{% endif %}>Cardio</option>
+            <option value="Flexibility" {% if selected_filter == 'flexibility' %}selected{% endif %}>Flexibility</option>
+            <option value="Weight Loss" {% if selected_filter == 'weight loss' %}selected{% endif %}>Weight Loss</option>
+        </select>
+
+        <div id="trainers-grid">
+            {% for trainer in trainers %}
+            <div class="trainer-card">
+                <h2>{{ trainer.name }}</h2>
+                <p>Specialty: {{ trainer.specialty }}</p>
+                <button id="view-trainer-button-{{ trainer.trainer_id }}" onclick="location.href='{{ url_for('trainer_detail', trainer_id=trainer.trainer_id) }}'">View Profile</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

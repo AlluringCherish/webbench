@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan Your Itinerary</title>
+</head>
+<body>
+<div id="itinerary-page">
+    <h1>Plan Your Itinerary</h1>
+    {% if message %}<p><b>{{ message }}</b></p>{% endif %}
+
+    <h2>Add New Itinerary</h2>
+    <form method="post">
+        <input type="hidden" name="form_type" value="add_itinerary" />
+        <label for="itinerary-name-input">Itinerary Name:</label>
+        <input id="itinerary-name-input" name="itinerary_name" type="text" required />
+        <label for="start-date-input">Start Date:</label>
+        <input id="start-date-input" name="start_date" type="date" required />
+        <label for="end-date-input">End Date:</label>
+        <input id="end-date-input" name="end_date" type="date" required />
+        <label for="destination-input">Destination:</label>
+        <input id="destination-input" name="destination" type="text" required />
+        <button type="submit">Add Itinerary</button>
+    </form>
+
+    <h2>Existing Itineraries</h2>
+    <div id="itinerary-list">
+        {% for it in itineraries %}
+        <div class="itinerary-item">
+            <h3>{{ it.itinerary_name }}</h3>
+            <p>Destination: {{ it.destination }}</p>
+            <p>Start: {{ it.start_date }} End: {{ it.end_date }}</p>
+            <p>Activities: {{ it.activities }}</p>
+            <p>Status: {{ it.status }}</p>
+            <form method="post" style="display:inline;">
+                <input type="hidden" name="form_type" value="delete_itinerary" />
+                <input type="hidden" name="itinerary_id" value="{{ it.itinerary_id }}" />
+                <button type="submit" id="btn-delete-itinerary-{{ it.itinerary_id }}">Delete</button>
+            </form>
+            <button onclick="document.getElementById('edit-form-{{ it.itinerary_id }}').style.display='block'" id="btn-edit-itinerary-{{ it.itinerary_id }}">Edit</button>
+            <div id="edit-form-{{ it.itinerary_id }}" style="display:none;">
+                <form method="post">
+                    <input type="hidden" name="form_type" value="edit_itinerary" />
+                    <input type="hidden" name="itinerary_id" value="{{ it.itinerary_id }}" />
+                    <label for="edit-itinerary-name-{{ it.itinerary_id }}">Itinerary Name:</label>
+                    <input id="edit-itinerary-name-{{ it.itinerary_id }}" name="itinerary_name" type="text" value="{{ it.itinerary_name }}" required />
+                    <label for="edit-start-date-{{ it.itinerary_id }}">Start Date:</label>
+                    <input id="edit-start-date-{{ it.itinerary_id }}" name="start_date" type="date" value="{{ it.start_date }}" required />
+                    <label for="edit-end-date-{{ it.itinerary_id }}">End Date:</label>
+                    <input id="edit-end-date-{{ it.itinerary_id }}" name="end_date" type="date" value="{{ it.end_date }}" required />
+                    <label for="edit-destination-{{ it.itinerary_id }}">Destination:</label>
+                    <input id="edit-destination-{{ it.itinerary_id }}" name="destination" type="text" value="{{ it.destination }}" required />
+                    <label for="edit-activities-{{ it.itinerary_id }}">Activities:</label>
+                    <input id="edit-activities-{{ it.itinerary_id }}" name="activities" type="text" value="{{ it.activities }}" />
+                    <label for="edit-status-{{ it.itinerary_id }}">Status:</label>
+                    <input id="edit-status-{{ it.itinerary_id }}" name="status" type="text" value="{{ it.status }}" />
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <p>No itineraries available.</p>
+        {% endfor %}
+    </div>
+
+    <h2>Add Activity to Itinerary</h2>
+    <form method="post">
+        <input type="hidden" name="form_type" value="add_activity" />
+        <label for="itinerary-select">Select Itinerary:</label>
+        <select id="itinerary-select" name="itinerary_id" required>
+            <option value="">--Select--</option>
+            {% for it in itineraries %}
+            <option value="{{ it.itinerary_id }}">{{ it.itinerary_name }}</option>
+            {% endfor %}
+        </select>
+        <label for="activity-input">Activity:</label>
+        <input id="activity-input" name="activity" type="text" required />
+        <button type="submit" id="add-activity-button">Add Activity</button>
+    </form>
+</div>
+</body>
+</html>
