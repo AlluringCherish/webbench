@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Trending Articles</title>
+</head>
+<body>
+    <div id="trending-page">
+        <h1>Trending Articles</h1>
+
+        <form action="{{ url_for('trending') }}" method="get">
+            <label for="time-period-filter">Filter by Time Period:</label>
+            <select id="time-period-filter" name="time-period-filter" onchange="this.form.submit()">
+                <option value="Today" {% if time_period == 'Today' %}selected{% endif %}>Today</option>
+                <option value="This Week" {% if time_period == 'This Week' %}selected{% endif %}>This Week</option>
+                <option value="This Month" {% if time_period == 'This Month' %}selected{% endif %}>This Month</option>
+            </select>
+        </form>
+
+        <div id="trending-list">
+            {% if trending_list %}
+                {% for idx, item in enumerate(trending_list, start=1) %}
+                    <div>
+                        <span>{{ idx }}. </span>
+                        <strong>{{ item.article_title }}</strong>
+                        <span> ({{ item.category }}) </span>
+                        <span>Views: {{ item.view_count }}</span>
+
+                        <form action="{{ url_for('article_details', article_id=item.article_id) }}" method="get" style="display:inline;">
+                            <button id="view-article-button-{{ item.article_id }}" type="submit">View Article</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No trending articles to display.</p>
+            {% endif %}
+        </div>
+
+        <form action="{{ url_for('dashboard') }}" method="get">
+            <button id="back-to-dashboard" type="submit">Back to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

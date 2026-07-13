@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Air Quality Index</title>
+</head>
+<body>
+<div id="air-quality-page">
+    <h1>Air Quality Index</h1>
+
+    <label for="location-aqi-filter">Filter by Location:</label>
+    <select id="location-aqi-filter" onchange="filterByLocation()">
+        {% for loc in locations %}
+            <option value="{{ loc.location_id }}" {% if loc.location_id == selected_location %}selected{% endif %}>{{ loc.location_name }}</option>
+        {% endfor %}
+    </select>
+
+    {% if aqi %}
+        <div id="aqi-display">AQI: {{ aqi.aqi_index }}</div>
+        <div id="aqi-description">Description: {{ aqi_desc }}</div>
+        <table id="pollution-details" border="1">
+            <tr><th>PM2.5</th><td>{{ aqi.pm25 }}</td></tr>
+            <tr><th>PM10</th><td>{{ aqi.pm10 }}</td></tr>
+            <tr><th>NO2</th><td>{{ aqi.no2 }}</td></tr>
+            <tr><th>O3</th><td>{{ aqi.o3 }}</td></tr>
+        </table>
+        <div id="health-recommendation">{{ recommendation }}</div>
+    {% else %}
+        <p>No air quality data available.</p>
+    {% endif %}
+</div>
+
+<script>
+function filterByLocation() {
+    var select = document.getElementById('location-aqi-filter');
+    var locationId = select.options[select.selectedIndex].value;
+    window.location.href = '/air_quality?location_id=' + locationId;
+}
+</script>
+</body>
+</html>

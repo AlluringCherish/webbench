@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Seats</title>
+    <style>
+        .seat { margin: 2px; padding: 5px 8px; border: 1px solid #ccc; cursor: pointer; }
+        .available { background-color: #cfc; }
+        .booked { background-color: #f99; cursor: not-allowed; }
+        .selected { background-color: #6cf; }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const seats = document.querySelectorAll('.seat.available');
+            const selectedDisplay = document.getElementById('selected-seats-display');
+            const inputHidden = document.getElementById('selected-seats-input');
+
+            seats.forEach(seat => {
+                seat.addEventListener('click', function () {
+                    const seatId = this.id.substring(5); // remove 'seat-'
+                    if (this.classList.contains('selected')) {
+                        this.classList.remove('selected');
+                        // Remove seat from selected list
+                        const index = selectedSeats.indexOf(seatId);
+                        if(index > -1) selectedSeats.splice(index, 1);
+                    } else {
+                        this.classList.add('selected');
+                        selectedSeats.push(seatId);
+                    }
+                    updateSelectedDisplay();
+                });
+            });
+
+            let selectedSeats = [];
+
+            function updateSelectedDisplay() {
+                selectedDisplay.textContent = selectedSeats.join(', ');
+                inputHidden.value = selectedSeats.join(',');
+            }
+        });
+    </script>
+</head>
+<body>
+    <div id="seat-selection-page">
+        <h1>Select Seats</h1>
+
+        {% if error %}
+        <div class="error" style="color:red;">{{ error }}</div>
+        {% endif %}
+
+        <form method="post">
+            <div id="seat-map">
+                {% for row, seats in seat_map.items()|sort %}
+                <div class="seat-row">
+                    {% for seat in seats %}
+                    {% set seat_label = seat.row ~ seat.column %}
+                    <button type="button" 
+                            id="seat-{{ seat_label }}" 
+                            class="seat {% if seat.status == 'Available' %}available{% else %}booked{% endif %}" 
+                            {% if seat.status != 'Available' %}disabled{% endif %}>
+                        {{ seat_label }}
+                    </button>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            <div id="selected-seats-display">Selected Seats: </div>
+            <input type="hidden" id="selected-seats-input" name="selected_seats" />
+            <button id="proceed-booking-button" type="submit">Proceed to Booking</button>
+        </form>
+    </div>
+</body>
+</html>

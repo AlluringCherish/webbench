@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <script>
+        function showTab(tab) {
+            document.getElementById('job-results').style.display = tab === 'jobs' ? 'block' : 'none';
+            document.getElementById('company-results').style.display = tab === 'companies' ? 'block' : 'none';
+        }
+        window.onload = function() {
+            showTab('jobs');
+        };
+    </script>
+</head>
+<body>
+    <div id="search-results-page">
+        <h1>Search Results</h1>
+        <div id="search-query-display">Query: {{ query }}</div>
+        <div id="results-tabs">
+            <button onclick="showTab('jobs')">Jobs</button>
+            <button onclick="showTab('companies')">Companies</button>
+        </div>
+
+        <div id="job-results">
+            {% if job_results %}
+                <ul>
+                {% for job in job_results %}
+                    <li>{{ job.title }} at {{ get_company_by_id(job.company_id).company_name if get_company_by_id(job.company_id) else 'Unknown' }} ({{ job.location }})</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No job results found.</p>
+            {% endif %}
+        </div>
+
+        <div id="company-results" style="display:none;">
+            {% if company_results %}
+                <ul>
+                {% for company in company_results %}
+                    <li>{{ company.company_name }} - {{ company.industry }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No company results found.</p>
+            {% endif %}
+        </div>
+
+        <div id="no-results-message" style="display:none;">
+            {% if not job_results and not company_results %}
+                <p>No results found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

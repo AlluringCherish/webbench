@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <style>
+        #dashboard-page {
+            padding: 20px;
+        }
+        .button-container {
+            margin-bottom: 20px;
+        }
+        button {
+            margin-right: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div id="dashboard-page">
+        <h1 id="welcome-message">Welcome, {{ username }}!</h1>
+        <div class="button-container">
+            <button id="menu-button" onclick="location.href='{{ url_for('menu') }}'">Menu</button>
+            <button id="my-reservations-button" onclick="location.href='{{ url_for('my_reservations') }}'">My Reservations</button>
+            <button id="waitlist-button" onclick="location.href='{{ url_for('waitlist') }}'">Waitlist</button>
+            <button id="my-reviews-button" onclick="location.href='{{ url_for('my_reviews') }}'">My Reviews</button>
+            <button id="profile-button" onclick="location.href='{{ url_for('profile') }}'">Profile</button>
+        </div>
+        <h2>Upcoming Reservations</h2>
+        {% if reservations|length == 0 %}
+            <p>No upcoming reservations.</p>
+        {% else %}
+        <table id="reservations-table">
+            <thead>
+                <tr>
+                    <th>Guest Name</th>
+                    <th>Party Size</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in reservations %}
+                <tr>
+                    <td>{{ res.guest_name }}</td>
+                    <td>{{ res.party_size }}</td>
+                    <td>{{ res.date }}</td>
+                    <td>{{ res.time }}</td>
+                    <td>{{ res.status }}</td>
+                    <td>
+                        {% if res.status != 'Cancelled' %}
+                        <form method="post" style="display:inline;">
+                            <input type="hidden" name="cancel_id" value="{{ res.reservation_id }}">
+                            <button type="submit" id="cancel-reservation-button-{{ res.reservation_id }}">Cancel</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</body>
+</html>

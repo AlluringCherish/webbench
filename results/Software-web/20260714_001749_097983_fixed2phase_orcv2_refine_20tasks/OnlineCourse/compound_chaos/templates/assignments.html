@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>My Assignments</title>
+</head>
+<body>
+<div id="assignments-page">
+    {% if assignments %}
+        <table id="assignments-table" border="1">
+            <thead>
+                <tr><th>Title</th><th>Due Date</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+            {% for a in assignments %}
+                <tr>
+                    <td>{{ a.title }}</td>
+                    <td>{{ a.due_date }}</td>
+                    <td>
+                        {% if a.submitted %}
+                            Submitted (Grade: {{ a.grade if a.grade is not none else 'Pending' }})
+                        {% else %}
+                            Pending Submission
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not a.submitted %}
+                            <button id="submit-assignment-button-{{ a.assignment_id }}" 
+                                    onclick="location.href='{{ url_for('submit_assignment', assignment_id=a.assignment_id) }}'">
+                                Submit
+                            </button>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have no assignments.</p>
+    {% endif %}
+
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

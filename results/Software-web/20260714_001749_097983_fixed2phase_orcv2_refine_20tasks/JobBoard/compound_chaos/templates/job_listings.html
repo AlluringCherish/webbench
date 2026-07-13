@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Listings</title>
+</head>
+<body>
+    <div id="listings-page">
+        <h1>Job Listings</h1>
+        <form method="get" action="{{ url_for('job_listings') }}">
+            <input type="text" id="search-input" name="search_input" placeholder="Search jobs" value="{{ search_query }}" />
+            <select id="category-filter" name="category_filter">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category.category_name }}" {% if category_filter == category.category_name %}selected{% endif %}>{{ category.category_name }}</option>
+                {% endfor %}
+            </select>
+            <select id="location-filter" name="location_filter">
+                <option value="">All Locations</option>
+                <option value="Remote" {% if location_filter == 'Remote' %}selected{% endif %}>Remote</option>
+                <option value="On-site" {% if location_filter == 'On-site' %}selected{% endif %}>On-site</option>
+                <option value="Hybrid" {% if location_filter == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="jobs-grid">
+            {% if jobs %}
+                <ul>
+                {% for job in jobs %}
+                    <li>
+                        <strong>{{ job.title }}</strong> at {{ (get_company_by_id(job.company_id).company_name if get_company_by_id(job.company_id) else 'Unknown') }}<br />
+                        Location: {{ job.location }}<br />
+                        <button id="view-job-button-{{ job.job_id }}" onclick="location.href='{{ url_for('job_details', job_id=job.job_id) }}'">View Details</button>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No jobs found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

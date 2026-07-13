@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Venues</title>
+</head>
+<body>
+<div id="venues-page">
+    <h1>Venues</h1>
+
+    <form method="get" action="{{ url_for('venues_page') }}">
+        <input type="text" id="venue-search-input" name="search" placeholder="Search by name or location" value="{{ search }}">
+        <select id="venue-capacity-filter" name="capacity">
+            <option value="All" {% if capacity_filter == 'All' or capacity_filter == '' %}selected{% endif %}>All Capacities</option>
+            <option value="Small" {% if capacity_filter == 'Small' %}selected{% endif %}>Small</option>
+            <option value="Medium" {% if capacity_filter == 'Medium' %}selected{% endif %}>Medium</option>
+            <option value="Large" {% if capacity_filter == 'Large' %}selected{% endif %}>Large</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    <div id="venues-grid">
+        {% if venues %}
+            <ul>
+                {% for venue in venues %}
+                    <li>
+                        <strong>{{ venue.venue_name }}</strong><br>
+                        {{ venue.location }}<br>
+                        Capacity: {{ venue.capacity }}<br>
+                        Amenities: {{ venue.amenities }}<br>
+                        <button id="view-venue-details-{{ venue.venue_id }}" onclick="alert('Venue detail view not implemented.')">View Details</button>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No venues found.</p>
+        {% endif %}
+    </div>
+
+    <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

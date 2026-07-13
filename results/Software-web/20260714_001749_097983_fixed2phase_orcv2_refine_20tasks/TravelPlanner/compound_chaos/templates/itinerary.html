@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan Your Itinerary</title>
+</head>
+<body>
+<div id="itinerary-page">
+    <h1>Plan Your Itinerary</h1>
+
+    <form method="post" action="{{ url_for('itinerary_page') }}">
+        <input id="itinerary-name-input" type="text" name="itinerary_name" placeholder="Itinerary Name" required value="{{ edit_itinerary.itinerary_name if edit_itinerary else '' }}">
+        <input id="destination-input" type="text" name="destination" placeholder="Destination" required value="{{ edit_itinerary.destination if edit_itinerary else '' }}">
+        <input id="start-date-input" type="date" name="start_date" required value="{{ edit_itinerary.start_date if edit_itinerary else '' }}">
+        <input id="end-date-input" type="date" name="end_date" required value="{{ edit_itinerary.end_date if edit_itinerary else '' }}">
+        <textarea id="activities-input" name="activities" placeholder="Activities">{{ edit_itinerary.activities if edit_itinerary else '' }}</textarea>
+        <input type="hidden" name="itinerary_id" value="{{ edit_itinerary.itinerary_id if edit_itinerary else '' }}">
+        <button id="add-activity-button" type="submit">Add / Update Itinerary</button>
+    </form>
+
+    <div id="itinerary-list">
+        {% if itineraries %}
+            <ul>
+                {% for itin in itineraries %}
+                    <li>
+                        <b>{{ itin.itinerary_name }}</b> ({{ itin.start_date }} - {{ itin.end_date }})
+                        <button id="edit-itinerary-button-{{ itin.itinerary_id }}" onclick="window.location='{{ url_for('itinerary_page', edit=itin.itinerary_id) }}'">Edit</button>
+                        <form method="post" action="{{ url_for('delete_itinerary', itinerary_id=itin.itinerary_id) }}" style="display:inline;">
+                            <button id="delete-itinerary-button-{{ itin.itinerary_id }}" type="submit">Delete</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No itineraries found.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

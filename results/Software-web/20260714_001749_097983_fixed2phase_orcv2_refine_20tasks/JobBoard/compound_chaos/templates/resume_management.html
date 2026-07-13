@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Resumes</title>
+    <script>
+        function triggerUpload() {
+            document.getElementById('resume-file-input').click();
+        }
+    </script>
+</head>
+<body>
+    <div id="resume-page">
+        <h1>My Resumes</h1>
+        <form method="post" enctype="multipart/form-data">
+            <div id="resumes-list">
+                {% if resumes %}
+                    <ul>
+                    {% for resume in resumes %}
+                        <li>
+                            {{ resume.filename }} uploaded on {{ resume.upload_date }}
+                            <button id="delete-resume-button-{{ resume.resume_id }}" name="delete_resume_button" value="{{ resume.resume_id }}" type="submit">Delete</button>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No resumes uploaded.</p>
+                {% endif %}
+            </div>
+
+            <button id="upload-resume-button" type="button" onclick="triggerUpload()">Upload Resume</button>
+            <input type="file" id="resume-file-input" name="resume_file_input" style="display:none;" onchange="this.form.submit()" accept=".pdf,.doc,.docx,.txt" />
+            <button id="back-to-dashboard" type="button" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

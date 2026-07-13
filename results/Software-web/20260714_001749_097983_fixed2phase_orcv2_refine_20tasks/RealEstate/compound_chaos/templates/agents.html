@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real Estate Agents</title>
+</head>
+<body>
+    <div id="agents-page">
+        <h1>Real Estate Agents</h1>
+        <button id="back-to-dashboard" onclick="location.href='/dashboard'">Back to Dashboard</button>
+
+        <label for="agent-search">Search Agents:</label>
+        <input type="text" id="agent-search" name="agent-search" value="{{ search_query }}" onkeyup="handleAgentSearch()">
+
+        <div id="agents-list">
+            {% for agent in agents %}
+            <div class="agent-item" id="agent-{{ agent.id }}">
+                <h2>{{ agent.name }}</h2>
+                <div>Specialization: {{ agent.specialization }}</div>
+                <div>Email: <a href="mailto:{{ agent.email }}">{{ agent.email }}</a></div>
+                <div>Phone: {{ agent.phone }}</div>
+                <button id="contact-agent-button-{{ agent.id }}" onclick="location.href='/contact-agent/{{ agent.id }}'">Contact Agent</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Optional client-side filtering
+        function handleAgentSearch() {
+            var input = document.getElementById('agent-search');
+            var filter = input.value.toLowerCase();
+            var list = document.getElementById('agents-list');
+            var agents = list.getElementsByClassName('agent-item');
+            for (var i = 0; i < agents.length; i++) {
+                var name = agents[i].getElementsByTagName('h2')[0].textContent.toLowerCase();
+                if (name.indexOf(filter) > -1) {
+                    agents[i].style.display = '';
+                } else {
+                    agents[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

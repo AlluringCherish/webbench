@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Forecast</title>
+</head>
+<body>
+<div id="forecast-page">
+    <h1>Weekly Forecast</h1>
+
+    <label for="location-filter">Filter by Location:</label>
+    <select id="location-filter" onchange="filterByLocation()">
+        {% for loc in locations %}
+            <option value="{{ loc.location_id }}" {% if loc.location_id == selected_location %}selected{% endif %}>{{ loc.location_name }}</option>
+        {% endfor %}
+    </select>
+
+    <table id="forecast-table" border="1">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>High Temp</th>
+            <th>Low Temp</th>
+            <th>Condition</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for f in forecasts %}
+        <tr>
+            <td>{{ f.date }}</td>
+            <td>{{ f.high_temp }}&deg;</td>
+            <td>{{ f.low_temp }}&deg;</td>
+            <td>{{ f.condition }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="forecast-list">
+        {% for f in forecasts %}
+            <div class="forecast-card">
+                <h3>{{ f.date }}</h3>
+                <p>High: {{ f.high_temp }}&deg;</p>
+                <p>Low: {{ f.low_temp }}&deg;</p>
+                <p>Condition: {{ f.condition }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="window.location.href='/'">Back to Dashboard</button>
+</div>
+
+<script>
+function filterByLocation() {
+    var select = document.getElementById('location-filter');
+    var locationId = select.options[select.selectedIndex].value;
+    window.location.href = '/weekly_forecast?location_id=' + locationId;
+}
+</script>
+</body>
+</html>

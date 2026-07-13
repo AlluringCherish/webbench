@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Active Orders</title>
+</head>
+<body>
+    <div id="active-orders-page">
+        <h1>Active Orders</h1>
+        <label for="status-filter">Filter by status:</label>
+        <select id="status-filter" onchange="filterOrders()">
+            <option value="All" {% if status_filter == 'All' %}selected{% endif %}>All</option>
+            <option value="Preparing" {% if status_filter == 'Preparing' %}selected{% endif %}>Preparing</option>
+            <option value="On the Way" {% if status_filter == 'On the Way' %}selected{% endif %}>On the Way</option>
+            <option value="Delivered" {% if status_filter == 'Delivered' %}selected{% endif %}>Delivered</option>
+        </select>
+        <div id="orders-list">
+            {% for o in orders %}
+            <div class="order-entry" data-status="{{ o.status }}">
+                <p>Order ID: {{ o.order_id }}</p>
+                <p>Restaurant: {{ o.restaurant_name }}</p>
+                <p>Status: {{ o.status }}</p>
+                <p>ETA: {{ o.delivery_time if o.delivery_time else 'Unknown' }}</p>
+                <button id="track-order-button-{{ o.order_id }}" onclick="location.href='/tracking/' + {{ o.order_id }}">Track Order</button>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='/'">Back to Dashboard</button>
+    </div>
+    <script>
+    function filterOrders() {
+        var filter = document.getElementById('status-filter').value;
+        var orders = document.getElementsByClassName('order-entry');
+        for (var i = 0; i < orders.length; i++) {
+            var status = orders[i].getAttribute('data-status');
+            if (filter == 'All' || status == filter) {
+                orders[i].style.display = '';
+            } else {
+                orders[i].style.display = 'none';
+            }
+        }
+    }
+    </script>
+</body>
+</html>

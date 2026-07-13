@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Reviews</title>
+</head>
+<body>
+    <div id="reviews-page">
+        <h1>Order Reviews</h1>
+        <label for="filter-by-rating">Filter by rating:</label>
+        <select id="filter-by-rating" onchange="filterReviews()">
+            <option value="All" {% if rating_filter == 'All' %}selected{% endif %}>All</option>
+            <option value="5" {% if rating_filter == '5' %}selected{% endif %}>5 Stars</option>
+            <option value="4" {% if rating_filter == '4' %}selected{% endif %}>4 Stars</option>
+            <option value="3" {% if rating_filter == '3' %}selected{% endif %}>3 Stars</option>
+            <option value="2" {% if rating_filter == '2' %}selected{% endif %}>2 Stars</option>
+            <option value="1" {% if rating_filter == '1' %}selected{% endif %}>1 Star</option>
+        </select>
+        <div id="reviews-list">
+            {% for rev in reviews %}
+            <div class="review-entry" data-rating="{{ rev.rating }}">
+                <p><strong>Restaurant:</strong> {{ rev.restaurant_name }}</p>
+                <p><strong>Customer:</strong> {{ rev.customer_name }}</p>
+                <p><strong>Rating:</strong> {{ rev.rating }}</p>
+                <p><strong>Review:</strong> {{ rev.review_text }}</p>
+                <p><em>Date: {{ rev.review_date }}</em></p>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="write-review-button" onclick="alert('Write review feature not implemented yet')">Write Review</button>
+        <button id="back-to-dashboard" onclick="location.href='/'">Back to Dashboard</button>
+    </div>
+    <script>
+        function filterReviews() {
+            var filter = document.getElementById('filter-by-rating').value;
+            var reviews = document.getElementsByClassName('review-entry');
+            for (var i = 0; i < reviews.length; i++) {
+                var rating = parseInt(reviews[i].getAttribute('data-rating'));
+                if (filter === 'All' || rating == parseInt(filter)) {
+                    reviews[i].style.display = '';
+                } else {
+                    reviews[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

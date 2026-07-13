@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Checkout</title>
+</head>
+<body>
+    <div id="checkout-page">
+        <h1>Checkout</h1>
+        {% if cart_items %}
+        <table id="checkout-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ '%.2f'|format(item.total) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>Total Amount: ${{ '%.2f'|format(total) }}</p>
+
+        <form id="checkout-form" action="{{ url_for('checkout') }}" method="post">
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" required />
+            <label for="address">Shipping Address:</label>
+            <textarea name="address" id="address" rows="3" required></textarea>
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" required />
+            <button type="submit" id="place-order-button">Place Order</button>
+        </form>
+        {% else %}
+        <p>Your cart is empty.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

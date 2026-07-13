@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse Restaurants</title>
+</head>
+<body>
+    <div id="restaurants-page">
+        <h1>Browse Restaurants</h1>
+        <input id="search-input" type="text" placeholder="Search by name or cuisine" value="{{ search_query }}" oninput="filterRestaurants()" />
+        <select id="cuisine-filter" onchange="filterRestaurants()">
+            <option value="all" {% if cuisine_filter == 'all' %}selected{% endif %}>All</option>
+            <option value="Chinese" {% if cuisine_filter == 'Chinese' %}selected{% endif %}>Chinese</option>
+            <option value="Italian" {% if cuisine_filter == 'Italian' %}selected{% endif %}>Italian</option>
+            <option value="Indian" {% if cuisine_filter == 'Indian' %}selected{% endif %}>Indian</option>
+            <option value="American" {% if cuisine_filter == 'American' %}selected{% endif %}>American</option>
+        </select>
+        <div id="restaurants-grid">
+            {% for r in restaurants %}
+                <div class="restaurant-card" data-name="{{ r.name }}" data-cuisine="{{ r.cuisine }}">
+                    <h2>{{ r.name }}</h2>
+                    <p>Cuisine: {{ r.cuisine }}</p>
+                    <p>Address: {{ r.address }}</p>
+                    <p>Phone: {{ r.phone }}</p>
+                    <p>Rating: {{ r.rating }}</p>
+                    <p>Delivery Time: {{ r.delivery_time }} mins</p>
+                    <p>Minimum Order: ${{ '%.2f'|format(r.min_order) }}</p>
+                    <button id="view-restaurant-button-{{ r.restaurant_id }}" onclick="location.href='/restaurant/{{ r.restaurant_id }}'">View Menu</button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+        function filterRestaurants() {
+            var filter = document.getElementById('cuisine-filter').value;
+            var search = document.getElementById('search-input').value.toLowerCase();
+            var cards = document.getElementsByClassName('restaurant-card');
+            for (var i = 0; i < cards.length; i++) {
+                var name = cards[i].getAttribute('data-name').toLowerCase();
+                var cuisine = cards[i].getAttribute('data-cuisine');
+                var matchesSearch = name.includes(search) || cuisine.toLowerCase().includes(search);
+                if ((filter === 'all' || cuisine === filter) && matchesSearch) {
+                    cards[i].style.display = '';
+                } else {
+                    cards[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

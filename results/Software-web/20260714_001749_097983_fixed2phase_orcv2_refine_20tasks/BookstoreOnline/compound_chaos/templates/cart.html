@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Shopping Cart</title>
+</head>
+<body>
+    <div id="cart-page">
+        <h1>Your Shopping Cart</h1>
+        {% if cart_items %}
+        <form id="update-cart-form" action="{{ url_for('update_cart') }}" method="post">
+            <table id="cart-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.author }}</td>
+                        <td>${{ '%.2f'|format(item.price) }}</td>
+                        <td>
+                            <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1" />
+                        </td>
+                        <td>${{ '%.2f'|format(item.total) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p>Total: ${{ '%.2f'|format(total) }}</p>
+            <button type="submit" id="update-cart-button">Update Cart</button>
+        </form>
+        <a href="{{ url_for('checkout') }}" id="checkout-button">Proceed to Checkout</a>
+        {% else %}
+        <p>Your cart is empty.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

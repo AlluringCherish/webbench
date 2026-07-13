@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Albums</title>
+</head>
+<body>
+<div id="albums-page">
+  <h1>Albums</h1>
+  <form method="get">
+    <input id="search-albums" name="search" type="text" placeholder="Search albums..." value="{{ request.args.get('search', '') }}">
+    <select id="sort-albums" name="sort">
+      <option value="Title" {% if request.args.get('sort') == 'Title' %}selected{% endif %}>By Title</option>
+      <option value="Artist" {% if request.args.get('sort') == 'Artist' %}selected{% endif %}>By Artist</option>
+      <option value="Year" {% if request.args.get('sort') == 'Year' %}selected{% endif %}>By Year</option>
+    </select>
+    <button type="submit">Sort</button>
+  </form>
+  <div id="albums-grid">
+    {% for album in albums %}
+      <div class="album-card">
+        <p><strong>{{ album.title }}</strong></p>
+        <p>{{ album.artist_id }}</p>
+        <p>Year: {{ album.release_year }}</p>
+        <button id="view-album-button-{{ album.album_id }}" onclick="window.location.href='/albums/{{ album.album_id }}'">View Album</button>
+      </div>
+    {% else %}
+      <p>No albums found.</p>
+    {% endfor %}
+  </div>
+  <button id="back-to-dashboard" onclick="window.location.href='/'">Back to Dashboard</button>
+</div>
+</body>
+</html>

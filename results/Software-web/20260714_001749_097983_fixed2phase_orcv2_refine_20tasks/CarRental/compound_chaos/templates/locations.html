@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pickup and Dropoff Locations</title>
+</head>
+<body>
+<div id="locations-page">
+    <h1>Pickup and Dropoff Locations</h1>
+    <form method="post">
+        <label for="hours-filter">Filter Hours:</label>
+        <select id="hours-filter" name="hours-filter">
+            <option value="" {% if hours_filter == '' %}selected{% endif %}>All</option>
+            <option value="24/7" {% if hours_filter == '24/7' %}selected{% endif %}>24/7</option>
+            <option value="09:00-18:00" {% if hours_filter == '09:00-18:00' %}selected{% endif %}>09:00-18:00</option>
+        </select>
+        <label for="search-location-input">Search:</label>
+        <input type="text" id="search-location-input" name="search-location-input" value="{{ search_input }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="locations-list">
+        {% for loc in locations %}
+        <div>
+            <p>{{ loc.city }} - {{ loc.address }}</p>
+            <button id="location-detail-button-{{ loc.location_id }}" type="button" onclick="alert('Details:\nCity: {{ loc.city }}\nAddress: {{ loc.address }}\nPhone: {{ loc.phone }}\nHours: {{ loc.hours }}\nAvailable Vehicles: {{ loc.available_vehicles }}')">View Details</button>
+        </div>
+        {% else %}
+        <p>No locations found.</p>
+        {% endfor %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

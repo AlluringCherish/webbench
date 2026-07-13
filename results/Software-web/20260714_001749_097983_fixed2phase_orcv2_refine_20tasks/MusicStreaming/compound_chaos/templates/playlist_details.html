@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Playlist Details</title>
+</head>
+<body>
+<div id="playlist-details-page">
+  <h1 id="playlist-title">{{ playlist.title }}</h1>
+  <div id="playlist-description">{{ playlist.description }}</div>
+  <table id="songs-in-playlist" border="1">
+    <thead>
+      <tr><th>Title</th><th>Artist</th><th>Duration</th><th>Remove</th></tr>
+    </thead>
+    <tbody>
+      {% for song in songs %}
+      <tr>
+        <td>{{ song.title }}</td>
+        <td>{{ song.artist_id }}</td>
+        <td>{{ song.duration }}</td>
+        <td>
+          <form method="post" action="/playlists/{{ playlist.playlist_id }}/remove_song/{{ song.song_id }}">
+            <button type="submit" id="remove-song-button-{{ song.song_id }}">Remove</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4">No songs in playlist.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <form method="post" action="/playlists/delete/{{ playlist.playlist_id }}">
+    <button type="submit" id="delete-playlist-button">Delete Playlist</button>
+  </form>
+  <button id="back-to-playlists" onclick="window.location.href='/playlists'">Back to Playlists</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Search</title>
+</head>
+<body>
+    <div id="search-page">
+        <h1>Property Search</h1>
+        <form method="get" action="/search">
+            <input type="text" id="location-input" name="location-input" placeholder="Enter location or city" value="{{ request.args.get('location-input', '') }}">
+
+            <input type="number" id="price-range-min" name="price-range-min" placeholder="Min Price" value="{{ request.args.get('price-range-min', '') }}">
+
+            <input type="number" id="price-range-max" name="price-range-max" placeholder="Max Price" value="{{ request.args.get('price-range-max', '') }}">
+
+            <select id="property-type-filter" name="property-type-filter">
+                <option value="All">All</option>
+                <option value="House" {% if request.args.get('property-type-filter') == 'House' %}selected{% endif %}>House</option>
+                <option value="Apartment" {% if request.args.get('property-type-filter') == 'Apartment' %}selected{% endif %}>Apartment</option>
+                <option value="Condo" {% if request.args.get('property-type-filter') == 'Condo' %}selected{% endif %}>Condo</option>
+                <option value="Land" {% if request.args.get('property-type-filter') == 'Land' %}selected{% endif %}>Land</option>
+            </select>
+
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="properties-grid">
+            {% for prop in properties %}
+            <div class="property-card">
+                <h2 id="property-address">{{ prop.address }}</h2>
+                <div id="property-price">Price: ${{ prop.price }}</div>
+                <div id="property-features">{{ prop.beds }} beds | {{ prop.baths }} baths | {{ prop.sqft }} sqft</div>
+                <button id="view-property-button-{{ prop.id }}" onclick="location.href='/property/{{ prop.id }}'">View Details</button>
+            </div>
+            {% else %}
+            <p>No properties found matching criteria.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

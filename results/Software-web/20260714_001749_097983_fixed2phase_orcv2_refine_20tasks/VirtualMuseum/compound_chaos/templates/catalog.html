@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Artifact Catalog</title>
+</head>
+<body>
+    <div id="catalogPage">
+        <input type="text" id="catalogSearchBar" placeholder="Search artifacts..." oninput="filterArtifacts()" />
+        <select id="catalogFilter" onchange="filterArtifacts()">
+            <option value="all">All</option>
+            <option value="origin">Filter by Origin</option>
+            <option value="year">Filter by Year</option>
+        </select>
+        <div id="artifactList">
+            {% for artifact in artifacts %}
+                <div class="artifact" data-origin="{{ artifact.origin }}" data-year="{{ artifact.year }}">
+                    <h3>{{ artifact.name }}</h3>
+                    <img src="/static/images/{{ artifact.image_filename }}" alt="{{ artifact.name }}" style="max-width:200px; max-height:150px;" />
+                    <p>{{ artifact.description }}</p>
+                    <p>Origin: {{ artifact.origin }}</p>
+                    <p>Year: {{ artifact.year }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <button id="btnBackToDashboardFromCatalog" onclick="location.href='/'">Back to Dashboard</button>
+    </div>
+
+    <script>
+    function filterArtifacts() {
+        var searchText = document.getElementById('catalogSearchBar').value.toLowerCase();
+        var filterType = document.getElementById('catalogFilter').value;
+        var artifacts = document.querySelectorAll('#artifactList .artifact');
+
+        artifacts.forEach(function(artifact) {
+            var name = artifact.querySelector('h3').textContent.toLowerCase();
+            var origin = artifact.getAttribute('data-origin').toLowerCase();
+            var year = artifact.getAttribute('data-year');
+            var show = false;
+
+            if (name.includes(searchText) || searchText === '') {
+                if (filterType === 'all') {
+                    show = true;
+                } else if (filterType === 'origin') {
+                    if (origin.includes(searchText)) {
+                        show = true;
+                    }
+                } else if (filterType === 'year') {
+                    if (year.includes(searchText)) {
+                        show = true;
+                    }
+                }
+            }
+
+            artifact.style.display = show ? '' : 'none';
+        });
+    }
+    </script>
+</body>
+</html>

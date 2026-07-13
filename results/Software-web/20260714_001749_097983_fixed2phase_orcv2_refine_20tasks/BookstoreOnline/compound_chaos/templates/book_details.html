@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Book Details</title>
+</head>
+<body>
+    <div id="book-details-page">
+        <h1>{{ book.title }}</h1>
+        <p>Author: {{ book.author }}</p>
+        <p>Price: ${{ '%.2f' | format(book.price) }}</p>
+        <p>Description: {{ book.description }}</p>
+
+        <form id="add-to-cart-form" action="{{ url_for('add_to_cart') }}" method="post">
+            <input type="hidden" name="book_id" value="{{ book.id }}" />
+            <label for="quantity">Quantity:</label>
+            <input type="number" name="quantity" id="quantity" value="1" min="1" />
+            <button type="submit" id="add-to-cart-button">Add to Cart</button>
+        </form>
+
+        <section id="reviews">
+            <h2>Reviews</h2>
+            <ul>
+                {% for review in reviews %}
+                <li><strong>Rating:</strong> {{ review.rating }} / 5<br />
+                    <p>{{ review.comment }}</p>
+                </li>
+                {% else %}
+                <li>No reviews yet.</li>
+                {% endfor %}
+            </ul>
+
+            <form id="submit-review-form" action="{{ url_for('submit_review') }}" method="post">
+                <input type="hidden" name="book_id" value="{{ book.id }}" />
+                <label for="rating">Rating:</label>
+                <select name="rating" id="rating">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <label for="comment">Comment:</label>
+                <textarea name="comment" id="comment" rows="4"></textarea>
+                <button type="submit" id="submit-review-button">Submit Review</button>
+            </form>
+        </section>
+    </div>
+</body>
+</html>

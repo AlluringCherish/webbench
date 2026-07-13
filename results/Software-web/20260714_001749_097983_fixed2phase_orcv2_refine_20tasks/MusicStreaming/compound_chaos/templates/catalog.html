@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Song Catalog</title>
+</head>
+<body>
+<div id="catalog-page">
+    <h1>Song Catalog</h1>
+    <form method="get">
+        <input id="search-input" name="search" type="text" placeholder="Search songs..." value="{{ request.args.get('search', '') }}">
+        <select id="genre-filter" name="genre">
+            <option value="">All Genres</option>
+            {% for genre in genres %}
+                <option value="{{ genre }}" {% if request.args.get('genre') == genre %}selected{% endif %}>{{ genre }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+    <div id="songs-grid">
+        {% for song in songs %}
+            <div class="song-card">
+                <p><strong>{{ song.title }}</strong></p>
+                <p>{{ song.artist_id }}</p>
+                <p>Duration: {{ song.duration }}s</p>
+                <button id="add-to-playlist-button-{{ song.song_id }}" onclick="alert('Add song {{ song.title }} to playlist feature coming soon!')">Add to Playlist</button>
+            </div>
+        {% else %}
+            <p>No songs found.</p>
+        {% endfor %}
+    </div>
+    <button id="back-to-dashboard" onclick="window.location.href='/'">Back to Dashboard</button>
+</div>
+</body>
+</html>
