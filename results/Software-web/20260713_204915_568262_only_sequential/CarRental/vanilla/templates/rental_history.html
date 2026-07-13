@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rental History</title>
+</head>
+<body>
+<div id="history-page">
+    <h1>Rental History</h1>
+
+    <form id="filterForm" method="get" action="{{ url_for('rental_history') }}">
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status_filter" onchange="this.form.submit()">
+            <option value="All" {% if selected_status == 'All' %}selected{% endif %}>All</option>
+            <option value="Active" {% if selected_status == 'Active' %}selected{% endif %}>Active</option>
+            <option value="Completed" {% if selected_status == 'Completed' %}selected{% endif %}>Completed</option>
+            <option value="Cancelled" {% if selected_status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+        </select>
+    </form>
+
+    <table id="rentals-table" border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Vehicle</th>
+            <th>Pickup Date</th>
+            <th>Dropoff Date</th>
+            <th>Pickup Location</th>
+            <th>Dropoff Location</th>
+            <th>Total Price</th>
+            <th>Status</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for rental in rentals %}
+            <tr>
+                <td>{{ rental.rental_id }}</td>
+                <td>{{ rental.vehicle }}</td>
+                <td>{{ rental.pickup_date }}</td>
+                <td>{{ rental.dropoff_date }}</td>
+                <td>{{ rental.pickup_location }}</td>
+                <td>{{ rental.dropoff_location }}</td>
+                <td>{{ rental.total_price }}</td>
+                <td>{{ rental.status }}</td>
+                <td><button id="view-rental-details-{{ rental.rental_id }}">View</button></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

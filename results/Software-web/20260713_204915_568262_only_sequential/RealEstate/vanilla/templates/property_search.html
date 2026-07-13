@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Search</title>
+</head>
+<body>
+    <div id="search-page">
+        <h1>Property Search</h1>
+        <form method="post">
+            <label for="location-input">Location/City:</label>
+            <input type="text" id="location-input" name="location-input" value="{{ filters.location }}">
+            <label for="price-range-min">Price Min:</label>
+            <input type="number" id="price-range-min" name="price-range-min" value="{{ filters.price_min }}">
+            <label for="price-range-max">Price Max:</label>
+            <input type="number" id="price-range-max" name="price-range-max" value="{{ filters.price_max }}">
+            <label for="property-type-filter">Property Type:</label>
+            <select id="property-type-filter" name="property-type-filter">
+                <option value="" {% if not filters.property_type %}selected{% endif %}>All</option>
+                <option value="House" {% if filters.property_type == 'House' %}selected{% endif %}>House</option>
+                <option value="Apartment" {% if filters.property_type == 'Apartment' %}selected{% endif %}>Apartment</option>
+                <option value="Condo" {% if filters.property_type == 'Condo' %}selected{% endif %}>Condo</option>
+                <option value="Land" {% if filters.property_type == 'Land' %}selected{% endif %}>Land</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="properties-grid">
+            {% for property in properties %}
+                <div class="property-card">
+                    <h2>{{ property.address }}</h2>
+                    <p>Location: {{ property.location }}</p>
+                    <p>Price: ${{ property.price }}</p>
+                    <p>Beds: {{ property.bedrooms }}, Baths: {{ property.bathrooms }}</p>
+                    <button id="view-property-button-{{ property.property_id }}" onclick="location.href='{{ url_for('property_details_page', property_id=property.property_id) }}'">View Property</button>
+                </div>
+            {% else %}
+                <p>No properties found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

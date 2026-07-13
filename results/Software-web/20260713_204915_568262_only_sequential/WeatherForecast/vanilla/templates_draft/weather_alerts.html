@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Weather Alerts</title>
+</head>
+<body>
+    <div id="alerts-page">
+        <form method="post">
+            <label for="severity-filter">Filter by Severity:</label>
+            <select id="severity-filter" name="severity-filter">
+                <option value="" {% if not selected_severity %}selected{% endif %}>All</option>
+                <option value="Low" {% if selected_severity == 'Low' %}selected{% endif %}>Low</option>
+                <option value="Medium" {% if selected_severity == 'Medium' %}selected{% endif %}>Medium</option>
+                <option value="High" {% if selected_severity == 'High' %}selected{% endif %}>High</option>
+            </select>
+            <label for="location-filter-alerts">Filter by Location:</label>
+            <select id="location-filter-alerts" name="location-filter-alerts">
+                <option value="" {% if not selected_location_id %}selected{% endif %}>All</option>
+                {% for loc in location_options %}
+                <option value="{{ loc.location_id }}" {% if loc.location_id == selected_location_id %}selected{% endif %}>{{ loc.location_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Apply Filters</button>
+        </form>
+        <div id="alerts-list">
+            {% for alert in alerts %}
+            <div>
+                <strong>{{ alert.alert_type }} ({{ alert.severity }}) - {{ alert.location_name }}</strong><br>
+                <p>{{ alert.description }}</p>
+                <p>{{ alert.start_time }} to {{ alert.end_time }}</p>
+                {% if not alert.is_acknowledged %}
+                <button id="acknowledge-alert-button-{{ alert.alert_id }}">Acknowledge</button>
+                {% else %}
+                <span>Acknowledged</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

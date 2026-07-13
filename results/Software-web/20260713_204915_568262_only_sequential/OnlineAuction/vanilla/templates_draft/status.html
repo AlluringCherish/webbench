@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Status</title>
+</head>
+<body>
+<div id="status-page">
+    <h1>Auction Status</h1>
+    <form method="get">
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status" onchange="this.form.submit()">
+            <option value="All" {% if status_filter == 'All' %}selected{% endif %}>All</option>
+            <option value="Active" {% if status_filter == 'Active' %}selected{% endif %}>Active</option>
+            <option value="Closed" {% if status_filter == 'Closed' %}selected{% endif %}>Closed</option>
+            <option value="Upcoming" {% if status_filter == 'Upcoming' %}selected{% endif %}>Upcoming</option>
+        </select>
+    </form>
+    <table id="status-table" border="1">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Time Remaining</th>
+                <th>Current Bid</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for auction in auctions %}
+                <tr>
+                    <td>{{ auction.item_name }}</td>
+                    <td>{{ auction.status }}</td>
+                    <td>{{ auction.time_remaining }}</td>
+                    <td>${{ '%.2f' % auction.current_bid }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button id="refresh-status-button" onclick="location.href='{{ url_for('auction_status', status=status_filter) }}'">Refresh Status</button>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

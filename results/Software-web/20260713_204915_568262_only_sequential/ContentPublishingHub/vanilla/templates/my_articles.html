@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Articles - ContentPublishingHub</title>
+</head>
+<body>
+<div id="my-articles-page">
+    <h1>My Articles</h1>
+
+    <label for="filter-article-status">Filter by Status:</label>
+    <select id="filter-article-status" onchange="applyFilter()">
+        <option value="">All</option>
+        <option value="draft" {% if current_status_filter == 'draft' %}selected{% endif %}>Draft</option>
+        <option value="pending_review" {% if current_status_filter == 'pending_review' %}selected{% endif %}>Pending Review</option>
+        <option value="under_review" {% if current_status_filter == 'under_review' %}selected{% endif %}>Under Review</option>
+        <option value="approved" {% if current_status_filter == 'approved' %}selected{% endif %}>Approved</option>
+        <option value="published" {% if current_status_filter == 'published' %}selected{% endif %}>Published</option>
+        <option value="rejected" {% if current_status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+        <option value="archived" {% if current_status_filter == 'archived' %}selected{% endif %}>Archived</option>
+    </select>
+
+    <table id="articles-table" border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Created Date</th>
+                <th>Publish Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr>
+                <td>{{ article.article_id }}</td>
+                <td>{{ article.title }}</td>
+                <td>{{ article.category }}</td>
+                <td>{{ article.status }}</td>
+                <td>{{ article.created_date }}</td>
+                <td>{{ article.publish_date }}</td>
+                <td>
+                    <a href="/article/{{ article.article_id }}/edit">Edit</a>
+                    |
+                    <a href="/article/{{ article.article_id }}/versions">Versions</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button id="create-new-article" onclick="window.location.href='/article/create'">Create New Article</button>
+    <button id="back-to-dashboard" onclick="window.location.href='/dashboard'">Back to Dashboard</button>
+
+    <script>
+        function applyFilter() {
+            var status = document.getElementById('filter-article-status').value;
+            window.location.href = '/articles/mine' + (status ? '?status=' + status : '');
+        }
+    </script>
+</div>
+</body>
+</html>

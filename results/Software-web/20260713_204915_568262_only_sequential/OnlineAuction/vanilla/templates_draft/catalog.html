@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Catalog</title>
+</head>
+<body>
+<div id="catalog-page">
+    <h1>Auction Catalog</h1>
+    <form method="get">
+        <input type="text" id="search-input" name="search" value="{{ search_query }}" placeholder="Search auctions...">
+        <select id="category-filter" name="category">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category.category_id }}" {% if selected_category == category.category_id|string %}selected{% endif %}>{{ category.category_name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+    <div id="auctions-grid">
+        {% if auctions %}
+            {% for auction in auctions %}
+                <div class="auction-card">
+                    <img src="{{ auction.image_url }}" alt="{{ auction.item_name }}" width="100" height="100">
+                    <h3>{{ auction.item_name }}</h3>
+                    <p>Current Bid: ${{ '%.2f' % auction.current_bid }}</p>
+                    <p>Time Remaining: {{ auction.end_time }}</p>
+                    <button id="view-auction-button-{{ auction.auction_id }}" onclick="location.href='{{ url_for('auction_details', auction_id=auction.auction_id) }}'">View Details</button>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No auctions found.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

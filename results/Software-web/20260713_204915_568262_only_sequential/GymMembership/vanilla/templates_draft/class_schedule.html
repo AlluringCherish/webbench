@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class Schedule</title>
+</head>
+<body>
+    <!-- schedule-page -->
+    <div id="schedule-page">
+        <form method="get">
+            <input id="schedule-search" type="text" name="search_query" placeholder="Search classes or trainers" value="{{ search_query if search_query else '' }}">
+            <select id="schedule-filter" name="class_filter" onchange="this.form.submit()">
+                <option value="" {% if not class_filter %}selected{% endif %}>All</option>
+                <option value="Yoga" {% if class_filter == 'Yoga' %}selected{% endif %}>Yoga</option>
+                <option value="CrossFit" {% if class_filter == 'CrossFit' %}selected{% endif %}>CrossFit</option>
+                <option value="Pilates" {% if class_filter == 'Pilates' %}selected{% endif %}>Pilates</option>
+                <option value="Boxing" {% if class_filter == 'Boxing' %}selected{% endif %}>Boxing</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="classes-grid">
+            {% for class_ in classes %}
+            <div class="class-card" style="border:1px solid #000; padding:8px; margin:8px;">
+                <h4>{{ class_.class_name }}</h4>
+                <p>Type: {{ class_.class_type }}</p>
+                <p>Day: {{ class_.schedule_day }} at {{ class_.schedule_time }}</p>
+                <p>Duration: {{ class_.duration }} minutes</p>
+                <p>Capacity: {{ class_.capacity }}</p>
+                <button id="enroll-class-button-{{ class_.class_id }}">Enroll</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

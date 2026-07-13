@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Featured Locations</title>
+</head>
+<body>
+    <div id="locations-page">
+        <h1>Featured Locations</h1>
+        <form method="get">
+            <label for="location-sort">Sort By:</label>
+            <select id="location-sort" name="location-sort" onchange="this.form.submit()">
+                <option value="By Name" {% if sort_by == 'By Name' %}selected{% endif %}>By Name</option>
+                <option value="By Properties Count" {% if sort_by == 'By Properties Count' %}selected{% endif %}>By Properties Count</option>
+                <option value="By Average Price" {% if sort_by == 'By Average Price' %}selected{% endif %}>By Average Price</option>
+            </select>
+        </form>
+        <div id="locations-list">
+            {% for location in locations %}
+            <div class="location-card">
+                <p>Name: {{ location.location_name }}</p>
+                <p>Property Count: {{ location.property_count }}</p>
+                <p>Average Price: ${{ location.average_price }}</p>
+                <button id="view-location-button-{{ location.location_id }}" onclick="location.href='{{ url_for('location_properties_page', location_id=location.location_id) }}'">View Properties</button>
+            </div>
+            {% else %}
+            <p>No locations found.</p>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

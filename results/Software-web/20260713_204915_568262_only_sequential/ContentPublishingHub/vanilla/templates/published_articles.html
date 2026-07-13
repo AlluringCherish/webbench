@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Published Articles - ContentPublishingHub</title>
+</head>
+<body>
+<div id="published-articles-page">
+    <h1>Published Articles</h1>
+
+    <label for="filter-published-category">Filter by Category:</label>
+    <select id="filter-published-category" onchange="applyFilter()">
+        <option value="">All</option>
+        <option value="news" {% if current_category_filter == 'news' %}selected{% endif %}>News</option>
+        <option value="blog" {% if current_category_filter == 'blog' %}selected{% endif %}>Blog</option>
+        <option value="tutorial" {% if current_category_filter == 'tutorial' %}selected{% endif %}>Tutorial</option>
+        <option value="announcement" {% if current_category_filter == 'announcement' %}selected{% endif %}>Announcement</option>
+        <option value="press_release" {% if current_category_filter == 'press_release' %}selected{% endif %}>Press Release</option>
+    </select>
+
+    <label for="sort-published">Sort by:</label>
+    <select id="sort-published" onchange="applyFilter()">
+        <option value="">None</option>
+        <option value="title" {% if current_sort == 'title' %}selected{% endif %}>Title</option>
+        <option value="created_date" {% if current_sort == 'created_date' %}selected{% endif %}>Created Date</option>
+        <option value="publish_date" {% if current_sort == 'publish_date' %}selected{% endif %}>Publish Date</option>
+    </select>
+
+    <div id="published-articles-grid" style="display: flex; flex-wrap: wrap; gap: 10px;">
+        {% for article in articles %}
+        <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
+            <h3>{{ article.title }}</h3>
+            <p>Category: {{ article.category }}</p>
+            <p>Publish Date: {{ article.publish_date }}</p>
+            <a href="/article/{{ article.article_id }}/analytics">Analytics</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <button id="back-to-dashboard-published" onclick="window.location.href='/dashboard'">Back to Dashboard</button>
+
+    <script>
+        function applyFilter() {
+            var category = document.getElementById('filter-published-category').value;
+            var sort = document.getElementById('sort-published').value;
+            var url = '/articles/published?';
+            if(category) {
+                url += 'category=' + category + '&';
+            }
+            if(sort) {
+                url += 'sort=' + sort;
+            }
+            window.location.href = url;
+        }
+    </script>
+</div>
+</body>
+</html>

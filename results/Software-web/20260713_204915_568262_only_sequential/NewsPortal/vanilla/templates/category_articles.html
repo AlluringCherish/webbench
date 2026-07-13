@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Category Articles</title>
+</head>
+<body>
+<div id="category-page">
+    <h1 id="category-title">{{ category.category_name }}</h1>
+
+    <div>
+        <button id="sort-by-date" onclick="sortArticles('date')">Sort by Date</button>
+        <button id="sort-by-popularity" onclick="sortArticles('popularity')">Sort by Popularity</button>
+    </div>
+
+    <div id="category-articles">
+        {% for article in articles %}
+        <div class="category-article-item" data-date="{{ article.date }}" data-popularity="{{ article.views }}">
+            <h2>{{ article.title }}</h2>
+            <div>By {{ article.author }}</div>
+            <div>Date: {{ article.date }}</div>
+            <div>Views: {{ article.views }}</div>
+        </div>
+        {% else %}
+        <p>No articles found in this category.</p>
+        {% endfor %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+
+<script>
+function sortArticles(criteria) {
+    var container = document.getElementById('category-articles');
+    var articles = Array.from(container.getElementsByClassName('category-article-item'));
+
+    articles.sort(function(a, b) {
+        if(criteria === 'date') {
+            // Newest first
+            return new Date(b.getAttribute('data-date')) - new Date(a.getAttribute('data-date'));
+        } else if(criteria === 'popularity') {
+            // Most popular first
+            return parseInt(b.getAttribute('data-popularity')) - parseInt(a.getAttribute('data-popularity'));
+        }
+        return 0;
+    });
+
+    // Remove all
+    while(container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+
+    // Re-add in sorted order
+    articles.forEach(function(article) {
+        container.appendChild(article);
+    });
+}
+</script>
+</body>
+</html>

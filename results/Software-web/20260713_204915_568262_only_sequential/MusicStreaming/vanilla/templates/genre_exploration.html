@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Genre Exploration</title>
+</head>
+<body>
+  <div id="genres-page">
+    <h1>Genre Exploration</h1>
+    <div id="genres-list">
+      <ul>
+        {% for genre in genres %}
+        <li>{{ genre.genre_name }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <form method="get" action="{{ url_for('genre_exploration') }}">
+      <select id="select-genre" name="genre">
+        <option value="">Select Genre</option>
+        {% for genre in genres %}
+        <option value="{{ genre.genre_name }}" {% if genre.genre_name == selected_genre %}selected{% endif %}>{{ genre.genre_name }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Show</button>
+    </form>
+    <div id="genre-songs">
+      <h2>Songs</h2>
+      <ul>
+        {% for song in genre_songs %}
+        <li>{{ song.title }} by {{ find_artist_by_id(song.artist_id).name if find_artist_by_id(song.artist_id) else 'Unknown Artist' }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div id="genre-artists">
+      <h2>Artists</h2>
+      <ul>
+        {% for artist in genre_artists %}
+        <li>{{ artist.name }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+  </div>
+</body>
+</html>

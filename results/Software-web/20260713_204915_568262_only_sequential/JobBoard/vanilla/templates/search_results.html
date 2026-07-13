@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+<div id="search-results-page">
+    <h1>Search Results</h1>
+    <div id="search-query-display">Search query: "{{ query }}"</div>
+    <div id="results-tabs">
+        <button onclick="showTab('job-results')">Jobs</button>
+        <button onclick="showTab('company-results')">Companies</button>
+    </div>
+    <div id="job-results" style="display:block;">
+        {% if job_results %}
+            <ul>
+            {% for job in job_results %}
+                <li>{{ job.title }} at {{ job.company_name }} - {{ job.location }} <button onclick="location.href='/jobs/{{ job.job_id }}'">View Job</button></li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <div id="no-results-message">No job results found.</div>
+        {% endif %}
+    </div>
+    <div id="company-results" style="display:none;">
+        {% if company_results %}
+            <ul>
+            {% for company in company_results %}
+                <li>{{ company.company_name }} - {{ company.industry }} <button onclick="location.href='/companies/{{ company.company_id }}'">View Company</button></li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <div id="no-results-message">No company results found.</div>
+        {% endif %}
+    </div>
+    <script>
+        function showTab(tabId) {
+            document.getElementById('job-results').style.display = tabId === 'job-results' ? 'block' : 'none';
+            document.getElementById('company-results').style.display = tabId === 'company-results' ? 'block' : 'none';
+        }
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Articles</title>
+</head>
+<body>
+<div id="trending-page">
+    <h1>Trending Articles</h1>
+
+    <select id="time-period-filter" name="time_period" onchange="
+        var val = this.value;
+        var url = new URL(window.location.href);
+        if(val) {
+            url.searchParams.set('period', val);
+        } else {
+            url.searchParams.delete('period');
+        }
+        window.location.href = url.toString();
+    ">
+        <option value="">All Periods</option>
+        {% for period in periods %}
+            <option value="{{ period }}" {% if period == selected_period %}selected{% endif %}>{{ period }}</option>
+        {% endfor %}
+    </select>
+
+    <div id="trending-list">
+        {% for article in trending %}
+        <div class="trending-article-item">
+            <h2>{{ article.article_title }}</h2>
+            <div>Category: {{ article.category }}</div>
+            <div>Views: {{ article.view_count }}</div>
+            <button id="view-article-button-{{ article.article_id }}" onclick="window.location.href='{{ url_for('article_details', article_id=article.article_id) }}'">View Article</button>
+        </div>
+        {% else %}
+        <p>No trending articles found.</p>
+        {% endfor %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

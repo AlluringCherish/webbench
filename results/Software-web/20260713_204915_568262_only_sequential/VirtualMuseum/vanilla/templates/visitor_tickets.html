@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visitor Tickets</title>
+</head>
+<body>
+<div id="visitor-tickets-page">
+    <h1>Visitor Tickets</h1>
+    <form method="post">
+        <label for="ticket-type">Ticket Type:</label>
+        <select id="ticket-type" name="ticket-type">
+            <option value="Standard" {% if form_data.ticket_type == 'Standard' %}selected{% endif %}>Standard</option>
+            <option value="Student" {% if form_data.ticket_type == 'Student' %}selected{% endif %}>Student</option>
+            <option value="Senior" {% if form_data.ticket_type == 'Senior' %}selected{% endif %}>Senior</option>
+            <option value="Family" {% if form_data.ticket_type == 'Family' %}selected{% endif %}>Family</option>
+            <option value="VIP" {% if form_data.ticket_type == 'VIP' %}selected{% endif %}>VIP</option>
+        </select>
+
+        <label for="number-of-tickets">Number of Tickets:</label>
+        <input type="number" id="number-of-tickets" name="number-of-tickets" min="1" value="{{ form_data.number_of_tickets if form_data.number_of_tickets else '1' }}">
+
+        <label for="visit-date">Visit Date:</label>
+        <input type="date" id="visit-date" name="visit_date" value="{{ form_data.visit_date if form_data.visit_date else '' }}">
+
+        <label for="visit-time">Visit Time:</label>
+        <input type="time" id="visit-time" name="visit_time" value="{{ form_data.visit_time if form_data.visit_time else '' }}">
+
+        <label for="visitor-name">Visitor Name:</label>
+        <input type="text" id="visitor-name" name="visitor_name" value="{{ form_data.visitor_name if form_data.visitor_name else '' }}">
+
+        <label for="visitor-email">Visitor Email:</label>
+        <input type="email" id="visitor-email" name="visitor_email" value="{{ form_data.visitor_email if form_data.visitor_email else '' }}">
+
+        <button id="purchase-ticket-button" type="submit">Purchase Tickets</button>
+    </form>
+
+    <table id="my-tickets-table" border="1">
+        <thead>
+        <tr>
+            <th>Ticket Type</th>
+            <th>Visit Date</th>
+            <th>Visit Time</th>
+            <th>Number of Tickets</th>
+            <th>Visitor Name</th>
+            <th>Visitor Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ticket in tickets %}
+            <tr>
+                <td>{{ ticket.ticket_type }}</td>
+                <td>{{ ticket.visit_date }}</td>
+                <td>{{ ticket.visit_time }}</td>
+                <td>{{ ticket.number_of_tickets }}</td>
+                <td>{{ ticket.visitor_name }}</td>
+                <td>{{ ticket.visitor_email }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard_page') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

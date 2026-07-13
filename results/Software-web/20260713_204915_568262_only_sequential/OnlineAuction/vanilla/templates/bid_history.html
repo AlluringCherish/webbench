@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bid History</title>
+</head>
+<body>
+<div id="bid-history-page">
+    <h1>Bid History</h1>
+    <form method="get">
+        <label for="filter-by-auction">Filter by Auction:</label>
+        <select id="filter-by-auction" name="auction_id" onchange="this.form.submit()">
+            <option value="">All Auctions</option>
+            {% for auction in auctions %}
+                <option value="{{ auction.auction_id }}" {% if auction.auction_id|string == selected_auction_id %}selected{% endif %}>{{ auction.item_name }}</option>
+            {% endfor %}
+        </select>
+        <button id="sort-by-amount" type="button" onclick="location.href='?auction_id={{ selected_auction_id }}&sort_by_amount={{ 'false' if sort_order_amount else 'true' }}'">Sort by Amount {% if sort_order_amount %}▼{% else %}▲{% endif %}</button>
+    </form>
+    <table id="bids-table" border="1">
+        <thead>
+            <tr>
+                <th>Bid ID</th>
+                <th>Auction Name</th>
+                <th>Bidder</th>
+                <th>Amount</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bid in bids %}
+                <tr>
+                    <td>{{ bid.bid_id }}</td>
+                    <td>{{ bid.auction_name }}</td>
+                    <td>{{ bid.bidder_name }}</td>
+                    <td>${{ '%.2f' % bid.bid_amount }}</td>
+                    <td>{{ bid.bid_timestamp }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

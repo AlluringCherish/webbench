@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurant Menu</title>
+</head>
+<body>
+    <div id="menu-page">
+        <h1 id="restaurant-name">{{ restaurant.name }}</h1>
+        <div id="restaurant-info">
+            <p>Address: {{ restaurant.address }}</p>
+            <p>Phone: {{ restaurant.phone }}</p>
+            <p>Rating: {{ restaurant.rating }}</p>
+        </div>
+        <div id="menu-items-grid">
+            {% for item in menu_items %}
+            <div class="menu-item">
+                <h3>{{ item.item_name }}</h3>
+                <p>{{ item.description }}</p>
+                <p>Price: ${{ '%.2f'|format(item.price) }}</p>
+                <button id="add-to-cart-button-{{ item.item_id }}" onclick="addToCart({{ item.item_id }}, 1)">Add to Cart</button>
+                <button id="view-item-details-{{ item.item_id }}" onclick="location.href='/item/{{ item.item_id }}'">View Details</button>
+            </div>
+            {% endfor %}
+        </div>
+        <script>
+            function addToCart(itemId, quantity) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/add-to-cart';
+
+                const itemInput = document.createElement('input');
+                itemInput.type = 'hidden';
+                itemInput.name = 'item_id';
+                itemInput.value = itemId;
+                form.appendChild(itemInput);
+
+                const qtyInput = document.createElement('input');
+                qtyInput.type = 'hidden';
+                qtyInput.name = 'quantity';
+                qtyInput.value = quantity;
+                form.appendChild(qtyInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        </script>
+    </div>
+</body>
+</html>

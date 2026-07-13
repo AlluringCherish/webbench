@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Active Orders</title>
+</head>
+<body>
+    <div id="active-orders-page">
+        <h1>Active Orders</h1>
+        <form method="get">
+            <label for="status-filter">Filter by Status:</label>
+            <select id="status-filter" name="status" onchange="this.form.submit()">
+                <option value="All" {% if selected_status.lower() == 'all' %}selected{% endif %}>All</option>
+                <option value="Preparing" {% if selected_status == 'Preparing' %}selected{% endif %}>Preparing</option>
+                <option value="On the Way" {% if selected_status == 'On the Way' %}selected{% endif %}>On the Way</option>
+                <option value="Delivered" {% if selected_status == 'Delivered' %}selected{% endif %}>Delivered</option>
+            </select>
+        </form>
+        <div id="orders-list">
+            <ul>
+                {% for order in orders %}
+                <li>
+                    Order ID: {{ order.order_id }} - Restaurant: {{ order.restaurant_name }} - Status: {{ order.status }} - ETA: {{ order.eta }}
+                    <button id="track-order-button-{{ order.order_id }}" onclick="location.href='/track-order/{{ order.order_id }}'">Track Order</button>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='/dashboard'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

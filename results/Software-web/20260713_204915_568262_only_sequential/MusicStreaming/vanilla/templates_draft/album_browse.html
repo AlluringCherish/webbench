@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Albums</title>
+</head>
+<body>
+  <div id="albums-page">
+    <h1>Albums</h1>
+    <form method="get" action="{{ url_for('album_browse') }}">
+      <input id="search-albums" type="text" name="search" placeholder="Search albums..." value="{{ search_query }}" />
+      <select id="sort-albums" name="sort">
+        <option value="title" {% if sort_option == 'title' %}selected{% endif %}>By Title</option>
+        <option value="artist" {% if sort_option == 'artist' %}selected{% endif %}>By Artist</option>
+        <option value="year" {% if sort_option == 'year' %}selected{% endif %}>By Year</option>
+      </select>
+      <button type="submit">Sort</button>
+    </form>
+    <div id="albums-grid">
+      {% for album in albums %}
+      <div class="album-card">
+        <h3>{{ album.title }}</h3>
+        <p>Artist: {{ album.artist_id }}</p>
+        <p>Year: {{ album.release_year }}</p>
+        <button id="view-album-button-{{ album.album_id }}" onclick="location.href='{{ url_for('album_details', album_id=album.album_id) }}'">View</button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>
