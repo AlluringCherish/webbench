@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Company Directory{% endblock %}
+
+{% block content %}
+<div id="companies-page">
+    <form method="get">
+        <input type="text" id="search-company-input" name="search" placeholder="Search companies by name or industry" value="{{ request.args.get('search', '') }}" />
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="companies-list">
+        {% if companies %}
+            {% for company in companies %}
+            <div class="company-card">
+                <h3>{{ company.company_name }}</h3>
+                <p>Industry: {{ company.industry }}</p>
+                <p>Location: {{ company.location }}</p>
+                <button id="view-company-button-{{ company.company_id }}" onclick="location.href='/companies/{{ company.company_id }}'">View Profile</button>
+            </div>
+            {% endfor %}
+        {% else %}
+        <p>No companies found matching your search.</p>
+        {% endif %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="location.href='/'">Back to Dashboard</button>
+</div>
+{% endblock %}

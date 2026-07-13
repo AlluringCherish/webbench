@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Article Version History</title>
+</head>
+<body>
+  <!-- Version History Page Container -->
+  <div id="version-history-page">
+
+    <h1>Version History for Article {{ article_id }}</h1>
+
+    <!-- Versions List -->
+    <section>
+      <table id="versions-list" border="1" cellpadding="5" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Version Number</th>
+            <th>Created Date</th>
+            <th>Change Summary</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for version in versions %}
+          <tr>
+            <td>{{ version.version_number }}</td>
+            <td>{{ version.created_date }}</td>
+            <td>{{ version.change_summary | default('') }}</td>
+            <td>
+              <button id="restore-version-{{ version.version_id }}" onclick="document.getElementById('restore-form-{{ version.version_id }}').submit()">Restore</button>
+              <form id="restore-form-{{ version.version_id }}" method="post" action="" style="display:none;">
+                <input type="hidden" name="restore_version_id" value="{{ version.version_id }}">
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+          {% if versions|length == 0 %}
+          <tr><td colspan="4">No versions available.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Version Comparison -->
+    <section id="version-comparison">
+      <h2>Version Comparison</h2>
+      <pre>{{ selected_version_content_1 }}</pre>
+    </section>
+
+    <!-- Back to Edit History Button -->
+    <button id="back-to-edit-history" onclick="window.location.href='/article/' + {{ article_id }} + '/edit'">Back to Edit Article</button>
+
+  </div>
+</body>
+</html>

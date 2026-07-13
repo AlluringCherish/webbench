@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Write Review</title>
+    <style>
+        #write-review-page { max-width: 700px; margin: auto; padding: 20px; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        select, textarea { width: 100%; padding: 8px; font-size: 14px; margin-top: 5px; }
+        button { margin-top: 15px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        #review-text { height: 150px; resize: vertical; }
+    </style>
+</head>
+<body>
+<div id="write-review-page">
+    <h1>Write a Review for "{{ book.title }}"</h1>
+    <div id="book-info-display">
+        <div><strong>Author:</strong> {{ book.author }}</div>
+        <div><strong>Genre:</strong> {{ book.genre }}</div>
+        <div><strong>Year:</strong> {{ book.year }}</div>
+    </div>
+    <form method="post" action="{{ url_for('write_review', book_id=book.book_id) }}">
+        <label for="rating-input">Rating (1 to 5):</label>
+        <select id="rating-input" name="rating" required>
+            <option value="">Select rating</option>
+            {% for r in range(1,6) %}
+            <option value="{{ r }}" {% if review and review.rating == r %}selected{% endif %}>{{ r }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="review-text">Review:</label>
+        <textarea id="review-text" name="review_text" required>{{ review.review_text if review else '' }}</textarea>
+
+        <button type="submit" id="submit-review-button">Submit Review</button>
+        <button type="button" id="back-to-book" onclick="window.location.href='{{ url_for('show_book_details', book_id=book.book_id) }}'">Back to Book</button>
+    </form>
+</div>
+</body>
+</html>

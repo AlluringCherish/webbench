@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}My Resumes{% endblock %}
+
+{% block content %}
+<div id="resume-page">
+    <button id="upload-resume-button" onclick="document.getElementById('resume-file-input').click();">Upload New Resume</button>
+    <form method="post" enctype="multipart/form-data" id="upload-form" style="display:none;">
+        <input type="file" id="resume-file-input" name="resume_file" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="document.getElementById('upload-form').submit();" />
+        <input type="text" name="applicant_name" placeholder="Your Name" required />
+        <input type="email" name="applicant_email" placeholder="Your Email" required />
+        <textarea name="summary" placeholder="Brief summary about yourself" rows="4" required></textarea>
+    </form>
+
+    <div id="resumes-list">
+        {% if resumes %}
+            {% for resume in resumes %}
+            <div class="resume-card">
+                <p><strong>{{ resume.applicant_name }}</strong> ({{ resume.applicant_email }})</p>
+                <p>Uploaded on: {{ resume.upload_date }}</p>
+                <p>{{ resume.summary }}</p>
+                <form method="post" action="/resumes/delete/{{ resume.resume_id }}" onsubmit="return confirm('Are you sure you want to delete this resume?');">
+                    <button type="submit" id="delete-resume-button-{{ resume.resume_id }}">Delete</button>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+        <p>No resumes uploaded yet.</p>
+        {% endif %}
+    </div>
+
+    <button id="back-to-dashboard" onclick="location.href='/'">Back to Dashboard</button>
+</div>
+{% endblock %}

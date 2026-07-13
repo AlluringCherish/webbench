@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan Your Itinerary</title>
+</head>
+<body>
+    <!-- 'itinerary-page' container -->
+    <div id="itinerary-page">
+        <h1>Plan Your Itinerary</h1>
+
+        <!-- Form to create new itinerary -->
+        <form method="post" action="{{ url_for('itinerary') }}">
+            <label for="itinerary-name-input">Itinerary Name:</label>
+            <input type="text" id="itinerary-name-input" name="itinerary_name" required />
+
+            <label for="start-date-input">Start Date:</label>
+            <input type="date" id="start-date-input" name="start_date" required />
+
+            <label for="end-date-input">End Date:</label>
+            <input type="date" id="end-date-input" name="end_date" required />
+
+            <button type="submit">Create Itinerary</button>
+        </form>
+
+        <!-- Button to add activities - this might use AJAX or form posts -->
+        <button id="add-activity-button">Add Activity</button>
+
+        <!-- List current itineraries -->
+        <div id="itinerary-list">
+            {% if itineraries %}
+            <ul>
+                {% for itinerary in itineraries %}
+                <li>
+                    <strong>{{ itinerary.itinerary_name }}</strong> ({{ itinerary.destination }}) from {{ itinerary.start_date }} to {{ itinerary.end_date }}
+                    <!-- Edit and delete controls if needed could be links -->
+                    <a href="{{ url_for('edit_itinerary', itinerary_id=itinerary.itinerary_id) }}">Edit</a>
+                    <form method="post" action="{{ url_for('delete_itinerary', itinerary_id=itinerary.itinerary_id) }}" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No itineraries found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

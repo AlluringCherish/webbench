@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking History - MovieTicketing</title>
+</head>
+<body>
+    <div id="bookings-page">
+        <h1>Booking History</h1>
+        <form method="get" action="/bookings">
+            <label for="status-filter">Filter by status:</label>
+            <select id="status-filter" name="status">
+                {% for status in status_options %}
+                <option value="{{ status }}" {% if status == selected_status %}selected{% endif %}>{{ status }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <table id="bookings-table" border="1">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Movie Title</th>
+                    <th>Booking Date</th>
+                    <th>Seats Booked</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.booking_id }}</td>
+                    <td>{{ booking.movie_title }}</td>
+                    <td>{{ booking.booking_date }}</td>
+                    <td>{{ booking.seats_booked }}</td>
+                    <td>{{ booking.status }}</td>
+                    <td>
+                        <button id="view-booking-button-{{ booking.booking_id }}" onclick="window.location.href='/bookings/{{ booking.booking_id }}'">View</button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6">No bookings found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="window.location.href='/dashboard'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

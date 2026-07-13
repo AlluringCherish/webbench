@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Job Listings{% endblock %}
+
+{% block content %}
+<div id="listings-page">
+    <form method="get">
+        <input type="text" id="search-input" name="search" placeholder="Search jobs by title, company, or location" value="{{ request.args.get('search', '') }}" />
+        <select id="category-filter" name="category">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+            <option value="{{ category.category_name }}" {% if request.args.get('category') == category.category_name %}selected{% endif %}>{{ category.category_name }}</option>
+            {% endfor %}
+        </select>
+
+        <select id="location-filter" name="location">
+            <option value="">All Locations</option>
+            <option value="Remote" {% if request.args.get('location') == 'Remote' %}selected{% endif %}>Remote</option>
+            <option value="On-site" {% if request.args.get('location') == 'On-site' %}selected{% endif %}>On-site</option>
+            <option value="Hybrid" {% if request.args.get('location') == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    <div id="jobs-grid">
+        {% if jobs %}
+            {% for job in jobs %}
+            <div class="job-card">
+                <h3>{{ job.title }}</h3>
+                <p>{{ job.company_name }} - {{ job.location }}</p>
+                <p>Category: {{ job.category }}</p>
+                <button id="view-job-button-{{ job.job_id }}" onclick="location.href='/jobs/{{ job.job_id }}'">View Details</button>
+            </div>
+            {% endfor %}
+        {% else %}
+        <p>No jobs found matching your criteria.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

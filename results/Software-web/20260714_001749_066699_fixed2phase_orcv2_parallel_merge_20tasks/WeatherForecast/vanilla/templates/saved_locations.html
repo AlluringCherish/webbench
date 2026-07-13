@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Saved Locations - WeatherForecast{% endblock %}
+
+{% block content %}
+<div id="saved-locations-page">
+    <table id="locations-table" border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Location Name</th>
+                <th>Current Temperature (&deg;)</th>
+                <th>Condition</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for location in saved_locations %}
+            <tr>
+                <td>{{ location.location_name }}</td>
+                <td>{{ location.temperature }}</td>
+                <td>{{ location.condition }}</td>
+                <td>
+                    <button id="view-location-weather-{{ location.location_id }}" onclick="location.href='/weather/current/' + {{ location.location_id }}">View</button>
+                    <button id="remove-location-button-{{ location.location_id }}" onclick="removeLocation({{ location.location_id }})">Remove</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button id="add-new-location-button" onclick="location.href='/locations/search'">Add New Location</button>
+</div>
+
+<script>
+function removeLocation(locationId) {
+    if(confirm('Are you sure you want to remove this location from saved?')) {
+        fetch('/locations/remove', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ location_id: locationId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                location.reload();
+            } else {
+                alert('Failed to remove location.');
+            }
+        });
+    }
+}
+</script>

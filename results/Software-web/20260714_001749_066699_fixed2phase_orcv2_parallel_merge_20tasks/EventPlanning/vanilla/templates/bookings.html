@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Bookings</title>
+</head>
+<body>
+<div id="bookings-page">
+    <h1>My Bookings</h1>
+
+    <form method="GET" action="{{ url_for('bookings_summary') }}">
+        <input id="booking-search-input" type="text" name="search" placeholder="Search bookings..." value="{{ search_query or '' }}" />
+        <button type="submit">Search</button>
+    </form>
+
+    <table id="bookings-table" border="1">
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>Date</th>
+                <th>Ticket Count</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.event_name }}</td>
+                <td>{{ booking.booking_date }}</td>
+                <td>{{ booking.ticket_count }}</td>
+                <td>{{ booking.status }}</td>
+                <td>
+                    {% if booking.status != 'Cancelled' %}
+                    <form method="POST" action="{{ url_for('cancel_booking', booking_id=booking.booking_id) }}" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                        <button id="cancel-booking-button-{{ booking.booking_id }}" type="submit">Cancel</button>
+                    </form>
+                    {% else %}
+                    Cancelled
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

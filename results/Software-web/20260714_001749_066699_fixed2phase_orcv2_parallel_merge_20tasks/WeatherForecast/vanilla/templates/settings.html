@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Settings - WeatherForecast{% endblock %}
+
+{% block content %}
+<div id="settings-page">
+    <label for="temperature-unit-select">Temperature Unit:</label>
+    <select id="temperature-unit-select" name="temperature_unit">
+        <option value="F" {% if settings.temperature_unit == 'F' %}selected{% endif %}>Fahrenheit</option>
+        <option value="C" {% if settings.temperature_unit == 'C' %}selected{% endif %}>Celsius</option>
+    </select>
+
+    <label for="default-location-select">Default Location:</label>
+    <select id="default-location-select" name="default_location_id">
+        {% for location in locations %}
+        <option value="{{ location.location_id }}" {% if location.location_id == settings.default_location_id %}selected{% endif %}>{{ location.location_name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="alert-notifications-toggle">Alert Notifications:</label>
+    <input type="checkbox" id="alert-notifications-toggle" name="alert_notifications_enabled" value="1" {% if settings.alert_notifications_enabled %}checked{% endif %} />
+
+    <button id="save-settings-button" onclick="saveSettings()">Save Settings</button>
+    <button id="back-to-dashboard" onclick="location.href='/'">Back to Dashboard</button>
+</div>
+
+<script>
+function saveSettings() {
+    const temperatureUnit = document.getElementById('temperature-unit-select').value;
+    const defaultLocation = document.getElementById('default-location-select').value;
+    const alertNotifications = document.getElementById('alert-notifications-toggle').checked ? 1 : 0;
+
+    fetch('/settings/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            temperature_unit: temperatureUnit,
+            default_location_id: defaultLocation,
+            alert_notifications_enabled: alertNotifications
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            alert('Settings saved successfully.');
+        } else {
+            alert('Failed to save settings.');
+        }
+    });
+}
+</script>

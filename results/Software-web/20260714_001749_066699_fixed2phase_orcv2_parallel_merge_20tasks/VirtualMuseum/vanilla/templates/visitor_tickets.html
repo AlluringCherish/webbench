@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visitor Tickets</title>
+    <script>
+        function validateForm() {
+            var numberOfTickets = document.getElementById('number-of-tickets').value;
+            if (numberOfTickets <= 0) {
+                alert('Please enter a positive number of tickets.');
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+<div id="visitor-tickets-page">
+    <h1>Visitor Tickets</h1>
+    <form method="post" action="{{ url_for('visitor_tickets') }}" onsubmit="return validateForm()">
+        <label for="ticket-type">Ticket Type:</label>
+        <select id="ticket-type" name="ticket_type" required>
+            <option value="Standard">Standard</option>
+            <option value="Student">Student</option>
+            <option value="Senior">Senior</option>
+            <option value="Family">Family</option>
+            <option value="VIP">VIP</option>
+        </select>
+        <br>
+        <label for="number-of-tickets">Number of Tickets:</label>
+        <input type="number" id="number-of-tickets" name="number_of_tickets" min="1" required>
+        <br>
+        <label for="visit-date">Visit Date:</label>
+        <input type="date" id="visit-date" name="visit_date" required>
+        <br>
+        <label for="visit-time">Visit Time:</label>
+        <input type="time" id="visit-time" name="visit_time" required>
+        <br>
+        <label for="visitor-name">Visitor Name:</label>
+        <input type="text" id="visitor-name" name="visitor_name" required>
+        <br>
+        <label for="visitor-email">Visitor Email:</label>
+        <input type="email" id="visitor-email" name="visitor_email" required>
+        <br>
+        <button id="purchase-ticket-button" type="submit">Purchase Ticket</button>
+    </form>
+    <h2>My Tickets</h2>
+    <table id="my-tickets-table" border="1">
+        <thead>
+            <tr>
+                <th>Ticket Type</th>
+                <th>Visit Date</th>
+                <th>Visit Time</th>
+                <th>Number of Tickets</th>
+                <th>Visitor Name</th>
+                <th>Visitor Email</th>
+                <th>Purchase Date</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for ticket in tickets %}
+            <tr>
+                <td>{{ ticket.ticket_type }}</td>
+                <td>{{ ticket.visit_date }}</td>
+                <td>{{ ticket.visit_time }}</td>
+                <td>{{ ticket.number_of_tickets }}</td>
+                <td>{{ ticket.visitor_name }}</td>
+                <td>{{ ticket.visitor_email }}</td>
+                <td>{{ ticket.purchase_date }}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="7">No tickets found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

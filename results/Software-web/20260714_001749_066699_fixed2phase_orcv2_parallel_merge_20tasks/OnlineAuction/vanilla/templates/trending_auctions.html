@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Auctions</title>
+</head>
+<body>
+    <div id="trending-page">
+        <h1>Trending Auctions</h1>
+        <form method="get" action="/trending">
+        <select id="time-range-filter" name="time_range" onchange="this.form.submit()">
+            <option value="Last 24 Hours" {% if request.args.get('time_range') == 'Last 24 Hours' %}selected{% endif %}>Last 24 Hours</option>
+            <option value="This Week" {% if request.args.get('time_range') == 'This Week' %}selected{% endif %}>This Week</option>
+            <option value="All Time" {% if request.args.get('time_range') == 'All Time' %}selected{% endif %}>All Time</option>
+        </select>
+        </form>
+        <div id="trending-list">
+            {% for auction in trending_auctions %}
+            <div class="trending-auction-item">
+                <h2>{{ auction.item_name }}</h2>
+                <p>Current Bid: {{ auction.current_bid }}</p>
+                <p>Bid Count: {{ auction.bid_count }}</p>
+                <button id="view-auction-button-{{ auction.auction_id }}" onclick="window.location.href='/auction/{{ auction.auction_id }}'">View Details</button>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="window.location.href='/'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

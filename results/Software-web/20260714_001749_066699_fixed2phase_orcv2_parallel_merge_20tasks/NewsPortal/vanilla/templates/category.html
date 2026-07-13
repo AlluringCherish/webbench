@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Category Articles</title>
+</head>
+<body>
+    <div id="category-page">
+        <h1 id="category-title">{{ category_name }}</h1>
+
+        <div>
+            <button id="sort-by-date" onclick="location.href='{{ url_for('category_articles', category_name=category_name) }}?sort_by=date'">Sort by Date</button>
+            <button id="sort-by-popularity" onclick="location.href='{{ url_for('category_articles', category_name=category_name) }}?sort_by=popularity'">Sort by Popularity</button>
+        </div>
+
+        <section id="category-articles">
+            {% if articles %}
+                {% for article in articles %}
+                <article>
+                    <h2>{{ article.title }}</h2>
+                    <p>By {{ article.author }} on {{ article.date }}</p>
+                    <p>{{ article.content[:150] }}...</p>
+                    <a id="view-article-button-{{ article.article_id }}" href="{{ url_for('article_details', article_id=article.article_id) }}">View Article</a>
+                </article>
+                {% endfor %}
+            {% else %}
+                <p>No articles found in this category.</p>
+            {% endif %}
+        </section>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

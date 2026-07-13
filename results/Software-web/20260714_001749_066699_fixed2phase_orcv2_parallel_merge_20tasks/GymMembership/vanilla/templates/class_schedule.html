@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class Schedule</title>
+</head>
+<body>
+    <div id="schedule-page">
+        <h1>Class Schedule</h1>
+        <form method="get" action="{{ url_for('class_schedule') }}">
+            <label for="schedule-search">Search by Class or Trainer:</label>
+            <input type="text" id="schedule-search" name="search" value="{{ search_term }}" placeholder="Search..." />
+            <label for="schedule-filter">Filter by Type:</label>
+            <select id="schedule-filter" name="type" onchange="this.form.submit()">
+                <option value="" {% if not selected_type %}selected{% endif %}>All</option>
+                {% for ctype in class_types %}
+                    <option value="{{ ctype }}" {% if selected_type == ctype %}selected{% endif %}>{{ ctype }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Search</button>
+        </form>
+        <div id="classes-grid">
+            {% for cls in classes %}
+                <div class="class-card">
+                    <h2>{{ cls.class_name }}</h2>
+                    <p>Trainer: {{ cls.trainer_name }}</p>
+                    <p>Type: {{ cls.class_type }}</p>
+                    <p>Schedule: {{ cls.schedule_day }}, {{ cls.schedule_time }}</p>
+                    <p>Duration: {{ cls.duration }} minutes | Capacity: {{ cls.capacity }}</p>
+                    <button id="enroll-class-button-{{ cls.class_id }}">Enroll</button>
+                </div>
+            {% else %}
+                <p>No classes found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

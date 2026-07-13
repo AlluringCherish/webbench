@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article Comments</title>
+</head>
+<body>
+    <div id="comments-page">
+        <form id="filter-by-article-form" method="get" action="{{ url_for('comments_list') }}">
+            <label for="filter-by-article">Filter by Article:</label>
+            <select id="filter-by-article" name="article_id">
+                <option value="">All Articles</option>
+                {% for article in articles %}
+                <option value="{{ article.article_id }}" {% if request.args.get('article_id', '') == article.article_id|string %}selected{% endif %}>{{ article.title }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <section id="comments-list">
+            {% if comments %}
+                <ul>
+                {% for comment in comments %}
+                    <li>
+                        <strong>{{ comment.commenter_name }}</strong> on <em>{{ comment.comment_date }}</em><br>
+                        {{ comment.comment_text }}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No comments found.</p>
+            {% endif %}
+        </section>
+
+        <button id="write-comment-button" onclick="location.href='{{ url_for('static', filename='write_comment.html') }}'">Write a Comment</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

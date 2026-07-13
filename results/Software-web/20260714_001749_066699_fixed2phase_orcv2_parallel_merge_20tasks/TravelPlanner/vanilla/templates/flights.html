@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Flights</title>
+</head>
+<body>
+    <!-- 'transportation-page' container -->
+    <div id="transportation-page">
+        <h1>Book Flights</h1>
+
+        <form method="get" action="{{ url_for('search_flights') }}">
+            <label for="departure-city">Departure City:</label>
+            <input type="text" id="departure-city" name="departure_city" value="{{ departure_city|default('') }}" />
+
+            <label for="arrival-city">Arrival City:</label>
+            <input type="text" id="arrival-city" name="arrival_city" value="{{ arrival_city|default('') }}" />
+
+            <label for="departure-date">Departure Date:</label>
+            <input type="date" id="departure-date" name="departure_date" value="{{ departure_date|default('') }}" />
+
+            <label for="flight-class-filter">Flight Class:</label>
+            <select id="flight-class-filter" name="flight_class">
+                <option value="" {% if not flight_class %}selected{% endif %}>All Classes</option>
+                <option value="Economy" {% if flight_class == 'Economy' %}selected{% endif %}>Economy</option>
+                <option value="Business" {% if flight_class == 'Business' %}selected{% endif %}>Business</option>
+                <option value="First Class" {% if flight_class == 'First Class' %}selected{% endif %}>First Class</option>
+            </select>
+
+            <button type="submit">Search Flights</button>
+        </form>
+
+        <!-- Available Flights List -->
+        <div id="available-flights">
+            {% if flights %}
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Airline</th>
+                            <th>Departure City</th>
+                            <th>Arrival City</th>
+                            <th>Departure Time</th>
+                            <th>Arrival Time</th>
+                            <th>Price</th>
+                            <th>Class</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for flight in flights %}
+                        <tr>
+                            <td>{{ flight.airline }}</td>
+                            <td>{{ flight.departure_city }}</td>
+                            <td>{{ flight.arrival_city }}</td>
+                            <td>{{ flight.departure_time }}</td>
+                            <td>{{ flight.arrival_time }}</td>
+                            <td>${{ flight.price }}</td>
+                            <td>{{ flight.class_type }}</td>
+                            <td>{{ flight.duration }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No flights found for the selected criteria.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

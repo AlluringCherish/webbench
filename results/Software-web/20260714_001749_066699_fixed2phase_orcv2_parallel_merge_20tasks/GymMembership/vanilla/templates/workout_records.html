@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Workout Records</title>
+</head>
+<body>
+    <div id="workouts-page">
+        <h1>My Workout Records</h1>
+        <form method="get" action="{{ url_for('workout_records') }}">
+            <label for="filter-by-type">Filter by Workout Type:</label>
+            <select id="filter-by-type" name="type" onchange="this.form.submit()">
+                <option value="" {% if not selected_type %}selected{% endif %}>All</option>
+                {% for wtype in workout_type_filters %}
+                    <option value="{{ wtype }}" {% if selected_type == wtype %}selected{% endif %}>{{ wtype }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <table id="workouts-table" border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Duration (minutes)</th>
+                    <th>Calories Burned</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for workout in workouts %}
+                    <tr>
+                        <td>{{ workout.workout_date }}</td>
+                        <td>{{ workout.workout_type }}</td>
+                        <td>{{ workout.duration_minutes }}</td>
+                        <td>{{ workout.calories_burned }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="4">No workouts found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="log-workout-button" onclick="location.href='{{ url_for('log_workout') }}'">Log Workout</button>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

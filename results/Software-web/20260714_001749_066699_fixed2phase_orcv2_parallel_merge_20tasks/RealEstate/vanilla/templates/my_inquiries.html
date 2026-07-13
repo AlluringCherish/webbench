@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Inquiries</title>
+    <script>
+    function deleteInquiry(inquiryId) {
+        fetch('/inquiries', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'inquiry_id=' + encodeURIComponent(inquiryId)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                document.getElementById('inquiry-row-' + inquiryId).remove();
+            } else {
+                alert('Failed to delete inquiry.');
+            }
+        })
+        .catch(() => alert('Error deleting inquiry.'));
+    }
+    </script>
+</head>
+<body>
+    <main id="inquiries-page">
+        <h1>My Inquiries</h1>
+
+        <table aria-label="My inquiries">
+            <thead>
+                <tr>
+                    <th>Inquiry Date</th>
+                    <th>Property</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inquiry in inquiries %}
+                <tr id="inquiry-row-{{ inquiry.inquiry_id }}">
+                    <td>{{ inquiry.inquiry_date }}</td>
+                    <td>{{ inquiry.property.address }}</td>
+                    <td>{{ inquiry.status }}</td>
+                    <td>
+                        <button id="delete-inquiry-button-{{ inquiry.inquiry_id }}" onclick="deleteInquiry({{ inquiry.inquiry_id }})">Delete</button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">No inquiries found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <nav>
+            <button onclick="location.href='/dashboard'" id="back-to-dashboard">Back to Dashboard</button>
+        </nav>
+    </main>
+</body>
+</html>

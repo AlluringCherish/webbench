@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Favorite Properties</title>
+</head>
+<body>
+    <main id="favorites-page">
+        <h1>My Favorite Properties</h1>
+
+        <section id="favorites-list">
+            {% if favorite_properties %}
+            <ul>
+                {% for favorite in favorite_properties %}
+                <li id="favorite-{{ favorite.favorite_id }}">
+                    <h2>{{ favorite.property.address }}</h2>
+                    <p>{{ favorite.property.location }} &mdash; {{ favorite.property.property_type }}</p>
+                    <p>Price: ${{ favorite.property.price }}</p>
+                    <button id="view-property-button-{{ favorite.property.property_id }}" onclick="location.href='/property/{{ favorite.property.property_id }}'">View Details</button>
+                    <form method="post" action="/favorites/remove" style="display:inline;">
+                        <input type="hidden" name="property_id" value="{{ favorite.property.property_id }}" />
+                        <button type="submit" id="remove-favorite-button-{{ favorite.property.property_id }}">Remove from Favorites</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No favorite properties saved.</p>
+            {% endif %}
+        </section>
+
+        <nav>
+            <button onclick="location.href='/dashboard'" id="back-to-dashboard">Back to Dashboard</button>
+        </nav>
+    </main>
+</body>
+</html>

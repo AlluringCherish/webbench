@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Packages</title>
+</head>
+<body>
+    <!-- 'packages-page' container -->
+    <div id="packages-page">
+        <h1>Travel Packages</h1>
+
+        <!-- Duration Filter -->
+        <form method="get" action="{{ url_for('list_packages') }}">
+            <label for="duration-filter">Duration:</label>
+            <select id="duration-filter" name="duration_filter">
+                <option value="" {% if not duration_filter %}selected{% endif %}>All</option>
+                <option value="3-5 days" {% if duration_filter == '3-5 days' %}selected{% endif %}>3-5 days</option>
+                <option value="7-10 days" {% if duration_filter == '7-10 days' %}selected{% endif %}>7-10 days</option>
+                <option value="14+ days" {% if duration_filter == '14+ days' %}selected{% endif %}>14+ days</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <!-- Packages Grid -->
+        <div id="packages-grid">
+            {% if packages %}
+                {% for pkg in packages %}
+                <div class="package-card">
+                    <h3>{{ pkg.package_name }}</h3>
+                    <p>Destination: {{ pkg.destination }}</p>
+                    <p>Duration: {{ pkg.duration_days }} days</p>
+                    <p>Price: ${{ pkg.price }}</p>
+                    <p>Includes: {{ pkg.included_items }}</p>
+                    <button id="view-package-details-button-{{ pkg.package_id }}" onclick="location.href='{{ url_for('package_details', package_id=pkg.package_id) }}'">
+                        View Details
+                    </button>
+                    <form method="post" action="{{ url_for('book_package', package_id=pkg.package_id) }}">
+                        <button type="submit" id="book-package-button-{{ pkg.package_id }}">Book Package</button>
+                    </form>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No packages available.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Catalog</title>
+    <style>
+        #catalog-page { max-width: 1000px; margin: auto; padding: 20px; }
+        #search-input { width: 100%; padding: 10px; font-size: 16px; margin-bottom: 20px; }
+        #book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+        .book-card { border: 1px solid #ccc; padding: 15px; border-radius: 5px; display: flex; flex-direction: column; justify-content: space-between; }
+        .book-title { font-weight: bold; margin-bottom: 5px; font-size: 18px; }
+        .book-author { font-style: italic; margin-bottom: 10px; }
+        .book-status { font-weight: bold; margin-bottom: 10px; }
+        button { padding: 8px 12px; font-size: 14px; cursor: pointer; }
+        #back-to-dashboard { margin-top: 20px; padding: 10px 20px; font-size: 16px; }
+    </style>
+    <script>
+        function filterBooks() {
+            const input = document.getElementById('search-input').value.toLowerCase();
+            const cards = document.querySelectorAll('#book-grid .book-card');
+            cards.forEach(card => {
+                const title = card.querySelector('.book-title').textContent.toLowerCase();
+                const author = card.querySelector('.book-author').textContent.toLowerCase();
+                if (title.includes(input) || author.includes(input)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div id="catalog-page">
+    <input type="text" id="search-input" placeholder="Search by title or author..." oninput="filterBooks()" value="{{ request.args.get('q', '') }}">
+    <div id="book-grid">
+        {% for book in books %}
+        <div class="book-card">
+            <div class="book-title">{{ book.title }}</div>
+            <div class="book-author">{{ book.author }}</div>
+            <div class="book-status">Status: {{ book.status }}</div>
+            <button id="view-book-button-{{ book.book_id }}" onclick="window.location.href='{{ url_for('show_book_details', book_id=book.book_id) }}'">View Details</button>
+        </div>
+        {% else %}
+        <p>No books found.</p>
+        {% endfor %}
+    </div>
+    <button id="back-to-dashboard" onclick="window.location.href='{{ url_for('show_dashboard') }}'">Back to Dashboard</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Details</title>
+    <style>
+        #book-details-page { max-width: 800px; margin: auto; padding: 20px; }
+        #borrow-button[disabled] { background-color: #ccc; cursor: not-allowed; }
+        #reviews-section { margin-top: 30px; }
+        .review { border-bottom: 1px solid #ddd; padding: 10px 0; }
+        .review-rating { font-weight: bold; color: #f39c12; }
+        button { margin: 5px 10px 5px 0; padding: 8px 15px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+<div id="book-details-page">
+    <h1 id="book-title">{{ book.title }}</h1>
+    <div id="book-author">Author: {{ book.author }}</div>
+    <div>ISBN: {{ book.isbn }}</div>
+    <div>Genre: {{ book.genre }}</div>
+    <div>Publisher: {{ book.publisher }}</div>
+    <div>Year: {{ book.year }}</div>
+    <div id="book-status">Status: {{ book.status }}</div>
+    <div>Description: {{ book.description }}</div>
+    <div>Average Rating: {{ '%.1f'|format(book.avg_rating) }}</div>
+
+    <button id="borrow-button" 
+            {% if book.status != 'Available' %}disabled{% endif %} 
+            onclick="window.location.href='{{ url_for('borrow_confirm', book_id=book.book_id) }}'">Borrow</button>
+
+    <button id="write-review-button" onclick="window.location.href='{{ url_for('write_review', book_id=book.book_id) }}'">Write Review</button>
+
+    <button id="back-to-catalog" onclick="window.location.href='{{ url_for('list_books') }}'">Back to Catalog</button>
+
+    <div id="reviews-section">
+        <h2>Reviews</h2>
+        {% if reviews %}
+            {% for review in reviews %}
+            <div class="review">
+                <div class="review-rating">Rating: {{ review.rating }} / 5</div>
+                <div class="review-text">{{ review.review_text }}</div>
+                <div class="review-date">Date: {{ review.review_date }}</div>
+                <div class="review-username">By: {{ review.username }}</div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No reviews yet.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

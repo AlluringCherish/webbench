@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Recommendations</title>
+</head>
+<body>
+    <!-- 'recommendations-page' container -->
+    <div id="recommendations-page">
+        <h1>Travel Recommendations</h1>
+
+        <!-- Season Filter -->
+        <form method="get" action="{{ url_for('recommendations') }}">
+            <label for="recommendation-season-filter">Season:</label>
+            <select id="recommendation-season-filter" name="season_filter">
+                <option value="" {% if not season_filter %}selected{% endif %}>All</option>
+                <option value="Spring" {% if season_filter == 'Spring' %}selected{% endif %}>Spring</option>
+                <option value="Summer" {% if season_filter == 'Summer' %}selected{% endif %}>Summer</option>
+                <option value="Fall" {% if season_filter == 'Fall' %}selected{% endif %}>Fall</option>
+                <option value="Winter" {% if season_filter == 'Winter' %}selected{% endif %}>Winter</option>
+            </select>
+
+            <label for="budget-filter">Budget:</label>
+            <select id="budget-filter" name="budget_filter">
+                <option value="" {% if not budget_filter %}selected{% endif %}>All</option>
+                <option value="Low" {% if budget_filter == 'Low' %}selected{% endif %}>Low</option>
+                <option value="Medium" {% if budget_filter == 'Medium' %}selected{% endif %}>Medium</option>
+                <option value="High" {% if budget_filter == 'High' %}selected{% endif %}>High</option>
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
+
+        <div id="trending-destinations">
+            {% if trending_destinations %}
+                <ul>
+                {% for dest in trending_destinations %}
+                    <li>{{ dest.name }} - Popularity: {{ dest.popularity }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No trending destinations available.</p>
+            {% endif %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

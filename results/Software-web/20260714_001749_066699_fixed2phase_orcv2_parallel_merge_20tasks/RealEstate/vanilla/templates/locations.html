@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Featured Locations</title>
+</head>
+<body>
+    <main id="locations-page">
+        <h1>Featured Locations</h1>
+
+        <form method="get" action="/locations" aria-label="Sort locations">
+            <label for="sort-select">Sort by:</label>
+            <select id="sort-select" name="sort">
+                <option value="name" {% if request.args.get('sort') == 'name' %}selected{% endif %}>Name</option>
+                <option value="property_count" {% if request.args.get('sort') == 'property_count' %}selected{% endif %}>Number of Properties</option>
+                <option value="average_price" {% if request.args.get('sort') == 'average_price' %}selected{% endif %}>Average Price</option>
+            </select>
+            <button type="submit" id="sort-button">Sort</button>
+        </form>
+
+        <section id="locations-list">
+            {% if locations %}
+            <ul>
+                {% for location in locations %}
+                <li id="location-{{ location.location_id }}">
+                    <h2>{{ location.location_name }}</h2>
+                    <p>Region: {{ location.region }}</p>
+                    <p>Average Price: ${{ location.average_price }}</p>
+                    <p>Number of Properties: {{ location.property_count }}</p>
+                    <p>{{ location.description }}</p>
+                    <button id="view-location-button-{{ location.location_id }}" onclick="location.href='/locations/{{ location.location_id }}/properties'">View Properties</button>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No locations found.</p>
+            {% endif %}
+        </section>
+
+        <nav>
+            <button onclick="location.href='/dashboard'" id="back-to-dashboard">Back to Dashboard</button>
+        </nav>
+    </main>
+</body>
+</html>

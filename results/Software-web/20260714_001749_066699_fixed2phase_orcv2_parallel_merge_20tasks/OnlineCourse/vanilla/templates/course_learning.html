@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Learning</title>
+</head>
+<body>
+<div id="learning-page">
+    <!-- Lessons list with completion indicators -->
+    <div id="lessons-list">
+        {% if lessons %}
+            <ul>
+                {% for lesson in lessons %}
+                    <li>
+                        Lesson {{ lesson.number }}: {{ lesson.title }}
+                        {% if lesson.number in completed_lessons %}
+                            <span> - Completed</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No lessons available.</p>
+        {% endif %}
+    </div>
+
+    <!-- Current lesson content -->
+    <div id="lesson-content">
+        <h2>{{ current_lesson.title }}</h2>
+        <p>{{ current_lesson.content }}</p>
+    </div>
+
+    <!-- Mark complete button -->
+    <form method="post" action="">
+        <input type="hidden" name="lesson_number" value="{{ current_lesson.number }}">
+        <button id="mark-complete-button" type="submit" {% if not can_mark_complete %}disabled{% endif %}>Mark Complete</button>
+    </form>
+
+    <!-- Back to my courses button -->
+    <button id="back-to-my-courses" onclick="window.location.href='/my-courses'">Back to My Courses</button>
+</div>
+</body>
+</html>

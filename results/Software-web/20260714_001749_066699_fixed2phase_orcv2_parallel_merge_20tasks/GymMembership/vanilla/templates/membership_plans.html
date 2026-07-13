@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Membership Plans</title>
+</head>
+<body>
+    <div id="membership-page">
+        <h1>Membership Plans</h1>
+        <form method="get" action="{{ url_for('membership_plans') }}">
+            <label for="plan-filter">Filter by Type:</label>
+            <select id="plan-filter" name="type" onchange="this.form.submit()">
+                <option value="" {% if not selected_type %}selected{% endif %}>All</option>
+                {% for option in filter_options %}
+                    <option value="{{ option }}" {% if selected_type == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <div id="plans-grid">
+            {% for plan in membership_plans %}
+            <div class="plan-card">
+                <h2>{{ plan.plan_name }}</h2>
+                <p>Price: ${{ "%.2f"|format(plan.price) }} / {{ plan.billing_cycle }}</p>
+                <p>Max Classes: {{ plan.max_classes }}</p>
+                <p>Features:</p>
+                <ul>
+                    {% if plan.features is string %}
+                        {% set features_list = plan.features.split(",") %}
+                    {% else %}
+                        {% set features_list = plan.features %}
+                    {% endif %}
+                    {% for feature in features_list %}
+                        <li>{{ feature.strip() }}</li>
+                    {% endfor %}
+                </ul>
+                <button id="view-details-button-{{ plan.id }}" onclick="location.href='{{ url_for('plan_details', membership_id=plan.id) }}'">View Details</button>
+            </div>
+            {% else %}
+            <p>No membership plans available.</p>
+            {% endfor %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

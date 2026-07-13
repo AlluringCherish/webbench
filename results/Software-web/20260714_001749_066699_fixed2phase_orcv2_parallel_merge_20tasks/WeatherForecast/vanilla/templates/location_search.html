@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Location Search - WeatherForecast{% endblock %}
+
+{% block content %}
+<div id="search-page">
+    <input type="text" id="location-search-input" name="query" placeholder="Search locations..." value="{{ query|default('') }}" onkeypress="if(event.key === 'Enter') { window.location.href = '/locations/search?query=' + this.value; }" />
+
+    <h3>Saved Locations</h3>
+    <ul id="saved-locations-list">
+        {% for saved_location in saved_locations %}
+        <li>
+            {{ saved_location.location_name }}
+            <button id="remove-location-button-{{ saved_location.location_id }}" onclick="removeLocation({{ saved_location.location_id }})">Remove</button>
+            <button id="view-location-weather-{{ saved_location.location_id }}" onclick="location.href='/weather/current/' + {{ saved_location.location_id }}">View Weather</button>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h3>Search Results</h3>
+    <ul id="search-results">
+        {% for location in search_results %}
+        <li>
+            {{ location.location_name }} ({{ location.latitude }}, {{ location.longitude }})
+            <button id="select-location-button-{{ location.location_id }}" onclick="selectLocation({{ location.location_id }})">Select</button>
+        </li>
+        {% else %}
+        <li>No results found.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+function selectLocation(locationId) {
+    fetch('/locations/select', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ location_id: locationId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            window.location.href = '/weather/current/' + locationId;
+        } else {
+            alert('Failed to select location.');
+        }
+    });
+}
+
+function removeLocation(locationId) {
+    if(confirm('Are you sure you want to remove this location from saved?')) {
+        fetch('/locations/remove', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ location_id: locationId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                location.reload();
+            } else {
+                alert('Failed to remove location.');
+            }
+        });
+    }
+}
+</script>

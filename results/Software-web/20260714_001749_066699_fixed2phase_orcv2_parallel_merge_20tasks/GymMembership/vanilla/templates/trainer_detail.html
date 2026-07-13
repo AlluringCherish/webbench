@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trainer Profile</title>
+</head>
+<body>
+    <div id="trainer-detail-page">
+        <h1 id="trainer-name">{{ trainer.name }}</h1>
+        <div id="trainer-bio">
+            <p>{{ trainer.bio }}</p>
+            <p>Experience: {{ trainer.experience_years }} years</p>
+        </div>
+        <div id="trainer-certifications">
+            <h3>Certifications</h3>
+            <ul>
+                {% if trainer.certifications is string %}
+                    {% set cert_list = trainer.certifications.split(",") %}
+                {% else %}
+                    {% set cert_list = trainer.certifications %}
+                {% endif %}
+                {% for cert in cert_list %}
+                    <li>{{ cert.strip() }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <button id="book-session-button" onclick="location.href='{{ url_for('pt_booking', preselected_trainer_id=trainer.trainer_id) }}'">Book Session</button>
+        <div id="trainer-reviews">
+            <h3>Client Reviews</h3>
+            {% if reviews %}
+                <ul>
+                    {% for review in reviews %}
+                        <li><strong>{{ review.reviewer }}:</strong> {{ review.comment }} (Rating: {{ review.rating }})</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No reviews available.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

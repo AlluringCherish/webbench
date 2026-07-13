@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Pets</title>
+</head>
+<body>
+    <!-- 'Pet Listings Page Container' -->
+    <div id="pet-listings-page">
+        <form method="get" action="{{ url_for('pet_listings') }}">
+            <!-- 'Search Pets by Name Input' -->
+            <input type="text" id="search-input" name="search" placeholder="Search pets by name" value="{{ search }}" />
+
+            <!-- 'Species Filter Dropdown' -->
+            <select id="filter-species" name="species">
+                {% set species_options = ['All', 'Dog', 'Cat', 'Bird', 'Rabbit', 'Other'] %}
+                {% for species_opt in species_options %}
+                    <option value="{{ species_opt }}" {% if species_filter == species_opt %}selected{% endif %}>{{ species_opt }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
+
+        <!-- 'Pet Grid Container for Pet Cards' -->
+        <div id="pet-grid">
+            {% for pet in pets %}
+                <div class="pet-card">
+                    <a href="{{ url_for('pet_details', pet_id=pet.pet_id) }}">
+                        <img src="{{ pet.photo_url|default('/static/images/default_pet.jpg') }}" alt="Photo of {{ pet.name }}" />
+                        <h3>{{ pet.name }}</h3>
+                        <p>Species: {{ pet.species }}</p>
+                        <p>Age: {{ pet.age }}</p>
+                    </a>
+                </div>
+            {% else %}
+                <p>No pets found matching your criteria.</p>
+            {% endfor %}
+        </div>
+
+        <!-- 'Navigate back to Dashboard' -->
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

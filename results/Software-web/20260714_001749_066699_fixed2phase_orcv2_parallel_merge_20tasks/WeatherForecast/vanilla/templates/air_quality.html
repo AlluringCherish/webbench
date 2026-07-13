@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Air Quality - WeatherForecast{% endblock %}
+
+{% block content %}
+<div id="air-quality-page">
+    <label for="location-aqi-filter">Select Location:</label>
+    <select id="location-aqi-filter" name="location_id" onchange="location.href='/air_quality?location_id=' + this.value">
+        {% for location in locations %}
+        <option value="{{ location.location_id }}" {% if location.location_id == selected_location_id %}selected{% endif %}>{{ location.location_name }}</option>
+        {% endfor %}
+    </select>
+
+    {% if air_quality %}
+    <div id="aqi-display">
+        <h2>Air Quality Index: {{ air_quality.aqi_index }}</h2>
+        <p id="aqi-description">AQI Description: {{ air_quality.recommendation }}</p>
+    </div>
+
+    <div id="pollution-details">
+        <p>PM2.5: {{ air_quality.pm25 }}</p>
+        <p>PM10: {{ air_quality.pm10 }}</p>
+        <p>NO2: {{ air_quality.no2 }}</p>
+        <p>O3: {{ air_quality.o3 }}</p>
+        <p>Last Updated: {{ air_quality.last_updated }}</p>
+    </div>
+
+    <div id="health-recommendation">
+        <h3>Health Recommendations</h3>
+        <p>{{ air_quality.recommendation }}</p>
+    </div>
+    {% else %}
+    <p>No air quality data available for selected location.</p>
+    {% endif %}
+</div>
+{% endblock %}

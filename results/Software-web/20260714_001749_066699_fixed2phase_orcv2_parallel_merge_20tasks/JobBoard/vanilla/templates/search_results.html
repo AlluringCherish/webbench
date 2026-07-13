@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div id="search-results-page">
+    <form method="get" action="/search">
+        <input type="text" name="query" placeholder="Search jobs and companies..." value="{{ query|default('') }}" required />
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="search-query-display">Search results for: <strong>{{ query }}</strong></div>
+
+    <div id="results-tabs">
+        <button type="button" onclick="showTab('job-results')">Jobs</button>
+        <button type="button" onclick="showTab('company-results')">Companies</button>
+    </div>
+
+    <div id="job-results" style="display:block;">
+        {% if job_results %}
+            {% for job in job_results %}
+            <div class="job-card">
+                <h3>{{ job.title }}</h3>
+                <p>{{ job.company_name }} - {{ job.location }}</p>
+                <button id="view-job-button-{{ job.job_id }}" onclick="location.href='/jobs/{{ job.job_id }}'">View Details</button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div id="company-results" style="display:none;">
+        {% if company_results %}
+            {% for company in company_results %}
+            <div class="company-card">
+                <h3>{{ company.company_name }}</h3>
+                <p>Industry: {{ company.industry }}</p>
+                <p>Location: {{ company.location }}</p>
+                <button id="view-company-button-{{ company.company_id }}" onclick="location.href='/companies/{{ company.company_id }}'">View Profile</button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {% if not job_results and not company_results %}
+    <div id="no-results-message">No results found for your search.</div>
+    {% endif %}
+
+<script>
+function showTab(tabId) {
+    document.getElementById('job-results').style.display = (tabId === 'job-results') ? 'block' : 'none';
+    document.getElementById('company-results').style.display = (tabId === 'company-results') ? 'block' : 'none';
+}
+</script>
+</div>
+{% endblock %}

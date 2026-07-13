@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+</head>
+<body>
+    <!-- 'Admin Panel Page Container' -->
+    <div id="admin-panel-page">
+        <!-- 'List of Pending Adoption Applications' -->
+        <div id="pending-applications">
+            <h2>Pending Applications</h2>
+            {% for application in pending_applications %}
+                <div class="application-item">
+                    <p>Applicant: {{ application.applicant_name }}</p>
+                    <p>Pet: {{ application.pet_name }}</p>
+                    <p>Status: {{ application.status }}</p>
+                    <form action="{{ url_for('admin_update_application', application_id=application.application_id) }}" method="post">
+                        <select name="status">
+                            <option value="Pending" {% if application.status == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="Approved" {% if application.status == 'Approved' %}selected{% endif %}>Approved</option>
+                            <option value="Rejected" {% if application.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                        </select>
+                        <button type="submit">Update Status</button>
+                    </form>
+                </div>
+            {% else %}
+                <p>No pending applications.</p>
+            {% endfor %}
+        </div>
+
+        <!-- 'List of All Pets with Edit/Delete Options' -->
+        <div id="all-pets-list">
+            <h2>All Pets</h2>
+            {% for pet in all_pets %}
+                <div class="pet-item">
+                    <p>{{ pet.name }} ({{ pet.species }})</p>
+                    <a href="{{ url_for('admin_edit_pet', pet_id=pet.pet_id) }}">Edit</a>
+                    <form action="{{ url_for('admin_delete_pet', pet_id=pet.pet_id) }}" method="post" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+            {% else %}
+                <p>No pets available.</p>
+            {% endfor %}
+        </div>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Favorites</title>
+</head>
+<body>
+    <!-- 'Favorites Page Container' -->
+    <div id="favorites-page">
+        <!-- 'Favorites Grid for Favorite Pet Cards' -->
+        <div id="favorites-grid">
+            {% for pet in favorite_pets %}
+                <div class="favorite-pet-card">
+                    <a href="{{ url_for('pet_details', pet_id=pet.pet_id) }}">
+                        <img src="{{ pet.photo_url|default('/static/images/default_pet.jpg') }}" alt="Photo of {{ pet.name }}" />
+                        <h3>{{ pet.name }}</h3>
+                        <p>Species: {{ pet.species }}</p>
+                        <p>Age: {{ pet.age }}</p>
+                        <form action="{{ url_for('remove_favorite', pet_id=pet.pet_id) }}" method="post" style="display:inline;">
+                            <button type="submit">Remove Favorite</button>
+                        </form>
+                    </a>
+                </div>
+            {% else %}
+                <p>You have no favorite pets yet.</p>
+            {% endfor %}
+        </div>
+
+        <!-- 'Navigate back to Dashboard' -->
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

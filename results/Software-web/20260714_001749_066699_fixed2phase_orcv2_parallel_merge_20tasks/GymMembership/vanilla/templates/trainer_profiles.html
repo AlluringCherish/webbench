@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trainer Profiles</title>
+</head>
+<body>
+    <div id="trainers-page">
+        <h1>Trainer Profiles</h1>
+        <form method="get" action="{{ url_for('trainer_profiles') }}">
+            <label for="trainer-search">Search by Name or Specialty:</label>
+            <input type="text" id="trainer-search" name="search" value="{{ search_term }}" placeholder="Search..." />
+            <label for="specialty-filter">Filter by Specialty:</label>
+            <select id="specialty-filter" name="specialty" onchange="this.form.submit()">
+                <option value="" {% if not selected_specialty %}selected{% endif %}>All</option>
+                {% for spec in specialty_options %}
+                    <option value="{{ spec }}" {% if selected_specialty == spec %}selected{% endif %}>{{ spec }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Search</button>
+        </form>
+        <div id="trainers-grid">
+            {% for trainer in trainers %}
+                <div class="trainer-card">
+                    <h2>{{ trainer.name }}</h2>
+                    <p>Specialty: {{ trainer.specialty }}</p>
+                    <p>Experience: {{ trainer.experience_years }} years</p>
+                    <button id="view-trainer-button-{{ trainer.trainer_id }}" onclick="location.href='{{ url_for('trainer_detail', trainer_id=trainer.trainer_id) }}'">View Profile</button>
+                </div>
+            {% else %}
+                <p>No trainers found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

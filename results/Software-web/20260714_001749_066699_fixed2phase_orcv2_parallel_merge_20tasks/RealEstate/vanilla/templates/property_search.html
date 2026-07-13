@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Property Search</title>
+</head>
+<body>
+    <main id="search-page">
+        <h1>Property Search</h1>
+
+        <form method="get" action="/properties" aria-label="Property search filters">
+            <label for="location-input">Location:</label>
+            <input type="text" id="location-input" name="location" value="{{ request.args.get('location', '') }}" />
+
+            <label for="price-range-min">Price Min:</label>
+            <input type="number" id="price-range-min" name="price_min" min="0" value="{{ request.args.get('price_min', '') }}" />
+
+            <label for="price-range-max">Price Max:</label>
+            <input type="number" id="price-range-max" name="price_max" min="0" value="{{ request.args.get('price_max', '') }}" />
+
+            <label for="property-type-filter">Property Type:</label>
+            <select id="property-type-filter" name="property_type">
+                <option value="" {% if not request.args.get('property_type') %}selected{% endif %}>Any</option>
+                <option value="House" {% if request.args.get('property_type') == 'House' %}selected{% endif %}>House</option>
+                <option value="Apartment" {% if request.args.get('property_type') == 'Apartment' %}selected{% endif %}>Apartment</option>
+                <option value="Condo" {% if request.args.get('property_type') == 'Condo' %}selected{% endif %}>Condo</option>
+                <option value="Townhouse" {% if request.args.get('property_type') == 'Townhouse' %}selected{% endif %}>Townhouse</option>
+                <option value="Land" {% if request.args.get('property_type') == 'Land' %}selected{% endif %}>Land</option>
+            </select>
+
+            <button type="submit" id="search-button">Search</button>
+        </form>
+
+        <section id="properties-grid">
+            {% if properties %}
+                {% for property in properties %}
+                <article class="property-card" id="property-{{ property.property_id }}">
+                    <h2>{{ property.address }}</h2>
+                    <p>{{ property.location }} &mdash; {{ property.property_type }}</p>
+                    <p>Price: ${{ property.price }}</p>
+                    <p>Bedrooms: {{ property.bedrooms }} | Bathrooms: {{ property.bathrooms }} | Size: {{ property.square_feet }} sq ft</p>
+                    <button id="view-property-button-{{ property.property_id }}" onclick="location.href='/property/{{ property.property_id }}'">View Details</button>
+                </article>
+                {% endfor %}
+            {% else %}
+                <p>No properties found matching your criteria.</p>
+            {% endif %}
+        </section>
+
+        <nav>
+            <button onclick="location.href='/dashboard'" id="back-to-dashboard">Back to Dashboard</button>
+        </nav>
+    </main>
+</body>
+</html>

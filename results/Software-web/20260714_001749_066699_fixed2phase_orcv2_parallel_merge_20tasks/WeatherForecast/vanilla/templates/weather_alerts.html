@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Weather Alerts - WeatherForecast{% endblock %}
+
+{% block content %}
+<div id="alerts-page">
+    <label for="location-filter-alerts">Filter by Location:</label>
+    <select id="location-filter-alerts" onchange="filterAlerts()" name="location_id">
+        <option value="">All Locations</option>
+        {% for location in locations %}
+        <option value="{{ location.location_id }}" {% if location.location_id == selected_location_id %}selected{% endif %}>{{ location.location_name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="severity-filter">Filter by Severity:</label>
+    <select id="severity-filter" onchange="filterAlerts()" name="severity">
+        <option value="">All Severities</option>
+        <option value="Low" {% if selected_severity == 'Low' %}selected{% endif %}>Low</option>
+        <option value="Medium" {% if selected_severity == 'Medium' %}selected{% endif %}>Medium</option>
+        <option value="High" {% if selected_severity == 'High' %}selected{% endif %}>High</option>
+    </select>
+
+    <ul id="alerts-list">
+        {% for alert in alerts %}
+        <li>
+            <div><strong>Type:</strong> {{ alert.alert_type }}</div>
+            <div><strong>Severity:</strong> {{ alert.severity }}</div>
+            <div><strong>Description:</strong> {{ alert.description }}</div>
+            <div><strong>Start:</strong> {{ alert.start_time }}</div>
+            <div><strong>End:</strong> {{ alert.end_time }}</div>
+            {% if not alert.is_acknowledged %}
+            <button id="acknowledge-alert-button-{{ alert.alert_id }}" onclick="acknowledgeAlert({{ alert.alert_id }})">Acknowledge</button>
+            {% else %}
+            <span>Acknowledged</span>
+            {% endif %}
+        </li>
+        {% else %}
+        <li>No active alerts.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+function filterAlerts() {
+    const locationSelect = document.getElementById('location-filter-alerts');
+    const severitySelect = document.getElementById('severity-filter');
+    const locationId = locationSelect.value;
+    const severity = severitySelect.value;
+    let url = '/alerts?';
+    if(locationId) {
+        url += 'location_id=' + locationId + '&';
+    }
+    if(severity) {
+        url += 'severity=' + severity;
+    }
+    window.location.href = url;
+}
+
+function acknowledgeAlert(alertId) {
+    fetch('/alerts/acknowledge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ alert_id: alertId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            location.reload();
+        } else {
+            alert('Failed to acknowledge alert.');
+        }
+    });
+}
+</script>

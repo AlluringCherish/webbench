@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Your Tickets</title>
+</head>
+<body>
+<div id="ticket-booking-page">
+    <h1>Book Your Tickets</h1>
+
+    <form id="booking-form" method="POST" action="{{ url_for('ticket_booking_form') }}">
+        <label for="select-event-dropdown">Select Event:</label>
+        <select id="select-event-dropdown" name="event_id" required>
+            {% for event in events %}
+            <option value="{{ event.event_id }}" {% if request.args.get('event_id', type=int) == event.event_id %}selected{% endif %}>{{ event.event_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="ticket-quantity-input">Ticket Quantity:</label>
+        <input id="ticket-quantity-input" name="ticket_count" type="number" min="1" value="1" required />
+
+        <label for="ticket-type-select">Ticket Type:</label>
+        <select id="ticket-type-select" name="ticket_type" required>
+            {% for type in ticket_types %}
+            <option value="{{ type }}">{{ type }}</option>
+            {% endfor %}
+        </select>
+
+        <button id="book-now-button" type="submit">Book Now</button>
+    </form>
+
+    <div id="booking-confirmation">
+        {% if booking_confirmation %}
+        <p>{{ booking_confirmation }}</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

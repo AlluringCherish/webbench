@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Artists - MusicStreaming</title>
+</head>
+<body>
+<div id="artists-page">
+    <h1>Artists</h1>
+
+    <form method="get" action="">
+        <input type="text" id="search-artists" name="search" value="{{ request.args.get('search', '') }}" placeholder="Search artists...">
+        <select id="artists-sort" name="sort">
+            <option value="">Sort By</option>
+            <option value="name" {% if request.args.get('sort') == 'name' %}selected{% endif %}>Name</option>
+            <option value="genre" {% if request.args.get('sort') == 'genre' %}selected{% endif %}>Genre</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="artists-grid">
+        {% if artists %}
+            {% for artist in artists %}
+                <div class="artist-card">
+                    <div class="artist-name">{{ artist.name }}</div>
+                    <button id="view-artist-button-{{ artist.artist_id }}" onclick="location.href='{{ url_for('artist_profile', artist_id=artist.artist_id) }}'">View</button>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No artists found.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

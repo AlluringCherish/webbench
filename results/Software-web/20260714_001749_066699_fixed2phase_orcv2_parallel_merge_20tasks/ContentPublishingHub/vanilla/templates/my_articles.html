@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Articles</title>
+</head>
+<body>
+  <!-- My Articles Page Container -->
+  <div id="my-articles-page">
+
+    <h1>My Articles</h1>
+
+    <!-- Filter Dropdown for Article Status -->
+    <label for="filter-article-status">Filter by Status:</label>
+    <select id="filter-article-status" name="status_filter" onchange="location = this.value;">
+      <option value="">-- All Statuses --</option>
+      {% for status in status_options %}
+      <option value="?status={{ status }}" {% if selected_status == status %}selected{% endif %}>{{ status | capitalize }}</option>
+      {% endfor %}
+    </select>
+
+    <!-- Articles Table -->
+    <table id="articles-table" border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Status</th>
+          <th>Category</th>
+          <th>Publish Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for article in user_articles %}
+        <tr>
+          <td><a href="/article/{{ article.article_id }}/edit">{{ article.title }}</a></td>
+          <td>{{ article.status }}</td>
+          <td>{{ article.category }}</td>
+          <td>{% if article.publish_date %}{{ article.publish_date }}{% else %}-{% endif %}</td>
+          <td><a href="/article/{{ article.article_id }}/edit">Edit</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No articles found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Create New Article and Back buttons -->
+    <button id="create-new-article" onclick="window.location.href='/article/create'">Create New Article</button>
+    <button id="back-to-dashboard" onclick="window.location.href='/dashboard'">Back to Dashboard</button>
+
+  </div>
+</body>
+</html>

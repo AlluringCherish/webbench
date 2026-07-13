@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Published Articles</title>
+  <style>
+    /* Basic grid styling for published articles cards */
+    #published-articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    .article-card {
+      border: 1px solid #ccc;
+      padding: 1rem;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
+    .article-featured-image {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <!-- Published Articles Page Container -->
+  <div id="published-articles-page">
+
+    <h1>Published Articles</h1>
+
+    <!-- Filters and Sorters -->
+    <label for="filter-published-category">Filter by Category:</label>
+    <select id="filter-published-category" name="category_filter" onchange="location = this.value;">
+      <option value="">-- All Categories --</option>
+      {% for category in category_options %}
+      <option value="?category={{ category }}" {% if selected_category == category %}selected{% endif %}>{{ category | capitalize }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="sort-published">Sort By:</label>
+    <select id="sort-published" name="sort_option" onchange="location = this.value;">
+      {% for sort in sort_options %}
+      <option value="?sort={{ sort }}" {% if selected_sort == sort %}selected{% endif %}>{{ sort | replace('_', ' ') | capitalize }}</option>
+      {% endfor %}
+    </select>
+
+    <!-- Published Articles Grid -->
+    <div id="published-articles-grid">
+      {% for article in published_articles %}
+      <div class="article-card">
+        <h2>{{ article.title }}</h2>
+        {% if article.featured_image %}
+          <img src="{{ article.featured_image }}" alt="{{ article.title }}" class="article-featured-image">
+        {% endif %}
+        <p>Category: {{ article.category }}</p>
+        <p>Publish Date: {{ article.publish_date }}</p>
+      </div>
+      {% else %}
+      <p>No published articles found.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Back to Dashboard Button -->
+    <button id="back-to-dashboard-published" onclick="window.location.href='/dashboard'">Back to Dashboard</button>
+
+  </div>
+</body>
+</html>

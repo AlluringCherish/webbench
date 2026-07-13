@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}My Applications{% endblock %}
+
+{% block content %}
+<div id="tracking-page">
+    <form method="get">
+        <label for="status-filter">Filter by Status:</label>
+        <select id="status-filter" name="status" onchange="this.form.submit()">
+            <option value="" {% if not request.args.get('status') %}selected{% endif %}>All</option>
+            <option value="Applied" {% if request.args.get('status') == 'Applied' %}selected{% endif %}>Applied</option>
+            <option value="Under Review" {% if request.args.get('status') == 'Under Review' %}selected{% endif %}>Under Review</option>
+            <option value="Interview" {% if request.args.get('status') == 'Interview' %}selected{% endif %}>Interview</option>
+            <option value="Rejected" {% if request.args.get('status') == 'Rejected' %}selected{% endif %}>Rejected</option>
+        </select>
+    </form>
+
+    <table id="applications-table" border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Company</th>
+                <th>Status</th>
+                <th>Applied Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in applications %}
+            <tr>
+                <td>{{ application.job_title }}</td>
+                <td>{{ application.company_name }}</td>
+                <td>{{ application.status }}</td>
+                <td>{{ application.applied_date }}</td>
+                <td><button id="view-application-button-{{ application.application_id }}" onclick="location.href='/applications/{{ application.application_id }}'">View Details</button></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No applications found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button id="back-to-dashboard" onclick="location.href='/'">Back to Dashboard</button>
+</div>
+{% endblock %}
