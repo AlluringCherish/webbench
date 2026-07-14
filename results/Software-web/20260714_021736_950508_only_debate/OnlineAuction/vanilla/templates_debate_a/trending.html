@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trending Auctions</title>
+</head>
+<body>
+    <div id="trending-page">
+        <h1>Trending Auctions</h1>
+        <form method="post" action="/trending">
+            <select id="time-range-filter" name="time_range">
+                <option value="">Select Time Range</option>
+                {% for tr in time_ranges %}
+                <option value="{{ tr }}" {% if time_range == tr %}selected{% endif %}>{{ tr }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <div id="trending-list">
+            {% if trending %}
+            {% for item in trending %}
+            <div>
+                <h3>{{ item.item_name }}</h3>
+                <p>Bid Count: {{ item.bid_count }}</p>
+                <p>Current Bid: ${{ "%.2f"|format(item.current_bid) }}</p>
+                <button id="view-auction-button-{{ item.auction_id }}" onclick="location.href='/auction/{{ item.auction_id }}'">View Details</button>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No trending auctions found.</p>
+            {% endif %}
+        </div>
+        <button id="back-to-dashboard" onclick="location.href='/dashboard'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

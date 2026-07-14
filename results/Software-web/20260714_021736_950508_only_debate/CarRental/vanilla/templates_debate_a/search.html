@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Vehicles</title>
+</head>
+<body>
+<div id="search-page">
+    <h1>Search Vehicles</h1>
+
+    <form method="post" action="/search">
+        <label for="location-filter">Location:</label>
+        <select id="location-filter" name="location-filter">
+            <option value="">--Select Location--</option>
+            {% for loc in locations %}
+                <option value="{{ loc.city }}" {% if selected_location == loc.city %}selected{% endif %}>{{ loc.city }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="vehicle-type-filter">Vehicle Type:</label>
+        <select id="vehicle-type-filter" name="vehicle-type-filter">
+            <option value="">--Select Vehicle Type--</option>
+            {% for vt in vehicle_types %}
+                <option value="{{ vt }}" {% if selected_vehicle_type == vt %}selected{% endif %}>{{ vt }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="date-range-input">Date Range:</label>
+        <input type="text" id="date-range-input" name="date-range-input" value="{{ selected_date_range }}" placeholder="YYYY-MM-DD to YYYY-MM-DD">
+
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="vehicles-grid">
+        <ul>
+            {% for vehicle in filtered_vehicles %}
+                <li>
+                    {{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.vehicle_type }}) - ${{ vehicle.daily_rate }} per day
+                    <button id="view-details-button-{{ vehicle.vehicle_id }}" onclick="window.location.href='/vehicle/{{ vehicle.vehicle_id }}'">View Details</button>
+                </li>
+            {% else %}
+                <li>No vehicles found matching criteria.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+</body>
+</html>

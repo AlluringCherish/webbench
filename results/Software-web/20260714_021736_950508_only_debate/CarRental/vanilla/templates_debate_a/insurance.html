@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Insurance Coverage</title>
+</head>
+<body>
+<div id="insurance-page">
+    <h1>Select Insurance Coverage</h1>
+
+    <form method="post" action="/insurance/{{ reservation.reservation_id }}">
+        <div id="insurance-options">
+            {% for plan in insurance_plans %}
+                <div>
+                    <input type="radio" id="select-insurance-{{ plan.insurance_id }}" name="select-insurance" value="{{ plan.insurance_id }}"
+                        {% if selected_plan and selected_plan.insurance_id == plan.insurance_id %}checked{% endif %}>
+                    <label for="select-insurance-{{ plan.insurance_id }}">
+                        {{ plan.plan_name }} (${{ plan.daily_cost }}/day) - {{ plan.description }}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div id="insurance-description">
+            {% if selected_plan %}
+                <p>Description: {{ selected_plan.description }}</p>
+            {% endif %}
+        </div>
+
+        <div id="insurance-price">
+            {% if selected_plan %}
+                <p>Daily Cost: ${{ selected_plan.daily_cost }}</p>
+                <p>Coverage Limit: {{ selected_plan.coverage_limit }}</p>
+                <p>Deductible: ${{ selected_plan.deductible }}</p>
+            {% endif %}
+        </div>
+
+        <button type="submit" name="confirm-booking-button" id="confirm-booking-button">Confirm Booking</button>
+    </form>
+</div>
+</body>
+</html>

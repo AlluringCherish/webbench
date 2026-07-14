@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Auction Status</title>
+</head>
+<body>
+    <div id="status-page">
+        <h1>Auction Status</h1>
+        <form method="post" action="{{ url_for('status') }}">
+            <label for="status-filter">Status Filter:</label>
+            <select id="status-filter" name="status_filter">
+                <option value="All" {% if status_filter == 'All' %}selected{% endif %}>All</option>
+                <option value="Active" {% if status_filter == 'Active' %}selected{% endif %}>Active</option>
+                <option value="Closed" {% if status_filter == 'Closed' %}selected{% endif %}>Closed</option>
+                <option value="Upcoming" {% if status_filter == 'Upcoming' %}selected{% endif %}>Upcoming</option>
+            </select>
+            <button id="refresh-status-button" type="submit">Refresh</button>
+        </form>
+        <table id="status-table" border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Time Remaining</th>
+                    <th>Current Bid</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for auction in auctions %}
+                <tr>
+                    <td>{{ auction.item_name }}</td>
+                    <td>{{ auction.status }}</td>
+                    <td>
+                        {% if auction.status == 'Active' %}
+                            {% set remaining = auction.end_time - namespace(now=datetime.utcnow()) %}
+                            {% if remaining.total_seconds() > 0 %}
+                                {{ remaining.days }} days {{ remaining.seconds // 3600 }} hours
+                            {% else %}
+                                Ended
+                            {% endif %}
+                        {% elif auction.status == 'Upcoming' %}
+                            {% set until = auction.end_time - namespace(now=datetime.utcnow()) %}
+                            {% if until.total_seconds() > 0 %}
+                                Starts in {{ until.days }} days {{ until.seconds // 3600 }} hours
+                            {% else %}
+                                Started
+                            {% endif %}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>${{ '%.2f'|format(auction.current_bid) }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">No auctions found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

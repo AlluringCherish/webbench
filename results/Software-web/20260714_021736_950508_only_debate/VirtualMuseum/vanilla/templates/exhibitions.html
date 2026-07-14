@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exhibitions</title>
+</head>
+<body>
+    <div id="exhibitions-page">
+        <form method="post" action="/exhibitions/filter">
+            <select id="filter-exhibition-type" name="filter-exhibition-type">
+                <option value="">--Select Type--</option>
+                <option value="Permanent">Permanent</option>
+                <option value="Temporary">Temporary</option>
+                <option value="Virtual">Virtual</option>
+            </select>
+            <button type="submit" id="apply-exhibition-filter">Apply Filter</button>
+        </form>
+        <table id="exhibition-list" border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Dates</th>
+                    <th>Gallery</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exhibition in exhibitions %}
+                <tr>
+                    <td>{{ exhibition.title }}</td>
+                    <td>{{ exhibition.exhibition_type }}</td>
+                    <td>{{ exhibition.start_date }} to {{ exhibition.end_date }}</td>
+                    <td>{{ exhibition.gallery_name }}</td>
+                    <td>{% if exhibition.status %}{{ exhibition.status }}{% else %}N/A{% endif %}</td>
+                    <td><form method="get" action="/exhibitions/{{ exhibition.exhibition_id }}">
+                        <button type="submit" id="view-exhibition-button-{{ exhibition.exhibition_id }}">View</button>
+                    </form></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="window.location.href='/dashboard'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

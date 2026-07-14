@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Trips</title>
+</head>
+<body>
+<div id="trips-page">
+    <h1>My Trips</h1>
+    {% if message %}<div><strong>{{ message }}</strong></div>{% endif %}
+
+    <table id="trips-table" border="1">
+        <thead>
+            <tr>
+                <th>Trip Name</th><th>Destination</th><th>Start Date</th><th>End Date</th><th>Total Budget</th><th>Status</th><th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trip in trips %}
+            <tr>
+                <td>{{ trip.trip_name }}</td>
+                <td>{{ trip.destination }}</td>
+                <td>{{ trip.start_date }}</td>
+                <td>{{ trip.end_date }}</td>
+                <td>{{ trip.total_budget }}</td>
+                <td>{{ trip.status }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('trips_page') }}" style="display:inline;">
+                        <input type="hidden" name="trip_id" value="{{ trip.trip_id }}">
+                        <input type="hidden" name="action" value="edit">
+                        <input type="text" name="trip_name" placeholder="New Name" required>
+                        <button type="submit" id="edit-trip-button-{{ trip.trip_id }}">Edit</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('trips_page') }}" style="display:inline;">
+                        <input type="hidden" name="trip_id" value="{{ trip.trip_id }}">
+                        <input type="hidden" name="action" value="delete">
+                        <button type="submit" id="delete-trip-button-{{ trip.trip_id }}">Delete</button>
+                    </form>
+                    <button id="view-trip-details-button-{{ trip.trip_id }}" onclick="location.href='{{ url_for('trip_details', trip_id=trip.trip_id) }}'">View Details</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

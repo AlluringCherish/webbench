@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+</head>
+<body>
+    <div id="reservations-page">
+        <table id="reservations-table" border="1">
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Reservation Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in reservations %}
+                <tr>
+                    <td>{{ res.book.title if res.book else 'Unknown' }}</td>
+                    <td>{{ res.reservation_date }}</td>
+                    <td>{{ res.status }}</td>
+                    <td>
+                        {% if res.status == 'Reserved' %}
+                        <form method="post" action="{{ url_for('my_reservations') }}" style="display:inline;">
+                            <button type="submit" id="cancel-reservation-button-{{ res.reservation_id }}" name="cancel-reservation-button-{{ res.reservation_id }}">Cancel Reservation</button>
+                        </form>
+                        {% else %}N/A{% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">No reservations found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button id="back-to-dashboard" onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

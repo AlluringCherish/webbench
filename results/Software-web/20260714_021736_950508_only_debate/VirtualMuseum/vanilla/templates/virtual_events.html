@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Virtual Events</title>
+</head>
+<body>
+    <div id="virtual-events-page">
+        <table id="event-list" border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Type</th>
+                    <th>Registration Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.time }}</td>
+                    <td>{{ event.event_type }}</td>
+                    <td>{{ event.registration_status }}</td>
+                    <td>
+                        {% if event.registration_status == 'Not Registered' %}
+                        <form method="post" action="/events/register/{{ event.event_id }}">
+                            <button id="register-event-button-{{ event.event_id }}" type="submit">Register</button>
+                        </form>
+                        {% else %}
+                        <form method="post" action="/events/cancel/{{ event.registration_id }}">
+                            <button id="cancel-registration-button-{{ event.registration_id }}" type="submit">Cancel</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button id="back-to-dashboard" onclick="window.location.href='/dashboard'">Back to Dashboard</button>
+    </div>
+</body>
+</html>

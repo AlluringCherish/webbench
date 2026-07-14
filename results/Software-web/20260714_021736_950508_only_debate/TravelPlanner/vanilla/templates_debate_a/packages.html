@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Packages</title>
+</head>
+<body>
+<div id="packages-page">
+    <h1>Travel Packages</h1>
+    <form method="POST">
+        <label for="duration-filter">Duration:</label>
+        <select id="duration-filter" name="duration-filter">
+            <option value="">-- All Durations --</option>
+            {% set durations = packages | map(attribute='duration_days') | unique | list | sort %}
+            {% for d in durations %}
+                <option value="{{ d }}" {% if duration_filter|int == d %}selected{% endif %}>{{ d }} days</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+    <div id="packages-grid">
+        <ul>
+            {% for pkg in packages %}
+                <li>
+                    <strong>{{ pkg.package_name }}</strong> - Destination: {{ pkg.destination }} - Duration: {{ pkg.duration_days }} days - Price: ${{ pkg.price }} - Difficulty: {{ pkg.difficulty_level }}<br>
+                    <button id="view-package-details-button-{{ pkg.package_id }}" onclick="window.location.href='{{ url_for('package_details', pkg_id=pkg.package_id) }}'">View Details</button>
+                    <form method="POST" action="{{ url_for('book_package', pkg_id=pkg.package_id) }}" style="display:inline-block;">
+                        <input type="hidden" name="trip_name" value="">
+                        <input type="hidden" name="start_date" value="">
+                        <input type="hidden" name="end_date" value="">
+                        <button type="submit" id="book-package-button-{{ pkg.package_id }}">Book Package</button>
+                    </form>
+                </li>
+            {% else %}
+                <li>No packages found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+</body>
+</html>

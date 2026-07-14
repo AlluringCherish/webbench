@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Your Rental</title>
+</head>
+<body>
+<div id="booking-page">
+    <h1>Book Your Rental</h1>
+
+    {% if error %}
+    <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    <form method="post" action="/booking/{{ vehicle.vehicle_id }}">
+        <label for="pickup-location">Pickup Location:</label>
+        <select id="pickup-location" name="pickup-location">
+            {% for loc in locations %}
+                <option value="{{ loc.city }}">{{ loc.city }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="dropoff-location">Dropoff Location:</label>
+        <select id="dropoff-location" name="dropoff-location">
+            {% for loc in locations %}
+                <option value="{{ loc.city }}">{{ loc.city }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="pickup-date">Pickup Date:</label>
+        <input type="date" id="pickup-date" name="pickup-date" required>
+
+        <label for="dropoff-date">Dropoff Date:</label>
+        <input type="date" id="dropoff-date" name="dropoff-date" required>
+
+        <button type="submit" name="calculate-price-button" id="calculate-price-button">Calculate Price</button>
+
+        <div id="total-price">
+            {% if calculated_price is not none %}
+                Total Price: ${{ '%.2f'|format(calculated_price) }}
+            {% endif %}
+        </div>
+
+        <button type="submit" name="proceed-to-insurance-button" id="proceed-to-insurance-button">Proceed to Insurance</button>
+    </form>
+</div>
+</body>
+</html>

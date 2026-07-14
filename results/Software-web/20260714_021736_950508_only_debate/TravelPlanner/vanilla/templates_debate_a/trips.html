@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Trips</title>
+</head>
+<body>
+<div id="trips-page">
+    <h1>My Trips</h1>
+    <table id="trips-table" border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Trip Name</th>
+                <th>Destination</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Total Budget</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for trip in trips %}
+            <tr>
+                <td>{{ trip.trip_name }}</td>
+                <td>{{ trip.destination }}</td>
+                <td>{{ trip.start_date }}</td>
+                <td>{{ trip.end_date }}</td>
+                <td>${{ trip.total_budget }}</td>
+                <td>{{ trip.status }}</td>
+                <td>
+                    <form method="POST" style="display:inline-block;">
+                        <input type="hidden" name="trip_id" value="{{ trip.trip_id }}">
+                        <button type="submit" formaction="{{ url_for('trip_details', trip_id=trip.trip_id) }}" id="view-trip-details-button-{{ trip.trip_id }}">View Details</button>
+                    </form>
+                    <form method="POST" style="display:inline-block;">
+                        <input type="hidden" name="trip_id" value="{{ trip.trip_id }}">
+                        <input type="text" name="trip_name" placeholder="New Name">
+                        <input type="text" name="trip_status" placeholder="New Status">
+                        <button type="submit" name="action" value="edit" id="edit-trip-button-{{ trip.trip_id }}">Edit</button>
+                    </form>
+                    <form method="POST" style="display:inline-block;">
+                        <input type="hidden" name="trip_id" value="{{ trip.trip_id }}">
+                        <button type="submit" name="action" value="delete" id="delete-trip-button-{{ trip.trip_id }}">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="7">No trips found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
